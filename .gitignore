@@ -1,0 +1,8 @@
+/chat/
+/packages/
+/apps/
+/node_modules/
+me.md
+/__test_fs__/
+/.packages/
+/.cache/
