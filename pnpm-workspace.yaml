@@ -1,0 +1,30 @@
+packages:
+  # @nan0web packages
+  - packages/auth-browser
+  - packages/auth-core
+  - packages/auth-db
+  - packages/auth-node
+  - packages/auth-ssr
+  - packages/changelog
+  - packages/co
+  - packages/db
+  - packages/db-browser
+  - packages/db-fs
+  - packages/event
+  - packages/html
+  - packages/http
+  - packages/http-node
+  - packages/i18n
+  - packages/log
+  - packages/markdown
+  - packages/net
+  - packages/release
+  - packages/story
+  - packages/test
+  - packages/transformer
+  - packages/types
+  - packages/xml
+  - packages/ui
+  - packages/ui-cli
+  - packages/verse
+  - apps/**
