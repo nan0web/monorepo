@@ -141,7 +141,8 @@ async function main(argv) {
 			}
 
 			const readmeTest = await packageDb.loadDocument("src/README.md.test.js", "")
-			if ("" === readmeTest) {
+			const readmeTestJs = await packageDb.loadDocument("src/README.md.js", "")
+			if ("" === readmeTest && "" === readmeTestJs) {
 				rrs.optional.readmeTest = 0
 			}
 		}

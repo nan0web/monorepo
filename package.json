@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"test": "node --test src/**/*.test.js",
-		"test:docs": "node --test src/README.md.test.js",
+		"test:docs": "node --test src/README.md.js",
 		"test:release": "node --test releases/1/0/v1.0.0/**/*.test.js | grep #TODO",
 		"dev:setup": "pnpm install && pnpm -r install",
 		"dev:all": "pnpm -r run dev",
