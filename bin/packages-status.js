@@ -16,7 +16,7 @@ const icon = (rrs) => {
 	return icon + " " + Number(100 * score / rrs.max).toFixed(1) + "%"
 }
 
-async function main(argv) {
+async function main(argv = []) {
 	const fs = new DB()
 	let pkg
 	let task = ''
@@ -50,6 +50,12 @@ async function main(argv) {
 		if ("package.json" === dir && undefined === file) {
 			packageDirs.add(name)
 		}
+	}
+
+	const uncached = Array.from(packageDirs).filter(a => argv.includes(a))
+	if (uncached.length) {
+		console.debug("Force checking package(s): " + uncached.join(", "))
+		uncached.map(a => cached.delete(a))
 	}
 
 	const write = process.stdout.write.bind(process.stdout)
@@ -123,13 +129,13 @@ async function main(argv) {
 		}
 		write(rrs.optional.playground ? " 🟢" : " 🟡")
 
-		const absGit = `https://github.com/nan0web/${pkgName}/blob/main/`
+		const absGit = `https://github.com/nan0web/${pkgName}/`
 		if (!cache) {
 			const readmeMd = await packageDb.loadDocument("README.md", "")
 			if ("" === readmeMd) {
 				rrs.optional.readmeMd = 0
 			} else {
-				docs.push(`[English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](${absGit}README.md)`)
+				docs.push(`[English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](${absGit}blob/main/README.md)`)
 			}
 		}
 		write(rrs.optional.readmeMd ? " 🟢" : " 🟡")
@@ -137,7 +143,7 @@ async function main(argv) {
 		if (!cache) {
 			const docsMd = await packageDb.loadDocument("docs/uk/README.md", "")
 			if ("" !== docsMd) {
-				docs.push(`[Українською 🇺🇦](${absGit}docs/uk/README.md)`)
+				docs.push(`[Українською 🇺🇦](${absGit}blob/main/docs/uk/README.md)`)
 			}
 
 			const readmeTest = await packageDb.loadDocument("src/README.md.test.js", "")
@@ -171,7 +177,7 @@ async function main(argv) {
 		["", "Package", "Status", "Documentation", "Npm version", ""],
 		["", "-------", "-------", "-------", "-------", "",],
 		...Array.from(scores.entries()).map(([name, score]) => ([
-			"", "@nan0web/" + name, icon(score.rrs), score.docs.join(", "), score.npm || "❌ none", ""
+			"", `[@nan0web/${name}](https://github.com/nan0web/${name})`, icon(score.rrs), score.docs.join(", "), score.npm || "❌ none", ""
 		]))
 	].map(a => a.join("|")).join("\n")
 
