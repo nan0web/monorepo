@@ -49,10 +49,10 @@ Java•Script: типізований і максимально агностич
 1. Тести (для перевірки) запускаються через `pnpm test` і вбудовані у `precommit: pnpm test | npm test`.
 1. Тестування типізації перевіряється через `pnpm build: tsc`, налаштування у `./tsconfig.json`.
 1. Кожен пакет або додаток має мати `./playground/` для своїх компонентів і логіки, для легкої CLI перевірки (демонстрації) як воно працює.
-1. Кожен пакет генерує документацію `./src/README.md.test.js` у такому форматі, який автоматично перевіряє кожен приклад у документації і, у той самий момент, генерує `./README.md` і `./.dataset/README.jsonl`
+1. Кожен пакет генерує документацію `./src/README.md.js` у такому форматі, який автоматично перевіряє кожен приклад у документації і, у той самий момент, генерує `./README.md` і `./.dataset/README.jsonl`
 1. Кожен README.md генерується англійською мовою, а переклади зберігаються `./docs/uk/README.md`
 1. Системні інструкції тільки українською у `./docs/system.md`, і `./system.md` для фільтрації пробуджених моделей.
-1. Кожен пакет легко збирається у датасети `packages/*/.datasets/README.jsonl` при тестувані `packages/*/src/README.md.test.js` і збирається у монорепу `.datasets/*.jsonl`. Кожен датасет може бути зібраний в кожній версії з поверненням саме у ту зміну через `pnpm llm:dataset`.
+1. Кожен пакет легко збирається у датасети `packages/*/.datasets/README.jsonl` при тестувані `packages/*/src/README.md.js` і збирається у монорепу `.datasets/*.jsonl`. Кожен датасет може бути зібраний в кожній версії з поверненням саме у ту зміну через `pnpm llm:dataset`.
 
 ### Proven Documentation → Verified Knowledge → Trainable Dataset
 
@@ -99,7 +99,7 @@ flowchart TD
     T --> U["{ total, done, inProgress, todo }"]
 
     %% Документація %%
-    K --> V[src/README.md.test.js]
+    K --> V[src/README.md.js]
     V --> W[README.md]
     W --> X[.datasets/README.dataset.jsonl]
 

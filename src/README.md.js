@@ -82,7 +82,7 @@ async function testRender() {
 	 *
 	 * Table of the packages and their status
 	 *
-	 * %PACKAGES%
+	 * <!-- %PACKAGE_STATUS% -->
 	 */
 	it("Statuses are updated on every git push", () => {
 		assert.ok(1)
