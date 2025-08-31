@@ -2,29 +2,29 @@
 
 @todo write desc
 
-This document is available in other languages:
-- [Ukrainian 🇺🇦](./docs/uk/README.md)
+Цей документ доступний у інших мовах:
+- [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](../../README.md)
 
-## Installation
+## Встановлення
 
-How to install with npm?
+Як встановити через npm?
 ```bash
 npm install @nan0web/monorepo
 ```
 
-How to install with pnpm?
+Як встановити через pnpm?
 ```bash
 pnpm add @nan0web/monorepo
 ```
 
-How to install with yarn?
+Як встановити через yarn?
 ```bash
 yarn add @nan0web/monorepo
 ```
 
-## Packages
+## Пакунки
 
-Table of the packages and their status
+Таблиця пакунків та їхній статус
 
 |Package name|[Status](https://github.com/nan0web/monorepo/blob/main/system.md#написання-сценаріїв)|Documentation|Test coverage|Features|Npm version|
 |---|---|---|---|---|---|
@@ -60,12 +60,12 @@ Table of the packages and their status
  |[verse](https://github.com/nan0web/verse/) |🔴 `48.1%` |🟡  |- |[🥒 d.ts](https://github.com/nan0web/verse/tree/main/types) |— |
  |[xml](https://github.com/nan0web/xml/) |🔴 `64.4%` |🟡 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/xml/blob/main/README.md) |- |[🥒 d.ts](https://github.com/nan0web/xml/tree/main/types) |— |
 
-Statuses are updated on every git push
+Статуси оновлюються при кожному git push
 
-## Contributing
+## Внесок
 
-How to contribute? [check here](./CONTRIBUTING.md)
+Як внести свій внесок? [дивіться тут](../../CONTRIBUTING.md)
 
-## License
+## Ліцензія
 
-How to license? See the [ISC LICENSE](./LICENSE) file.
+Як отримати ліцензію? Дивіться файл [ISC LICENSE](../../LICENSE).
