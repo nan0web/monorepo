@@ -309,7 +309,7 @@ class StatusCommand extends Command {
 			}
 		}
 		if (!pkgJson.files) {
-			pkgJson = pkg.NPM_FILES
+			pkgJson.files = pkg.NPM_FILES
 		}
 		const prev = await pkg.db.loadDocument("package.json")
 		const pkgChanged = JSON.stringify(prev) !== JSON.stringify(pkgJson)
