@@ -53,7 +53,7 @@ class PackageStatusDB extends DB {
 				const features = []
 				if (rrs.required.buildPass) features.push(`[🥒 d.ts](${pkg.baseURL}tree/main/types)`)
 				if (rrs.required.systemMd) features.push(`[📜 system.md](${pkg.baseURL}blob/main/system.md)`)
-				if (rrs.optional.playground) features.push(`[🕹️ playground](${pkg.baseURL}blob/blob/playground/main.js)`)
+				if (rrs.optional.playground) features.push(`[🕹️ playground](${pkg.baseURL}blob/main/playground/main.js)`)
 				table.push(pkg.render(rrs, { head: false, features }))
 			}
 		)
