@@ -2,7 +2,11 @@
 Мови: українська, англійська (оригінал)
 ---
 
-Переклади `README.md` > `docs/uk/README.md` і додай посилання на інші версії (en > uk), (uk > en) у `src/README.md.test.js`.
+- [](./packages/$pkgDir/README.md)
+- [](./packages/$pkgDir/src/README.md.js)
+- [](./packages/$pkgDir/docs/uk/README.md)
+
+Переклади `README.md` > `docs/uk/README.md` і додай посилання на інші версії (en > uk), (uk > en) у `src/README.md.js`.
 
 Додавай посилання зверху, щоб користувач який загубився зміг знайти свою мову.
 
@@ -25,7 +29,4 @@ This document is available in other languages:
 ```
 
 Будь уважний до відносних посилань у перекладах: `./` => `../../`.
-
-- [](./README.md)
-- [](./src/README.md.js)
 

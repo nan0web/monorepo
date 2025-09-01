@@ -15,6 +15,7 @@ packages:
   - packages/http
   - packages/http-node
   - packages/i18n
+  - packages/llimo
   - packages/log
   - packages/markdown
   - packages/net

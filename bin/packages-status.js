@@ -2,8 +2,9 @@ import process from "node:process"
 import { StreamEntry } from '@nan0web/db'
 import DB from '@nan0web/db-fs'
 import Logger from '@nan0web/log'
-import { TestPackage, RRS } from "@nan0web/test"
+import { TestPackage, RRS, runSpawn } from "@nan0web/test"
 import { MDHeading1, MDHeading2, MDHeading3, MDHeading4 } from "@nan0web/markdown"
+import { Command, CommandMessage } from "@nan0web/co"
 
 const console = new Logger(Logger.detectLevel(process.argv))
 
@@ -123,38 +124,109 @@ class PackageStatusDB extends DB {
 	}
 }
 
-async function main(argv = []) {
-	const fs = new PackageStatusDB()
-	console.info("Reading packages ..")
-	console.info("")
-	const format = new Intl.NumberFormat("en-US").format
-	const db = await fs.connect((entry, count, spentMs) => {
-		console.cursorUp(1, true)
-		console.info(`${format(count)} ${Number(spentMs / 1000).toFixed(1)}s ${entry.file.path}`)
-	})
+class StatusCommandOptions {
+	/** @type {string[]} */
+	ignore = []
+	/** @type {boolean} */
+	todo
+	/** @type {boolean} */
+	fix
+	constructor(input) {
+		const {
+			ignore = [],
+			todo = false,
+			fix = false,
+		} = input
+		this.ignore = Array.isArray(ignore) ? ignore : [String(ignore)]
+		this.todo = Boolean(todo)
+		this.fix = Boolean(fix)
+	}
+	/**
+	 * @param {any} input
+	 * @returns {StatusCommandOptions}
+	 */
+	static from(input) {
+		if (input instanceof StatusCommandOptions) return input
+		return new StatusCommandOptions(input)
+	}
+}
 
-	const packageDirs = new Set()
-	for (const [key] of db.meta) {
-		const [name, dir, file] = key.split("/")
-		if ("package.json" === dir && undefined === file) {
-			packageDirs.add(name)
+class StatusCommandMessage extends CommandMessage {
+	/** @type {StatusCommandOptions} */
+	opts
+	constructor(input) {
+		super(input)
+		const { opts = {} } = input
+		this.opts = StatusCommandOptions.from(opts)
+	}
+}
+
+class StatusCommand extends Command {
+	static Message = StatusCommandMessage
+	constructor() {
+		super({
+			"name": "status",
+			"help": "Packages status collector"
+		})
+		this.addOption("ignore", Array, [], "Ignored packages", "i")
+		this.fs = new PackageStatusDB()
+		this.packageDirs = new Set()
+		this.longest = 0
+	}
+	findPackages(db, ignore = []) {
+		this.longest = 0
+		this.packageDirs = new Set()
+		for (const [key] of db.meta) {
+			const [name, dir, file] = key.split("/")
+			if ("package.json" === dir && undefined === file && !ignore.includes(name)) {
+				this.packageDirs.add(name)
+				this.longest = Math.max(name.length, this.longest)
+			}
+		}
+	}
+	/**
+	 * @param {StatusCommandMessage} msg
+	 */
+	async run(msg) {
+		console.debug("Command message:")
+		console.debug(JSON.stringify(msg))
+		console.info("Reading packages ..")
+		console.info("")
+		const format = new Intl.NumberFormat("en-US").format
+		const db = await this.fs.connect((entry, count, spentMs) => {
+			console.cursorUp(1, true)
+			console.info(`${format(count)} ${Number(spentMs / 1000).toFixed(1)}s ${entry.file.path}`)
+		})
+
+		this.findPackages(db, msg.opts.ignore)
+
+		console.cursorUp(1, true)
+		console.info([db.meta.size, "entries found in", this.packageDirs.size, "packages"].join(" "))
+
+		let i = 0
+		for (const pkgName of this.packageDirs) {
+			await this.collectPackage(pkgName, db, ++i)
+		}
+		await this.fs.save()
+		if (msg.opts.todo) {
+			this.renderTodo()
+		}
+		if (msg.opts.fix) {
+			let i = 0
+			for (const { rrs, pkg } of this.fs.scores.values()) {
+				try {
+					await this.fixPackage(pkg, rrs, ++i)
+				} catch (err) {
+					console.error(`Cannot fix package packages/${pkg.name}: ${err.message}`)
+					console.debug(err.stack)
+				}
+			}
 		}
 	}
 
-	console.cursorUp(1, true)
-	console.info([db.meta.size, "entries found in", packageDirs.size, "packages"].join(" "))
-
-	const uncached = Array.from(packageDirs).filter(a => argv.includes(a))
-	if (uncached.length) {
-		console.debug("Force checking package(s): " + uncached.join(", "))
-		uncached.map(a => fs.scores.delete(a))
-	}
-
-	const longest = Array.from(packageDirs).reduce((acc, d) => Math.max(d.length, acc), 0)
-	let i = 0
-	for (const pkgName of packageDirs) {
-		const rrs = fs.getRSS(pkgName)
-		const cache = fs.getCache(pkgName)
+	async collectPackage(pkgName, db, i) {
+		const rrs = this.fs.getRSS(pkgName)
+		const cache = this.fs.getCache(pkgName)
 
 		const pkg = new TestPackage({
 			cwd: db.absolute(pkgName),
@@ -162,11 +234,10 @@ async function main(argv = []) {
 			name: pkgName,
 			baseURL: "https://github.com/nan0web/" + pkgName + "/",
 		})
-		++i
 
-		const no = String(i).padStart(String(packageDirs.size).length, " ") + ". "
+		const no = String(i).padStart(String(this.packageDirs.size).length, " ") + ". "
 
-		const spaces = " ".repeat(longest - pkgName.length)
+		const spaces = " ".repeat(this.longest - pkgName.length)
 		let message = `@nan0web/${pkgName} ${spaces}`
 		console.info(no + message)
 		console.info("")
@@ -188,15 +259,132 @@ async function main(argv = []) {
 			console.info(no + message.trim())
 		}
 
-		await fs.setScore(pkgName, { rrs, pkg })
+		await this.fs.setScore(pkgName, { rrs, pkg })
 	}
-	await fs.save()
-	if (argv.includes("--todo")) {
-		const todo = Array.from(packageDirs).map(
-			name => ({ name, ...fs.scores.get(name) })
+
+	/**
+	 * Fix the package.
+	 * @param {TestPackage} pkg
+	 * @param {RRS} rrs
+	 * @param {number} index
+	 */
+	async fixPackage(pkg, rrs, index) {
+		const pkgJson = await pkg.db.loadDocument("package.json")
+		if (!pkgJson) {
+			throw new Error("Missing package.json. Create it first.")
+		}
+		const cwd = pkg.db.absolute()
+		const gitStatus = await runSpawn("git", ["status", "--porcelain"], { cwd })
+		const ignore = ["package.json"]
+		const pending = gitStatus.text.split("\n").filter(Boolean).map(s => s.slice(3)).filter(s => !ignore.includes(s))
+		if (0 !== gitStatus.code) {
+			throw new Error("Seems git is not initialized in the directory: " + cwd)
+		}
+		if (pending.length > 0) {
+			throw new Error("Pending changes in git. Commit all changes before fix.")
+		}
+		const space = " ".repeat(this.longest - pkg.name.length)
+		if (!pkgJson.scripts) {
+			pkgJson.scripts = {}
+		}
+		for (const [key, value] of Object.entries(pkg.SCRIPTS)) {
+			const current = pkgJson.scripts[key]
+			if (!current) {
+				pkgJson.scripts[key] = value
+			}
+			else if (current !== value) {
+				console.warn(`${pkg.name} ${space}scripts.${key} = ${current}`)
+			}
+		}
+		if (!pkgJson.devDependencies) {
+			pkgJson.devDependencies = {}
+		}
+		for (const [key, value] of Object.entries(pkg.DEV_DEPENDENCIES)) {
+			const current = pkgJson?.devDependencies[key]
+			if (!current) {
+				pkgJson.devDependencies[key] = value
+			}
+			else if (current !== value) {
+				console.warn(`${pkg.name} incorrect devDependencies.${key} = ${current}`)
+			}
+		}
+		if (!pkgJson.files) {
+			pkgJson = pkg.NPM_FILES
+		}
+		const prev = await pkg.db.loadDocument("package.json")
+		const pkgChanged = JSON.stringify(prev) !== JSON.stringify(pkgJson)
+		if (pkgChanged) {
+			await pkg.db.saveDocument("package.json", pkgJson)
+			let content = ""
+			const onData = (chunk) => {
+				content += String(chunk)
+				const rows = content.split("\n").filter(Boolean)
+				console.cursorUp(1, true)
+				const recent = rows.slice(-1)[0] ?? ""
+				console.info(console.cut(recent))
+			}
+			console.info(`${pkg.name} / pnpm update\n`)
+			const npmUpdate = await runSpawn("pnpm", ["update"], { cwd, onData })
+			console.cursorUp(1, true)
+			if (0 !== npmUpdate.code) {
+				throw new Error("Cannot update node_modules\n" + content)
+			}
+		}
+
+		const husky = pkg.db.loadDocument(".husky/pre-commit", "")
+		if ("" === husky) {
+			content = ""
+			console.info(`${pkg.name} / pnpm prepare\n`)
+			const huskyInstall = runSpawn("pnpm", ["prepare"], { cwd, onData })
+			console.cursorUp(1, true)
+			if (0 !== huskyInstall.code) {
+				throw new Error("Cannot update node_modules\n" + content)
+			}
+		}
+
+		const readmeTest = await pkg.db.loadDocument("src/README.md.js", "")
+		if ("" === readmeTest) {
+			const llmProvenDocs = await this.fs.loadDocument("llm/templates/provendocs.md")
+			const content = llmProvenDocs.replaceAll("$pkgName", pkg.name)
+			await this.fs.saveDocument(`llm/queue/${pkg.name}/README.md`, content)
+		}
+
+		const playground = await pkg.db.loadDocument("playground/main.js", "")
+		if ("" === playground) {
+			const llmPlayground = await this.fs.loadDocument("llm/templates/playground.md")
+			const content = llmPlayground.replaceAll("$pkgName", pkg.name)
+			await this.fs.saveDocument(`llm/queue/${pkg.name}/playground.md`, content)
+		}
+
+		const readmeMd = await pkg.db.loadDocument("README.md", "")
+		const readmeUk = await pkg.db.loadDocument("docs/uk/README.md", "")
+		if ("" === readmeUk && readmeMd) {
+			const llmTranslate = await this.fs.loadDocument("llm/templates/translate-readme.md")
+			const content = llmTranslate.replaceAll("$pkgName", pkg.name)
+			await this.fs.saveDocument(`llm/queue/${pkg.name}/README.uk.md`, content)
+		}
+
+		const tsConfigTemplate = await this.fs.loadDocumentAs(".txt", "tsconfig.json")
+		const tsConfig = await pkg.db.loadDocumentAs(".txt", "tsconfig.json")
+		if (tsConfigTemplate !== tsConfig) {
+			const template = await this.fs.loadDocument("tsconfig.json")
+			await pkg.db.saveDocument("tsconfig.json", template)
+			console.info(`${pkg.name} / tsconfig.json 💿\n`)
+		}
+
+		const systemMd = await pkg.db.loadDocument("system.md", "")
+		if ("" === systemMd) {
+			const llmSystem = await this.fs.loadDocument("llm/templates/system.md")
+			const content = llmSystem.replaceAll("$pkgName", pkg.name)
+			await this.fs.saveDocument(`llm/queue/${pkg.name}/system.md`, content)
+		}
+	}
+
+	renderTodo() {
+		const todo = Array.from(this.packageDirs).map(
+			name => ({ name, ...this.fs.scores.get(name) })
 		)
 		todo.sort((a, b) => b.rrs.percentage - a.rrs.percentage)
-		let i = 0
 		const root = new MDHeading1({ content: "TODO" })
 		for (const { name, pkg, rrs } of todo) {
 			const md = pkg.toMarkdown(rrs)
@@ -204,17 +392,21 @@ async function main(argv = []) {
 			md.map(
 				el => el instanceof MDHeading1 ? MDHeading3.from(el)
 					: el instanceof MDHeading2 ? MDHeading3.from(el)
-					: el instanceof MDHeading3 ? MDHeading4.from(el)
-					: el
+						: el instanceof MDHeading3 ? MDHeading4.from(el)
+							: el
 			).forEach(el => root.add(el))
 		}
 		console.info(String(root))
 	}
+
 }
 
-main(process.argv.slice(2)).then(() => {
+const command = new StatusCommand()
+const msg = command.parse(process.argv.slice(2))
+command.run(msg).then(() => {
 	process.exit(0)
 }).catch(err => {
-	console.error(err)
+	console.error(err.message)
+	console.debug(err.stack)
 	process.exit(1)
 })
