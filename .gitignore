@@ -6,3 +6,4 @@ me.md
 /__test_fs__/
 /.packages/
 /.cache/
+/llm/queue/
