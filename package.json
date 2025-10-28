@@ -10,7 +10,7 @@
 		"test": "node --test src/**/*.test.js",
 		"test:docs": "node --test src/README.md.js",
 		"test:release": "node --test releases/1/0/v1.0.0/**/*.test.js | grep #TODO",
-		"test:status": "node bin/packages-status.js -i app -i changelog -i http-node -i llimo -i rss -i story -i ui-cli -i ui-lit -i ui-llm -i xml",
+		"test:status": "node bin/packages-status.js -i app -i auth-browser -i auth-core -i auth-node -i llimo -i rss -i story -i ui -i ui-cli -i ui-lit -i ui-llm -i xml",
 		"dev:setup": "pnpm install && pnpm -r install",
 		"dev:all": "pnpm -r run dev",
 		"build:all": "pnpm -r run build",
@@ -40,6 +40,8 @@
 		"@nan0web/log": "link:packages/log",
 		"@nan0web/test": "link:packages/test",
 		"@nan0web/types": "link:packages/types",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
 		"husky": "^9.1.7"
 	}
 }

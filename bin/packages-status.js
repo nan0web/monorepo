@@ -46,6 +46,9 @@ class PackageStatusDB extends DB {
 	 */
 	async save() {
 		const scores = Array.from(this.scores.entries())
+		if (!scores.length) {
+			return
+		}
 		const [, { rrs, pkg }] = scores[0]
 		const table = [pkg.render(rrs, { head: true, body: false })]
 		scores.forEach(
@@ -72,7 +75,7 @@ class PackageStatusDB extends DB {
 	async connect(onData) {
 		await super.connect()
 		const stream = this.findStream("packages/", {
-			filter: (uri) => !uri.inIncludes("/node_modules/", "/.git/")
+			filter: (entry) => !["/node_modules/", "/.git/"].some(s => entry.path.includes(s))
 		})
 
 		const start = Date.now()
@@ -121,6 +124,33 @@ class PackageStatusDB extends DB {
 	async setScore(pkgName, score) {
 		this.scores.set(pkgName, score)
 		await this.#saveCache()
+	}
+}
+
+class NaN0WebPackageConfig {
+	/** @type {string} */
+	name
+	constructor(input = {}) {
+		const {
+			name = ""
+		} = input
+		this.name = String(name)
+	}
+	// @todo check for the proper pkgConfig.url or similar refering to the source, if not defined return the default
+	/** @returns {string} */
+	get baseURL() {
+		if (!this.name) return ""
+		return ("https://github.com/" + this.name + "/").replace(
+			"://github.com/@nan0web/", "://github.com/nan0web/"
+		)
+	}
+	/**
+	 * @param {any} input
+	 * @returns {NaN0WebPackageConfig}
+	 */
+	static from(input) {
+		if (input instanceof NaN0WebPackageConfig) return input
+		return new NaN0WebPackageConfig(input)
 	}
 }
 
@@ -173,16 +203,25 @@ class StatusCommand extends Command {
 		this.packageDirs = new Set()
 		this.longest = 0
 	}
-	findPackages(db, ignore = []) {
+	async findPackages(db, ignore = []) {
+		const errors = []
 		this.longest = 0
-		this.packageDirs = new Set()
+		this.packageDirs = new Map()
 		for (const [key] of db.meta) {
-			const [name, dir, file] = key.split("/")
-			if ("package.json" === dir && undefined === file && !ignore.includes(name)) {
-				this.packageDirs.add(name)
-				this.longest = Math.max(name.length, this.longest)
+			const norm = db.relative(db.root, key)
+			const [name, dir, file] = norm.split("/")
+			try {
+				if ("package.json" === dir && undefined === file && !ignore.includes(name)) {
+					const pkgConfig = await db.loadDocument(name + "/package.json", {})
+					const config = NaN0WebPackageConfig.from(pkgConfig)
+					this.packageDirs.set(name, config)
+					this.longest = Math.max(config.name.length, this.longest)
+				}
+			} catch (err) {
+				errors.push(err)
 			}
 		}
+		return errors
 	}
 	/**
 	 * @param {StatusCommandMessage} msg
@@ -198,14 +237,19 @@ class StatusCommand extends Command {
 			console.info(`${format(count)} ${Number(spentMs / 1000).toFixed(1)}s ${entry.file.path}`)
 		})
 
-		this.findPackages(db, msg.opts.ignore)
+		const errors = await this.findPackages(db, msg.opts.ignore)
+		errors.forEach(e => console.warn(e.stack ?? e.message))
 
 		console.cursorUp(1, true)
 		console.info([db.meta.size, "entries found in", this.packageDirs.size, "packages"].join(" "))
 
 		let i = 0
-		for (const pkgName of this.packageDirs) {
-			await this.collectPackage(pkgName, db, ++i)
+		for (const [dirName, config] of this.packageDirs) {
+			try {
+				await this.collectPackage(config, dirName, db, ++i)
+			} catch (err) {
+				console.error(err.stack ?? err.message)
+			}
 		}
 		await this.fs.save()
 		if (msg.opts.todo) {
@@ -224,34 +268,51 @@ class StatusCommand extends Command {
 		}
 	}
 
-	async collectPackage(pkgName, db, i) {
-		const rrs = this.fs.getRSS(pkgName)
-		const cache = this.fs.getCache(pkgName)
+	/**
+	 *
+	 * @param {NaN0WebPackageConfig} pkgName
+	 * @param {string} dirName
+	 * @param {DB} db
+	 * @param {number} i
+	 */
+	async collectPackage(pkgConfig, dirName, db, i) {
+		const rrs = this.fs.getRSS(pkgConfig.name)
+		const cache = this.fs.getCache(pkgConfig.name)
 
 		const pkg = new TestPackage({
-			cwd: db.absolute(pkgName),
-			db: db.extract(pkgName),
-			name: pkgName,
-			baseURL: "https://github.com/nan0web/" + pkgName + "/",
+			cwd: db.absolute(dirName),
+			db: db.extract(dirName),
+			name: pkgConfig.name,
+			// @todo check for the proper pkgConfig.url or similar refering to the source, if not defined return the default
+			baseURL: pkgConfig.baseURL,
 		})
 
 		const no = String(i).padStart(String(this.packageDirs.size).length, " ") + ". "
 
-		const spaces = " ".repeat(this.longest - pkgName.length)
-		let message = `@nan0web/${pkgName} ${spaces}`
+		const spaces = " ".repeat(this.longest - pkgConfig.name.length)
+		let message = `${pkgConfig.name} ${spaces}`
+		const errors = []
 		console.info(no + message)
 		console.info("")
 		console.info("")
 
-		for await (const msg of pkg.run(rrs, cache)) {
-			message += msg.value
-			console.cursorUp(2, true)
-			console.info(no + message)
-			console.info(console.cut(msg.name))
-			console.info("")
+		try {
+			for await (const msg of pkg.run(rrs, cache)) {
+				message += msg.value
+				console.cursorUp(2, true)
+				console.info(no + message)
+				console.info(console.cut(msg.name))
+				console.info("")
+			}
+		} catch (err) {
+			errors.push(err)
 		}
 
 		message += " = " + rrs.icon("") + "\n"
+		if (errors.length) {
+			errors.forEach(e => console.error(e.stack ?? e.message))
+			console.info("\n")
+		}
 		console.cursorUp(2, true)
 		if (message.endsWith(" 0.0%\n")) {
 			console.error(no + message.trim())
@@ -259,7 +320,7 @@ class StatusCommand extends Command {
 			console.info(no + message.trim())
 		}
 
-		await this.fs.setScore(pkgName, { rrs, pkg })
+		await this.fs.setScore(pkgConfig.name, { rrs, pkg })
 	}
 
 	/**

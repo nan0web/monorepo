@@ -2,7 +2,7 @@
 
 Інструкція має бути самодостатньої.
 
-Збережи файл у `./packages/$pkgDir/system.md`.
+Збережи файл у `./packages/$pkgName/system.md`.
 
 Приклад інструкції (системні налаштування цього чату),
 а також:
@@ -16,11 +16,11 @@
 
 Контекст проєкту:
 
-- [](./packages/$pkgDir/bin/**)
-- [](./packages/$pkgDir/docs/**)
-- [](./packages/$pkgDir/package.json)
-- [](./packages/$pkgDir/playground/**)
-- [](./packages/$pkgDir/scripts/**)
-- [](./packages/$pkgDir/src/**)
-- [](./packages/$pkgDir/tsconfig.json)
+- [](./packages/$pkgName/bin/**)
+- [](./packages/$pkgName/docs/**)
+- [](./packages/$pkgName/package.json)
+- [](./packages/$pkgName/playground/**)
+- [](./packages/$pkgName/scripts/**)
+- [](./packages/$pkgName/src/**)
+- [](./packages/$pkgName/tsconfig.json)
 
