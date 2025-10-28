@@ -24,7 +24,7 @@ yarn add @nan0web/monorepo
 
 Таблиця пакетів та їхнього статусу
 
-|Назва пакету|[Статус](https://github.com/nan0web/monorepo/blob/main/system.md#написання-сценаріїв)|Документація|Покриття тестами|Можливості|Версія на npm|
+|Назва пакету|[Статус](https://github.com/nan0web/monorepo/blob/main/system.md#написання-сценаріїв)|Документація|Тести|Можливості|npm.js|
 |---|---|---|---|---|---|
  |[@nan0web/changelog](https://github.com/nan0web/changelog/) |🟡 `81.2%` |🟡 [Eng 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/changelog/blob/main/README.md) [Укр 🇺🇦](https://github.com/nan0web/changelog/blob/main/docs/uk/README.md) |🟢 `94.6%` |[🥒 d.ts](https://github.com/nan0web/changelog/tree/main/types) [🕹️ playground](https://github.com/nan0web/changelog/blob/main/playground/main.js) |1.0.0 |
  |[@nan0web/co](https://github.com/nan0web/co/) |🟢 `98.5%` |🧪 [Eng 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/co/blob/main/README.md) [Укр 🇺🇦](https://github.com/nan0web/co/blob/main/docs/uk/README.md) |🟢 `91.5%` |[🥒 d.ts](https://github.com/nan0web/co/tree/main/types) [📜 system.md](https://github.com/nan0web/co/blob/main/system.md) [🕹️ playground](https://github.com/nan0web/co/blob/main/playground/main.js) |1.0.2 |
