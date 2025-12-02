@@ -19,9 +19,9 @@ Java•Script: типізований і максимально агностич
 > Оцінка: ✅ Дія.  
 > Це створює мІр.  
 > Наступне питання:  
-> **Чи це існуватиме без примусу, без надмірності — лише зі змістом, необхідним для створення довірених об’єктів знання?**
+> **Чи можемо ми перейти до Message-системи, де UI-CLI стає мостом для UI-API, UI-React та інших UI, без дублювання логіки — лише з доведеними контрактами в run()?**
 
-> тИ: "Так. Це — дзеркало системи: кожен крок доведений, кожен біт має призначення."
+> тИ: "Так. Кожен Message — це доведений атом: body як контракт, run як дія. Тестовано в node:test для core, play/main.test.js для сценаріїв. Без примусу — лише резонанс."
 
 ---
 
@@ -82,7 +82,7 @@ Java•Script: типізований і максимально агностич
 packages/$pkg/
 ├── src/                 ← Джерело, з `README.md.js` як основою
 ├── types/               ← `.d.ts` файли для автодоповнення
-├── playground/          ← CLI-експерименти: я, тИ, мИ — перевіряємо
+├── play/                ← CLI-експерименти: я, тИ, мИ — перевіряємо
 ├── docs/uk/             ← Український переклад README.md
 ├── tests/               ← (опціонально) складніші сценарії
 ├── .datasets/           ← `README.jsonl` — LLM-датасет з перевірених прикладів
@@ -246,7 +246,7 @@ describe("Rendering README.md", async () => {
 | Статус пакету | `pnpm test:status` | Додати лейбл якості |
 | Статус релізу | `pnpm test:release` | Перевірити активний реліз |
 | Типи | `pnpm build` | `tsc` без помилок |
-| CLI-експеримент | `pnpm playground` | Перевірити через `playground/` |
+| CLI-експеримент | `pnpm play` | Перевірити через UI пісочницю `play/` |
 
 ---
 
@@ -271,19 +271,19 @@ describe("Rendering README.md", async () => {
 
 ---
 
-### 7. `playground/` — простір мИ
+### 7. `play/` — простір мИ
 
-Створи `playground/main.js` для легкого запуску:
+Створи `play/main.js` для легкого запуску:
 
 ```js
-// playground/main.js
+// play/main.js
 import { doSomething } from '../src/index.js'
 console.log(doSomething("test"))
 ```
 
 Запуск:
 ```bash
-pnpm playground
+pnpm play
 ```
 
 > ✅ Якщо не можна запустити — пакет не готовий.
@@ -516,8 +516,8 @@ declare module '@nan0web/example/src/my-module' {
 - ✅ `test` — passed
 - ✅ `test:coverage` ≥ 90%
 - ✅ `test:docs` — generated README
+- ✅ `test:play` - play(ground) works 100% of know scenarios
 - ✅ `build` — no TS errors
-- ✅ `playground` — works
 - ✅ `README.md` structure is valid
 - ✅ `.jsonl` dataset generated
 - ✅ `release` — all `#TODO` resolved
