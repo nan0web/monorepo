@@ -4,8 +4,12 @@ import DB from '@nan0web/db-fs'
 import Logger from '@nan0web/log'
 import { TestPackage, RRS, runSpawn } from "@nan0web/test"
 import { MDHeading1, MDHeading2, MDHeading3, MDHeading4 } from "@nan0web/markdown"
-import { CLI, CommandParser } from "@nan0web/ui-cli"
+import { CLI, CommandParser, pause } from "@nan0web/ui-cli"
 import { UiMessage } from "@nan0web/ui"
+import path from "node:path"
+import { checkAllDocs } from '../src/docs.js'
+import { getProvenDocs, getPlayground, getSystem } from '../src/llm/templates/index.js'
+import { createOutputProgress } from "../src/cli.js"
 
 const console = new Logger(Logger.detectLevel(process.argv))
 
@@ -118,12 +122,12 @@ class PackageStatusDB extends DB {
 	}
 
 	/**
-	 * @param {string} pkgName
+	 * @param {string} name
 	 * @param {{ rrs: RRS, pkg: TestPackage }} score
 	 * @returns {Promise<void>}
 	 */
-	async setScore(pkgName, score) {
-		this.scores.set(pkgName, score)
+	async setScore(name, score) {
+		this.scores.set(name, score)
 		await this.#saveCache()
 	}
 }
@@ -204,6 +208,7 @@ class StatusCommand extends CLI {
 		this.fs = new PackageStatusDB()
 		this.packageDirs = new Set()
 		this.longest = 0
+		this.depMap = {}
 	}
 	async findPackages(db, ignore = []) {
 		const errors = []
@@ -231,24 +236,59 @@ class StatusCommand extends CLI {
 	async run(msg) {
 		console.debug("Command message:")
 		console.debug(JSON.stringify(msg))
-		console.info("Reading packages ..")
-		console.info("")
 		const format = new Intl.NumberFormat("en-US").format
+		let chunks = ["Reading packages …"]
+		const connectOpts = { logger: console, chunks, fps: 33 }
+		const connectInterval = createOutputProgress(connectOpts)
 		const db = await this.fs.connect((entry, count, spentMs) => {
-			console.cursorUp(1, true)
-			console.info(`${format(count)} ${Number(spentMs / 1000).toFixed(1)}s ${entry.file.path}`)
+			chunks.push(`${format(count)} ${Number(spentMs / 1000).toFixed(1)}s ${entry.file.path}`)
 		})
+		const ws = await this.fs.loadDocument("pnpm-workspace.yaml", {})
+		const pkgs = new Set()
+		for (const [uri] of db.meta.entries()) {
+			const [name] = uri.split("/")
+			if (["_", "."].some(s => name.includes(s))) continue
+			pkgs.add(name)
+		}
+		await pause(33)
+		clearInterval(connectInterval)
+		console.cursorUp(connectOpts.printed || 0, true)
+		const wsPkgs = new Set(
+			ws.packages.filter(p => p.startsWith("packages/")).map(p => p.slice(9))
+		)
+		console.info(`Read ${format(db.meta.size)} items read from ${format(pkgs.size)} packages`)
 
 		const errors = await this.findPackages(db, msg.body.ignore)
 		errors.forEach(e => console.warn(e.stack ?? e.message))
 
-		console.cursorUp(1, true)
-		console.info([db.meta.size, "entries found in", this.packageDirs.size, "packages"].join(" "))
+		chunks = ["Checking docs …"]
+		const onChunk = (msg, error) => {
+			chunks.push(error ? Logger.RED : "" + msg + Logger.RESET)
+		}
+		const docsOpts = { chunks, logger: console, fps: 33 }
+		const docsInterval = createOutputProgress(docsOpts)
+		const docs = await checkAllDocs({
+			db: this.fs,
+			pkgs: Array.from(wsPkgs),
+			logger: console,
+			chunks,
+			onChunk,
+		})
+		this.depMap = docs.deps
+		await pause(33)
+		clearInterval(docsInterval)
+		console.cursorUp(docsOpts.printed || 0, true)
+		if (docs.incorrect.length) {
+			console.error(`  ${docs.incorrect.length} packages are preapared for LLiMo transformation`)
+			docs.incorrect.forEach(i => console.info(`  - ${i}`))
+		} else {
+			console.info(`  all packages have required docs`)
+		}
 
 		let i = 0
 		for (const [dirName, config] of this.packageDirs) {
 			try {
-				await this.collectPackage(config, dirName, db, ++i)
+				await this.collectPackage(config, dirName, db, ++i, wsPkgs)
 			} catch (err) {
 				console.error(err.stack ?? err.message)
 			}
@@ -276,8 +316,9 @@ class StatusCommand extends CLI {
 	 * @param {string} dirName
 	 * @param {DB} db
 	 * @param {number} i
+	 * @param {Set} pkgs
 	 */
-	async collectPackage(pkgConfig, dirName, db, i) {
+	async collectPackage(pkgConfig, dirName, db, i, pkgs = new Set()) {
 		const rrs = this.fs.getRSS(pkgConfig.name)
 		const cache = this.fs.getCache(pkgConfig.name)
 
@@ -289,12 +330,13 @@ class StatusCommand extends CLI {
 			baseURL: pkgConfig.baseURL,
 		})
 
-		const no = String(i).padStart(String(this.packageDirs.size).length, " ") + ". "
+		const no = (pkgs.has(dirName) ? "" : Logger.DIM)
+			+ String(i).padStart(String(this.packageDirs.size).length, " ") + ". "
 
 		const spaces = " ".repeat(this.longest - pkgConfig.name.length)
 		let message = `${pkgConfig.name} ${spaces}`
 		const errors = []
-		console.info(no + message)
+		console.info(no + message + Logger.RESET)
 		console.info("")  // status line
 
 		try {
@@ -402,26 +444,23 @@ class StatusCommand extends CLI {
 			}
 		}
 
+		const dirName = path.basename(pkg.cwd)
 		const readmeTest = await pkg.db.loadDocument("src/README.md.js", "")
 		if ("" === readmeTest) {
-			const llmProvenDocs = await this.fs.loadDocument("llm/templates/provendocs.md")
-			const content = llmProvenDocs.replaceAll("$pkgName", pkg.name)
-			await this.fs.saveDocument(`llm/queue/${pkg.name}/README.md`, content)
+			const content = getProvenDocs().replaceAll("$pkgDir", dirName).replaceAll("$pkgName", pkg.name)
+			await pkg.db.saveDocument("src/README.md.js", content)
 		}
 
 		const playground = await pkg.db.loadDocument("playground/main.js", "")
 		if ("" === playground) {
-			const llmPlayground = await this.fs.loadDocument("llm/templates/playground.md")
-			const content = llmPlayground.replaceAll("$pkgName", pkg.name)
-			await this.fs.saveDocument(`llm/queue/${pkg.name}/playground.md`, content)
+			const content = getPlayground().replaceAll("$pkgDir", dirName)
+			await pkg.db.saveDocument("playground/main.js", content)
 		}
 
-		const readmeMd = await pkg.db.loadDocument("README.md", "")
-		const readmeUk = await pkg.db.loadDocument("docs/uk/README.md", "")
-		if ("" === readmeUk && readmeMd) {
-			const llmTranslate = await this.fs.loadDocument("llm/templates/translate-readme.md")
-			const content = llmTranslate.replaceAll("$pkgName", pkg.name)
-			await this.fs.saveDocument(`llm/queue/${pkg.name}/README.uk.md`, content)
+		const systemMd = await pkg.db.loadDocument("system.md", "")
+		if ("" === systemMd) {
+			const content = getSystem().replaceAll("$pkgName", pkg.name)
+			await pkg.db.saveDocument("system.md", content)
 		}
 
 		const tsConfigTemplate = await this.fs.loadDocumentAs(".txt", "tsconfig.json")
@@ -430,13 +469,6 @@ class StatusCommand extends CLI {
 			const template = await this.fs.loadDocument("tsconfig.json")
 			await pkg.db.saveDocument("tsconfig.json", template)
 			console.info(`${pkg.name} / tsconfig.json 💿\n`)
-		}
-
-		const systemMd = await pkg.db.loadDocument("system.md", "")
-		if ("" === systemMd) {
-			const llmSystem = await this.fs.loadDocument("llm/templates/system.md")
-			const content = llmSystem.replaceAll("$pkgName", pkg.name)
-			await this.fs.saveDocument(`llm/queue/${pkg.name}/system.md`, content)
 		}
 	}
 
@@ -473,4 +505,5 @@ command.run(msg).then(() => {
 	console.debug(err.stack)
 	process.exit(1)
 })
+
 

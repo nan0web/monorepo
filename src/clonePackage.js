@@ -14,10 +14,10 @@ import { runCommandAsync } from "./runCommandAsync.js"
  *
  * @param {string} repoUrl – ignored when mock mode is active.
  * @param {string} pkg
- * @param {(data: string, error?: boolean) => void} onChunk
+ * @param {(data: string, error?: boolean) => void} [onChunk]
  * @returns {Promise<string>} absolute path to the package root inside the temp dir
  */
-export async function clonePackage(repoUrl, pkg, onChunk) {
+export async function clonePackage(repoUrl, pkg, onChunk = () => {}) {
 	if (process.env.MOCK_CLONE === "true") {
 		// fast deterministic mock: create a temporary folder with a dummy package.json
 		const temp = path.join(tmpdir(), `nan0-mock-${pkg}-${Date.now()}`)
@@ -36,8 +36,11 @@ export async function clonePackage(repoUrl, pkg, onChunk) {
 	}
 
 	const temp = path.join(tmpdir(), `nan0-audit-${pkg}-${Date.now()}`)
+	onChunk(`% mkdir ${temp}\n`)
 	await fs.mkdir(temp, { recursive: true })
 
+	onChunk(`% cd ${temp}\n`)
+	onChunk(`% git clone --depth 1 --filter=blob:none --no-checkout --sparse ${repoUrl} ${temp}\n`)
 	// shallow sparse checkout (real git)
 	await runCommandAsync(
 		"git",

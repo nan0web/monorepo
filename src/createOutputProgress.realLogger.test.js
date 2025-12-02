@@ -65,7 +65,11 @@ describe("createOutputProgress() – real Logger", () => {
 		if (block.length) blocks.push(block)
 		clearInterval(progress)
 		assert.deepStrictEqual(
-			logger.output.join("\n").split("\n").map(s => s.split("> ").slice(1).join("> ").trim()),
+			logger.output.join("\n").split("\n").map(s => {
+				const arr = s.split("  ")
+				if (arr.length === 1) return s
+				return arr.slice(2).join("  ").trim()
+			}),
 			[
 				"! Running tests...",
 				"! Running tests...", '1..15',

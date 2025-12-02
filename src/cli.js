@@ -21,14 +21,14 @@ export function createProgress(fn, { startTime = Date.now(), fps = 30 }) {
 
 /**
  * @typedef {Object} OutputProgressInput
- * @property {Logger} [logger]
- * @property {number} [maxLines=3]
- * @property {string[]} [chunks=[]]
- * @property {number} [fps=30]
+ * @property {Logger} [logger] Logger instance as a console processor
+ * @property {number} [maxLines=3] Number of lines to print out
+ * @property {string[]} [chunks=[]] Array of chunks to print out
+ * @property {number} [fps=30] Frames per second
+ * @property {number} [printed=0] Recent printed amount of lines
  */
 
 /**
- *
  * @param {OutputProgressInput} input
  * @returns {NodeJS.Timeout}
  */
@@ -40,23 +40,25 @@ export function createOutputProgress(input) {
 		fps = 30,
 	} = input
 
-	let printed = 0
+	let printed = input.printed || 0
 	const clear = () => {
-		if (logger && printed > 0) logger.cursorUp(printed, true)
+		if (logger && printed > 0) logger.cursorUp(printed)
 	}
 
+	/** @param {number} elapsed */
 	const print = (elapsed) => {
 		const lines = chunks.join("\n").split("\n").filter(Boolean)
 		const tail = lines.slice(-maxLines)
 		const time = `  ${Number(elapsed / 1e3).toFixed(2)}s`
 		printed = tail.length || 1
+		input.printed = printed
 
 		if (logger) {
 			// Primary line (with time)
-			logger.info(`${time}  ${tail[0] ?? ""}`)
+			logger.info(logger.fill(`${time}  ${tail[0] ?? ""}`))
 			// Additional lines, if any – output the raw text (no extra formatting)
 			const prefix = " ".repeat(time.length) + "  "
-			tail.slice(1).forEach(t => logger.info(t))
+			tail.slice(1).forEach(t => logger.info(logger.fill(prefix + t)))
 		}
 	}
 

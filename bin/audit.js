@@ -9,26 +9,13 @@ import { parseAuditResult } from '../src/audit.js'
 import { runCommandAsync } from '../src/runCommandAsync.js'
 import { clonePackage } from '../src/clonePackage.js'   // respects MOCK_CLONE (but we don’t force it)
 import { createOutputProgress, pause } from '../src/cli.js'
+import { checkAllDocs } from "../src/docs.js"
 
 /* -------------------------------------------------------------------------- */
 /* Run a command asynchronously, printing at most `maxLines` lines of output. */
 /* -------------------------------------------------------------------------- */
 const logger = new Logger(Logger.detectLevel(process.argv))
 const format = new Intl.NumberFormat("en-US").format
-
-/**
- * Read package.json via a DB‑like instance and return all @nan0web/ deps.
- */
-async function getDependencies(db) {
-	try {
-		const data = await db.loadDocument('package.json')
-		const all = { ...data.dependencies, ...data.devDependencies, ...data.peerDependencies }
-		return Object.keys(all).filter(d => d.startsWith('@nan0web/'))
-	} catch (e) {
-		logger.error(`Failed to read ${db.absolute('package.json')}: ${e.message}`)
-		return []
-	}
-}
 
 /**
  * Topological sort – returns a safe build order.
@@ -73,18 +60,30 @@ function getBuildOrder(map) {
 
 /**
  * Run `pnpm install` inside a directory.
+ * Swallow errors to continue testing others.
  */
-async function installDependencies(cwd) {
-	const res = await runCommandAsync('pnpm', ['install'], { cwd })
-	if (res.code !== 0) throw new Error(`pnpm install failed in ${cwd}`)
+async function installDependencies(cwd, onChunk) {
+	try {
+		const res = await runCommandAsync('pnpm', ['install'], { cwd, onChunk })
+		if (res.code !== 0) throw new Error(`pnpm install failed in ${cwd}`)
+	} catch (e) {
+		logger.warn(`Install failed for ${path.basename(cwd)}: ${e.message}`)
+		throw e  // re-throw to be caught by caller
+	}
 }
 
 /**
  * Run the package’s `test:all` script.
+ * Swallow errors to continue testing others.
  */
-async function runTests(cwd) {
-	const res = await runCommandAsync('pnpm', ['run', 'test:all'], { cwd })
-	if (res.code !== 0) throw new Error(`Tests failed in ${cwd}\n${res.output}`)
+async function runTests(cwd, onChunk) {
+	try {
+		const res = await runCommandAsync('pnpm', ['run', 'test:all'], { cwd, onChunk })
+		if (res.code !== 0) throw new Error(`Tests failed in ${cwd}\n${res.output}`)
+	} catch (e) {
+		logger.warn(`Tests failed for ${path.basename(cwd)}: ${e.message}`)
+		throw e  // re-throw to be caught by caller
+	}
 }
 
 /**
@@ -108,6 +107,7 @@ async function runPnpmAudit({ chunks = [], maxLines = 3 } = {}) {
 	clearInterval(progressInterval)
 
 	logger.success('pnpm audit completed')
+	logger.success(`Total vulnerabilities: ${result.length}`)
 
 	if (tally.critical.length) logger.error(`  ${Logger.RED}${tally.critical.length} critical:${Logger.RESET} ${tally.critical.join(', ')}`)
 	if (tally.high.length) logger.error(`  ${Logger.RED}${tally.high.length} high:${Logger.RESET} ${tally.high.join(', ')}`)
@@ -125,12 +125,25 @@ async function main(argv = process.argv.slice(2)) {
 	const db = new FS()
 	await db.connect()
 
-	const isFix = argv.includes('--fix')
-
-	let chunks = []
 	await db.saveDocument(".cache/chunks.log", "")
 	await db.saveDocument(".cache/error.log", "")
 
+	// Log per-package errors to .cache/error.log without failing main()
+	const logError = async (pkg, error) => {
+		const errEntry = `[${new Date().toISOString()}] ${pkg}: ${error.message}\n`
+		try {
+			await db.writeDocument('.cache/error.log', errEntry)
+		} catch (logErr) {
+			logger.warn(`Failed to log error for ${pkg}: ${logErr.message}`)
+		}
+	}
+
+	const isFix = argv.includes('--fix')
+	const isDebug = argv.includes('--debug')
+
+	let chunks = ["Loading monorepo..."]
+
+	/** @type {import('../src/runCommandAsync.js').onChunkFn} */
 	const onChunk = (data, error = false) => {
 		const str = String(data)
 		chunks.push(str)
@@ -138,98 +151,99 @@ async function main(argv = process.argv.slice(2)) {
 		db.writeDocument(".cache/chunks.log", str)
 	}
 
+	const start = async (options = {}, fn) => {
+		const opts = { ...options, logger, fps: 33 }
+		const interval = createOutputProgress(opts)
+		const result = await fn()
+		/** @description pause is required to see the results due to the fps */
+		await pause(33)
+		clearInterval(interval)
+		logger.cursorUp(opts.printed || 0, true)
+		return result
+	}
+
 	/* ----------------------------- repo info ----------------------------- */
 	let monorepoUrl = ''
 	try {
 		chunks = ["% git rev-parse --show-toplevel"]
-		let interval = createOutputProgress({ logger, chunks })
-		const rootRes = await runCommandAsync('git', ['rev-parse', '--show-toplevel'], { onChunk })
-		clearInterval(interval)
+		const rootRes = await start({ chunks }, async () => {
+			return await runCommandAsync('git', ['rev-parse', '--show-toplevel'], { onChunk })
+		})
 
 		const repoRoot = rootRes.output.trim()
 		chunks = [`% git -C ${repoRoot} config --get remote.origin.url`]
-		interval = createOutputProgress({ logger, chunks })
-		const urlRes = await runCommandAsync('git', ['-C', repoRoot, 'config', '--get', 'remote.origin.url'], { onChunk })
-		clearInterval(interval)
+		const urlRes = await start({ chunks }, async () => {
+			return await runCommandAsync('git', ['-C', repoRoot, 'config', '--get', 'remote.origin.url'], { onChunk })
+		})
 		monorepoUrl = urlRes.output.trim()
-	} catch { /* ignore – will surface later if needed */ }
+	} catch {
+		/* ignore – will surface later if needed */
+	}
 
 	/* --------------------- load workspace & package list ----------------- */
 	chunks = ["Loading pnpm-workspace.yaml"]
-	let interval = createOutputProgress({ logger, chunks })
-	const ws = await db.loadDocument('pnpm-workspace.yaml')
-	chunks.push(format(JSON.stringify(ws).length) + " bytes loaded ")
-	const pkgs = ws.packages
-		.filter(p => p.startsWith('packages/'))
-		.map(p => p.slice('packages/'.length))
+	let pkgs = []
+	await start({ chunks }, async () => {
+		const ws = await db.loadDocument('pnpm-workspace.yaml')
+		pkgs = ws.packages
+			.filter(p => p.startsWith('packages/'))
+			.map(p => p.slice('packages/'.length))
+		onChunk(format(JSON.stringify(ws).length) + " bytes loaded, " + pkgs.length + " packages\n")
+	})
 
-	clearInterval(interval)
-
-	/* --------------------------- audit --------------------------------- */
-	let audited
-	if (isFix) {
-		chunks = ["Fixing all packages"]
-		interval = createOutputProgress({ logger, chunks })
-		await runCommandAsync('pnpm', ['audit', 'fix'], { onChunk })
-		clearInterval(interval)
-	}
-	chunks = ["Auditing all packages"]
-	audited = await runPnpmAudit({ chunks: ['Running pnpm audit...'] })
-	if (audited.length && !isFix) {
-		console.info('\n! To automatically fix issues provide --fix in a command line\n')
+	chunks = ["Checking docs …"]
+	let docs = { incorrect: [], deps: {} }
+	await start({ chunks }, async () => {
+		docs = await checkAllDocs({ db, pkgs, chunks, onChunk, logger })
+	})
+	const count = Object.keys(docs.deps).length
+	logger.info(`Documentation loaded with ${docs.incorrect.length} fail packages and ${count} dependency trees`)
+	if (docs.incorrect.length) {
+		logger.info(`  ${Logger.YELLOW}Missing documentation in${Logger.RESET}`)
+		docs.incorrect.forEach(i => logger.info(`  - ${Logger.YELLOW}${i}${Logger.RESET}`))
 	}
 
 	/* ------------------- isolation tests ------------------------------- */
-	const depMap = {}
-	const isolation = []          // { name, passed }
+	const isolation = []          // { native, passed }
 	const tableRows = []         // markdown rows as they appear
 
 	let idx = 0
+	// @todo sort here by dependencies less first
 	for (const name of pkgs) {
 		logger.info(`${String(++idx).padStart(String(pkgs.length).length)}. ${name}`)
-
-		const pkgDb = db.extract(`packages/${name}/`)
-		const deps = await getDependencies(pkgDb)
-		depMap[name] = deps.map(d => d.replace('@nan0web/', ''))
-
-		let pkgPath = null
+		let pkgPath = ""
+		let passed = false
+		const repoUrl = `git@github-nan0web:nan0web/${name}.git`
 		try {
-			// ----------- clone package -----------
 			chunks = [`Cloning ${name}…`]
-			const cloneInterval = createOutputProgress({ logger, chunks })
-			const repoUrl = `git@github-nan0web:nan0web/${name}.git`
-			pkgPath = await clonePackage(repoUrl, name, onChunk)
-			clearInterval(cloneInterval)
+			await start({ chunks }, async () => {
+				pkgPath = await clonePackage(repoUrl, name, onChunk)
+			})
 
 			// ----------- install dependencies -----------
 			chunks = [`Installing deps for ${name}…`]
-			const installInterval = createOutputProgress({ logger, chunks })
-			await installDependencies(pkgPath)
-			clearInterval(installInterval)
+			await start({ chunks }, async () => {
+				await installDependencies(pkgPath, onChunk)
+			})
 
 			// ----------- run tests -----------
 			chunks = [`Running tests for ${name}…`]
-			const testInterval = createOutputProgress({ logger, chunks })
-			await runTests(pkgPath)
-			clearInterval(testInterval)
+			await start({ chunks }, async () => {
+				await runTests(pkgPath, onChunk)
+			})
 
-			isolation.push({ name, passed: true })
-			logger.success(`✅ ${name} passed isolation tests`)
+			passed = true
+			if (isDebug) {
+				logger.success(`✅ ${name} passed isolation tests`)
+			}
 			tableRows.push(`| ${name} | ✅ |`)
 		} catch (e) {
-			isolation.push({ name, passed: false })
-			logger.error(`❌ ${name} isolation failed: ${e.message}`)
-			logger.debug(e.stack)
-			tableRows.push(`| ${name} | ❌ |`)
-
-			// persist per‑package error details
-			const errEntry = `[${new Date().toISOString()}] ${name}: ${e.message}\n`
-			try {
-				await db.writeDocument('.cache/error.log', errEntry)
-			} catch (logErr) {
-				// If even logging fails we do not want to abort the whole run.
-				logger.warn(`Failed to write error log for ${name}: ${logErr.message}`)
+			passed = false
+			if (isDebug) {
+				logger.error(`❌ ${name} isolation failed: ${e.message}`)
 			}
+			tableRows.push(`| ${name} | ❌ |`)
+			await logError(name, e)
 		} finally {
 			if (pkgPath) {
 				const tempRoot = path.dirname(path.dirname(pkgPath))
@@ -238,48 +252,43 @@ async function main(argv = process.argv.slice(2)) {
 				try {
 					await fs.rm(tempRoot, { recursive: true, force: true })
 				} catch (cleanErr) {
-					logger.warn(`Cleanup failed for ${name}: ${cleanErr.message}`)
-					const errEntry = `[${new Date().toISOString()}] cleanup ${name}: ${cleanErr.message}\n`
-					try {
-						await db.writeDocument('.cache/error.log', errEntry)
-					} catch { /* ignore secondary failures */ }
+					logger.debug(`Cleanup failed for ${name}: ${cleanErr.message}`)
+					await logError(name, { message: `Cleanup error: ${cleanErr.message}` })
 				}
 			}
+			isolation.push({ name, passed })
 		}
+		if (passed) logger.success(`${String(idx).padStart(2)}. ✅ ${name}`)
+		else logger.error(`${String(idx).padStart(2)}. ❌ ${name}`)
+	}
+	/* --------------------------- audit --------------------------------- */
+	let audited
+	if (isFix) {
+		chunks = ["Auto-fixing vulnerabilities"]
+		interval = createOutputProgress({ logger, chunks })
+		await runCommandAsync('pnpm', ['audit', 'fix'], { chunks })
+		clearInterval(interval)
+	}
+	chunks = ["Auditing vulnerabilities..."]
+	audited = await runPnpmAudit({ chunks })
+	if (audited.length && !isFix) {
+		console.info('\n! To automatically fix issues provide --fix in a command line\n')
 	}
 
 	/* --------------------------- reporting ------------------------------- */
 	const order = getBuildOrder(depMap)
 
-	// --- Dependency Map (json) ---
 	logger.info('--- Dependency Map ---')
 	console.log(JSON.stringify(depMap, null, 2))
 
-	// --- Recommended Release Order ---
 	logger.info('--- Recommended Release Order (most independent first) ---')
 	order.forEach((p, i) => console.log(`${i + 1}. ${p}`))
 
-	// --- Isolation Test Results (markdown) ---
-	logger.info('--- Isolation Test Results (markdown) ---')
-	const header = '| Package | Isolation |\n|---------|------------|'
-	console.log(header)
-
-	// sort rows by the recommended order
-	const orderIdx = Object.fromEntries(order.map((n, i) => [n, i]))
-	const sortedRows = tableRows
-		.map(row => {
-			const pkgName = row.split('|')[1].trim()
-			return { pkgName, row }
-		})
-		.sort((a, b) => (orderIdx[a.pkgName] ?? Infinity) - (orderIdx[b.pkgName] ?? Infinity))
-		.map(o => o.row)
-
-	sortedRows.forEach(r => console.log(r))
-
+	logger.info('--- Isolation Test Results ---')
 	const ok = isolation.filter(r => r.passed).length
 	logger.info(`${ok}/${pkgs.length} packages passed isolation tests`)
 
-	logger.info('✅ Audit completed')
+	logger.success('Audit completed. Check .cache/error.log for detailed errors.')
 }
 
 /* -------------------------------------------------------------------------- */
@@ -289,7 +298,7 @@ main()
 	.then(() => process.exit(0))
 	.catch(err => {
 		const errLogger = new Logger(Logger.detectLevel(process.argv))
-		errLogger.error('❌ Audit failed')
+		errLogger.error('Audit failed')
 		errLogger.error(err.message)
 		if (err.stack) errLogger.debug(err.stack)
 		process.exit(1)
