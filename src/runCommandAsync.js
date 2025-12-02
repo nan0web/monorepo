@@ -1,6 +1,18 @@
 import { spawn } from "node:child_process"
 
 /**
+ * @typedef {(data: string, error?: boolean) => void} onChunkFn
+ */
+
+/**
+ * @typedef {Object} runCommandOptions
+ * @property {string} [cwd]
+ * @property {number} [maxLines]
+ * @property {boolean} [keepOutput]
+ * @property {onChunkFn} [onChunk]
+ */
+
+/**
  * Execute a command asynchronously.
  *
  * In test environments the environment variable `MOCK_RUN_COMMAND=true`
@@ -8,7 +20,7 @@ import { spawn } from "node:child_process"
  *
  * @param {string} command
  * @param {string[]} args
- * @param {{cwd?:string, maxLines?:number, keepOutput?:boolean}} [options]
+ * @param {runCommandOptions} [options]
  * @returns {Promise<{code:number, output:string}>}
  */
 export async function runCommandAsync(command, args, options = {}) {
