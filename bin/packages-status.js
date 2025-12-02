@@ -4,7 +4,8 @@ import DB from '@nan0web/db-fs'
 import Logger from '@nan0web/log'
 import { TestPackage, RRS, runSpawn } from "@nan0web/test"
 import { MDHeading1, MDHeading2, MDHeading3, MDHeading4 } from "@nan0web/markdown"
-import { Command, CommandMessage } from "@nan0web/co"
+import { CLI, CommandParser } from "@nan0web/ui-cli"
+import { UiMessage } from "@nan0web/ui"
 
 const console = new Logger(Logger.detectLevel(process.argv))
 
@@ -154,7 +155,7 @@ class NaN0WebPackageConfig {
 	}
 }
 
-class StatusCommandOptions {
+class StatusCommandBody {
 	/** @type {string[]} */
 	ignore = []
 	/** @type {boolean} */
@@ -173,32 +174,33 @@ class StatusCommandOptions {
 	}
 	/**
 	 * @param {any} input
-	 * @returns {StatusCommandOptions}
+	 * @returns {StatusCommandBody}
 	 */
 	static from(input) {
-		if (input instanceof StatusCommandOptions) return input
-		return new StatusCommandOptions(input)
+		if (input instanceof StatusCommandBody) return input
+		return new StatusCommandBody(input)
 	}
 }
 
-class StatusCommandMessage extends CommandMessage {
-	/** @type {StatusCommandOptions} */
-	opts
+class StatusCommandMessage extends UiMessage {
+	static id = 0
+	/** @type {StatusCommandBody} */
+	body
 	constructor(input) {
 		super(input)
-		const { opts = {} } = input
-		this.opts = StatusCommandOptions.from(opts)
+		this.id = "status-" + ++StatusCommandMessage.id
+		this.type = UiMessage.TYPES.COMMAND
+		this.body = StatusCommandBody.from(input.body ?? {})
 	}
 }
 
-class StatusCommand extends Command {
+class StatusCommand extends CLI {
 	static Message = StatusCommandMessage
 	constructor() {
 		super({
 			"name": "status",
 			"help": "Packages status collector"
 		})
-		this.addOption("ignore", Array, [], "Ignored packages", "i")
 		this.fs = new PackageStatusDB()
 		this.packageDirs = new Set()
 		this.longest = 0
@@ -237,7 +239,7 @@ class StatusCommand extends Command {
 			console.info(`${format(count)} ${Number(spentMs / 1000).toFixed(1)}s ${entry.file.path}`)
 		})
 
-		const errors = await this.findPackages(db, msg.opts.ignore)
+		const errors = await this.findPackages(db, msg.body.ignore)
 		errors.forEach(e => console.warn(e.stack ?? e.message))
 
 		console.cursorUp(1, true)
@@ -252,10 +254,10 @@ class StatusCommand extends Command {
 			}
 		}
 		await this.fs.save()
-		if (msg.opts.todo) {
+		if (msg.body.todo) {
 			this.renderTodo()
 		}
-		if (msg.opts.fix) {
+		if (msg.body.fix) {
 			let i = 0
 			for (const { rrs, pkg } of this.fs.scores.values()) {
 				try {
@@ -293,8 +295,7 @@ class StatusCommand extends Command {
 		let message = `${pkgConfig.name} ${spaces}`
 		const errors = []
 		console.info(no + message)
-		console.info("")
-		console.info("")
+		console.info("")  // status line
 
 		try {
 			for await (const msg of pkg.run(rrs, cache)) {
@@ -302,7 +303,6 @@ class StatusCommand extends Command {
 				console.cursorUp(2, true)
 				console.info(no + message)
 				console.info(console.cut(msg.name))
-				console.info("")
 			}
 		} catch (err) {
 			errors.push(err)
@@ -311,7 +311,6 @@ class StatusCommand extends Command {
 		message += " = " + rrs.icon("") + "\n"
 		if (errors.length) {
 			errors.forEach(e => console.error(e.stack ?? e.message))
-			console.info("\n")
 		}
 		console.cursorUp(2, true)
 		if (message.endsWith(" 0.0%\n")) {
@@ -463,7 +462,10 @@ class StatusCommand extends Command {
 }
 
 const command = new StatusCommand()
-const msg = command.parse(process.argv.slice(2))
+const parser = new CommandParser([
+	StatusCommandMessage,
+])
+const msg = parser.parse(process.argv.slice(2))
 command.run(msg).then(() => {
 	process.exit(0)
 }).catch(err => {
@@ -471,3 +473,4 @@ command.run(msg).then(() => {
 	console.debug(err.stack)
 	process.exit(1)
 })
+
