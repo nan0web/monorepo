@@ -1,5 +1,3 @@
-import { runCommandAsync } from "./runCommandAsync.js"
-
 /**
  * Executes the `test:all` script of a package.
  *
@@ -9,6 +7,4 @@ import { runCommandAsync } from "./runCommandAsync.js"
  * @param {import("./runCommandAsync.js").onChunkFn} onChunk
  * @returns {Promise<import("./runCommandAsync.js").CommandResult>}
  */
-export async function runTests(cwd, onChunk = () => 0) {
-	return await runCommandAsync("npm", ["run", "test:all"], { cwd, onChunk })
-}
+export function runTests(cwd: string, onChunk?: import("./runCommandAsync.js").onChunkFn): Promise<import("./runCommandAsync.js").CommandResult>;

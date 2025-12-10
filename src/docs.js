@@ -16,7 +16,7 @@ export async function getDependencies(db) {
 
 /**
  * @typedef {Object} checkDocsOptions
- * @property {FS} db
+ * @property {FS} fs
  * @property {FS} pkgDb
  * @property {string} name
  * @property {string} stepsMd
@@ -26,22 +26,22 @@ export async function getDependencies(db) {
 /**
  * @param {checkDocsOptions} param0
  */
-export async function checkDocs({ db, pkgDb, name, stepsMd, onChunk = () => { } }) {
+export async function checkDocs({ fs, pkgDb, name, stepsMd, onChunk = () => { } }) {
 	/** @type {(str: string) => string} */
 	const transform = str => str.replaceAll("$pkgDir", name)
 	const src = await pkgDb.loadDocument("src/README.md.js")
 	if (!src) {
 		const path = `chat/steps/${name}/provendocs.md`
-		onChunk(`No README.md.js => ${db.absolute(path)}\n`, true)
-		await db.saveDocument(path, transform(getProvenDocs()))
-		await db.writeDocument(stepsMd, "provendocs.md\n")
+		onChunk(`No README.md.js => ${fs.absolute(path)}\n`, true)
+		await fs.saveDocument(path, transform(getProvenDocs()))
+		await fs.writeDocument(stepsMd, "provendocs.md\n")
 	}
 	const md = await pkgDb.loadDocument("README.md")
 	if (!md || !src) {
 		const pkg = await pkgDb.loadDocument("package.json")
 		if (!pkg) {
 			onChunk(`No package.json\n`)
-			throw new Error(`Missing package.json in ${name}`)
+			throw new Error(`Missing package.json in ${name} > ${pkgDb.absolute("package.json")}`)
 		}
 		if (!pkg.scripts?.['test:docs']) {
 			pkg.scripts['test:docs'] = "node --test --test-timeout=3333 src/README.md.js"
@@ -52,21 +52,21 @@ export async function checkDocs({ db, pkgDb, name, stepsMd, onChunk = () => { } 
 			onChunk(`No test:status in package.json => ${pkg.scripts['test:status']}\n`, true)
 		}
 		onChunk(`No README.md => % npm run test:docs\n`, true)
-		await db.writeDocument(stepsMd, "% npm run test:docs\n")
-		await db.writeDocument(stepsMd, "% npm run test:status\n")
+		await fs.writeDocument(stepsMd, "% npm run test:docs\n")
+		await fs.writeDocument(stepsMd, "% npm run test:status\n")
 	}
 	const uk = await pkgDb.loadDocument("docs/uk/README.md")
 	if (!uk) {
 		const path = `chat/steps/${name}/translatedocs.md`
-		onChunk(`No docs/uk/README.md => ${db.absolute(path)}\n`, true)
-		await db.saveDocument(path, transform(getTranslateDocs()))
-		await db.writeDocument(stepsMd, "translatedocs.md\n")
+		onChunk(`No docs/uk/README.md => ${fs.absolute(path)}\n`, true)
+		await fs.saveDocument(path, transform(getTranslateDocs()))
+		await fs.writeDocument(stepsMd, "translatedocs.md\n")
 	}
 }
 
 /**
  * @typedef {Object} checkAllDocsOptions
- * @property {FS} db
+ * @property {FS} fs
  * @property {string[]} pkgs
  * @property {Logger} logger
  * @property {string[]} chunks[]
@@ -77,7 +77,7 @@ export async function checkDocs({ db, pkgDb, name, stepsMd, onChunk = () => { } 
  * @param {checkAllDocsOptions} param0
  * @returns {Promise<{ incorrect: string[], deps: Record<string, string[] >}>}
  */
-export async function checkAllDocs({ db, pkgs, logger, chunks, onChunk }) {
+export async function checkAllDocs({ fs, pkgs, logger, chunks, onChunk }) {
 	/** @type {Record<string, string[]>} */
 	const depMap = {}
 	let idx = 0
@@ -85,7 +85,7 @@ export async function checkAllDocs({ db, pkgs, logger, chunks, onChunk }) {
 	for (const name of pkgs) {
 		chunks = [`${String(++idx).padStart(String(pkgs.length).length)}. ${name}`]
 
-		const pkgDb = db.extract(`packages/${name}/`)
+		const pkgDb = fs.extract(`packages/${name}/`)
 		try {
 			const deps = await getDependencies(pkgDb)
 			depMap[name] = deps.map(d => d.replace('@nan0web/', ''))
@@ -98,14 +98,14 @@ export async function checkAllDocs({ db, pkgs, logger, chunks, onChunk }) {
 		 * Reset steps.
 		 */
 		const stepsMd = `chat/steps/${name}.md`
-		await db.saveDocument(stepsMd, "")
-		await checkDocs({ db, pkgDb, name, stepsMd, onChunk })
+		await fs.saveDocument(stepsMd, "")
+		await checkDocs({ fs, pkgDb, name, stepsMd, onChunk })
 
-		const steps = await db.loadDocument(stepsMd)
+		const steps = await fs.loadDocument(stepsMd)
 		if (steps) {
 			incorrect.push(stepsMd)
 		} else {
-			await db.dropDocument(stepsMd)
+			await fs.dropDocument(stepsMd)
 		}
 	}
 	return { incorrect, deps: depMap }

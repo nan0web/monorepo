@@ -26,7 +26,7 @@ export function parseAuditBlock(str) {
 		if (key) {
 			currentKey = key
 			const lc = key.toLowerCase()
-			if (["critical", "high", "moderate", "low"].includes(lc)) {
+			if ("critical" === lc || "high" === lc || "moderate" === lc || "low" === lc) {
 				result.type = lc
 				result.text = val
 			} else if (map[key]) {
