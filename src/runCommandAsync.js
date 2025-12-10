@@ -13,6 +13,12 @@ import { spawn } from "node:child_process"
  */
 
 /**
+ * @typedef {Object} CommandResult
+ * @property {number} code
+ * @property {string} output
+ */
+
+/**
  * Execute a command asynchronously.
  *
  * In test environments the environment variable `MOCK_RUN_COMMAND=true`
@@ -21,7 +27,7 @@ import { spawn } from "node:child_process"
  * @param {string} command
  * @param {string[]} args
  * @param {runCommandOptions} [options]
- * @returns {Promise<{code:number, output:string}>}
+ * @returns {Promise<CommandResult>}
  */
 export async function runCommandAsync(command, args, options = {}) {
 	// ------------ mock mode -------------------------------------------------

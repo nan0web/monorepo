@@ -7,10 +7,11 @@
 	"scripts": {
 		"clean": "rm -rf .cache/ && rm -rf dist/",
 		"clean:modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
-		"test": "node --test src/**/*.test.js",
+		"test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
 		"test:docs": "node --test src/README.md.js",
 		"test:release": "node --test releases/1/0/v1.0.0/**/*.test.js | grep #TODO",
-		"test:status": "node bin/packages-status.js -i app -i auth-browser -i auth-core -i auth-node -i llimo -i rss -i story -i ui -i ui-cli -i ui-lit -i ui-llm -i xml",
+		"test:status": "node bin/packages-status.js -i app -i auth-browser -i auth-core -i auth-node -i llimo -i rss -i story -i ui-lit -i ui-llm -i xml",
+		"test:audit": "node bin/audit.js",
 		"test:all": "npm run test && npm run test:docs",
 		"dev:setup": "pnpm install && pnpm -r install",
 		"dev:all": "pnpm -r run dev",
@@ -28,7 +29,10 @@
 	"packageManager": "pnpm@10.11.0",
 	"pnpm": {
 		"overrides": {
-			"@nan0web/*": "workspace:*"
+			"@nan0web/*": "workspace:*",
+			"esbuild@<=0.24.2": ">=0.25.0",
+			"happy-dom@<20.0.0": ">=20.0.0",
+			"glob@>=10.2.0 <10.5.0": ">=10.5.0"
 		}
 	},
 	"devDependencies": {

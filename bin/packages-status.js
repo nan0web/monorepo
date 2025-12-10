@@ -11,7 +11,7 @@ import { checkAllDocs } from '../src/docs.js'
 import { getProvenDocs, getPlayground, getSystem } from '../src/llm/templates/index.js'
 import { createOutputProgress } from "../src/cli.js"
 
-const console = new Logger(Logger.detectLevel(process.argv))
+const logger = new Logger(Logger.detectLevel(process.argv))
 
 class PackageStatusDB extends DB {
 	static CACHE_FILE = ".cache/packages-status.json"
@@ -162,16 +162,29 @@ class NaN0WebPackageConfig {
 class StatusCommandBody {
 	/** @type {string[]} */
 	ignore = []
+	static ignore = {
+		alias: "i",
+		help: "Ignored packages",
+		defaultValue: []
+	}
 	/** @type {boolean} */
 	todo
+	static todo = {
+		help: "Show todo list",
+		defaultValue: false
+	}
 	/** @type {boolean} */
 	fix
-	constructor(input) {
+	static fix = {
+		help: "Fix incomplete configurations",
+		defaultValue: false
+	}
+	constructor(input = {}) {
 		const {
 			ignore = [],
 			todo = false,
 			fix = false,
-		} = input
+		} = UiMessage.parseBody(input, StatusCommandBody)
 		this.ignore = Array.isArray(ignore) ? ignore : [String(ignore)]
 		this.todo = Boolean(todo)
 		this.fix = Boolean(fix)
@@ -187,10 +200,11 @@ class StatusCommandBody {
 }
 
 class StatusCommandMessage extends UiMessage {
+	static Body = StatusCommandBody
 	static id = 0
 	/** @type {StatusCommandBody} */
 	body
-	constructor(input) {
+	constructor(input = {}) {
 		super(input)
 		this.id = "status-" + ++StatusCommandMessage.id
 		this.type = UiMessage.TYPES.COMMAND
@@ -234,11 +248,11 @@ class StatusCommand extends CLI {
 	 * @param {StatusCommandMessage} msg
 	 */
 	async run(msg) {
-		console.debug("Command message:")
-		console.debug(JSON.stringify(msg))
+		logger.debug("Command message:")
+		logger.debug(JSON.stringify(msg))
 		const format = new Intl.NumberFormat("en-US").format
 		let chunks = ["Reading packages …"]
-		const connectOpts = { logger: console, chunks, fps: 33 }
+		const connectOpts = { logger: logger, chunks, fps: 33 }
 		const connectInterval = createOutputProgress(connectOpts)
 		const db = await this.fs.connect((entry, count, spentMs) => {
 			chunks.push(`${format(count)} ${Number(spentMs / 1000).toFixed(1)}s ${entry.file.path}`)
@@ -252,37 +266,37 @@ class StatusCommand extends CLI {
 		}
 		await pause(33)
 		clearInterval(connectInterval)
-		console.cursorUp(connectOpts.printed || 0, true)
+		logger.cursorUp(connectOpts.printed || 0, true)
 		const wsPkgs = new Set(
 			ws.packages.filter(p => p.startsWith("packages/")).map(p => p.slice(9))
 		)
-		console.info(`Read ${format(db.meta.size)} items read from ${format(pkgs.size)} packages`)
+		logger.info(`Read ${format(db.meta.size)} items read from ${format(pkgs.size)} packages`)
 
 		const errors = await this.findPackages(db, msg.body.ignore)
-		errors.forEach(e => console.warn(e.stack ?? e.message))
+		errors.forEach(e => logger.warn(e.stack ?? e.message))
 
 		chunks = ["Checking docs …"]
 		const onChunk = (msg, error) => {
 			chunks.push(error ? Logger.RED : "" + msg + Logger.RESET)
 		}
-		const docsOpts = { chunks, logger: console, fps: 33 }
+		const docsOpts = { chunks, logger: logger, fps: 33 }
 		const docsInterval = createOutputProgress(docsOpts)
 		const docs = await checkAllDocs({
-			db: this.fs,
+			fs: this.fs,
 			pkgs: Array.from(wsPkgs),
-			logger: console,
+			logger: logger,
 			chunks,
 			onChunk,
 		})
 		this.depMap = docs.deps
 		await pause(33)
 		clearInterval(docsInterval)
-		console.cursorUp(docsOpts.printed || 0, true)
+		logger.cursorUp(docsOpts.printed || 0, true)
 		if (docs.incorrect.length) {
-			console.error(`  ${docs.incorrect.length} packages are preapared for LLiMo transformation`)
-			docs.incorrect.forEach(i => console.info(`  - ${i}`))
+			logger.error(`  ${docs.incorrect.length} packages are preapared for LLiMo transformation`)
+			docs.incorrect.forEach(i => logger.info(`  - ${i}`))
 		} else {
-			console.info(`  all packages have required docs`)
+			logger.info(`  all packages have required docs`)
 		}
 
 		let i = 0
@@ -290,7 +304,7 @@ class StatusCommand extends CLI {
 			try {
 				await this.collectPackage(config, dirName, db, ++i, wsPkgs)
 			} catch (err) {
-				console.error(err.stack ?? err.message)
+				logger.error(err.stack ?? err.message)
 			}
 		}
 		await this.fs.save()
@@ -303,8 +317,8 @@ class StatusCommand extends CLI {
 				try {
 					await this.fixPackage(pkg, rrs, ++i)
 				} catch (err) {
-					console.error(`Cannot fix package packages/${pkg.name}: ${err.message}`)
-					console.debug(err.stack)
+					logger.error(`Cannot fix package packages/${pkg.name}: ${err.message}`)
+					logger.debug(err.stack)
 				}
 			}
 		}
@@ -336,15 +350,15 @@ class StatusCommand extends CLI {
 		const spaces = " ".repeat(this.longest - pkgConfig.name.length)
 		let message = `${pkgConfig.name} ${spaces}`
 		const errors = []
-		console.info(no + message + Logger.RESET)
-		console.info("")  // status line
+		logger.info(no + message + Logger.RESET)
+		logger.info("")  // status line
 
 		try {
 			for await (const msg of pkg.run(rrs, cache)) {
 				message += msg.value
-				console.cursorUp(2, true)
-				console.info(no + message)
-				console.info(console.cut(msg.name))
+				logger.cursorUp(2, true)
+				logger.info(no + message)
+				logger.info(logger.cut(msg.name))
 			}
 		} catch (err) {
 			errors.push(err)
@@ -352,13 +366,13 @@ class StatusCommand extends CLI {
 
 		message += " = " + rrs.icon("") + "\n"
 		if (errors.length) {
-			errors.forEach(e => console.error(e.stack ?? e.message))
+			errors.forEach(e => logger.error(e.stack ?? e.message))
 		}
-		console.cursorUp(2, true)
+		logger.cursorUp(2, true)
 		if (message.endsWith(" 0.0%\n")) {
-			console.error(no + message.trim())
+			logger.error(no + message.trim())
 		} else {
-			console.info(no + message.trim())
+			logger.info(no + message.trim())
 		}
 
 		await this.fs.setScore(pkgConfig.name, { rrs, pkg })
@@ -395,7 +409,7 @@ class StatusCommand extends CLI {
 				pkgJson.scripts[key] = value
 			}
 			else if (current !== value) {
-				console.warn(`${pkg.name} ${space}scripts.${key} = ${current}`)
+				logger.warn(`${pkg.name} ${space}scripts.${key} = ${current}`)
 			}
 		}
 		if (!pkgJson.devDependencies) {
@@ -407,7 +421,7 @@ class StatusCommand extends CLI {
 				pkgJson.devDependencies[key] = value
 			}
 			else if (current !== value) {
-				console.warn(`${pkg.name} incorrect devDependencies.${key} = ${current}`)
+				logger.warn(`${pkg.name} incorrect devDependencies.${key} = ${current}`)
 			}
 		}
 		if (!pkgJson.files) {
@@ -421,13 +435,13 @@ class StatusCommand extends CLI {
 			const onData = (chunk) => {
 				content += String(chunk)
 				const rows = content.split("\n").filter(Boolean)
-				console.cursorUp(1, true)
+				logger.cursorUp(1, true)
 				const recent = rows.slice(-1)[0] ?? ""
-				console.info(console.cut(recent))
+				logger.info(logger.cut(recent))
 			}
-			console.info(`${pkg.name} / pnpm update\n`)
+			logger.info(`${pkg.name} / pnpm update\n`)
 			const npmUpdate = await runSpawn("pnpm", ["update"], { cwd, onData })
-			console.cursorUp(1, true)
+			logger.cursorUp(1, true)
 			if (0 !== npmUpdate.code) {
 				throw new Error("Cannot update node_modules\n" + content)
 			}
@@ -436,9 +450,9 @@ class StatusCommand extends CLI {
 		const husky = pkg.db.loadDocument(".husky/pre-commit", "")
 		if ("" === husky) {
 			content = ""
-			console.info(`${pkg.name} / pnpm prepare\n`)
+			logger.info(`${pkg.name} / pnpm prepare\n`)
 			const huskyInstall = runSpawn("pnpm", ["prepare"], { cwd, onData })
-			console.cursorUp(1, true)
+			logger.cursorUp(1, true)
 			if (0 !== huskyInstall.code) {
 				throw new Error("Cannot update node_modules\n" + content)
 			}
@@ -468,7 +482,7 @@ class StatusCommand extends CLI {
 		if (tsConfigTemplate !== tsConfig) {
 			const template = await this.fs.loadDocument("tsconfig.json")
 			await pkg.db.saveDocument("tsconfig.json", template)
-			console.info(`${pkg.name} / tsconfig.json 💿\n`)
+			logger.info(`${pkg.name} / tsconfig.json 💿\n`)
 		}
 	}
 
@@ -488,7 +502,7 @@ class StatusCommand extends CLI {
 							: el
 			).forEach(el => root.add(el))
 		}
-		console.info(String(root))
+		logger.info(String(root))
 	}
 
 }
@@ -498,11 +512,12 @@ const parser = new CommandParser([
 	StatusCommandMessage,
 ])
 const msg = parser.parse(process.argv.slice(2))
+logger.debug((msg.constructor?.name ?? '') + ": " + JSON.stringify(msg))
 command.run(msg).then(() => {
 	process.exit(0)
 }).catch(err => {
-	console.error(err.message)
-	console.debug(err.stack)
+	logger.error(err.message)
+	logger.debug(err.stack)
 	process.exit(1)
 })
 

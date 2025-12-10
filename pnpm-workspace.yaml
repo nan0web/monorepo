@@ -1,10 +1,9 @@
 packages:
   - apps/*
   # @nan0web packages
-  # - packages/auth-browser
+  - packages/auth-browser
   - packages/auth-core
-  # - packages/auth-node
-  # - packages/auth-ssr
+  - packages/auth-node
   - packages/changelog
   - packages/co
   - packages/core
@@ -17,15 +16,13 @@ packages:
   - packages/http-node
   - packages/i18n
   - packages/interface
-  # - packages/llimo
+  - packages/llimo
   - packages/log
   - packages/mail
   - packages/markdown
-  # - packages/net
   - packages/protocol
   - packages/release
   - packages/rss
-  # - packages/story
   - packages/test
   - packages/transformer
   - packages/types
@@ -33,7 +30,7 @@ packages:
   - packages/ui
   - packages/ui-cli
   - packages/ui-core
-  # - packages/ui-lit
+  - packages/ui-lit
   - packages/ui-react
   - packages/ui-react-bootstrap
   - packages/verse
