@@ -20,6 +20,11 @@ pnpm add @nan0web/monorepo
 yarn add @nan0web/monorepo
 ```
 
+## Додатки
+- [LLiMo чат і розробник для додатків за допомогою Ші](https://github.com/nan0web/llimo.app/)
+- Auth.app - авторизація, реєстрація, та інші для користувачів
+- Editor.app - редагування даних, базово для nan0web проєктів і додактів
+
 ## Пакети
 
 Таблиця пакетів та їхнього статусу
