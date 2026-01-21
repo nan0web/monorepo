@@ -22,6 +22,11 @@ How to install with yarn?
 yarn add @nan0web/monorepo
 ```
 
+## Applications
+- [LLiMo chat and developer application with the help of Ai](https://github.com/nan0web/llimo.app/)
+- Auth.app - user authorization, registration and other standard auth features
+- Editor.app - editing data, basically for nan0web projects
+
 ## Packages
 
 Table of the packages and their status
@@ -33,7 +38,7 @@ Table of the packages and their status
  |[@nan0web/core](https://github.com/nan0web/core/) |🟢 `99.1%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/core/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/core/blob/main/docs/uk/README.md) |🟢 `95.3%` |[🥒 d.ts](https://github.com/nan0web/core/tree/main/types) [📜 system.md](https://github.com/nan0web/core/blob/main/system.md) [🕹️ playground](https://github.com/nan0web/core/blob/main/playground/main.js) |1.0.3 |
  |[@nan0web/db](https://github.com/nan0web/db/) |🟢 `99.0%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/db/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/db/blob/main/docs/uk/README.md) |🟢 `93.7%` |[🥒 d.ts](https://github.com/nan0web/db/tree/main/types) [📜 system.md](https://github.com/nan0web/db/blob/main/system.md) [🕹️ playground](https://github.com/nan0web/db/blob/main/playground/main.js) |1.2.1 |
  |[@nan0web/db-browser](https://github.com/nan0web/db-browser/) |🟢 `97.5%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/db-browser/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/db-browser/blob/main/docs/uk/README.md) |🟡 `85.7%` |[🥒 d.ts](https://github.com/nan0web/db-browser/tree/main/types) [📜 system.md](https://github.com/nan0web/db-browser/blob/main/system.md) [🕹️ playground](https://github.com/nan0web/db-browser/blob/main/playground/main.js) |1.0.1 |
- |[@nan0web/db-fs](https://github.com/nan0web/db-fs/) |🟢 `99.0%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/db-fs/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/db-fs/blob/main/docs/uk/README.md) |🟢 `94.9%` |[🥒 d.ts](https://github.com/nan0web/db-fs/tree/main/types) [📜 system.md](https://github.com/nan0web/db-fs/blob/main/system.md) [🕹️ playground](https://github.com/nan0web/db-fs/blob/main/playground/main.js) |1.1.1 |
+ |[@nan0web/db-fs](https://github.com/nan0web/db-fs/) |🔴 `67.8%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/db-fs/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/db-fs/blob/main/docs/uk/README.md) |- |[🥒 d.ts](https://github.com/nan0web/db-fs/tree/main/types) [📜 system.md](https://github.com/nan0web/db-fs/blob/main/system.md) [🕹️ playground](https://github.com/nan0web/db-fs/blob/main/playground/main.js) |1.1.1 |
  |@nan0web/editor |🔴 `19.4%` |🧪  |- |[🕹️ playground](https://github.com/nan0web/editor/blob/main/playground/main.js) |— |
  |[@nan0web/event](https://github.com/nan0web/event/) |🟢 `99.3%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/event/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/event/blob/main/docs/uk/README.md) |🟢 `96.8%` |[🥒 d.ts](https://github.com/nan0web/event/tree/main/types) [📜 system.md](https://github.com/nan0web/event/blob/main/system.md) [🕹️ playground](https://github.com/nan0web/event/blob/main/playground/main.js) |1.0.1 |
  |[@nan0web/html](https://github.com/nan0web/html/) |🟢 `99.8%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/html/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/html/blob/main/docs/uk/README.md) |🟢 `100.0%` |[🥒 d.ts](https://github.com/nan0web/html/tree/main/types) [📜 system.md](https://github.com/nan0web/html/blob/main/system.md) [🕹️ playground](https://github.com/nan0web/html/blob/main/playground/main.js) |0.2.1 |

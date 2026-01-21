@@ -78,6 +78,11 @@ async function testRender() {
 	})
 	/**
 	 * @docs
+	 * ## Applications
+	 * - [LLiMo chat and developer application with the help of Ai](https://github.com/nan0web/llimo.app/)
+	 * - Auth.app - user authorization, registration and other standard auth features
+	 * - Editor.app - editing data, basically for nan0web projects
+	 *
 	 * ## Packages
 	 *
 	 * Table of the packages and their status
