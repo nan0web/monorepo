@@ -12,13 +12,17 @@
 		"test:release": "node --test releases/1/0/v1.0.0/**/*.test.js | grep #TODO",
 		"test:status": "node bin/packages-status.js -i app -i auth-browser -i auth-core -i auth-node -i llimo -i rss -i story -i ui-lit -i ui-llm -i xml",
 		"test:audit": "node bin/audit.js",
-		"test:all": "npm run test && npm run test:docs",
+		"test:all": "pnpm -r run test && npm run test:docs",
+		"fix:all": "pnpm -r exec npm run lint --fix || pnpm run lint:fix",
 		"dev:setup": "pnpm install && pnpm -r install",
 		"dev:all": "pnpm -r run dev",
+		"play": "pnpm --filter industrialabank-website-and-apps play",
 		"build:all": "pnpm -r run build",
 		"docs:gen": "node scripts/gen-docs.js",
 		"release:check": "node scripts/release-status.js",
 		"release:check-app": "node scripts/release-status.js --app",
+		"lint": "prettier --check . --ignore-path .prettierignore",
+		"lint:fix": "prettier --write . --ignore-path .prettierignore",
 		"precommit": "npm test",
 		"prepush": "npm test",
 		"prepare": "husky"
@@ -26,13 +30,24 @@
 	"keywords": [],
 	"author": "ЯRаСлав YaRaSLove <support@yaro.page>",
 	"license": "ISC",
-	"packageManager": "pnpm@10.11.0",
+	"packageManager": "pnpm@10.28.2",
 	"pnpm": {
 		"overrides": {
 			"@nan0web/*": "workspace:*",
 			"esbuild@<=0.24.2": ">=0.25.0",
 			"happy-dom@<20.0.0": ">=20.0.0",
-			"glob@>=10.2.0 <10.5.0": ">=10.5.0"
+			"glob@>=10.2.0 <10.5.0": ">=10.5.0",
+			"react": "^19.2.0",
+			"react-dom": "^19.2.0",
+			"nodemailer": "^8.0.0",
+			"lodash": "^4.17.23",
+			"@isaacs/brace-expansion": ">=5.0.1"
+		},
+		"auditConfig": {
+			"ignoreCves": [
+				"CVE-2024-22363",
+				"CVE-2023-30533"
+			]
 		}
 	},
 	"devDependencies": {
@@ -47,8 +62,18 @@
 		"@nan0web/types": "link:packages/types",
 		"@nan0web/ui": "link:packages/ui",
 		"@nan0web/ui-cli": "link:packages/ui-cli",
+		"@types/node": "^24.10.2",
+		"@types/react": "^19.2.2",
+		"@types/react-dom": "^19.2.3",
 		"husky": "^9.1.7",
+		"prettier": "^3.8.1",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0"
+	},
+	"dependencies": {
+		"@ai-sdk/openai": "^3.0.21",
+		"ai": "^5.0.123",
+		"micromatch": "^4.0.8",
+		"openai": "^6.16.0"
 	}
 }
