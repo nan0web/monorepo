@@ -15,7 +15,7 @@ export default class AuditIssue {
     /**
      * @param {Partial<AuditIssue>} [input={}]
      */
-    constructor(input?: Partial<AuditIssue> | undefined);
+    constructor(input?: Partial<AuditIssue>);
     /** @type {"critical"|"high"|"moderate"|"low"} Severity */
     type: "critical" | "high" | "moderate" | "low";
     /** @type {string|undefined} Human‑readable description */

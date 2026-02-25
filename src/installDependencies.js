@@ -1,4 +1,4 @@
-import { runCommandAsync } from "./runCommandAsync.js"
+import { runCommandAsync } from './runCommandAsync.js'
 
 /**
  * Runs `pnpm install` inside the given directory.
@@ -8,6 +8,6 @@ import { runCommandAsync } from "./runCommandAsync.js"
  * @param {string} cwd
  */
 export async function installDependencies(cwd) {
-	const res = await runCommandAsync("pnpm", ["install"], { cwd })
+	const res = await runCommandAsync('pnpm', ['install'], { cwd })
 	if (res.code !== 0) throw new Error(`pnpm install failed in ${cwd}`)
 }

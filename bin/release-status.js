@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { execSync } from 'node:child_process'
 import process from 'node:process'
-import { Command, CommandMessage, CommandOption } from "@nan0web/co"
-import { FilterString } from "@nan0web/types"
-import Logger from "@nan0web/log"
-import DB from "@nan0web/db-fs"
+import { Command, CommandMessage, CommandOption } from '@nan0web/co'
+import { FilterString } from '@nan0web/types'
+import Logger from '@nan0web/log'
+import DB from '@nan0web/db-fs'
 
 class CatchyLogger extends Logger {
 	/**
@@ -59,83 +59,81 @@ class App extends Command {
 	packageConfig
 	constructor(config = {}) {
 		super(config)
-		const {
-			logger = new CatchyLogger(),
-			db = new DB()
-		} = config
-		this.addOption("debug", Boolean, false, "Show debug information")
-		this.addOption("app", Boolean, false, "Check apps instead of packages")
-		this.addArgument("help", String, false, "Show help")
+		const { logger = new CatchyLogger(), db = new DB() } = config
+		this.addOption('debug', Boolean, false, 'Show debug information')
+		this.addOption('app', Boolean, false, 'Check apps instead of packages')
+		this.addArgument('help', String, false, 'Show help')
 		this.logger = CatchyLogger.from(logger)
 		this.db = DB.from(db)
 	}
 	async requireVersion() {
 		await this.logger.catch(async () => {
-			this.packageConfig = await this.db.loadDocument("package.json", {})
+			this.packageConfig = await this.db.loadDocument('package.json', {})
 		}, this)
 	}
 	showHelp() {
-		const version = Logger.style(
-			this.packageConfig.version, { bgColor: "red", color: "white" }
-		)
+		const version = Logger.style(this.packageConfig.version, {
+			bgColor: 'red',
+			color: 'white',
+		})
 		const usage = []
 		if (this.options.size) {
-			usage.push(["Options:"])
+			usage.push(['Options:'])
 			this.options.forEach((o) => usage.push([o.prefix + o.name, o.info, o.help, o.defaultText]))
 			usage.push([])
 		}
 		if (this.arguments.size) {
-			usage.push(["Arguments:"])
+			usage.push(['Arguments:'])
 			this.arguments.forEach((a) => usage.push([a.name, a.info, a.help, a.defaultText]))
 			usage.push([])
 		}
-		this.logger.info([
-			Logger.RESET, Logger.style(Logger.LOGO, { bgColor: "cyan", color: "magenta" }),
-			`${version} @nan0web/monorepo/bin/release-status`,
-			"Usage: release-status [command] [options]",
-		].join("\n"))
+		this.logger.info(
+			[
+				Logger.RESET,
+				Logger.style(Logger.LOGO, { bgColor: 'cyan', color: 'magenta' }),
+				`${version} @nan0web/monorepo/bin/release-status`,
+				'Usage: release-status [command] [options]',
+			].join('\n'),
+		)
 	}
 	/**
 	 * @param {CommandMessage} cmd
 	 */
 	async renderStatus(cmd) {
-		const stream = this.db.readDir(
-			cmd.opts.app ? "apps" : "packages",
-			{
-				depth: 1,
-				/**
-				 * @param {FilterString} uri
-				 * @returns {boolean}
-				 */
-				filter: (uri) => !uri.inIncludes("/.git/", "/node_modules/")
-			}
-		)
+		const stream = this.db.readDir(cmd.opts.app ? 'apps' : 'packages', {
+			depth: 1,
+			/**
+			 * @param {FilterString} uri
+			 * @returns {boolean}
+			 */
+			filter: (uri) => !uri.inIncludes('/.git/', '/node_modules/'),
+		})
 		const packages = []
 		for await (const entry of stream) {
 			if (entry.isDirectory) {
 				packages.push(entry.path)
 			}
 		}
-		const names = packages.filter(p => 2 == p.split("/").length).map(p => p.split("/").pop())
-		const releases = packages.filter(p => {
-			const words = p.split("/")
-			return 3 == words.length && "releases" === words[2]
+		const names = packages.filter((p) => 2 == p.split('/').length).map((p) => p.split('/').pop())
+		const releases = packages.filter((p) => {
+			const words = p.split('/')
+			return 3 == words.length && 'releases' === words[2]
 		})
 		if (0 === releases.length) {
-			this.logger.success("No releases found in the packages")
+			this.logger.success('No releases found in the packages')
 			return
 		}
 		console.info(releases)
 	}
 	static async run(argv = []) {
 		const app = new App({
-			logger: new Logger({ level: Logger.detectLevel(argv) })
+			logger: new Logger({ level: Logger.detectLevel(argv) }),
 		})
 		const msg = app.parse(argv)
 
 		await app.requireVersion()
 
-		if (msg.args.includes("help") || msg.opts["help"]) {
+		if (msg.args.includes('help') || msg.opts['help']) {
 			app.showHelp()
 			return
 		}
@@ -144,7 +142,7 @@ class App extends Command {
 	}
 }
 
-App.run(process.argv.slice(2)).catch(err => {
+App.run(process.argv.slice(2)).catch((err) => {
 	console.error(err)
 	process.exit(1)
 })

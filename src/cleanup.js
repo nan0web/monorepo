@@ -1,5 +1,5 @@
-import fs from "node:fs/promises"
-import Logger from "@nan0web/log"
+import fs from 'node:fs/promises'
+import Logger from '@nan0web/log'
 
 /**
  * Recursively removes a directory.
@@ -12,6 +12,7 @@ export async function cleanup(dir) {
 		await fs.rm(dir, { recursive: true, force: true })
 		logger.debug(`Removed ${dir}`)
 	} catch (e) {
-		logger.warn(`Failed to delete ${dir}: ${e.message}`)
+		const msg = e instanceof Error ? e.message : String(e)
+		logger.warn(`Failed to delete ${dir}: ${msg}`)
 	}
 }

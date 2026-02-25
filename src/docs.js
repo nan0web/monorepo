@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import FS from "@nan0web/db-fs"
-import Logger from "@nan0web/log"
+import FS from '@nan0web/db-fs'
+import Logger from '@nan0web/log'
 
 import { getProvenDocs, getTranslateDocs } from './llm/templates/index.js'
 
@@ -10,8 +10,12 @@ import { getProvenDocs, getTranslateDocs } from './llm/templates/index.js'
  */
 export async function getDependencies(db) {
 	const data = await db.loadDocument('package.json')
-	const all = { ...data.dependencies, ...data.devDependencies, ...data.peerDependencies }
-	return Object.keys(all).filter(d => d.startsWith('@nan0web/'))
+	const all = {
+		...data.dependencies,
+		...data.devDependencies,
+		...data.peerDependencies,
+	}
+	return Object.keys(all).filter((d) => d.startsWith('@nan0web/'))
 }
 
 /**
@@ -26,41 +30,41 @@ export async function getDependencies(db) {
 /**
  * @param {checkDocsOptions} param0
  */
-export async function checkDocs({ fs, pkgDb, name, stepsMd, onChunk = () => { } }) {
+export async function checkDocs({ fs, pkgDb, name, stepsMd, onChunk = () => {} }) {
 	/** @type {(str: string) => string} */
-	const transform = str => str.replaceAll("$pkgDir", name)
-	const src = await pkgDb.loadDocument("src/README.md.js")
+	const transform = (str) => str.replaceAll('$pkgDir', name)
+	const src = await pkgDb.loadDocument('src/README.md.js')
 	if (!src) {
 		const path = `chat/steps/${name}/provendocs.md`
 		onChunk(`No README.md.js => ${fs.absolute(path)}\n`, true)
 		await fs.saveDocument(path, transform(getProvenDocs()))
-		await fs.writeDocument(stepsMd, "provendocs.md\n")
+		await fs.writeDocument(stepsMd, 'provendocs.md\n')
 	}
-	const md = await pkgDb.loadDocument("README.md")
+	const md = await pkgDb.loadDocument('README.md')
 	if (!md || !src) {
-		const pkg = await pkgDb.loadDocument("package.json")
+		const pkg = await pkgDb.loadDocument('package.json')
 		if (!pkg) {
 			onChunk(`No package.json\n`)
-			throw new Error(`Missing package.json in ${name} > ${pkgDb.absolute("package.json")}`)
+			throw new Error(`Missing package.json in ${name} > ${pkgDb.absolute('package.json')}`)
 		}
 		if (!pkg.scripts?.['test:docs']) {
-			pkg.scripts['test:docs'] = "node --test --test-timeout=3333 src/README.md.js"
+			pkg.scripts['test:docs'] = 'node --test --test-timeout=3333 src/README.md.js'
 			onChunk(`No test:docs in package.json => ${pkg.scripts['test:docs']}\n`, true)
 		}
 		if (!pkg.scripts?.['test:status']) {
-			pkg.scripts['test:status'] = "nan0test status --hide-name"
+			pkg.scripts['test:status'] = 'nan0test status --hide-name'
 			onChunk(`No test:status in package.json => ${pkg.scripts['test:status']}\n`, true)
 		}
 		onChunk(`No README.md => % npm run test:docs\n`, true)
-		await fs.writeDocument(stepsMd, "% npm run test:docs\n")
-		await fs.writeDocument(stepsMd, "% npm run test:status\n")
+		await fs.writeDocument(stepsMd, '% npm run test:docs\n')
+		await fs.writeDocument(stepsMd, '% npm run test:status\n')
 	}
-	const uk = await pkgDb.loadDocument("docs/uk/README.md")
+	const uk = await pkgDb.loadDocument('docs/uk/README.md')
 	if (!uk) {
 		const path = `chat/steps/${name}/translatedocs.md`
 		onChunk(`No docs/uk/README.md => ${fs.absolute(path)}\n`, true)
 		await fs.saveDocument(path, transform(getTranslateDocs()))
-		await fs.writeDocument(stepsMd, "translatedocs.md\n")
+		await fs.writeDocument(stepsMd, 'translatedocs.md\n')
 	}
 }
 
@@ -88,7 +92,7 @@ export async function checkAllDocs({ fs, pkgs, logger, chunks, onChunk }) {
 		const pkgDb = fs.extract(`packages/${name}/`)
 		try {
 			const deps = await getDependencies(pkgDb)
-			depMap[name] = deps.map(d => d.replace('@nan0web/', ''))
+			depMap[name] = deps.map((d) => d.replace('@nan0web/', ''))
 		} catch (/** @type {any} */ err) {
 			onChunk(`Failed to read ${pkgDb.absolute('package.json')}: ${err.stack ?? err.message}`, true)
 		}
@@ -98,7 +102,7 @@ export async function checkAllDocs({ fs, pkgs, logger, chunks, onChunk }) {
 		 * Reset steps.
 		 */
 		const stepsMd = `chat/steps/${name}.md`
-		await fs.saveDocument(stepsMd, "")
+		await fs.saveDocument(stepsMd, '')
 		await checkDocs({ fs, pkgDb, name, stepsMd, onChunk })
 
 		const steps = await fs.loadDocument(stepsMd)
@@ -110,4 +114,3 @@ export async function checkAllDocs({ fs, pkgs, logger, chunks, onChunk }) {
 	}
 	return { incorrect, deps: depMap }
 }
-

@@ -2,11 +2,11 @@
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 
-const packages = readdirSync('./packages').filter(pkg =>
-	existsSync(`./packages/${pkg}/README.md`)
+const packages = readdirSync('./packages').filter((pkg) =>
+	existsSync(`./packages/${pkg}/README.md`),
 )
 
-packages.forEach(pkg => {
+packages.forEach((pkg) => {
 	const docsDir = `./docs/${pkg}`
 	mkdirSync(docsDir, { recursive: true })
 

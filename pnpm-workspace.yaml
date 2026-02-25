@@ -1,6 +1,8 @@
 packages:
   - apps/*
+  - apps/@/industrialbank/*
   # @nan0web packages
+  - packages/auth
   - packages/auth-browser
   - packages/auth-core
   - packages/auth-node
@@ -11,6 +13,7 @@ packages:
   - packages/db-browser
   - packages/db-fs
   - packages/event
+  - packages/finance
   - packages/html
   - packages/http
   - packages/http-node
@@ -27,10 +30,14 @@ packages:
   - packages/transformer
   - packages/types
   - packages/xml
+  - packages/ai
   - packages/ui
   - packages/ui-cli
   - packages/ui-core
   - packages/ui-lit
+  - packages/ui-llm
   - packages/ui-react
   - packages/ui-react-bootstrap
   - packages/verse
+  - packages/icons
+  - packages/sync

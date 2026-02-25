@@ -37,6 +37,6 @@ export function getBuildOrder(map) {
 			if (indeg.get(m) === 0) queue.push(m)
 		}
 	}
-	if (order.length !== indeg.size) throw new Error("Circular dependency detected")
+	if (order.length !== indeg.size) throw new Error('Circular dependency detected')
 	return order
 }

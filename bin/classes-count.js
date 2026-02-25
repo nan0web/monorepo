@@ -14,28 +14,29 @@ async function* walkDir(dir) {
 
 async function countClasses() {
 	const packagesDir = join(process.cwd(), 'packages')
-	let totalClasses = 0, totalJs = 0, totalJsx = 0, totalData = 0, totalTests = 0
+	let totalClasses = 0,
+		totalJs = 0,
+		totalJsx = 0,
+		totalData = 0,
+		totalTests = 0
 	const packageCounts = {}
 
 	for await (const file of walkDir(packagesDir)) {
 		const content = await readFile(file, 'utf-8')
 		const classMatches = content.match(/(^|\n)\s*class\s+\w+/g) || []
 		const rel = file.slice(packagesDir.length)
-		const [space, pkgName, ...paths] = rel.split("/")
-		const path = paths.join("/")
-		if (['/dist/', '/.cache/', '/bundle/', '/types/'].some(s => path.startsWith())) {
+		const [space, pkgName, ...paths] = rel.split('/')
+		const path = paths.join('/')
+		if (['/dist/', '/.cache/', '/bundle/', '/types/'].some((s) => path.startsWith())) {
 			continue
 		}
-		if (path.endsWith(".test.js") || path.endsWith(".test.jsx")) {
+		if (path.endsWith('.test.js') || path.endsWith('.test.jsx')) {
 			++totalTests
-		}
-		else if (path.endsWith(".js")) {
+		} else if (path.endsWith('.js')) {
 			++totalJs
-		}
-		else if (path.endsWith(".jsx")) {
+		} else if (path.endsWith('.jsx')) {
 			++totalJsx
-		}
-		else if ([".yaml", ".yml", ".nano", ".md"].some(e => path.endsWith(e))) {
+		} else if (['.yaml', '.yml', '.nano', '.md'].some((e) => path.endsWith(e))) {
 			++totalData
 		}
 
@@ -57,12 +58,12 @@ async function countClasses() {
 	Object.entries(packageCounts)
 		.sort((a, b) => b[1] - a[1])
 		.forEach(([pkg, count]) => {
-			const ratio = (count / totalClasses * 100).toFixed(1)
+			const ratio = ((count / totalClasses) * 100).toFixed(1)
 			console.log(`${pkg.padEnd(20)} ${count.toString().padStart(3)} (${ratio}%)`)
 		})
 
 	// Перевірка гармонії
-	const isHarmonious = Object.values(packageCounts).every(count => count < totalClasses * 0.7)
+	const isHarmonious = Object.values(packageCounts).every((count) => count < totalClasses * 0.7)
 	console.log('\n гармонія:', isHarmonious ? '✅ баланс сутностей' : '⚠️ дисбаланс у структурі')
 }
 

@@ -1,5 +1,5 @@
-import { runCommandAsync } from "./runCommandAsync.js"
-import Logger from "@nan0web/log"
+import { runCommandAsync } from './runCommandAsync.js'
+import Logger from '@nan0web/log'
 
 /**
  * Runs `pnpm audit fix` and returns the raw result.
@@ -10,13 +10,13 @@ import Logger from "@nan0web/log"
  */
 export async function autoFixAudit() {
 	const logger = new Logger(Logger.detectLevel(process.argv))
-	logger.info("Running pnpm audit fix...")
-	if (process.env.MOCK_RUN_COMMAND === "true") {
-		logger.success("✅ Auto‑fix succeeded (mock)")
-		return { code: 0, output: "" }
+	logger.info('Running pnpm audit fix...')
+	if (process.env.MOCK_RUN_COMMAND === 'true') {
+		logger.success('✅ Auto‑fix succeeded (mock)')
+		return { code: 0, output: '' }
 	}
-	const res = await runCommandAsync("pnpm", ["audit", "fix"])
-	if (res.code === 0) logger.success("✅ Auto‑fix succeeded")
-	else logger.warn("⚠️ Auto‑fix finished with warnings")
+	const res = await runCommandAsync('pnpm', ['audit', 'fix'])
+	if (res.code === 0) logger.success('✅ Auto‑fix succeeded')
+	else logger.warn('⚠️ Auto‑fix finished with warnings')
 	return res
 }

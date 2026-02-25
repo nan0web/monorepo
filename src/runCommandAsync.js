@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process"
+import { spawn } from 'node:child_process'
 
 /**
  * @typedef {(data: string, error?: boolean) => void} onChunkFn
@@ -31,39 +31,39 @@ import { spawn } from "node:child_process"
  */
 export async function runCommandAsync(command, args, options = {}) {
 	// ------------ mock mode -------------------------------------------------
-	if (process.env.MOCK_RUN_COMMAND === "true") {
+	if (process.env.MOCK_RUN_COMMAND === 'true') {
 		// fast deterministic answer – no real process spawned
-		return { code: 0, output: "" }
+		return { code: 0, output: '' }
 	}
 	// -----------------------------------------------------------------------
 
-	const {
-		cwd,
-		onChunk = (data, error = false) => { },
-	} = options
+	const { cwd, onChunk = (data, error = false) => {} } = options
 
-	if ("function" !== typeof onChunk) {
-		throw new TypeError("onChunk must be a function")
+	if ('function' !== typeof onChunk) {
+		throw new TypeError('onChunk must be a function')
 	}
 
 	return new Promise((resolve, reject) => {
-		const proc = spawn(command, args, { cwd, stdio: ["ignore", "pipe", "pipe"] })
-		let output = ""
+		const proc = spawn(command, args, {
+			cwd,
+			stdio: ['ignore', 'pipe', 'pipe'],
+		})
+		let output = ''
 
-		proc.stdout.on("data", d => {
+		proc.stdout.on('data', (d) => {
 			onChunk(d)
 			output += String(d)
 		})
-		proc.stderr.on("data", d => {
+		proc.stderr.on('data', (d) => {
 			onChunk(d, true)
 			output += String(d)
 		})
 
-		proc.on("error", err => {
+		proc.on('error', (err) => {
 			reject(err)
 		})
-		proc.on("close", code => {
-			resolve({ code, output })
+		proc.on('close', (code) => {
+			resolve({ code: code ?? 0, output })
 		})
 	})
 }

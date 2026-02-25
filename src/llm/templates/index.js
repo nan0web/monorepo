@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
  * @returns {string}
  */
 export function getProvenDocs() {
-	return readFileSync(resolve(__dirname, "provendocs.md"), { encoding: "utf-8" }) || ""
+	return readFileSync(resolve(__dirname, 'provendocs.md'), { encoding: 'utf-8' }) || ''
 }
 
 /**
@@ -26,7 +26,11 @@ export function getProvenDocs() {
  * @returns {string}
  */
 export function getTranslateDocs() {
-	return readFileSync(resolve(__dirname, "translate-readme.md"), { encoding: "utf-8" }) || ""
+	return (
+		readFileSync(resolve(__dirname, 'translate-readme.md'), {
+			encoding: 'utf-8',
+		}) || ''
+	)
 }
 
 /**
@@ -39,7 +43,7 @@ export function getTranslateDocs() {
  * @returns {string}
  */
 export function getPlayground() {
-	return readFileSync(resolve(__dirname, "playground.md"), { encoding: "utf-8" }) || ""
+	return readFileSync(resolve(__dirname, 'playground.md'), { encoding: 'utf-8' }) || ''
 }
 
 /**
@@ -52,6 +56,5 @@ export function getPlayground() {
  * @returns {string}
  */
 export function getSystem() {
-	return readFileSync(resolve(__dirname, "system.md"), { encoding: "utf-8" }) || ""
+	return readFileSync(resolve(__dirname, 'system.md'), { encoding: 'utf-8' }) || ''
 }
-

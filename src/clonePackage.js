@@ -1,9 +1,9 @@
-import fs from "node:fs/promises"
-import path from "node:path"
-import { tmpdir } from "node:os"
-import Logger from "@nan0web/log"
-import { createProgress } from "./cli.js"
-import { runCommandAsync } from "./runCommandAsync.js"
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { tmpdir } from 'node:os'
+import Logger from '@nan0web/log'
+import { createProgress } from './cli.js'
+import { runCommandAsync } from './runCommandAsync.js'
 
 /**
  * Clone a single package via sparse checkout.
@@ -18,17 +18,17 @@ import { runCommandAsync } from "./runCommandAsync.js"
  * @returns {Promise<string>} absolute path to the package root inside the temp dir
  */
 export async function clonePackage(repoUrl, pkg, onChunk = () => {}) {
-	if (process.env.MOCK_CLONE === "true") {
+	if (process.env.MOCK_CLONE === 'true') {
 		// fast deterministic mock: create a temporary folder with a dummy package.json
 		const temp = path.join(tmpdir(), `nan0-mock-${pkg}-${Date.now()}`)
-		const pkgRoot = path.join(temp, "packages", pkg)
+		const pkgRoot = path.join(temp, 'packages', pkg)
 		await fs.mkdir(pkgRoot, { recursive: true })
-		const pjPath = path.join(pkgRoot, "package.json")
-		const pj = { name: pkg, version: "0.0.0", scripts: {} }
+		const pjPath = path.join(pkgRoot, 'package.json')
+		const pj = { name: pkg, version: '0.0.0', scripts: {} }
 		// ensure test:all script exists
-		if (!pj.scripts["test:all"]) {
-			pj.scripts["test:all"] =
-				"pnpm test && pnpm test:docs && pnpm test:coverage && pnpm test:release"
+		if (!pj.scripts['test:all']) {
+			pj.scripts['test:all'] =
+				'pnpm test && pnpm test:docs && pnpm test:coverage && pnpm test:release'
 		}
 		await fs.mkdir(path.dirname(pjPath), { recursive: true })
 		await fs.writeFile(pjPath, JSON.stringify(pj, null, 2))
@@ -43,32 +43,21 @@ export async function clonePackage(repoUrl, pkg, onChunk = () => {}) {
 	onChunk(`% git clone --depth 1 --filter=blob:none --no-checkout --sparse ${repoUrl} ${temp}\n`)
 	// shallow sparse checkout (real git)
 	await runCommandAsync(
-		"git",
-		[
-			"clone",
-			"--depth",
-			"1",
-			"--filter=blob:none",
-			"--no-checkout",
-			"--sparse",
-			repoUrl,
-			temp,
-		],
-		{ cwd: temp, onChunk }
+		'git',
+		['clone', '--depth', '1', '--filter=blob:none', '--no-checkout', '--sparse', repoUrl, temp],
+		{ cwd: temp, onChunk },
 	)
 
 	onChunk(`% git -C ${temp} sparse-checkout init --cone`)
-	await runCommandAsync("git", ["-C", temp, "sparse-checkout", "init", "--cone"], {
+	await runCommandAsync('git', ['-C', temp, 'sparse-checkout', 'init', '--cone'], {
 		onChunk,
 	})
 	onChunk(`% git -C ${temp} sparse-checkout set packages/${pkg}`)
-	await runCommandAsync(
-		"git",
-		["-C", temp, "sparse-checkout", "set", `packages/${pkg}`],
-		{ onChunk }
-	)
+	await runCommandAsync('git', ['-C', temp, 'sparse-checkout', 'set', `packages/${pkg}`], {
+		onChunk,
+	})
 	onChunk(`% git -C ${temp} checkout`)
-	await runCommandAsync("git", ["-C", temp, "checkout"], { onChunk })
+	await runCommandAsync('git', ['-C', temp, 'checkout'], { onChunk })
 
 	const pkgRoot = temp
 
@@ -79,24 +68,22 @@ export async function clonePackage(repoUrl, pkg, onChunk = () => {}) {
 	// In that case we create a minimal one to keep the isolation
 	// workflow functional.
 	// -------------------------------------------------------------
-	const pjPath = path.join(pkgRoot, "package.json")
+	const pjPath = path.join(pkgRoot, 'package.json')
 	let pj
 	try {
-		const raw = await fs.readFile(pjPath, "utf8")
+		const raw = await fs.readFile(pjPath, 'utf8')
 		pj = JSON.parse(raw)
 	} catch (e) {
 		// If reading fails (file missing or corrupted) fall back to a minimal stub.
 		const logger = new Logger(Logger.detectLevel(process.argv))
-		logger.warn(
-			`package.json missing or unreadable for "${pkg}". Creating a minimal stub.`
-		)
-		pj = { name: pkg, version: "0.0.0", scripts: {} }
+		logger.warn(`package.json missing or unreadable for "${pkg}". Creating a minimal stub.`)
+		pj = { name: pkg, version: '0.0.0', scripts: {} }
 	}
 
 	if (!pj.scripts) pj.scripts = {}
-	if (!pj.scripts["test:all"]) {
-		pj.scripts["test:all"] =
-			"pnpm test && pnpm test:docs && pnpm test:coverage && pnpm test:release"
+	if (!pj.scripts['test:all']) {
+		pj.scripts['test:all'] =
+			'pnpm test && pnpm test:docs && pnpm test:coverage && pnpm test:release'
 	}
 	// Write (or overwrite) the possibly‑created package.json.
 	await fs.writeFile(pjPath, JSON.stringify(pj, null, 2))

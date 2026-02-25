@@ -9,10 +9,7 @@
  * @param {createProgressOptions} param1
  * @returns {NodeJS.Timeout}
  */
-export function createProgress(fn: ({ startTime, elapsed }: {
-    startTime: any;
-    elapsed: any;
-}) => void, { startTime, fps }: createProgressOptions): NodeJS.Timeout;
+export function createProgress(fn: ({ startTime, elapsed }: any) => void, { startTime, fps }: createProgressOptions): NodeJS.Timeout;
 /**
  * @typedef {Object} OutputProgressInput
  * @property {Logger} [logger] Logger instance as a console processor
@@ -35,7 +32,7 @@ export function createOutputProgress(input: OutputProgressInput): NodeJS.Timeout
  * @example
  *   await pause(10); // pauses for ~10 ms
  */
-export function pause(ms?: number | undefined): Promise<void>;
+export function pause(ms?: number): Promise<void>;
 export type createProgressOptions = {
     startTime?: number | undefined;
     fps?: number | undefined;
@@ -62,4 +59,4 @@ export type OutputProgressInput = {
      */
     printed?: number | undefined;
 };
-import Logger from "@nan0web/log";
+import Logger from '@nan0web/log';

@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url'
 import { readdir } from 'node:fs/promises'
 import process from 'node:process'
 
-import Logger from "@nan0web/log"
-import FS from "@nan0web/db-fs"
+import Logger from '@nan0web/log'
+import FS from '@nan0web/db-fs'
 
 const logger = new Logger(Logger.detectLevel(process.argv))
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -25,10 +25,10 @@ async function getDependencies(db, packageJsonPath) {
 		const allDeps = {
 			...packageJson.dependencies,
 			...packageJson.devDependencies,
-			...packageJson.peerDependencies
+			...packageJson.peerDependencies,
 		}
 		// Filter for internal packages (those starting with '@nan0web/')
-		return Object.keys(allDeps).filter(dep => dep.startsWith('@nan0web/'))
+		return Object.keys(allDeps).filter((dep) => dep.startsWith('@nan0web/'))
 	} catch (error) {
 		logger.error(`Failed to read or parse ${packageJsonPath}: ${error.message}`)
 		return []
@@ -42,13 +42,12 @@ async function getDependencies(db, packageJsonPath) {
 async function buildDependencyMap() {
 	const dependencyMap = {}
 	try {
-
 		const packageDirs = await readdir(PACKAGES_DIR)
 		for (const dir of packageDirs) {
 			const packageJsonPath = path.join(PACKAGES_DIR, dir, 'package.json')
 			const dependencies = await getDependencies(packageJsonPath)
 			// Remove the '@nan0web/' prefix for cleaner mapping
-			const cleanDeps = dependencies.map(dep => dep.replace('@nan0web/', ''))
+			const cleanDeps = dependencies.map((dep) => dep.replace('@nan0web/', ''))
 			dependencyMap[dir] = cleanDeps
 		}
 	} catch (error) {
@@ -96,21 +95,27 @@ async function main() {
 	const dependencyMap = await buildDependencyMap()
 	const buildOrder = getBuildOrder(dependencyMap)
 
-	logger.info('\
---- Dependency Map ---')
+	logger.info(
+		'\
+--- Dependency Map ---',
+	)
 	console.log(JSON.stringify(dependencyMap, null, 2))
 
-	logger.info('\
---- Recommended Release Order (most independent first) ---')
+	logger.info(
+		'\
+--- Recommended Release Order (most independent first) ---',
+	)
 	buildOrder.forEach((pkg, index) => {
 		console.log(`${index + 1}. ${pkg}`)
 	})
 
-	logger.info('\
-✅ Dependency tree analysis complete.')
+	logger.info(
+		'\
+✅ Dependency tree analysis complete.',
+	)
 }
 
-main().catch(err => {
+main().catch((err) => {
 	logger.error(`❌ An error occurred: ${err.message}`)
 	process.exit(1)
 })
