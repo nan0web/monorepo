@@ -13,7 +13,7 @@
  */
 export default class AuditIssue {
 	/** @type {"critical"|"high"|"moderate"|"low"} Severity */
-	type = "low"
+	type = 'low'
 
 	/** @type {string|undefined} Human‑readable description */
 	text
@@ -37,15 +37,7 @@ export default class AuditIssue {
 	 * @param {Partial<AuditIssue>} [input={}]
 	 */
 	constructor(input = {}) {
-		const {
-			type = this.type,
-			text,
-			pkg,
-			vulnerable,
-			patched,
-			paths,
-			info,
-		} = input
+		const { type = this.type, text, pkg, vulnerable, patched, paths, info } = input
 
 		this.type = type
 		this.text = text

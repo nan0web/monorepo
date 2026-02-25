@@ -3,21 +3,21 @@ import process from 'node:process'
 import { rm } from 'node:fs/promises'
 import path from 'node:path'
 
-import FS from "@nan0web/db-fs"
-import Logger from "@nan0web/log"
+import FS from '@nan0web/db-fs'
+import Logger from '@nan0web/log'
 
 import { parseAuditResult } from '../src/audit.js'
 import { runCommandAsync } from '../src/runCommandAsync.js'
-import { clonePackage } from '../src/clonePackage.js'   // respects MOCK_CLONE (but we don’t force it)
+import { clonePackage } from '../src/clonePackage.js' // respects MOCK_CLONE (but we don’t force it)
 import { createOutputProgress, pause } from '../src/cli.js'
-import { checkAllDocs } from "../src/docs.js"
-import { runTests } from "../src/runTests.js"
+import { checkAllDocs } from '../src/docs.js'
+import { runTests } from '../src/runTests.js'
 
 /* -------------------------------------------------------------------------- */
 /* Run a command asynchronously, printing at most `maxLines` lines of output. */
 /* -------------------------------------------------------------------------- */
 const logger = new Logger(Logger.detectLevel(process.argv))
-const format = new Intl.NumberFormat("en-US").format
+const format = new Intl.NumberFormat('en-US').format
 
 /**
  * Topological sort – returns a safe build order.
@@ -70,7 +70,7 @@ async function installDependencies(cwd, onChunk) {
 		if (res.code !== 0) throw new Error(`pnpm install failed in ${cwd}`)
 	} catch (e) {
 		logger.warn(`Install failed for ${path.basename(cwd)}: ${e.message}`)
-		throw e  // re-throw to be caught by caller
+		throw e // re-throw to be caught by caller
 	}
 }
 
@@ -97,10 +97,20 @@ async function runPnpmAudit({ chunks = [], maxLines = 3 } = {}) {
 	logger.success('pnpm audit completed')
 	logger.success(`Total vulnerabilities: ${result.length}`)
 
-	if (tally.critical.length) logger.error(`  ${Logger.RED}${tally.critical.length} critical:${Logger.RESET} ${tally.critical.join(', ')}`)
-	if (tally.high.length) logger.error(`  ${Logger.RED}${tally.high.length} high:${Logger.RESET} ${tally.high.join(', ')}`)
-	if (tally.moderate.length) logger.info(`  ${Logger.YELLOW}${tally.moderate.length} moderate:${Logger.RESET} ${tally.moderate.join(', ')}`)
-	if (tally.low.length) logger.info(`  ${Logger.YELLOW}${tally.low.length} low: ${tally.low.join(', ')}`)
+	if (tally.critical.length)
+		logger.error(
+			`  ${Logger.RED}${tally.critical.length} critical:${Logger.RESET} ${tally.critical.join(', ')}`,
+		)
+	if (tally.high.length)
+		logger.error(
+			`  ${Logger.RED}${tally.high.length} high:${Logger.RESET} ${tally.high.join(', ')}`,
+		)
+	if (tally.moderate.length)
+		logger.info(
+			`  ${Logger.YELLOW}${tally.moderate.length} moderate:${Logger.RESET} ${tally.moderate.join(', ')}`,
+		)
+	if (tally.low.length)
+		logger.info(`  ${Logger.YELLOW}${tally.low.length} low: ${tally.low.join(', ')}`)
 
 	return result
 }
@@ -112,11 +122,11 @@ async function main(argv = process.argv.slice(2)) {
 	logger.info(Logger.style(Logger.LOGO, { color: Logger.MAGENTA }))
 	const fs = new FS()
 	await fs.connect()
-	const db = new FS({ root: "dist/audit" })
+	const db = new FS({ root: 'dist/audit' })
 	await db.connect()
 
-	await db.saveDocument("chunks.log", "")
-	await db.saveDocument("error.log", "")
+	await db.saveDocument('chunks.log', '')
+	await db.saveDocument('error.log', '')
 
 	// Log per-package errors to error.log without failing main()
 	const logError = async (pkg, error) => {
@@ -131,20 +141,20 @@ async function main(argv = process.argv.slice(2)) {
 	const isFix = argv.includes('--fix')
 	const isDebug = argv.includes('--debug')
 
-	let chunks = ["Loading monorepo..."]
+	let chunks = ['Loading monorepo...']
 
 	/** @type {import('../src/runCommandAsync.js').onChunkFn} */
 	const onChunk = (data, error = false) => {
 		const str = String(data)
 		chunks.push(str)
 		// keep a persistent record for debugging
-		db.writeDocument("chunks.log", str)
+		db.writeDocument('chunks.log', str)
 	}
 	const start = async (options = {}, fn) => {
 		const opts = {
 			...options,
 			logger: process.stdout.isTTY ? logger : null,
-			fps: 33
+			fps: 33,
 		}
 		const interval = createOutputProgress(opts)
 		const result = await fn()
@@ -157,15 +167,21 @@ async function main(argv = process.argv.slice(2)) {
 	/* ----------------------------- repo info ----------------------------- */
 	let monorepoUrl = ''
 	try {
-		chunks = ["% git rev-parse --show-toplevel"]
+		chunks = ['% git rev-parse --show-toplevel']
 		const rootRes = await start({ chunks }, async () => {
-			return await runCommandAsync('git', ['rev-parse', '--show-toplevel'], { onChunk })
+			return await runCommandAsync('git', ['rev-parse', '--show-toplevel'], {
+				onChunk,
+			})
 		})
 
 		const repoRoot = rootRes.output.trim()
 		chunks = [`% git -C ${repoRoot} config --get remote.origin.url`]
 		const urlRes = await start({ chunks }, async () => {
-			return await runCommandAsync('git', ['-C', repoRoot, 'config', '--get', 'remote.origin.url'], { onChunk })
+			return await runCommandAsync(
+				'git',
+				['-C', repoRoot, 'config', '--get', 'remote.origin.url'],
+				{ onChunk },
+			)
 		})
 		monorepoUrl = urlRes.output.trim()
 	} catch {
@@ -173,31 +189,33 @@ async function main(argv = process.argv.slice(2)) {
 	}
 
 	/* --------------------- load workspace & package list ----------------- */
-	chunks = ["Loading pnpm-workspace.yaml"]
+	chunks = ['Loading pnpm-workspace.yaml']
 	let pkgs = []
 	await start({ chunks }, async () => {
 		const ws = await fs.loadDocument('pnpm-workspace.yaml')
 		pkgs = ws.packages
-			.filter(p => p.startsWith('packages/'))
-			.map(p => p.slice('packages/'.length))
-		onChunk(format(JSON.stringify(ws).length) + " bytes loaded, " + pkgs.length + " packages\n")
+			.filter((p) => p.startsWith('packages/'))
+			.map((p) => p.slice('packages/'.length))
+		onChunk(format(JSON.stringify(ws).length) + ' bytes loaded, ' + pkgs.length + ' packages\n')
 	})
 
-	chunks = ["Checking docs …"]
+	chunks = ['Checking docs …']
 	let docs = { incorrect: [], deps: {} }
 	await start({ chunks }, async () => {
 		docs = await checkAllDocs({ fs, pkgs, chunks, onChunk, logger })
 	})
 	const count = Object.keys(docs.deps).length
-	logger.info(`Documentation loaded with ${docs.incorrect.length} fail packages and ${count} dependency trees`)
+	logger.info(
+		`Documentation loaded with ${docs.incorrect.length} fail packages and ${count} dependency trees`,
+	)
 	if (docs.incorrect.length) {
 		logger.info(`  ${Logger.YELLOW}Missing documentation in${Logger.RESET}`)
-		docs.incorrect.forEach(i => logger.info(`  - ${Logger.YELLOW}${i}${Logger.RESET}`))
+		docs.incorrect.forEach((i) => logger.info(`  - ${Logger.YELLOW}${i}${Logger.RESET}`))
 	}
 
 	/* ------------------- isolation tests ------------------------------- */
-	const isolation = []          // { native, passed }
-	const tableRows = []         // markdown rows as they appear
+	const isolation = [] // { native, passed }
+	const tableRows = [] // markdown rows as they appear
 
 	const depMap = docs.deps
 	const order = getBuildOrder(depMap)
@@ -206,7 +224,7 @@ async function main(argv = process.argv.slice(2)) {
 	for (const name of order) {
 		logger.info(`${String(++idx).padStart(String(order.length).length)}. ${name}`)
 		const pkgLog = `packages/${name}.log`
-		let pkgPath = ""
+		let pkgPath = ''
 		let passed = false
 		const repoUrl = `git@github-nan0web:nan0web/${name}.git`
 		await db.saveDocument(pkgLog, `% git clone ${repoUrl}\n`)
@@ -264,22 +282,23 @@ async function main(argv = process.argv.slice(2)) {
 					await rm(tempRoot, { recursive: true, force: true })
 				} catch (cleanErr) {
 					logger.debug(`Cleanup failed for ${name}: ${cleanErr.message}`)
-					await logError(name, { message: `Cleanup error: ${cleanErr.message}` })
+					await logError(name, {
+						message: `Cleanup error: ${cleanErr.message}`,
+					})
 				}
 			}
 			isolation.push({ name, passed })
 		}
 		if (passed) {
 			logger.success(`${String(idx).padStart(2)}. ✅ ${name}`)
-		}
-		else {
+		} else {
 			logger.error(`${String(idx).padStart(2)}. ❌ ${name} details in ${db.location(pkgLog)}`)
 		}
 	}
 	/* --------------------------- audit --------------------------------- */
 	let audited
 	if (isFix) {
-		chunks = ["Auto-fixing vulnerabilities"]
+		chunks = ['Auto-fixing vulnerabilities']
 		interval = createOutputProgress({
 			logger: process.stdout.isTTY ? logger : null,
 			chunks,
@@ -287,7 +306,7 @@ async function main(argv = process.argv.slice(2)) {
 		await runCommandAsync('pnpm', ['audit', 'fix'], { chunks })
 		clearInterval(interval)
 	}
-	chunks = ["Auditing vulnerabilities..."]
+	chunks = ['Auditing vulnerabilities...']
 	audited = await runPnpmAudit({ chunks })
 	if (audited.length && !isFix) {
 		console.info('\n! To automatically fix issues provide --fix in a command line\n')
@@ -297,13 +316,13 @@ async function main(argv = process.argv.slice(2)) {
 	const order_report = getBuildOrder(depMap)
 
 	logger.info('Dependency Map dist/audit/dependencies.json')
-	await db.saveDocument("dependencies.json", depMap)
+	await db.saveDocument('dependencies.json', depMap)
 
 	logger.info('Recommended Release Order (most independent first):')
 	order_report.forEach((p, i) => console.log(`${i + 1}. ${p}`))
 
 	logger.info('Isolation Test Results:')
-	const ok = isolation.filter(r => r.passed).length
+	const ok = isolation.filter((r) => r.passed).length
 	logger.info(`${ok}/${order.length} packages passed isolation tests`)
 
 	logger.success(`Audit completed. Check dist/audit/error.log for detailed errors.`)
@@ -314,11 +333,10 @@ async function main(argv = process.argv.slice(2)) {
 /* -------------------------------------------------------------------------- */
 main()
 	.then(() => process.exit(0))
-	.catch(err => {
+	.catch((err) => {
 		const errLogger = new Logger(Logger.detectLevel(process.argv))
 		errLogger.error('Audit failed')
 		errLogger.error(err.message)
 		if (err.stack) errLogger.debug(err.stack)
 		process.exit(1)
 	})
-

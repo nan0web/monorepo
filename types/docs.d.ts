@@ -37,14 +37,14 @@ export type checkDocsOptions = {
     pkgDb: FS;
     name: string;
     stepsMd: string;
-    onChunk: import('../src/runCommandAsync.js').onChunkFn;
+    onChunk: import("../src/runCommandAsync.js").onChunkFn;
 };
 export type checkAllDocsOptions = {
     fs: FS;
     pkgs: string[];
     logger: Logger;
     chunks: string[];
-    onChunk: import('./runCommandAsync.js').onChunkFn;
+    onChunk: import("./runCommandAsync.js").onChunkFn;
 };
-import FS from "@nan0web/db-fs";
-import Logger from "@nan0web/log";
+import FS from '@nan0web/db-fs';
+import Logger from '@nan0web/log';

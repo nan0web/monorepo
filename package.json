@@ -42,26 +42,20 @@
 			"nodemailer": "^8.0.0",
 			"lodash": "^4.17.23",
 			"@isaacs/brace-expansion": ">=5.0.1"
-		},
-		"auditConfig": {
-			"ignoreCves": [
-				"CVE-2024-22363",
-				"CVE-2023-30533"
-			]
 		}
 	},
 	"devDependencies": {
-		"@nan0web/co": "link:packages/co",
-		"@nan0web/db": "link:packages/db",
-		"@nan0web/db-fs": "link:packages/db-fs",
-		"@nan0web/i18n": "link:packages/i18n",
-		"@nan0web/llimo": "link:packages/llimo",
-		"@nan0web/log": "link:packages/log",
-		"@nan0web/markdown": "link:packages/markdown",
-		"@nan0web/test": "link:packages/test",
-		"@nan0web/types": "link:packages/types",
-		"@nan0web/ui": "link:packages/ui",
-		"@nan0web/ui-cli": "link:packages/ui-cli",
+		"@nan0web/co": "workspace:*",
+		"@nan0web/db": "workspace:*",
+		"@nan0web/db-fs": "workspace:*",
+		"@nan0web/i18n": "workspace:*",
+		"@nan0web/llimo": "workspace:*",
+		"@nan0web/log": "workspace:*",
+		"@nan0web/markdown": "workspace:*",
+		"@nan0web/test": "workspace:*",
+		"@nan0web/types": "workspace:*",
+		"@nan0web/ui": "workspace:*",
+		"@nan0web/ui-cli": "workspace:*",
 		"@types/node": "^24.10.2",
 		"@types/react": "^19.2.2",
 		"@types/react-dom": "^19.2.3",
@@ -74,6 +68,7 @@
 		"@ai-sdk/openai": "^3.0.21",
 		"ai": "^5.0.123",
 		"micromatch": "^4.0.8",
-		"openai": "^6.16.0"
+		"openai": "^6.16.0",
+		"react-icons": "^5.5.0"
 	}
 }

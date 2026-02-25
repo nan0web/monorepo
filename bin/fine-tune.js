@@ -1,15 +1,55 @@
 #!/usr/bin/env node
-import FS from "@nan0web/db-fs"
-import Logger from "@nan0web/log"
+import FS from '@nan0web/db-fs'
+import Logger from '@nan0web/log'
+import { parseArgs } from 'node:util'
+
+/**
+ * Helper class to handle dataset logic clearly.
+ * Separated to allow unit testing without running full FS operations.
+ */
+class DatasetBuilder {
+	constructor(options = {}) {
+		this.logger = options.logger || new Logger('info')
+	}
+
+	/**
+	 * Shuffle array to prevent sequential data bias.
+	 */
+	static shuffle(array) {
+		return array.sort(() => Math.random() - 0.5)
+	}
+
+	/**
+	 * Core Logic: Merge datasets based on mode.
+	 */
+	process(newRecords, oldRecords = []) {
+		if (!oldRecords || oldRecords.length === 0) {
+			this.logger.info('No existing memory found. Starting fresh.')
+			return newRecords
+		}
+
+		// Logic: 20% of old records replay
+		const replayCount = Math.max(1, Math.floor(oldRecords.length * 0.2))
+		const shuffledOld = DatasetBuilder.shuffle([...oldRecords])
+		const memoryBuffer = shuffledOld.slice(0, replayCount)
+
+		this.logger.info(
+			`🧠 Incremental learning: ${newRecords.length} new + ${memoryBuffer.length} old (Memory).`,
+		)
+
+		const final = [...newRecords, ...memoryBuffer]
+		return DatasetBuilder.shuffle(final)
+	}
+}
 
 class BrowserableFS extends FS {
-	async * browse(uri = ".", options = {}) {
+	async *browse(uri = '.', options = {}) {
 		const { depth = 0, ignore = [] } = options
-		this.console.debug("browse()", uri, { depth })
+		this.console.debug('browse()', uri, { depth })
 		await this.requireConnected()
 		const entries = []
-		const isExp = uri.includes("*") || uri.includes("?")
-		const skip = path => {
+		const isExp = uri.includes('*') || uri.includes('?')
+		const skip = (path) => {
 			if (ignore.length && micromatch.any(path, ignore)) {
 				return true
 			}
@@ -24,12 +64,15 @@ class BrowserableFS extends FS {
 				yield path
 			}
 		} else {
-			this.console.debug("browse().readDir()", uri)
+			this.console.debug('browse().readDir()', uri)
 			for await (const entry of this.readDir(this.root, { depth })) {
 				if (skip(entry.path)) continue
 				yield entry.path
 			}
-			this.console.debug("browse().readDir().done", uri, { root: this.root, entries })
+			this.console.debug('browse().readDir().done', uri, {
+				root: this.root,
+				entries,
+			})
 		}
 	}
 }
@@ -45,13 +88,13 @@ const fs = new BrowserableFS()
  */
 async function main(argv = process.argv.slice(2)) {
 	logger.info('Collecting datasets for fine-tuning...')
-	const isText = argv.includes("--text")
+	const isText = argv.includes('--text')
 
 	await fs.connect()
 
 	// Find all dataset files
-	const ws = await fs.loadDocument("pnpm-workspace.yaml")
-	const arr = ws.packages.filter(p => p.startsWith("packages/")).map(p => p.split("/").pop())
+	const ws = await fs.loadDocument('pnpm-workspace.yaml')
+	const arr = ws.packages.filter((p) => p.startsWith('packages/')).map((p) => p.split('/').pop())
 	const sets = new Map()
 	for (const name of arr) {
 		const ds = await fs.loadDocument(`packages/${name}/.datasets/README.dataset.jsonl`, [])
@@ -61,7 +104,8 @@ async function main(argv = process.argv.slice(2)) {
 
 	const allRecords = []
 
-	const systemContent = "Context: @nan0web platform, Release Notes, CI/CD testing. Answer with working JavaScript code examples. Always include pnpm package manager. Use ES modules, no semicolons. Prefer vanilla JS and nan0web."
+	const systemContent =
+		'Context: @nan0web platform, Release Notes, CI/CD testing. Answer with working JavaScript code examples. Always include pnpm package manager. Use ES modules, no semicolons. Prefer vanilla JS and nan0web.'
 
 	// Load and parse each .jsonl file
 	for (const [, ds] of sets.entries()) {
@@ -69,10 +113,10 @@ async function main(argv = process.argv.slice(2)) {
 			// Convert to messages format for fine-tuning
 			// Assume record.instruction is like "How to ...?"
 			// record.output contains code examples
-			const instruction = record.instruction || ""
-			const output = record.output || ""
-			const input = record.input || ""
-			const contextHeader = (record.context || []).join("\n")
+			const instruction = record.instruction || ''
+			const output = record.output || ''
+			const input = record.input || ''
+			const contextHeader = (record.context || []).join('\n')
 
 			if (!instruction || !output) continue
 
@@ -81,10 +125,10 @@ async function main(argv = process.argv.slice(2)) {
 				// We include context headers and input (markdown) to ground the instruction
 				const parts = [
 					contextHeader, // e.g. "h1:@nan0web/auth-core"
-					input,         // e.g. "## Installation"
-					instruction    // e.g. "How to install with npm?"
+					input, // e.g. "## Installation"
+					instruction, // e.g. "How to install with npm?"
 				]
-				const userContent = parts.filter(Boolean).join("\n\n")
+				const userContent = parts.filter(Boolean).join('\n\n')
 
 				// Construct the "assistant" part
 				const assistantContent = output
@@ -97,27 +141,26 @@ async function main(argv = process.argv.slice(2)) {
 					messages: [
 						{
 							role: 'system',
-							content: systemContent
+							content: systemContent,
 						},
 						{
 							role: 'user',
-							content: record.instruction + '\n\n' + (record.input || '')
+							content: record.instruction + '\n\n' + (record.input || ''),
 						},
 						{
 							role: 'assistant',
-							content: record.output
-						}
-					]
+							content: record.output,
+						},
+					],
 				}
 				allRecords.push(messagesRecord)
 			}
-
 		}
 	}
 
 	const trainPath = '.datasets/train.jsonl'
 	const validPath = '.datasets/valid.jsonl'
-	if (argv.includes("--valid")) {
+	if (argv.includes('--valid')) {
 		// Split 90/10
 		const splitIndex = Math.floor(allRecords.length * 0.9)
 		const trainData = allRecords.slice(0, splitIndex)
@@ -131,11 +174,10 @@ async function main(argv = process.argv.slice(2)) {
 		await fs.saveDocument(trainPath, allRecords)
 		logger.success(`✅ Combined ${allRecords.length} training examples to ${trainPath}`)
 	}
-
 }
 
 // Run the script
-main().catch(err => {
+main().catch((err) => {
 	console.error(err.stack ?? err.message)
 	process.exit(1)
 })

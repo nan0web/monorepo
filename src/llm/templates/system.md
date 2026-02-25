@@ -13,7 +13,6 @@
 - [](./packages/verse/state/свідомість/намір/маги/ВчиноМаг/system.md)
 - [](./packages/verse/state/свідомість/намір/маги/Маг-і-Я.md)
 
-
 Контекст проєкту:
 
 - [](./packages/$pkgName/bin/**)
@@ -23,4 +22,3 @@
 - [](./packages/$pkgName/scripts/**)
 - [](./packages/$pkgName/src/**)
 - [](./packages/$pkgName/tsconfig.json)
-

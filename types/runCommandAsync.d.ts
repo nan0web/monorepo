@@ -24,7 +24,7 @@
  * @param {runCommandOptions} [options]
  * @returns {Promise<CommandResult>}
  */
-export function runCommandAsync(command: string, args: string[], options?: runCommandOptions | undefined): Promise<CommandResult>;
+export function runCommandAsync(command: string, args: string[], options?: runCommandOptions): Promise<CommandResult>;
 export type onChunkFn = (data: string, error?: boolean) => void;
 export type runCommandOptions = {
     cwd?: string | undefined;

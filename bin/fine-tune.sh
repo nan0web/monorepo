@@ -29,12 +29,12 @@
 # (`systemd-inhibit`) so the notebook does not suspend.
 # ------------------------------------------------------------
 
-# ---------- Helper functions ----------
+# ---------- Activate virtual environment ----------
 if [[ -f ".venv/bin/activate" ]]; then
   source ".venv/bin/activate"
-  echo "🔧 venv активовано"
+  echo "🔧 venv activated"
 else
-  echo "⚠️ .venv не знайдено – використовую системний Python"
+  echo "⚠️ .venv not found – system Python is in use"
 fi
 
 # ---------- Parse arguments ----------
@@ -47,7 +47,7 @@ VAL_BATCHES=20
 LR=1e-5
 STEPS_PER_EVAL=100
 SAVE_EVERY=50
-ADAPTER_FILE=adapters_nan0web.npz
+ADAPTER_PATH=adapters_nan0web.npz
 MAX_SEQ=2048
 LOG_DIR=logs
 
@@ -55,25 +55,25 @@ while [[ $# -gt 0 ]]; do
   case $1 in
     --model)          MODEL=$2; shift ;;
     --data)           DATA=$2; shift ;;
-    --lora-layers)    LORA_LAYERS=$2; shift ;;
+    --layers)         LORA_LAYERS=$2; shift ;;   # allow override using new name
     --batch-size)     BATCH_SIZE=$2; shift ;;
     --iters)          ITERS=$2; shift ;;
     --val-batches)    VAL_BATCHES=$2; shift ;;
     --lr)             LR=$2; shift ;;
     --steps-per-eval) STEPS_PER_EVAL=$2; shift ;;
     --save-every)     SAVE_EVERY=$2; shift ;;
-    --adapter-file)   ADAPTER_FILE=$2; shift ;;
+    --adapter-path)   ADAPTER_PATH=$2; shift ;;
     --max-seq-length)MAX_SEQ=$2; shift ;;
     --log-dir)        LOG_DIR=$2; shift ;;
-    *) die "Unknown option: $1" ;;
+    *) echo "❌ Невідомий параметр: $1" ; exit 1 ;;
   esac
   shift
 done
 
 # ---------- Prepare ----------
 mkdir -p "$LOG_DIR"
-TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-LOG_FILE="$LOG_DIR/fine-tune-$TIMESTAMP.log"
+TS=$(date +"%Y%m%d-%H%M%S")
+LOG_FILE="$LOG_DIR/fine-tune-$TS.log"
 
 # ---------- Keep‑awake wrapper ----------
 # macOS → caffeinate, Linux → systemd‑inhibit, Windows → PowerShell “Add‑Power‑Scheme”
@@ -86,17 +86,18 @@ else
 fi
 
 # ---------- Run training ----------
-CMD="python -m mlx_lm.lora \
+CMD="python -m mlx_lm lora \
+  --train \
   --model $MODEL \
   --data $DATA \
-  --lora-layers $LORA_LAYERS \
+  --num-layers $LORA_LAYERS \
   --batch-size $BATCH_SIZE \
   --iters $ITERS \
   --val-batches $VAL_BATCHES \
   --learning-rate $LR \
   --steps-per-eval $STEPS_PER_EVAL \
   --save-every $SAVE_EVERY \
-  --adapter-file $ADAPTER_FILE \
+  --adapter-path $ADAPTER_PATH \
   --max-seq-length $MAX_SEQ"
 
 echo "🚀 Starting fine‑tune at $(date)" | tee "$LOG_FILE"
@@ -104,7 +105,6 @@ echo "🔧 Command: $CMD" >>"$LOG_FILE"
 
 # Run inside keep‑awake wrapper, detach with nohup
 nohup $KEEP_AWAKE $CMD >>"$LOG_FILE" 2>&1 &
-
 PID=$!
 echo "🛠️ Training PID: $PID (logs → $LOG_FILE)" | tee -a "$LOG_FILE"
 echo "💡 When finished the LoRA adapter will be saved as $ADAPTER_FILE"

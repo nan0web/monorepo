@@ -14,7 +14,7 @@ I spent a long time communicating in English on all topics related to design, pr
 
 In 2014 I came to understand that I needed to study Ukrainian very well, even though I understood it, I could not speak it fluently. In Zaporizhzhia most people communicated in Russian, so I could not. Consequently, in 2014 I decided to move to Lviv and study Ukrainian culture more deeply, just as the war between Russia and Ukraine began. I realised that the cause of this aggression was not simply a whim of Putin, but a historical situation where Ukraine was repeatedly occupied by various emperors and tsars.
 
-I understood that the solution to this problem lies in language. Programming, essentially, is communication through programming languages – also languages. The roots of our logical world lie in the word: the first was the *logos* (as it appears in the original Greek of the Bible). I strive to incarnate this logos as efficiently as possible. While delving deeper into Ukrainian, I observed many interesting moments that I still see today.
+I understood that the solution to this problem lies in language. Programming, essentially, is communication through programming languages – also languages. The roots of our logical world lie in the word: the first was the _logos_ (as it appears in the original Greek of the Bible). I strive to incarnate this logos as efficiently as possible. While delving deeper into Ukrainian, I observed many interesting moments that I still see today.
 
 In Ukrainian word formation I see a much clearer approach to explaining what is happening, both historically and in the present. Today I interact with language models mostly in Ukrainian, because it is the simplest way for me to gauge whether a model can correctly process information in Ukrainian. If it can, I start using that model in programming.
 
@@ -69,4 +69,4 @@ The project is distributed under the **ISC** license.
 
 ---
 
-*nan0web – minimal changes, maximal result.*  
+_nan0web – minimal changes, maximal result._

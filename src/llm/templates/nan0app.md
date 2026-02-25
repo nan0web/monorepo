@@ -68,16 +68,16 @@ apps/myapp/
 
 ## ✅ Key Principles
 
-| Principle                        | Implementation in this Template |
-|----------------------------------|----------------------------------|
-| **Idea**                         | An app that renders static content but proves it exists |
-| **Architecture**                 | `AppCore` → Command → `AppResult` → Any UI |
-| **Test Every Fragment**          | `*.test.js` with `node:test`, 100% coverage |
-| **Documentation from Code**      | `src/README.md.js` = test + docs |
-| **Verified Knowledge**           | Docs are executed → fail if code changes |
-| **Localization**                 | `docs/uk/README.md` via LLM (content & structure preserved) |
-| **Physical Artifact**            | `releases/v0.1.0.jsonl` + `git tag` |
-| **Reproducibility**              | `playground/main.js` runs without build |
+| Principle                   | Implementation in this Template                             |
+| --------------------------- | ----------------------------------------------------------- |
+| **Idea**                    | An app that renders static content but proves it exists     |
+| **Architecture**            | `AppCore` → Command → `AppResult` → Any UI                  |
+| **Test Every Fragment**     | `*.test.js` with `node:test`, 100% coverage                 |
+| **Documentation from Code** | `src/README.md.js` = test + docs                            |
+| **Verified Knowledge**      | Docs are executed → fail if code changes                    |
+| **Localization**            | `docs/uk/README.md` via LLM (content & structure preserved) |
+| **Physical Artifact**       | `releases/v0.1.0.jsonl` + `git tag`                         |
+| **Reproducibility**         | `playground/main.js` runs without build                     |
 
 > This is not a scaffold.  
 > This is **a proof that an app can exist in harmony with logic, truth, and freedom**.
@@ -114,9 +114,9 @@ flowchart LR
 
 ```js
 // commands/GetDocumentCommand.js
-import { ExecutableCommand } from "@nan0web/protocol"
-import Document from "../models/Document.js"
-import AppResult from "@nan0web/core/types/AppResult.js"
+import { ExecutableCommand } from '@nan0web/protocol'
+import Document from '../models/Document.js'
+import AppResult from '@nan0web/core/types/AppResult.js'
 
 /**
  * Command: GetDocumentCommand
@@ -129,30 +129,34 @@ class GetDocumentCommand extends ExecutableCommand {
    * @returns {Promise<AppResult>}
    */
   async run(msg) {
-    const { uri = "/", locale = "en" } = msg.input
-    const path = `/${locale}${uri === "/" ? "/index" : uri}.json`
+    const { uri = '/', locale = 'en' } = msg.input
+    const path = `/${locale}${uri === '/' ? '/index' : uri}.json`
 
     if (!path) {
       return AppResult.from({
-        content: ["❌ URI is required"],
-        error: new Error("URI not provided"),
-        priority: 2
+        content: ['❌ URI is required'],
+        error: new Error('URI not provided'),
+        priority: 2,
       })
     }
 
     try {
-      const data = await this.context.db.get(path) || await this.context.db.fetch(path)
-      const document = Document.from({ ...data, $uri: uri, $source: data ? "cache" : "network" })
+      const data = (await this.context.db.get(path)) || (await this.context.db.fetch(path))
+      const document = Document.from({
+        ...data,
+        $uri: uri,
+        $source: data ? 'cache' : 'network',
+      })
       return AppResult.from({
-        content: ["📄 Document loaded successfully"],
+        content: ['📄 Document loaded successfully'],
         meta: { document },
-        priority: 1
+        priority: 1,
       })
     } catch (err) {
       return AppResult.from({
-        content: ["⚠️ Failed to load document"],
+        content: ['⚠️ Failed to load document'],
         error: err,
-        priority: 3
+        priority: 3,
       })
     }
   }
@@ -167,29 +171,32 @@ export default GetDocumentCommand
 
 ```js
 // commands/GetDocumentCommand.test.js
-import { describe, it } from "node:test"
-import assert from "node:assert"
-import GetDocumentCommand from "./GetDocumentCommand.js"
-import { MemoryDB } from "@nan0web/test/src/mock/MemoryDB.js"
+import { describe, it } from 'node:test'
+import assert from 'node:assert'
+import GetDocumentCommand from './GetDocumentCommand.js'
+import { MemoryDB } from '@nan0web/test/src/mock/MemoryDB.js'
 
-describe("GetDocumentCommand", () => {
-  it("should load document from db when found", async () => {
+describe('GetDocumentCommand', () => {
+  it('should load document from db when found', async () => {
     const db = new MemoryDB()
     await db.connect()
-    await db.save("/en/about.json", { title: "About Us", content: [{ h1: "Who We Are" }] })
+    await db.save('/en/about.json', {
+      title: 'About Us',
+      content: [{ h1: 'Who We Are' }],
+    })
 
     const cmd = new GetDocumentCommand()
     cmd.context = { db }
 
     const result = await cmd.run({
-      input: { uri: "/about", locale: "en" }
+      input: { uri: '/about', locale: 'en' },
     })
 
-    assert.equal(result.meta.document.title, "About Us")
-    assert.equal(result.meta.document.$source, "cache")
+    assert.equal(result.meta.document.title, 'About Us')
+    assert.equal(result.meta.document.$source, 'cache')
   })
 
-  it("should return error if no URI provided", async () => {
+  it('should return error if no URI provided', async () => {
     const cmd = new GetDocumentCommand()
     cmd.context = { db: new MemoryDB() }
 
@@ -210,7 +217,7 @@ describe("GetDocumentCommand", () => {
 
 ```js
 // models/Document.js
-import Document from "@nan0web/co/src/models/Document.js"
+import Document from '@nan0web/co/src/models/Document.js'
 
 class AppDocument extends Document {
   // Extend with app-specific fields if needed
@@ -227,21 +234,19 @@ export default AppDocument
 
 ```js
 // app/AppCore.js
-import { AppCore } from "@nan0web/core"
-import GetDocumentCommand from "../commands/GetDocumentCommand.js"
-import { CommandProtocol } from "@nan0web/protocol"
+import { AppCore } from '@nan0web/core'
+import GetDocumentCommand from '../commands/GetDocumentCommand.js'
+import { CommandProtocol } from '@nan0web/protocol'
 
 class MyAppCore extends AppCore {
   constructor(config) {
     super(config)
 
-    this.registerProtocol(
-      new CommandProtocol({ command: new GetDocumentCommand(), db: this.db })
-    )
+    this.registerProtocol(new CommandProtocol({ command: new GetDocumentCommand(), db: this.db }))
   }
 
   async run() {
-    await this.bootstrapI18n("/i18n/{{locale}}.json")
+    await this.bootstrapI18n('/i18n/{{locale}}.json')
   }
 }
 
@@ -254,26 +259,26 @@ export default MyAppCore
 
 ```js
 // src/playground/main.js
-import MyAppCore from "../app/AppCore.js"
-import { MemoryDB } from "@nan0web/test/src/mock/MemoryDB.js"
+import MyAppCore from '../app/AppCore.js'
+import { MemoryDB } from '@nan0web/test/src/mock/MemoryDB.js'
 
 const db = new MemoryDB()
 await db.connect()
 
 const app = new MyAppCore({ db })
-await app.db.save("/en/index.json", {
-  content: [{ h1: "Hello from Playground!" }, { p: "This app exists." }]
+await app.db.save('/en/index.json', {
+  content: [{ h1: 'Hello from Playground!' }, { p: 'This app exists.' }],
 })
 
 const result = await app.execute({
-  action: "getDocument",
-  input: { uri: "/", locale: "en" }
+  action: 'getDocument',
+  input: { uri: '/', locale: 'en' },
 })
 
 if (result.meta?.document) {
-  console.log("✅ SUCCESS: App loaded document:", result.meta.document.content)
+  console.log('✅ SUCCESS: App loaded document:', result.meta.document.content)
 } else {
-  console.error("❌ FAILED: App did not return document", result)
+  console.error('❌ FAILED: App did not return document', result)
 }
 ```
 
@@ -283,7 +288,7 @@ if (result.meta?.document) {
 
 ## ✅ Executable Documentation (`README.md.js`)
 
-```js
+````js
 /**
  * @docs
  * # 🚀 NaN•App — Command-Driven Trusted App
@@ -306,17 +311,18 @@ if (result.meta?.document) {
  * - ✅ 100% test coverage
  * - ✅ Documentation is trusted
  */
-import { describe, it } from "node:test"
-import assert from "node:assert"
+import { describe, it } from 'node:test'
+import assert from 'node:assert'
 
-describe("Documentation: README.md.js", () => {
-  it("should be syntactically valid and executable", () => {
+describe('Documentation: README.md.js', () => {
+  it('should be syntactically valid and executable', () => {
     assert(true) // This file runs — it's already trusted
   })
 })
-```
+````
 
 > Run `pnpm test:docs` → generates:
+>
 > - `README.md` (English)
 > - `.datasets/README.jsonl` (LLM-ready dataset)
 

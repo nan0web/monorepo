@@ -11,14 +11,14 @@
 LLAMA_CPP_ROOT="${LLAMA_CPP_ROOT:-$HOME/i/src/llm/llama.cpp}"
 BINARY="$LLAMA_CPP_ROOT/build/bin/llama-server"
 
-# Default values (mirroring the original script)
+# Updated defaults for compatibility with LLiMo (port from env, alias to match model)
 DEFAULT_MODEL="${DEFAULT_MODEL:-$HOME/.lmstudio/models/nan0web/qwen3-nan0web.gguf}"
-DEFAULT_PORT=8080
+DEFAULT_PORT=1234
 DEFAULT_HOST="127.0.0.1"
-DEFAULT_ALIAS="nan0web-qwen"
+DEFAULT_ALIAS="nan0web"
 DEFAULT_CTX_SIZE=8192
 DEFAULT_NGL=99
-DEFAULT_EMBEDDING=false   # changed default to false to support chat completions by default
+DEFAULT_EMBEDDING=false   # default to false to enable chat completions
 
 # ──────────────────────── Helper & Usage ────────────────────────
 print_usage() {

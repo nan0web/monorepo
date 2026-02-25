@@ -12,4 +12,4 @@ export function parseAuditBlock(str: string): AuditIssue;
  * @returns {AuditIssue[]}
  */
 export function parseAuditResult(text: string): AuditIssue[];
-import AuditIssue from "./AuditIssue.js";
+import AuditIssue from './AuditIssue.js';

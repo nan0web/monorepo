@@ -1,4 +1,4 @@
-import Logger from "@nan0web/log"
+import Logger from '@nan0web/log'
 
 /**
  * @typedef {Object} createProgressOptions
@@ -33,12 +33,7 @@ export function createProgress(fn, { startTime = Date.now(), fps = 30 }) {
  * @returns {NodeJS.Timeout}
  */
 export function createOutputProgress(input) {
-	const {
-		logger,
-		maxLines = 3,
-		chunks = [],
-		fps = 30,
-	} = input
+	const { logger, maxLines = 3, chunks = [], fps = 30 } = input
 
 	let printed = input.printed || 0
 	const clear = () => {
@@ -47,7 +42,7 @@ export function createOutputProgress(input) {
 
 	/** @param {number} elapsed */
 	const print = (elapsed) => {
-		const lines = chunks.join("\n").split("\n").filter(Boolean)
+		const lines = chunks.join('\n').split('\n').filter(Boolean)
 		const tail = lines.slice(-maxLines)
 		const time = `  ${Number(elapsed / 1e3).toFixed(2)}s`
 		printed = tail.length || 1
@@ -55,19 +50,22 @@ export function createOutputProgress(input) {
 
 		if (logger) {
 			// Primary line (with time)
-			logger.info(logger.fill(`${time}  ${tail[0] ?? ""}`))
+			logger.info(logger.fill(`${time}  ${tail[0] ?? ''}`))
 			// Additional lines, if any – output the raw text (no extra formatting)
-			const prefix = " ".repeat(time.length) + "  "
-			tail.slice(1).forEach(t => logger.info(logger.fill(prefix + t)))
+			const prefix = ' '.repeat(time.length) + '  '
+			tail.slice(1).forEach((t) => logger.info(logger.fill(prefix + t)))
 		}
 	}
 
 	if (chunks.length) print(0)
 
-	return createProgress(({ elapsed }) => {
-		clear()
-		print(elapsed)
-	}, { fps })
+	return createProgress(
+		({ elapsed }) => {
+			clear()
+			print(elapsed)
+		},
+		{ fps },
+	)
 }
 
 /**
@@ -80,5 +78,5 @@ export function createOutputProgress(input) {
  *   await pause(10); // pauses for ~10 ms
  */
 export function pause(ms = 1e3) {
-	return new Promise(resolve => setTimeout(resolve, ms))
+	return new Promise((resolve) => setTimeout(resolve, ms))
 }
