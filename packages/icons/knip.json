@@ -1,0 +1,5 @@
+{
+	"entry": ["src/index.js"],
+	"ignore": ["play/", "releases/", "src/test/"],
+	"ignoreDependencies": ["react-icons"]
+}
