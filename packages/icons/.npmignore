@@ -1,0 +1,25 @@
+# Tests
+test/
+releases/
+src/test/
+
+# Dev files
+play/
+knip.json
+system.md
+next.md
+tsconfig.json
+.editorconfig
+CONTRIBUTING.md
+
+# Scripts (generator is devDep only)
+scripts/
+
+# LLiMo / AI artifacts
+chat/
+.datasets/
+me.md
+
+# Generated
+dist/
+.cache/

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@nan0web/icons — React Sandbox</title>
+	<style>
+		:root {
+			--bg: #fafafa;
+			--surface: #ffffff;
+			--border: #e5e5e5;
+			--text: #1a1a2e;
+			--text-muted: #6b7280;
+			--accent: #6c63ff;
+			--accent-light: #ede9fe;
+			--radius: 12px;
+			--icon-size: 24px;
+		}
+
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+
+		body {
+			font-family: 'Inter', system-ui, -apple-system, sans-serif;
+			background: var(--bg);
+			color: var(--text);
+			min-height: 100vh;
+			padding: 2rem;
+		}
+
+		h1 {
+			font-size: clamp(1.5rem, 3vw, 2rem);
+			font-weight: 700;
+			margin-bottom: 0.25rem;
+		}
+
+		.badge {
+			display: inline-block;
+			background: var(--accent-light);
+			color: var(--accent);
+			font-size: 0.75rem;
+			font-weight: 600;
+			padding: 0.2rem 0.6rem;
+			border-radius: 999px;
+			margin-left: 0.5rem;
+			vertical-align: middle;
+		}
+
+		.subtitle {
+			color: var(--text-muted);
+			margin-bottom: 2rem;
+			font-size: 0.9rem;
+		}
+
+		.controls {
+			display: flex;
+			gap: 0.75rem;
+			align-items: center;
+			margin-bottom: 1.5rem;
+			flex-wrap: wrap;
+		}
+
+		.controls input {
+			flex: 1;
+			min-width: 200px;
+			padding: 0.6rem 1rem;
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			font-size: 0.9rem;
+			outline: none;
+			transition: border-color 0.2s;
+		}
+
+		.controls input:focus {
+			border-color: var(--accent);
+		}
+
+		.size-control {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			font-size: 0.85rem;
+			color: var(--text-muted);
+		}
+
+		.size-control input[type=range] {
+			width: 100px;
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+			gap: 0.75rem;
+		}
+
+		.icon-card {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 0.4rem;
+			padding: 1rem 0.5rem;
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			transition: all 0.15s ease;
+			cursor: pointer;
+			min-height: 90px;
+		}
+
+		.icon-card:hover {
+			border-color: var(--accent);
+			box-shadow: 0 4px 12px rgba(108, 99, 255, 0.1);
+		}
+
+		.icon-card.copied {
+			border-color: #22c55e;
+			background: #f0fdf4;
+		}
+
+		.icon-card svg {
+			fill: var(--text);
+			transition: fill 0.15s;
+		}
+
+		.icon-card:hover svg { fill: var(--accent); }
+
+		.icon-card .name {
+			font-size: 0.65rem;
+			color: var(--text-muted);
+			text-align: center;
+			word-break: break-all;
+			line-height: 1.2;
+		}
+
+		.stats {
+			margin-top: 1.5rem;
+			padding: 1rem;
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			font-size: 0.85rem;
+			color: var(--text-muted);
+		}
+
+		.section {
+			margin-bottom: 2rem;
+		}
+
+		.section h2 {
+			font-size: 1rem;
+			font-weight: 600;
+			margin-bottom: 1rem;
+			color: var(--text);
+		}
+	</style>
+</head>
+<body>
+	<h1>@nan0web/icons <span class="badge">React Sandbox</span></h1>
+	<p class="subtitle">Icon component preview — demonstrates the React adapter API</p>
+
+	<div class="controls">
+		<input type="text" id="search" placeholder="Search icons...">
+		<div class="size-control">
+			<label for="size">Size:</label>
+			<input type="range" id="size" min="12" max="48" value="24">
+			<span id="size-value">24px</span>
+		</div>
+	</div>
+
+	<div class="section">
+		<h2>Bootstrap Icons</h2>
+		<div class="grid" id="bs-grid"></div>
+	</div>
+
+	<div class="section">
+		<h2>Industrial Bank Icons</h2>
+		<div class="grid" id="ib-grid"></div>
+	</div>
+
+	<div class="stats" id="stats"></div>
+
+	<script type="module">
+		import { toSvg } from '../../src/index.js'
+		import * as bs from '../../src/sets/bs.js'
+		import * as ib from '../../src/sets/ib.js'
+
+		let currentSize = 24
+		const DISPLAY_LIMIT = 80
+
+		function createCard(name, data, size) {
+			const card = document.createElement('div')
+			card.className = 'icon-card'
+			card.dataset.name = name.toLowerCase()
+			card.innerHTML = `
+				${toSvg(data, { size })}
+				<span class="name">${name}</span>
+			`
+			card.addEventListener('click', () => {
+				navigator.clipboard.writeText(`import { ${name} } from '@nan0web/icons/bs'`)
+				card.classList.add('copied')
+				setTimeout(() => card.classList.remove('copied'), 800)
+			})
+			return card
+		}
+
+		function renderAll(filter = '', size = 24) {
+			const bsGrid = document.getElementById('bs-grid')
+			const ibGrid = document.getElementById('ib-grid')
+			bsGrid.innerHTML = ''
+			ibGrid.innerHTML = ''
+
+			const bsEntries = Object.entries(bs).filter(([n]) => n.toLowerCase().includes(filter))
+			const ibEntries = Object.entries(ib).filter(([n]) => n.toLowerCase().includes(filter))
+
+			const bsShown = bsEntries.slice(0, DISPLAY_LIMIT)
+			for (const [name, data] of bsShown) {
+				bsGrid.appendChild(createCard(name, data, size))
+			}
+
+			for (const [name, data] of ibEntries) {
+				ibGrid.appendChild(createCard(name, data, size))
+			}
+
+			document.getElementById('stats').textContent =
+				`Showing ${bsShown.length} of ${bsEntries.length} Bootstrap icons | ` +
+				`${ibEntries.length} IB icons | Size: ${size}px | ` +
+				`Total in package: ${Object.keys(bs).length + Object.keys(ib).length}`
+		}
+
+		document.getElementById('search').addEventListener('input', (e) => {
+			renderAll(e.target.value.toLowerCase(), currentSize)
+		})
+
+		document.getElementById('size').addEventListener('input', (e) => {
+			currentSize = parseInt(e.target.value)
+			document.getElementById('size-value').textContent = currentSize + 'px'
+			renderAll(document.getElementById('search').value.toLowerCase(), currentSize)
+		})
+
+		renderAll()
+	</script>
+</body>
+</html>

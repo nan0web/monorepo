@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="uk">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>@nan0web/icons — Lit Sandbox</title>
+		<style>
+			:root {
+				--bg: #0f0f14;
+				--surface: #1a1a24;
+				--border: #2a2a3a;
+				--text: #e4e4ef;
+				--text-muted: #8888aa;
+				--accent: #6c63ff;
+				--accent-hover: #857dff;
+				--success: #22c55e;
+				--icon-size: 24px;
+			}
+
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			body {
+				font-family:
+					'Inter',
+					system-ui,
+					-apple-system,
+					sans-serif;
+				background: var(--bg);
+				color: var(--text);
+				min-height: 100vh;
+				padding: 2rem;
+			}
+
+			h1 {
+				font-size: clamp(1.5rem, 3vw, 2rem);
+				font-weight: 700;
+				margin-bottom: 0.5rem;
+				background: linear-gradient(135deg, var(--accent), #ff6b9d);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+
+			.subtitle {
+				color: var(--text-muted);
+				margin-bottom: 2rem;
+				font-size: 0.9rem;
+			}
+
+			.grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+				gap: 1rem;
+				margin-top: 1.5rem;
+			}
+
+			.icon-card {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 1.25rem 0.75rem;
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 12px;
+				transition: all 0.2s ease;
+				cursor: pointer;
+			}
+
+			.icon-card:hover {
+				border-color: var(--accent);
+				transform: translateY(-2px);
+				box-shadow: 0 8px 24px rgba(108, 99, 255, 0.15);
+			}
+
+			.icon-card svg {
+				width: var(--icon-size);
+				height: var(--icon-size);
+				fill: var(--text);
+				transition: fill 0.2s;
+			}
+
+			.icon-card:hover svg {
+				fill: var(--accent);
+			}
+
+			.icon-card .name {
+				font-size: 0.7rem;
+				color: var(--text-muted);
+				text-align: center;
+				word-break: break-all;
+			}
+
+			.section {
+				margin-top: 2.5rem;
+			}
+
+			.section h2 {
+				font-size: 1.1rem;
+				font-weight: 600;
+				color: var(--text);
+				padding-bottom: 0.5rem;
+				border-bottom: 1px solid var(--border);
+			}
+		</style>
+	</head>
+	<body>
+		<h1>@nan0web/icons</h1>
+		<p class="subtitle">Lit Sandbox — Framework-agnostic SVG icons rendered via toSvg()</p>
+
+		<div class="section">
+			<h2>Bootstrap Icons</h2>
+			<div class="grid" id="bs-grid"></div>
+		</div>
+
+		<div class="section">
+			<h2>Industrial Bank Icons</h2>
+			<div class="grid" id="ib-grid"></div>
+		</div>
+
+		<script type="module">
+			import { toSvg } from '../../src/index.js'
+			import * as bs from '../../src/sets/bs.js'
+			import * as ib from '../../src/sets/ib.js'
+
+			function renderGrid(container, icons, limit = 60) {
+				const entries = Object.entries(icons).slice(0, limit)
+				for (const [name, data] of entries) {
+					const card = document.createElement('div')
+					card.className = 'icon-card'
+					card.innerHTML = `
+					${toSvg(data, { size: 24 })}
+					<span class="name">${name}</span>
+				`
+					card.addEventListener('click', () => {
+						navigator.clipboard.writeText(name)
+						card.style.borderColor = '#22c55e'
+						setTimeout(() => (card.style.borderColor = ''), 1000)
+					})
+					container.appendChild(card)
+				}
+			}
+
+			renderGrid(document.getElementById('bs-grid'), bs)
+			renderGrid(document.getElementById('ib-grid'), ib)
+		</script>
+	</body>
+</html>
