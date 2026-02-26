@@ -19,6 +19,8 @@
 - [x] ICO-11: Unit тести — 9 pass
 - [x] ICO-12: Release spec — 26 pass
 - [x] ICO-13: Package hygiene — `.npmignore`, `knip.json`, `test:all`
+- [x] ICO-14: Universal Explorer (`play/index.html`) — пошук по 12k+ іконках
+- [x] ICO-15: E2E Тестування (`play/explorer.e2e.js`) — Playwright в CI
 
 ## 📋 Наступні кроки (v1.1.0+)
 
