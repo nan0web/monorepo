@@ -18,13 +18,55 @@ const SETS_DIR = join(__dirname, '..', 'src', 'sets')
 
 /** Icon sets to generate (react-icons subpackage → output filename) */
 const ICON_SETS = {
-	bs: { module: 'react-icons/bs', description: 'Bootstrap Icons' },
-	fa: { module: 'react-icons/fa', description: 'Font Awesome 5' },
-	fa6: { module: 'react-icons/fa6', description: 'Font Awesome 6' },
-	fi: { module: 'react-icons/fi', description: 'Feather Icons' },
-	md: { module: 'react-icons/md', description: 'Material Design' },
-	hi: { module: 'react-icons/hi', description: 'Heroicons' },
-	hi2: { module: 'react-icons/hi2', description: 'Heroicons 2' },
+	bs: {
+		module: 'react-icons/bs',
+		description: 'Bootstrap Icons',
+		author: 'Bootstrap Team',
+		url: 'https://icons.getbootstrap.com/',
+		license: 'MIT',
+	},
+	fa: {
+		module: 'react-icons/fa',
+		description: 'Font Awesome 5',
+		author: 'Fonticons, Inc.',
+		url: 'https://fontawesome.com/',
+		license: 'CC BY 4.0',
+	},
+	fa6: {
+		module: 'react-icons/fa6',
+		description: 'Font Awesome 6',
+		author: 'Fonticons, Inc.',
+		url: 'https://fontawesome.com/',
+		license: 'CC BY 4.0',
+	},
+	fi: {
+		module: 'react-icons/fi',
+		description: 'Feather Icons',
+		author: 'Cole Bemis',
+		url: 'https://feathericons.com/',
+		license: 'MIT',
+	},
+	md: {
+		module: 'react-icons/md',
+		description: 'Material Design',
+		author: 'Google',
+		url: 'https://material.io/icons/',
+		license: 'Apache 2.0',
+	},
+	hi: {
+		module: 'react-icons/hi',
+		description: 'Heroicons',
+		author: 'Refactoring UI',
+		url: 'https://heroicons.com/',
+		license: 'MIT',
+	},
+	hi2: {
+		module: 'react-icons/hi2',
+		description: 'Heroicons 2',
+		author: 'Refactoring UI',
+		url: 'https://heroicons.com/',
+		license: 'MIT',
+	},
 }
 
 /**
@@ -67,6 +109,7 @@ async function generateSet(setName, config) {
 			skipped++
 			continue
 		}
+		data._name = name
 		entries.push({ name, data })
 	}
 
@@ -142,27 +185,17 @@ async function main() {
 		}
 	}
 
-	// Add custom IB set to catalog
-	const ibModule = await import(join(__dirname, '..', 'src', 'sets', 'ib.js'))
-	for (const iconName of Object.keys(ibModule)) {
-		if (iconName === 'default') continue
-		const terms = iconName
-			.replace(/([A-Z])/g, ' $1')
-			.toLowerCase()
-			.trim()
-			.split(' ')
-		const tags = [...new Set(terms)].filter((t) => t.length > 1)
-
-		catalog.push({
-			id: iconName,
-			set: 'ib',
-			tags: tags.join(' '),
-		})
-	}
 	const allSets = Object.fromEntries(
-		Object.entries(setsToGenerate).map(([k, v]) => [k, v.description]),
+		Object.entries(ICON_SETS).map(([k, v]) => [
+			k,
+			{
+				name: v.description,
+				author: v.author,
+				url: v.url,
+				license: v.license,
+			},
+		]),
 	)
-	allSets['ib'] = 'Industrial Bank'
 
 	mkdirSync(join(__dirname, '..', 'play'), { recursive: true })
 	writeFileSync(
