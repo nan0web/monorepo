@@ -1,7 +1,9 @@
 # Tests
 test/
+src/**/*.test.js
 releases/
 src/test/
+src/README.md.js
 
 # Dev files
 play/
