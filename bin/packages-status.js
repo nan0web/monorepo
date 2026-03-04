@@ -8,7 +8,7 @@ import { CLI, CommandParser, pause } from '@nan0web/ui-cli'
 import { UiMessage } from '@nan0web/ui'
 import path from 'node:path'
 import { checkAllDocs } from '../src/docs.js'
-import { getProvenDocs, getPlayground, getSystem } from '../src/llm/templates/index.js'
+import { getProvenDocs, getPlayground, getSystem } from '../src/llm/templates.js'
 import { createOutputProgress } from '../src/cli.js'
 
 const logger = new Logger(Logger.detectLevel(process.argv))

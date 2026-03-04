@@ -36,6 +36,8 @@
 ````js
 import { describe, it, before, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
+import fsNode from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import FS from '@nan0web/db-fs'
 import { NoConsole } from '@nan0web/log'
 import {
@@ -504,7 +506,8 @@ describe('Rendering README.md', async () => {
   let text = ''
   const format = new Intl.NumberFormat('en-US').format
   const parser = new DocsParser()
-  text = String(parser.decode(testRender))
+  const sourceCode = fsNode.readFileSync(fileURLToPath(import.meta.url), 'utf-8')
+  text = String(parser.decode(sourceCode))
   await fs.saveDocument('README.md', text)
   const dataset = DatasetParser.parse(text, pkg.name)
   await fs.saveDocument('.datasets/README.dataset.jsonl', dataset)

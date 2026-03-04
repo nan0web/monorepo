@@ -1,0 +1,15 @@
+# Standard nan0web settings (following .editorconfig)
+semi: false
+singleQuote: true
+tabWidth: 2
+useTabs: true
+trailingComma: 'all'
+printWidth: 100
+overrides:
+  - files:
+      - '*.md'
+      - '*.nano'
+      - '*.yaml'
+      - '*.yml'
+    options:
+      useTabs: false
