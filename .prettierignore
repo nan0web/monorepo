@@ -1,0 +1,15 @@
+models
+chat
+logs
+.Packages
+.venv
+__test_fs__
+adapters_nan0web.npz
+.cache
+dist
+node_modules
+pnpm-lock.yaml
+package-lock.json
+*.min.js
+*.min.css
+.DS_Store

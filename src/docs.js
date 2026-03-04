@@ -2,7 +2,7 @@
 import FS from '@nan0web/db-fs'
 import Logger from '@nan0web/log'
 
-import { getProvenDocs, getTranslateDocs } from './llm/templates/index.js'
+import { getProvenDocs, getTranslateDocs } from './llm/templates.js'
 
 /**
  * Read package.json via a DB‑like instance and return all @nan0web/ deps.

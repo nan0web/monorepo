@@ -45,6 +45,12 @@
 - [ ] ICO-19: CHANGELOG.md
 - [ ] ICO-20: Додаткові сети (Lucide, Phosphor)
 
+### Next — Release Infrastructure
+
+- [ ] **AGRP Release Protocol**: Додати `release:verify`, `release:close` скрипти до наявної `releases/` інфраструктури
+
+> **Health check 2026-03-02**: 9/9 pass, 0 fail ✅
+
 ---
 
-_Оновлено: 2026-02-26T19:32_
+_Оновлено: 2026-03-02_

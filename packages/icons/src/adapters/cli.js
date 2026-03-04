@@ -63,6 +63,12 @@ const UNICODE_MAP = {
 	BsInfoCircleFill: 'ℹ',
 	BsQuestionCircle: '?',
 	BsQuestionCircleFill: '?',
+	FaSeedling: '🌱',
+	FaFolder: '📁',
+	FaFile: '📄',
+	FaCircleCheck: '✔',
+	FaCircleExclamation: '×',
+	FaCircleInfo: 'ℹ',
 }
 
 /**
