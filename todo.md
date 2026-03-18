@@ -72,7 +72,7 @@ Add testCoverage
 
 ### Optional npmPublished
 
-Add npmPublished
+Add !npmPublished
 
 ## @nan0web/db-fs
 
@@ -94,7 +94,7 @@ Add releaseMd
 
 ### Optional npmPublished
 
-Add npmPublished
+Add !npmPublished
 
 ### Optional contributingAndLicense
 
