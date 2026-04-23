@@ -1,0 +1,67 @@
+name,workspace,path,tags,version,description
+@nan0web/auth.app,apps,apps/auth.app,,1.0.0,Authorization application for nan0web
+@nan0web/base.app,apps,apps/base.app,subscribe;contact;email;telegram;web;cli;api;react,1.0.0,Base application example for nan0web platform
+@nan0web/editor-app,apps,apps/editor.app,,1.0.0,Editor Application hosting UI adapters and complex logic
+grow-cli,apps,apps/grow.app,,1.0.0,
+@nan0web/llimo.app,apps,apps/llimo.app,llm;ai;chat;release;testing,1.0.0,LLiMo: Language Living Models for software development
+@nan0web/nan0web.app,apps,apps/nan0web.app,,0.1.0,Sovereign OLMUI Engine — High-performance; data-driven runner for the NaN•Web ecosystem with architectural boot security.
+@nan0web/share.app,apps,apps/share.app,social;distribution;rules-engine;telegram;publish;nan0web,1.1.0,Sovereign Social Distribution Layer (Rules Engine)
+@nan0web/subscription.app,apps,apps/subscription.app,subscribe;email;social;web;cli;api;react,1.0.0,Subscription manager
+@nan0web/test.app,apps,apps/test.app,test;quiz;survey;engine;nan0web,1.0.0,Universal Test Engine for nan0web platform
+@nan0web/0hcnai.framework,packages,packages/0HCnAI.framework,,1.4.0,Zero-Hallucination Collective Artificial Intelligence Framework
+@nan0web/adopt-agent,packages,packages/adopt-agent,,1.0.1,[ОПИС З SEED.MD]
+@nan0web/ai,packages,packages/ai,ai;llm;chat;cerebras;openai;huggingface;openrouter,1.3.0,Unified AI Kernel for NaN0Web ecosystem - LLM provider abstraction
+app,packages,packages/app,,1.0.0,
+@nan0web/auth,packages,packages/auth,,0.0.1,Sovereign Identity and Authorization Protocol for nan•web Matrix
+@nan0web/auth-browser,packages,packages/auth-browser,auth;signin;nan0web,1.0.0,Authentication client with password and social sign-in support.
+@nan0web/auth-core,packages,packages/auth-core,,1.2.0,Core auth primitives: User; Role; Membership; AccessControl; Password; Session
+@nan0web/auth-node,packages,packages/auth-node,,1.1.2,Authorization node.js server for nan0web
+@nan0web/catalog,packages,packages/catalog,,1.0.0,Universal catalog engine for NaN0Web — filtering; search; and data thinkers
+@nan0web/catalog-watch,packages,packages/catalog-watch,catalog;watch;etag;pwa;service-worker;nan0web,0.1.1,Lightweight catalog subscription watcher via HTTP HEAD + ETag. Zero-State Server.
+@nan0web/changelog,packages,packages/changelog,changelog;markdown;nan0web,1.0.0,A simple; typed; and tested API for working with CHANGELOG.md files
+@nan0web/co,packages,packages/co,communication;message;messaging;nan0web,2.0.1,Communication starts here with a simple Message.
+@nan0web/coding,packages,packages/coding,,1.0.0,Coding standards for @nan0web projects
+@nan0web/comment,packages,packages/comment,comment;feedback;qa;overlay;spotlight;nan0web,0.1.2,Universal comment & feedback overlay for QA auditing and page annotation. Activate via URL param; hotkey; or nav toggle.
+@nan0web/core,packages,packages/core,nan0;data;types;utilities;object;array;validation;format;parser,1.1.3,Core application framework for nan0web with database handling; internationalization; and interface connectivity
+@nan0web/db,packages,packages/db,data;flatten;unflatten;merge;object;utility,1.4.8,Every data becomes a database. Agnostic document database and data manipulation utilities.
+@nan0web/db-browser,packages,packages/db-browser,nan0;database;browser;authentication;http;json,1.1.1,Browser Database client as extension of @nan0web/db
+@nan0web/db-fs,packages,packages/db-fs,nanoweb;database;fs,1.2.1,Database provider for nan•web with node:fs
+@nan0web/editor,packages,packages/editor,,1.1.0,Pure logic Core for nan0web editors with optional UI adapters
+@nan0web/event,packages,packages/event,nan0web;event;emitter;pubsub;async;universal,1.0.1,Agnostic extendable Event System
+@nan0web/finance,packages,packages/finance,finance;banking;crypto;calculator;formatting;nan0web,1.0.0,Financial logic; formatting; and calculations for nan0web apps.
+@nan0web/forge,packages,packages/forge,forge;scaffold;generator;nan0web,1.0.0,Project scaffolding and code generation for the NaN0Web ecosystem.
+@nan0web/html,packages,packages/html,html;transformer;nan0web,0.2.1,HTML transformer and utilities.
+@nan0web/http,packages,packages/http,http;headers;message;nan0web;request;response,1.0.1,HTTP classes for nan0web
+@nan0web/http-node,packages,packages/http-node,nano;nanoweb;nanoweb-http-node;http,1.0.2,Node.js HTTP client and server built on native modules with minimal dependencies.
+@nan0web/i18n,packages,packages/i18n,i18n;internationalization;translation;localization,1.5.0,A tiny; zero-dependency i18n helper for Java•Script
+@nan0web/icons,packages,packages/icons,icons;svg;lit;web-components;react-icons;framework-agnostic;cli,1.1.0,Framework-agnostic SVG icons from react-icons sets — zero React dependency
+@nan0web/inspect,packages,packages/inspect,,1.0.0,Engineering inspection and quality control for the NaN0Web ecosystem.
+@nan0web/interface,packages,packages/interface,interface;ui;nan0web,1.0.1,The interface package provides a thin abstraction layer for building apps
+@nan0web/law,packages,packages/law,,1.0.0,Zero-Hallucination 4 Laws of Logic & Language of Intent Subagent Framework
+@nan0web/llimo,packages,packages/llimo,,1.0.0,
+@nan0web/log,packages,packages/log,logger;console;cross-platform;nodejs;browser,1.1.1,A cross-platform Logger class that wraps console methods for both Node.js and browsers with consistent interface and streaming support.
+@nan0web/mail,packages,packages/mail,nano;nan0;nan0web;mail;email;nodemailer;node,1.0.1,Mailing with the nodemailer and nano format and many channels to deliver nicely formatted messages
+@nan0web/markdown,packages,packages/markdown,,1.0.2,Markdown parser for nan0web
+nan0web.app,packages,packages/nan0web,application;os;nan0web,0.1.0,NaN•Web application runner
+@nan0web/play,packages,packages/play,,1.0.0,Shared utilities for NaN0Web sandboxes and snapshot testing (CLI; Web; Mobile)
+@nan0web/protocol,packages,packages/protocol,nan0;data;types;utilities;object;array;validation;format;parser,2.0.0,Minimalistic protocol for executing commands in a message‑driven environment of NaN•Web
+@nan0web/release,packages,packages/release,,1.0.3,Project Management as Code; Git-Native; GPG-Signed; Test-Driven
+@nan0web/html,packages,packages/rss,nano;nan0;nan0web;mail;email;node,1.0.0,HTML transformers and utilities.
+@nan0web/store,packages,packages/store,,1.0.0,Global App Store & Registry for NaN0Web ecosystem
+@nan0web/sync,packages,packages/sync,,1.0.5,High-performance site synchronization engine with remote manifests and atomic locks.
+@nan0web/telemetry,packages,packages/telemetry,telemetry;observability;metrics;database;monitoring,0.1.0,Observability layer for nan0web ecosystem. Collects; aggregates; and reports metrics from @nan0web/db.
+@nan0web/test,packages,packages/test,fetch;mock;testing;http;utility,1.1.3,A test package with simple utilities for testing in node.js runtime
+@nan0web/transformer,packages,packages/transformer,ui;nanoweb,1.0.0,Basic and agnostic transformer.
+@nan0web/types,packages,packages/types,nan0;data;types;utilities;object;array;validation;format;parser,1.7.2,Universal system for managing data structures and types in JavaScript applications based on the nan0 philosophy where zero represents the universe.
+@nan0web/ui,packages,packages/ui,ui;nanoweb,1.11.0,NaN•Web UI. One application logic (algorithm) and many UI.
+@nan0web/ui-chat,packages,packages/ui-chat,,1.0.0,Conversation Visualization Adapter — OLMUI
+@nan0web/ui-cli,packages,packages/ui-cli,ui;cli;input;adapter,2.12.3,NaN•Web UI CLI. Command line interface for One application logic (algorithm) and many UI.
+@nan0web/ui-core,packages,packages/ui-core,ui;nan0web,1.0.0,Core UI for NaN•Web
+@nan0web/ui-lit,packages,packages/ui-lit,web-components;lit;ui-kit;design-system;olmui;zero-dependency;data-driven;shadow-dom;custom-elements;nan0web,1.1.0,Universal Web Components UI Kit on Lit — zero-dependency; data-driven; OLMUI-ready
+@nan0web/ui-llm,packages,packages/ui-llm,llm;chat;ai;session;streaming;cerebras;openai;huggingface;driver;protocol,1.0.1,LLM Protocol layer for NaN•Web — Sessions; Drivers; Models; Streaming. One Logic — Many UI.
+@nan0web/ui-react,packages,packages/ui-react,react;components;ssg;ssr;nan0web,1.2.0,React UI components for nan0web with SSG and SSR support
+@nan0web/ui-react-bootstrap,packages,packages/ui-react-bootstrap,ui;react;bootstrap;declarative;theme;scss;yaml,0.2.4,Bootstrap integration for @nan0web/ui-react – declarative UI with React Bootstrap components and themes.
+@nan0web/ui-robo,packages,packages/ui-robo,,1.0.0,Robotics Action Verification Adapter — OLMUI
+@nan0web/ui-voice,packages,packages/ui-voice,,1.0.0,Voice Prompt Verification Adapter — OLMUI
+@nan0web/verse,packages,packages/verse,verse;nan0web;fundamental,1.0.0,I•We•Meta•Uni•Verse - the source of verse classes and algorithms.
+@nan0web/xml,packages,packages/xml,nano;nan0;nan0web;xml;transformer,1.1.0,A tiny XML encoder and decoder.
