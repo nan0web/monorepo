@@ -50,6 +50,39 @@ async function parseMarkdownStatus(filePath) {
 	}
 }
 
+async function runArchitectureAudit(pkgPath, logger, name) {
+	try {
+		const { ArchitectureAuditor } = await import(path.resolve(process.cwd(), 'packages/inspect/src/index.js'))
+		const auditor = new ArchitectureAuditor({ dir: pkgPath })
+		const gen = auditor.run()
+		let last = null
+		while (true) {
+			const step = await gen.next()
+			if (step.done) {
+				last = step.value
+				break
+			}
+		}
+		
+		if (last && last.type === 'result') {
+			const { success, score } = last.data || {}
+			if (score) {
+				return {
+					exists: true,
+					title: `Arch Score: ${score.pct}%`,
+					tasks: score.total,
+					completed: score.passed,
+					success
+				}
+			}
+		}
+	} catch (e) {
+		// Silent omit or use logger for debugging during migration:
+		// logger.warn(`Skipping ArchitectureAuditor for ${name}: ${e.message}`)
+	}
+	return null
+}
+
 async function scanDirectory(subDir) {
 	const rootPath = path.resolve(process.cwd(), subDir)
 	const items = []
@@ -81,6 +114,8 @@ async function scanDirectory(subDir) {
 				}
 			}
 			if (Object.keys(results).length) {
+				const archResult = await runArchitectureAudit(pkgPath, logger, name)
+				if (archResult) results['architecture.score'] = archResult
 				items.push({ name, type: subDir, path: pkgPath, files: results })
 			}
 		}
@@ -137,14 +172,14 @@ async function main(argv = process.argv.slice(2)) {
 
 	for (const type of Object.keys(grouped).sort()) {
 		mdContent += `## 📁 ${type.toUpperCase()}\n\n`
-		mdContent += `| Module | Project Goal | Status | Tasks | Docs |\n`
-		mdContent += `|--------|--------------|--------|-------|------|\n`
+		mdContent += `| Module | Project Goal | Status | Tasks | Docs | Architecture |\n`
+		mdContent += `|--------|--------------|--------|-------|------|--------------|\n`
 		for (const item of grouped[type].sort((a,b) => a.name.localeCompare(b.name))) {
 			const pMd = item.files['project.md'] || item.files['seed.md']
 			let goal = pMd && pMd.title ? pMd.title : '*Planning*'
 			goal = goal.replace(/\|/g, '\\|')
 			
-			const activeDocs = Object.keys(item.files).filter(f => f !== 'project.md')
+			const activeDocs = Object.keys(item.files).filter(f => f !== 'project.md' && f !== 'architecture.score')
 			
 			let tTasks = 0
 			let tComp = 0
@@ -165,9 +200,17 @@ async function main(argv = process.argv.slice(2)) {
 				statusStr = '🔵 Planning'
 			}
 			
-			const docList = Object.keys(item.files).map(f => `[${f.split('/').pop()}](./${item.type}/${item.name}/${f})`).join(', ')
+			const docList = Object.keys(item.files)
+				.filter(f => f !== 'architecture.score')
+				.map(f => `[${f.split('/').pop()}](./${item.type}/${item.name}/${f})`).join(', ')
 
-			mdContent += `| **${item.name}** | ${goal} | ${statusStr} | ${progressStr} | ${docList} |\n`
+			let archStr = '-'
+			if (item.files['architecture.score']) {
+				const score = item.files['architecture.score']
+				archStr = score.success ? `🍏 ${score.title}` : `🍎 ${score.title}`
+			}
+
+			mdContent += `| **${item.name}** | ${goal} | ${statusStr} | ${progressStr} | ${docList} | ${archStr} |\n`
 		}
 		mdContent += `\n`
 	}
