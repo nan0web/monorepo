@@ -4,6 +4,7 @@
 /finetune/
 /node_modules/
 /.datasets/
+**/.datasets/
 /.packages/
 /.cache/
 /.vscode/
@@ -16,4 +17,17 @@ me.md
 
 # private packages
 /packages/0HCnAI.framework/
+nan0web_agents.index.nan0
+/output.txt
+.continue/
 
+# Local databases and cache
+nan0web_store.csv
+nan0web_store.local.csv
+nan0web.json
+
+# Temp and playground folders
+/tmp/
+/scratch/
+/play/
+.agent/
