@@ -1,7 +1,0 @@
-{
-  "nextId": 0,
-  "dim": 1024,
-  "space": "cosine",
-  "maxElements": 100000,
-  "entries": []
-}
