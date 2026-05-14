@@ -1,0 +1,17 @@
+{
+  "name": "@nan0web/auth",
+  "version": "3.0.0",
+  "description": "Sovereign Identity and Authorization Protocol for nan•web Matrix",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test src/**/*.test.js",
+    "play": "node play/demo.js"
+  },
+  "author": "Yaroslav & Antigravity",
+  "license": "ISC",
+  "dependencies": {
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/ui": "workspace:*"
+  }
+}

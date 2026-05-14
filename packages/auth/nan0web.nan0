@@ -1,0 +1,10 @@
+name: "@nan0web/auth"
+agents:
+  - id: 'voice-auth'
+    description: 'Voice Authorization Signal (External Access)'
+    workflows:
+      - 'src/agents/workflows/voice-auth-protocol.md'
+  - id: 'voice-feedback'
+    description: 'Voice Progress Feedback (Interaction)'
+    workflows:
+      - 'src/agents/workflows/voice-feedback-protocol.md'
