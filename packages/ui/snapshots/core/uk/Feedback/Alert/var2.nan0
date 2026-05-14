@@ -1,0 +1,7 @@
+- render:
+  ui-alert:
+    content: Дію успішно завершено.
+    open: true
+    title: Успіх
+    variant: ok
+- result: {}

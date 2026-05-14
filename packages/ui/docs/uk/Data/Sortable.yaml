@@ -1,0 +1,10 @@
+$Sortable:
+  $search: "сортування перетягування порядок список"
+  items:
+    default:
+      - First
+      - Second
+      - Third
+    type: string[]
+content:
+  - Sortable: true

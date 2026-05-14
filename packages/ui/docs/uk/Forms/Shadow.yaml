@@ -1,0 +1,13 @@
+$Shadow:
+  $search: 'тінь shadow box-shadow effect'
+  value:
+    default: '0 4px 6px rgba(0,0,0,0.1)'
+  label:
+    default: 'Card Shadow'
+content:
+  - Shadow:
+      value: '0 10px 15px rgba(0,0,0,0.2)'
+      label: Soft Floating
+  - Shadow:
+      value: '5px 5px 0px #000000'
+      label: Neo-brutalism

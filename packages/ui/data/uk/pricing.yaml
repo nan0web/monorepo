@@ -1,0 +1,35 @@
+# PricingSectionModel — Тарифні плани
+title: Тарифні плани
+items:
+  - title: Starter
+    price:
+      value: 0
+      currency: UAH
+    features:
+      - 3 проєкти
+      - CLI інтерфейс
+      - Спільнота підтримки
+      - Відкритий код
+
+  - title: Pro
+    price:
+      value: 299
+      currency: UAH
+    features:
+      - Необмежені проєкти
+      - CLI + Web + Mobile
+      - Пріоритетна підтримка
+      - SSG генерація
+      - Theme Editor
+
+  - title: Enterprise
+    price:
+      value: 1499
+      currency: UAH
+    features:
+      - Все з Pro
+      - Кастомні компоненти
+      - SLA 99.9%
+      - Окремий менеджер
+      - Whitelabel рішення
+      - On-premise розгортання

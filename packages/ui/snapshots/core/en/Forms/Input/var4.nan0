@@ -1,0 +1,13 @@
+- render:
+  ui-input:
+    content: ABC
+    disabled: false
+    hint: Exactly 3 uppercase letters
+    max: ""
+    min: ""
+    pattern: [A-Z]{3}
+    placeholder: Enter text...
+    required: false
+    step: ""
+    label: RegExp Pattern
+- result: {}

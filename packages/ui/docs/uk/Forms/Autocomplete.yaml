@@ -1,0 +1,12 @@
+$Autocomplete:
+  $search: 'автодоповнення пошук підказки введення'
+  content:
+    default: Search
+  options:
+    default:
+      - Apple
+      - Banana
+      - Cherry
+    type: string[]
+content:
+  - Autocomplete: true

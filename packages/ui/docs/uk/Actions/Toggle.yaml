@@ -1,0 +1,8 @@
+$Toggle:
+  $search: 'перемикач вмикач тогл вкл викл'
+  content:
+    default: Enable
+  checked:
+    default: false
+content:
+  - Toggle: true

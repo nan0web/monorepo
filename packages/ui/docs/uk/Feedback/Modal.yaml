@@ -1,0 +1,8 @@
+$Modal:
+  $search: "модальне вікно діалог попап"
+  title:
+    default: Підтвердження дії
+  open:
+    default: false
+content:
+  - Modal: true

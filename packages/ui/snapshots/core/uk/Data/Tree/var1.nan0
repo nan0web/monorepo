@@ -1,0 +1,55 @@
+- render:
+  ui-tree:
+    data:
+      - children:
+        - children:
+          - children:
+            - label: Троянда
+            - label: Яблуня
+            - label: Вишня
+            label: Розоцвіті
+          - children:
+            - label: Горох
+            - label: Соя
+            label: Бобові
+          label: Покритонасінні
+        - children:
+          - children:
+            - label: Сосна
+            - label: Ялина
+            label: Соснові
+          label: Голонасінні
+        expanded: true
+        label: Рослини
+      - children:
+        - children:
+          - children:
+            - label: Вовк
+            - label: Лев
+            - label: Ведмідь
+            label: Ссавці
+          - children:
+            - label: Орел
+            - label: Лелека
+            label: Птахи
+          label: Хордові
+        - children:
+          - children:
+            - label: Бджола
+            - label: Метелик
+            label: Комахи
+          label: Членистоногі
+        label: Тварини
+      - children:
+        - children:
+          - children:
+            - label: Печериця
+            - label: Шампіньйон
+            label: Печерицеві
+          - children:
+            - label: Білий гриб
+            - label: Маслюк
+            label: Болетові
+          label: Базидіоміцети
+        label: Гриби
+- result: {}

@@ -1,0 +1,16 @@
+$Table:
+  $search: "таблиця дані рядки колонки"
+  columns:
+    default:
+      - Name
+      - Role
+    type: string[]
+  rows:
+    default:
+      - - Yaro
+        - Creator
+      - - NaN0
+        - System
+    type: string[][]
+content:
+  - Table: true

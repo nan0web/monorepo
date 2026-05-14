@@ -1,0 +1,8 @@
+- render:
+  ui-select:
+    content: Choose option
+    options:
+      - Alpha
+      - Beta
+      - Gamma
+- result: {}

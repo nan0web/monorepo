@@ -1,0 +1,35 @@
+# PricingSectionModel — Pricing Plans
+title: Pricing Plans
+items:
+  - title: Starter
+    price:
+      value: 0
+      currency: USD
+    features:
+      - 3 projects
+      - CLI interface
+      - Community support
+      - Open source
+
+  - title: Pro
+    price:
+      value: 9.99
+      currency: USD
+    features:
+      - Unlimited projects
+      - CLI + Web + Mobile
+      - Priority support
+      - SSG generation
+      - Theme Editor
+
+  - title: Enterprise
+    price:
+      value: 49.99
+      currency: USD
+    features:
+      - Everything in Pro
+      - Custom components
+      - SLA 99.9%
+      - Dedicated manager
+      - Whitelabel solution
+      - On-premise deployment

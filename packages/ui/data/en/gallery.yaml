@@ -1,0 +1,22 @@
+# GalleryModel — Screenshots Gallery
+title: NaN•Web Interfaces
+columns: 3
+items:
+  - src: /assets/gallery/cli-sandbox.png
+    caption: CLI Sandbox — interactive testing
+    alt: Screenshot of CLI Sandbox
+  - src: /assets/gallery/theme-editor.png
+    caption: Theme Editor — visual CSS customization
+    alt: Screenshot of Theme Editor
+  - src: /assets/gallery/docs-site.png
+    caption: SSG Documentation — auto-generated
+    alt: Screenshot of Documentation Site
+  - src: /assets/gallery/breadcrumb-nav.png
+    caption: Breadcrumb Navigation — navigation stack
+    alt: Screenshot of Breadcrumb Navigation
+  - src: /assets/gallery/mobile-view.png
+    caption: Mobile View — responsive interface
+    alt: Screenshot of Mobile View
+  - src: /assets/gallery/table-component.png
+    caption: Table Component — sorting and filtering
+    alt: Screenshot of Table Component

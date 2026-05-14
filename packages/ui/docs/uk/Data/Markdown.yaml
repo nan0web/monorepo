@@ -1,0 +1,9 @@
+$Markdown:
+  $search: "маркдаун текст форматування документ"
+  content:
+    default: |-
+      # Hello
+
+      This is **markdown**.
+content:
+  - Markdown: true

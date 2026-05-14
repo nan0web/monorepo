@@ -1,0 +1,47 @@
+$Button:
+  $search: 'кнопка натиснути дія клік submit'
+  content:
+    default: Click Me
+  variant:
+    - primary
+    - secondary
+    - info
+    - ok
+    - warn
+    - err
+    - ghost
+  size:
+    - sm
+    - md
+    - lg
+  outline:
+    default: false
+  disabled:
+    default: false
+  loading:
+    default: false
+content:
+  - Button:
+      variant: primary
+      content: Надіслати
+      outline: false
+  - Button:
+      variant: secondary
+      content: Скасувати
+      outline: false
+  - Button:
+      variant: ok
+      content: Підтвердити
+      outline: false
+  - Button:
+      variant: err
+      content: Видалити
+      outline: false
+  - Button:
+      variant: primary
+      content: Контур
+      outline: true
+  - Button:
+      variant: ghost
+      content: Легкий
+      outline: false

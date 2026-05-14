@@ -1,0 +1,7 @@
+- render:
+  ui-sortable:
+    items:
+      - First
+      - Second
+      - Third
+- result: {}

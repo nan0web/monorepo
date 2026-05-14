@@ -1,0 +1,7 @@
+- render:
+  ui-alert:
+    content: Щось пішло не так.
+    open: true
+    title: Помилка
+    variant: err
+- result: {}

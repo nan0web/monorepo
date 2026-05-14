@@ -1,0 +1,27 @@
+# HeaderModel — Шапка сайту
+title: NaN•Web UI
+logo: /assets/logo.svg
+actions:
+  - title: Документація
+    href: /docs
+    icon: book
+  - title: GitHub
+    href: https://github.com/nicholasgasior/nan0web
+    icon: github
+  - title: Увійти
+    href: /auth/login
+    icon: user
+lang:
+  title: Українська
+  locale: uk_UA
+  icon: 🇺🇦
+langs:
+  - title: Українська
+    locale: uk_UA
+    icon: 🇺🇦
+  - title: English
+    locale: en_GB
+    icon: 🇬🇧
+  - title: Deutsch
+    locale: de_DE
+    icon: 🇩🇪

@@ -1,0 +1,47 @@
+$Button:
+  content:
+    default: Click Me
+  variant:
+    - brand
+    - primary
+    - secondary
+    - info
+    - ok
+    - warn
+    - err
+    - ghost
+  size:
+    - sm
+    - md
+    - lg
+  outline:
+    default: false
+  disabled:
+    default: false
+  loading:
+    default: false
+content:
+  - Button:
+      variant: primary
+      content: Submit
+      outline: false
+  - Button:
+      variant: secondary
+      content: Cancel
+      outline: false
+  - Button:
+      variant: ok
+      content: Accept
+      outline: false
+  - Button:
+      variant: err
+      content: Delete
+      outline: false
+  - Button:
+      variant: primary
+      content: Outline
+      outline: true
+  - Button:
+      variant: ghost
+      content: Subtle
+      outline: false

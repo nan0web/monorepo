@@ -1,0 +1,11 @@
+story:
+  - ValidatedApp: {}
+
+  # The test should actually test throwing error, but SpecRunner just runs streams.
+  # So we will specify the complete path here, if code is correct.
+  # If we want to test that empty code fails, it should be done in JS node:test.
+  - ask: code
+    $value: '1234'
+    
+  - result:
+      code: '1234'

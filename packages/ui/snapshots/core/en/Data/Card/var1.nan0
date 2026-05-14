@@ -1,0 +1,6 @@
+- render:
+  ui-card:
+    content: Card body text text
+    subtitle: ""
+    title: Card Title
+- result: {}

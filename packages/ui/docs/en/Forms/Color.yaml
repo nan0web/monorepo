@@ -1,0 +1,16 @@
+$Color:
+  $search: 'color picker rgb rgba'
+  value:
+    default: '#0099dc'
+  label:
+    default: 'Pick a color'
+  alpha:
+    default: false
+content:
+  - Color:
+      value: '#22c55e'
+      label: Success Color (Hex)
+  - Color:
+      value: 'rgba(239, 68, 68, 0.5)'
+      label: Error Color (RGBA)
+      alpha: true

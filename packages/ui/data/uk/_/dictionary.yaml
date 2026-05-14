@@ -1,0 +1,29 @@
+profile:
+  form_title: '📋 Ваші дані'
+  name_label: '👤 Введіть ваше імʼя, щоб почати'
+  name_placeholder: 'наприклад, Ярослав'
+  role_label: '🎭 Оберіть вашу роль'
+  tool_label: '🛠 Улюблений інструмент'
+  name: "Ім'я"
+  role: "Роль"
+  tool: "Інструмент"
+
+role:
+  developer: 'Розробник'
+  designer: 'Дизайнер'
+  manager: 'Менеджер'
+
+showcase:
+  app_name_help: 'Назва додатка для шоукейсу'
+  app_name_default: 'Шоукейс компонентів (Zero Hallucination)'
+  start_btn: 'Почати шоукейс'
+  msg_generate_confirm: 'Готові створити профіль для {name} ({role})?'
+  msg_aborted: 'Операцію перервано.'
+  msg_success: 'Профіль успішно створено!'
+  msg_cancelled: 'Створення профілю скасовано.'
+
+table:
+  property: 'Властивість'
+  value: 'Значення'
+  status: 'Статус'
+  status_active: 'Активний'

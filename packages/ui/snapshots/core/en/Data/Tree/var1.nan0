@@ -1,0 +1,55 @@
+- render:
+  ui-tree:
+    data:
+      - children:
+        - children:
+          - children:
+            - label: Rose
+            - label: Apple
+            - label: Cherry
+            label: Rosaceae
+          - children:
+            - label: Pea
+            - label: Soy
+            label: Fabaceae
+          label: Angiosperms
+        - children:
+          - children:
+            - label: Pine
+            - label: Spruce
+            label: Pinaceae
+          label: Gymnosperms
+        expanded: true
+        label: Plants
+      - children:
+        - children:
+          - children:
+            - label: Wolf
+            - label: Lion
+            - label: Bear
+            label: Mammals
+          - children:
+            - label: Eagle
+            - label: Stork
+            label: Birds
+          label: Chordates
+        - children:
+          - children:
+            - label: Bee
+            - label: Butterfly
+            label: Insects
+          label: Arthropods
+        label: Animals
+      - children:
+        - children:
+          - children:
+            - label: Agaricus
+            - label: Champignon
+            label: Agaricaceae
+          - children:
+            - label: Porcini
+            - label: Suillus
+            label: Boletaceae
+          label: Basidiomycota
+        label: Fungi
+- result: {}

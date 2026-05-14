@@ -1,0 +1,33 @@
+$Alert:
+  $search: "сповіщення повідомлення попередження алерт банер"
+  variant:
+    - info
+    - ok
+    - warn
+    - err
+  title:
+    default: Зверніть увагу!
+  content:
+    default: Це інформаційне повідомлення.
+    type: text
+  icon:
+    type: string
+  open:
+    default: true
+content:
+  - Alert:
+      variant: info
+      title: Інформація
+      content: Це інформаційне сповіщення.
+  - Alert:
+      variant: ok
+      title: Успіх
+      content: Дію успішно завершено.
+  - Alert:
+      variant: warn
+      title: Попередження
+      content: Будь ласка, будьте обережні з цією дією.
+  - Alert:
+      variant: err
+      title: Помилка
+      content: Щось пішло не так.

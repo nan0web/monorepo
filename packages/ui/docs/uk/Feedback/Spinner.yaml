@@ -1,0 +1,10 @@
+$Spinner:
+  $search: "спінер завантаження обертання індикатор"
+  size:
+    - sm
+    - md
+    - lg
+  color:
+    type: color
+content:
+  - Spinner: true

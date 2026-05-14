@@ -1,0 +1,10 @@
+$CodeBlock:
+  code:
+    type: text/javascript
+    default: |
+      const x = 42
+      console.info(x)
+  language:
+    default: javascript
+content:
+  - CodeBlock: true

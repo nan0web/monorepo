@@ -1,0 +1,18 @@
+# TimelineModel — Історія проєкту
+title: Дорожня карта
+items:
+  - date: "2025-06-01"
+    title: Перший реліз
+    description: Базова архітектура OLMUI, 5 компонентів
+  - date: "2025-12-01"
+    title: v1.6 — Theme Editor
+    description: CSS Variable Propagation, SSG документація
+  - date: "2026-01-15"
+    title: v1.7 — Generator Engine
+    description: Async generators, BreadcrumbModel, Sandbox
+  - date: "2026-03-25"
+    title: v1.8 — Model Migration
+    description: 12 моделей → extends Model (@nan0web/core)
+  - date: "2026-03-26"
+    title: v1.9 — Domain Extension
+    description: 20 нових моделей, 99% покриття SaaS потреб

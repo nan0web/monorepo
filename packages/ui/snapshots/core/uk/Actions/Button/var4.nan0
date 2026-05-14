@@ -1,0 +1,8 @@
+- render:
+  ui-button:
+    content: Видалити
+    disabled: false
+    loading: false
+    outline: false
+    variant: err
+- result: {}

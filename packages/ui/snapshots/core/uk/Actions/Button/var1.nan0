@@ -1,0 +1,8 @@
+- render:
+  ui-button:
+    content: Надіслати
+    disabled: false
+    loading: false
+    outline: false
+    variant: primary
+- result: {}

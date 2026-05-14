@@ -1,0 +1,7 @@
+- render:
+  ui-alert:
+    content: Будь ласка, будьте обережні з цією дією.
+    open: true
+    title: Попередження
+    variant: warn
+- result: {}

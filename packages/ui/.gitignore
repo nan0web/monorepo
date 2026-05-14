@@ -1,0 +1,46 @@
+# System files
+.DS_Store
+
+/.datasets/
+/.cache/
+/dist/
+
+# Coverage
+coverage/
+
+# Node modules
+node_modules/
+
+# Current chat
+chat/
+me.md
+
+# Cursor
+.cursorrules
+
+# VSCode
+.vscode/
+
+# Temporary
+/apps/
+.agent
+
+# Playwright
+*-snapshots/
+test-results/
+playwright-report/
+blob-report/
+
+# Generated docs pages (from generate-pages.js)
+docs/site/uk/
+docs/site/en/
+docs/site/Actions/
+docs/site/Data/
+docs/site/Feedback/
+docs/site/Forms/
+docs/site/System/
+docs/site/public/data/
+
+# Logs
+logs/
+*.log

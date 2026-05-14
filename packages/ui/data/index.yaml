@@ -1,0 +1,16 @@
+# ShowcaseAppModel — Main Manifest
+$id: '@nan0web/ui/ShowcaseAppModel'
+title: '@nan0web/ui Showcase'
+$lang: uk
+
+# ─── Content ──────────────────────────────────────
+$content:
+  - Banner: true
+  - Hero: true
+  - Stats: true
+  - PricingSection: true
+  - Testimonials: true
+  - Timeline: true
+  - FAQ: true
+  - Gallery: true
+  - EmptyState: true

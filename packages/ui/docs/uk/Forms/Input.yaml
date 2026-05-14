@@ -1,0 +1,50 @@
+$Input:
+  $search: 'введення поле текст інпут форма pattern validation required min max step'
+  content:
+    default: Username
+  type:
+    - text
+    - email
+    - password
+    - number
+    - tel
+    - url
+    - date
+  placeholder:
+    default: Enter text...
+  required:
+    default: false
+  pattern:
+    default: ''
+  min:
+    default: ''
+  max:
+    default: ''
+  step:
+    default: ''
+  hint:
+    default: ''
+  disabled:
+    default: false
+content:
+  - Input:
+      content: Admin
+      label: Username
+  - Input:
+      content: test@example.com
+      type: email
+      label: Email
+      required: true
+  - Input:
+      content: '123'
+      label: Number with Range
+      type: number
+      min: '0'
+      max: '100'
+      step: '10'
+      hint: Range 0-100, step 10
+  - Input:
+      content: 'ABC'
+      label: RegExp Pattern
+      pattern: '[A-Z]{3}'
+      hint: Exactly 3 uppercase letters

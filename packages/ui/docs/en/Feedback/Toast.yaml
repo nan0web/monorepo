@@ -1,0 +1,15 @@
+$Toast:
+  message:
+    default: Saved successfully!
+  variant:
+    - success
+    - error
+    - info
+    - warning
+  duration:
+    default: 3000
+    type: number
+  open:
+    default: true
+content:
+  - Toast: true

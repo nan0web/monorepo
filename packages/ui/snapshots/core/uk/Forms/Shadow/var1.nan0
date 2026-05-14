@@ -1,0 +1,5 @@
+- render:
+  ui-shadow:
+    label: Soft Floating
+    value: 0 10px 15px rgba(0,0,0,0.2)
+- result: {}

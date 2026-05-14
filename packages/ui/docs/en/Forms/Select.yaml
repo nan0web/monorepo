@@ -1,0 +1,11 @@
+$Select:
+  content:
+    default: Choose option
+  options:
+    default:
+      - Alpha
+      - Beta
+      - Gamma
+    type: Select.Models.Option[]
+content:
+  - Select: true

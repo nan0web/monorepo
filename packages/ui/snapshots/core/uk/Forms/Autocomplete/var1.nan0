@@ -1,0 +1,8 @@
+- render:
+  ui-autocomplete:
+    content: Search
+    options:
+      - Apple
+      - Banana
+      - Cherry
+- result: {}

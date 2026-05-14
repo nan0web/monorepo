@@ -1,0 +1,29 @@
+profile:
+  form_title: '📋 Your Details'
+  name_label: '👤 Enter your name to begin'
+  name_placeholder: 'e.g. Yaroslav'
+  role_label: '🎭 Select your role'
+  tool_label: '🛠 Favorite tool'
+  name: "Name"
+  role: "Role"
+  tool: "Tool"
+
+role:
+  developer: 'Developer'
+  designer: 'Designer'
+  manager: 'Manager'
+
+showcase:
+  app_name_help: 'Showcase application name'
+  app_name_default: 'Component Showcase (Zero Hallucination)'
+  start_btn: 'Start Showcase'
+  msg_generate_confirm: 'Ready to generate profile for {name} ({role})?'
+  msg_aborted: 'Operation aborted.'
+  msg_success: 'Profile generated successfully!'
+  msg_cancelled: 'Profile generation cancelled.'
+
+table:
+  property: 'Property'
+  value: 'Value'
+  status: 'Status'
+  status_active: 'Active'

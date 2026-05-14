@@ -1,0 +1,6 @@
+- render:
+  ui-color:
+    alpha: false
+    label: Успішний колір (Hex)
+    value: "#22c55e"
+- result: {}

@@ -1,0 +1,9 @@
+$Slider:
+  min:
+    default: 0
+  max:
+    default: 100
+  value:
+    default: 50
+content:
+  - Slider: true

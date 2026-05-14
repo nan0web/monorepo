@@ -1,0 +1,6 @@
+- render:
+  ui-confirm:
+    cancelText: No
+    confirmText: Yes
+    message: Are you sure?
+- result: {}

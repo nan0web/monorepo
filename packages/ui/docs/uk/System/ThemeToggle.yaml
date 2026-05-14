@@ -1,0 +1,4 @@
+$ThemeToggle:
+  $search: 'тема перемикач темна світла'
+content:
+  - ThemeToggle: true

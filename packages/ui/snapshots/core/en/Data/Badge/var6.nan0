@@ -1,0 +1,5 @@
+- render:
+  ui-badge:
+    content: Failed
+    variant: err
+- result: {}

@@ -1,0 +1,13 @@
+# HeroModel — Головний банер
+title: Один Алгоритм — Багато Інтерфейсів
+description: >
+  NaN•Web UI — єдина архітектура для CLI, Web, Mobile, Voice та AI.
+  Опишіть логіку один раз — вона працюватиме скрізь.
+image: /assets/hero-banner.svg
+actions:
+  - title: Почати
+    href: /docs/getting-started
+    icon: rocket
+  - title: Пісочниця
+    href: /sandbox
+    icon: play

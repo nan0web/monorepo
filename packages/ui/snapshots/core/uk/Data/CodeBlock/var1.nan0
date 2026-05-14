@@ -1,0 +1,7 @@
+- render:
+  ui-codeblock:
+    code: |
+      const x = 42
+      console.info(x)
+    language: javascript
+- result: {}

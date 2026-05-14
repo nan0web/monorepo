@@ -1,0 +1,7 @@
+$Toggle:
+  content:
+    default: Enable
+  checked:
+    default: false
+content:
+  - Toggle: true

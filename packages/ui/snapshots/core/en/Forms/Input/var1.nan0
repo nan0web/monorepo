@@ -1,0 +1,13 @@
+- render:
+  ui-input:
+    content: Admin
+    disabled: false
+    hint: ""
+    max: ""
+    min: ""
+    pattern: ""
+    placeholder: Enter text...
+    required: false
+    step: ""
+    label: Username
+- result: {}

@@ -1,0 +1,5 @@
+- render:
+  ui-modal:
+    open: false
+    title: Confirm Action
+- result: {}

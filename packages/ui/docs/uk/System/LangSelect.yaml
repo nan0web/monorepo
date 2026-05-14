@@ -1,0 +1,11 @@
+$LangSelect:
+  $search: "мова вибір мови переклад локалізація"
+  langs:
+    default:
+      - uk
+      - en
+    type: string[]
+  current:
+    default: uk
+content:
+  - LangSelect: true

@@ -1,0 +1,14 @@
+- render:
+  ui-input:
+    content: 123
+    disabled: false
+    hint: Range 0-100, step 10
+    max: 100
+    min: 0
+    pattern: ""
+    placeholder: Enter text...
+    required: false
+    step: 10
+    label: Number with Range
+    type: number
+- result: {}

@@ -1,0 +1,8 @@
+- render:
+  ui-button:
+    content: Підтвердити
+    disabled: false
+    loading: false
+    outline: false
+    variant: ok
+- result: {}

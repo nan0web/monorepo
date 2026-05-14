@@ -1,0 +1,5 @@
+- render:
+  ui-toggle:
+    checked: false
+    content: Enable
+- result: {}

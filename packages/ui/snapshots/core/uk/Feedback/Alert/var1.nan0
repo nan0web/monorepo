@@ -1,0 +1,7 @@
+- render:
+  ui-alert:
+    content: Це інформаційне сповіщення.
+    open: true
+    title: Інформація
+    variant: info
+- result: {}

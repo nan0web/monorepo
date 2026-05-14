@@ -1,0 +1,6 @@
+- render:
+  ui-confirm:
+    cancelText: Ні
+    confirmText: Так
+    message: Ви впевнені?
+- result: {}

@@ -1,0 +1,13 @@
+# HeroModel — Main Banner
+title: One Logic — Many UIs
+description: >
+  NaN•Web UI — a unified architecture for CLI, Web, Mobile, Voice and AI.
+  Describe your logic once — it works everywhere.
+image: /assets/hero-banner.svg
+actions:
+  - title: Get Started
+    href: /docs/getting-started
+    icon: rocket
+  - title: Sandbox
+    href: /sandbox
+    icon: play

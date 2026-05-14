@@ -1,0 +1,8 @@
+# EmptyStateModel — Порожній стан
+icon: inbox
+title: Поки що тут порожньо
+description: Створіть свій перший проєкт, щоб почати роботу з NaN•Web
+action:
+  title: Створити проєкт
+  href: /new
+  icon: plus

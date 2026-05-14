@@ -1,0 +1,15 @@
+# StatsModel — Key Metrics
+title: NaN•Web in Numbers
+items:
+  - label: Domain Models
+    value: "33"
+    trend: "+20"
+  - label: UI Packages
+    value: "7"
+    trend: ""
+  - label: Contract Tests
+    value: "208"
+    trend: "+24"
+  - label: Interface Languages
+    value: "3"
+    trend: "+1"

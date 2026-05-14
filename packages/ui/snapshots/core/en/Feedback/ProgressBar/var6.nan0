@@ -1,0 +1,8 @@
+- render:
+  ui-progressbar:
+    indeterminate: true
+    max: 100
+    show-label: true
+    value: 65
+    variant: secondary
+- result: {}

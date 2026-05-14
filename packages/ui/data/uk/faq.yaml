@@ -1,0 +1,33 @@
+# AccordionModel[] — Часті запитання (FAQ)
+- title: Що таке OLMUI?
+  content: >
+    One Logic — Many UI. Філософія, де бізнес-логіка описується один раз
+    через Model-as-Schema, а потім автоматично адаптується для CLI, Web,
+    Mobile, Voice та AI інтерфейсів.
+  open: true
+
+- title: Чи потрібен React або Vue?
+  content: >
+    Ні. NaN•Web працює з будь-яким UI фреймворком (Lit, React, Vue)
+    або зовсім без нього (CLI, SSG). Моделі не залежать від рендерера.
+  open: false
+
+- title: Як починати новий проєкт?
+  content: >
+    1. Створіть доменні моделі у src/domain/
+    2. Опишіть дані у data/*.yaml
+    3. Запустіть nan0web cli для верифікації
+    4. Підключіть ui-lit або ui-react для веб-версії
+  open: false
+
+- title: Чи є підтримка i18n?
+  content: >
+    Так. @nan0web/i18n забезпечує повну локалізацію через Model-Only парадигму.
+    Ключі перекладу автоматично витягуються з моделей.
+  open: false
+
+- title: Як працює тематизація (theming)?
+  content: >
+    Все через CSS Custom Properties. Theme Editor дозволяє змінювати
+    кольори, типографіку та геометрію без зміни JS коду.
+  open: false

@@ -1,0 +1,58 @@
+$Tree:
+  $search: 'дерево ієрархія структура папки'
+  data:
+    default:
+      - label: Рослини
+        expanded: true
+        children:
+          - label: Покритонасінні
+            children:
+              - label: Розоцвіті
+                children:
+                  - label: Троянда
+                  - label: Яблуня
+                  - label: Вишня
+              - label: Бобові
+                children:
+                  - label: Горох
+                  - label: Соя
+          - label: Голонасінні
+            children:
+              - label: Соснові
+                children:
+                  - label: Сосна
+                  - label: Ялина
+      - label: Тварини
+        children:
+          - label: Хордові
+            children:
+              - label: Ссавці
+                children:
+                  - label: Вовк
+                  - label: Лев
+                  - label: Ведмідь
+              - label: Птахи
+                children:
+                  - label: Орел
+                  - label: Лелека
+          - label: Членистоногі
+            children:
+              - label: Комахи
+                children:
+                  - label: Бджола
+                  - label: Метелик
+      - label: Гриби
+        children:
+          - label: Базидіоміцети
+            children:
+              - label: Печерицеві
+                children:
+                  - label: Печериця
+                  - label: Шампіньйон
+              - label: Болетові
+                children:
+                  - label: Білий гриб
+                  - label: Маслюк
+    type: Tree.Models.Node[]
+content:
+  - Tree: true

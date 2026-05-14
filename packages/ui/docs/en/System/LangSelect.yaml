@@ -1,0 +1,13 @@
+$LangSelect:
+  langs:
+    default:
+      - title: Ukrainian
+        locale: uk
+      - title: English
+        locale: en
+    type: Language[]
+  current:
+    # if not set, use browser language if available in langs.
+    default: ''
+content:
+  - LangSelect: true

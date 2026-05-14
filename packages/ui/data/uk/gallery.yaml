@@ -1,0 +1,22 @@
+# GalleryModel — Галерея скріншотів
+title: Інтерфейси NaN•Web
+columns: 3
+items:
+  - src: /assets/gallery/cli-sandbox.png
+    caption: CLI Sandbox — інтерактивне тестування
+    alt: Screenshot of CLI Sandbox
+  - src: /assets/gallery/theme-editor.png
+    caption: Theme Editor — візуальне налаштування CSS
+    alt: Screenshot of Theme Editor
+  - src: /assets/gallery/docs-site.png
+    caption: SSG Документація — автоматична генерація
+    alt: Screenshot of Documentation Site
+  - src: /assets/gallery/breadcrumb-nav.png
+    caption: Breadcrumb Navigation — навігаційний стек
+    alt: Screenshot of Breadcrumb Navigation
+  - src: /assets/gallery/mobile-view.png
+    caption: Mobile View — адаптивний інтерфейс
+    alt: Screenshot of Mobile View
+  - src: /assets/gallery/table-component.png
+    caption: Table Component — сортування та фільтрація
+    alt: Screenshot of Table Component

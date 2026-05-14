@@ -1,0 +1,7 @@
+$Modal:
+  title:
+    default: Confirm Action
+  open:
+    default: false
+content:
+  - Modal: true

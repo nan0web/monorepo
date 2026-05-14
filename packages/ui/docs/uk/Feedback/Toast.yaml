@@ -1,0 +1,15 @@
+$Toast:
+  $search: "тост повідомлення нотифікація спливаюче"
+  message:
+    default: Saved successfully!
+  variant:
+    - success
+    - error
+    - info
+    - warning
+  duration:
+    default: 3000
+  open:
+    default: true
+content:
+  - Toast: true

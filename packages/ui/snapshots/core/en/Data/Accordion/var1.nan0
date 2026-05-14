@@ -1,0 +1,8 @@
+- render:
+  ui-accordion:
+    items:
+      - content: A universal UI ecosystem.
+        title: What is NaN•Web?
+      - content: npm install @nan0web/ui-lit
+        title: How to start?
+- result: {}

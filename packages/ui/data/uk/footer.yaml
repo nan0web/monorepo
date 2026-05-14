@@ -1,0 +1,25 @@
+# FooterModel — Підвал сайту
+copyright: © 2026 NaN•Web
+version: 1.9.0
+license: ISC
+nav:
+  - title: Про нас
+    href: /about
+  - title: Контакти
+    href: /contact
+  - title: Політика конфіденційності
+    href: /privacy
+share:
+  - title: GitHub
+    href: https://github.com/nicholasgasior/nan0web
+    icon: github
+  - title: Telegram
+    href: https://t.me/nan0web
+    icon: telegram
+langs:
+  - title: Українська
+    locale: uk_UA
+    icon: 🇺🇦
+  - title: English
+    locale: en_GB
+    icon: 🇬🇧

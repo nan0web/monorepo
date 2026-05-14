@@ -1,0 +1,11 @@
+$Accordion:
+  $search: "акордеон розкриття список секції панель"
+  items:
+    default:
+      - title: What is NaN•Web?
+        content: A universal UI ecosystem.
+      - title: How to start?
+        content: npm install @nan0web/ui-lit
+    type: Accordion.Models.Item[]
+content:
+  - Accordion: true

@@ -1,0 +1,15 @@
+# StatsModel — Ключові метрики
+title: NaN•Web у цифрах
+items:
+  - label: Доменних моделей
+    value: "33"
+    trend: "+20"
+  - label: UI пакетів
+    value: "7"
+    trend: ""
+  - label: Контрактних тестів
+    value: "208"
+    trend: "+24"
+  - label: Мов інтерфейсу
+    value: "3"
+    trend: "+1"

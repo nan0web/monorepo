@@ -1,0 +1,6 @@
+- render:
+  ui-toast:
+    duration: 3_000
+    message: Saved successfully!
+    open: true
+- result: {}

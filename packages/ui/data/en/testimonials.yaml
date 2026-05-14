@@ -1,0 +1,24 @@
+# TestimonialModel[] — Customer Reviews
+- author: Elena Kovalenko
+  avatar: /assets/avatars/olena.jpg
+  text: >
+    NaN•Web completely changed our development approach.
+    One model — and it works in CLI, web and Telegram.
+  date: "2026-02-15"
+  rating: 5
+
+- author: Max Bondarenko
+  avatar: /assets/avatars/maksym.jpg
+  text: >
+    Theme Editor lets our designers work independently
+    from developers. True sovereignty.
+  date: "2026-03-01"
+  rating: 4
+
+- author: Julia Petrenko
+  avatar: /assets/avatars/yulia.jpg
+  text: >
+    CLI snapshot testing elevated quality to a new level.
+    Zero breakage after updates.
+  date: "2026-03-20"
+  rating: 5

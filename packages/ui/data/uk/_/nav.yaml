@@ -1,0 +1,59 @@
+title: NaN•Web UI
+url: /
+children:
+  - title: Головна
+    url: /
+    icon: home
+  - title: Компоненти
+    url: /components
+    icon: grid
+    children:
+      - title: Button
+        url: /components/button
+      - title: Input
+        url: /components/input
+      - title: Select
+        url: /components/select
+      - title: Table
+        url: /components/table
+      - title: Accordion
+        url: /components/accordion
+      - title: Tabs
+        url: /components/tabs
+      - title: Gallery
+        url: /components/gallery
+      - title: Toast
+        url: /components/toast
+      - title: Spinner
+        url: /components/spinner
+  - title: Лейаути
+    url: /layouts
+    icon: layout
+    children:
+      - title: Header
+        url: /layouts/header
+      - title: Footer
+        url: /layouts/footer
+      - title: Hero
+        url: /layouts/hero
+      - title: Banner
+        url: /layouts/banner
+      - title: Empty State
+        url: /layouts/empty-state
+  - title: Дані
+    url: /data
+    icon: database
+    children:
+      - title: Pricing
+        url: /data/pricing
+      - title: Testimonials
+        url: /data/testimonials
+      - title: Stats
+        url: /data/stats
+      - title: Timeline
+        url: /data/timeline
+      - title: FAQ
+        url: /data/faq
+  - title: Налаштування
+    url: /settings
+    icon: settings

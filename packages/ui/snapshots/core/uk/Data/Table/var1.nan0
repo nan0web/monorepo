@@ -1,0 +1,13 @@
+- render:
+  ui-table:
+    columns:
+      - Name
+      - Role
+    rows:
+      -
+        - Yaro
+        - Creator
+      -
+        - NaN0
+        - System
+- result: {}

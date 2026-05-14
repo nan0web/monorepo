@@ -1,0 +1,27 @@
+# HeaderModel — Site Header
+title: NaN•Web UI
+logo: /assets/logo.svg
+actions:
+  - title: Documentation
+    href: /docs
+    icon: book
+  - title: GitHub
+    href: https://github.com/nicholasgasior/nan0web
+    icon: github
+  - title: Sign In
+    href: /auth/login
+    icon: user
+lang:
+  title: English
+  locale: en_GB
+  icon: 🇬🇧
+langs:
+  - title: Українська
+    locale: uk_UA
+    icon: 🇺🇦
+  - title: English
+    locale: en_GB
+    icon: 🇬🇧
+  - title: Deutsch
+    locale: de_DE
+    icon: 🇩🇪

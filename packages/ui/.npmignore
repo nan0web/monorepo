@@ -1,0 +1,27 @@
+# NaN0Web UI .npmignore
+node_modules/
+.git/
+.husky/
+.github/
+.datasets/
+.vscode/
+.cache/
+dist/
+coverage/
+test-results/
+playwright-report/
+snapshots/
+play/
+releases/
+docs/
+test/
+src/**/*.test.js
+src/test/
+src/README.md.js
+system.md
+ROADMAP.md
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+*.log
+.DS_Store

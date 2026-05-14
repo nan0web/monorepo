@@ -1,0 +1,5 @@
+- render:
+  ui-badge:
+    content: New
+    variant: info
+- result: {}

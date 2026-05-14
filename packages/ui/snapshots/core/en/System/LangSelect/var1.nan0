@@ -1,0 +1,9 @@
+- render:
+  ui-langselect:
+    current: ""
+    langs:
+      - locale: uk
+        title: Ukrainian
+      - locale: en
+        title: English
+- result: {}

@@ -1,0 +1,12 @@
+$Select:
+  $search: 'вибір список опції дропдаун селект'
+  content:
+    default: Виберіть опцію
+  options:
+    default:
+      - Альфа
+      - Бета
+      - Гамма
+    type: string[]
+content:
+  - Select: true

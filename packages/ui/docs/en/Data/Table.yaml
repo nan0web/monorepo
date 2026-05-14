@@ -1,0 +1,15 @@
+$Table:
+  columns:
+    default:
+      - Name
+      - Role
+    type: string[]
+  rows:
+    default:
+      - - Yaro
+        - Creator
+      - - NaN0
+        - System
+    type: string[][]
+content:
+  - Table: true

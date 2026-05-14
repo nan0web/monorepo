@@ -1,0 +1,5 @@
+- render:
+  ui-badge:
+    content: Archived
+    variant: secondary
+- result: {}

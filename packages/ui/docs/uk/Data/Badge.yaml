@@ -1,0 +1,30 @@
+$Badge:
+  $search: 'бейдж значок мітка лейбл індикатор'
+  content:
+    default: New
+  variant:
+    - primary
+    - secondary
+    - info
+    - ok
+    - warn
+    - err
+content:
+  - Badge:
+      variant: primary
+      content: Draft
+  - Badge:
+      variant: secondary
+      content: Archived
+  - Badge:
+      variant: info
+      content: New
+  - Badge:
+      variant: ok
+      content: Done
+  - Badge:
+      variant: warn
+      content: At Risk
+  - Badge:
+      variant: err
+      content: Failed

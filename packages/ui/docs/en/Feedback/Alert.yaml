@@ -1,0 +1,32 @@
+$Alert:
+  variant:
+    - info
+    - ok
+    - warn
+    - err
+  title:
+    default: Heads up!
+  content:
+    default: This is an informational alert.
+    type: text
+  icon:
+    type: string
+  open:
+    default: true
+content:
+  - Alert:
+      variant: info
+      title: Information
+      content: This is an info alert.
+  - Alert:
+      variant: ok
+      title: Success
+      content: Action completed successfully.
+  - Alert:
+      variant: warn
+      title: Warning
+      content: Please be careful with this action.
+  - Alert:
+      variant: err
+      title: Error
+      content: Something went wrong.

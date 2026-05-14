@@ -1,0 +1,15 @@
+story:
+  - ShoppingCartApp:
+      userId: '123'
+      
+  - ask: product
+    $value: laptop
+    
+  - show: Good choice!
+  
+  - ask: confirm
+    $value: true
+    
+  - result:
+      product: laptop
+      confirm: true

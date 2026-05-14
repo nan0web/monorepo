@@ -1,0 +1,8 @@
+- render:
+  ui-select:
+    content: Виберіть опцію
+    options:
+      - Альфа
+      - Бета
+      - Гамма
+- result: {}

@@ -1,0 +1,58 @@
+$Tree:
+  $search: 'tree hierarchy structure folders'
+  data:
+    default:
+      - label: Plants
+        expanded: true
+        children:
+          - label: Angiosperms
+            children:
+              - label: Rosaceae
+                children:
+                  - label: Rose
+                  - label: Apple
+                  - label: Cherry
+              - label: Fabaceae
+                children:
+                  - label: Pea
+                  - label: Soy
+          - label: Gymnosperms
+            children:
+              - label: Pinaceae
+                children:
+                  - label: Pine
+                  - label: Spruce
+      - label: Animals
+        children:
+          - label: Chordates
+            children:
+              - label: Mammals
+                children:
+                  - label: Wolf
+                  - label: Lion
+                  - label: Bear
+              - label: Birds
+                children:
+                  - label: Eagle
+                  - label: Stork
+          - label: Arthropods
+            children:
+              - label: Insects
+                children:
+                  - label: Bee
+                  - label: Butterfly
+      - label: Fungi
+        children:
+          - label: Basidiomycota
+            children:
+              - label: Agaricaceae
+                children:
+                  - label: Agaricus
+                  - label: Champignon
+              - label: Boletaceae
+                children:
+                  - label: Porcini
+                  - label: Suillus
+    type: Tree.Models.Node[]
+content:
+  - Tree: true

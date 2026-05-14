@@ -1,0 +1,10 @@
+$Card:
+  title:
+    default: Card Title
+  subtitle:
+    default: ''
+  content:
+    default: Card body text text
+    type: text
+content:
+  - Card: true

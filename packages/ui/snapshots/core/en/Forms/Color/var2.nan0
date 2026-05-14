@@ -1,0 +1,6 @@
+- render:
+  ui-color:
+    alpha: true
+    label: Error Color (RGBA)
+    value: rgba(239, 68, 68, 0.5)
+- result: {}

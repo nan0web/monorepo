@@ -1,0 +1,9 @@
+$Sortable:
+  items:
+    default:
+      - First
+      - Second
+      - Third
+    type: string[]
+content:
+  - Sortable: true

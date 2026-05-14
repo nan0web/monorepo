@@ -1,0 +1,46 @@
+$ProgressBar:
+  $search: 'прогрес бар завантаження індикатор стан'
+  value:
+    default: 65
+  max:
+    default: 100
+  show-label:
+    default: true
+  size:
+    - sm
+    - md
+    - lg
+  variant:
+    - primary
+    - secondary
+    - success
+    - danger
+    - warning
+    - info
+  indeterminate:
+    default: false
+content:
+  - ProgressBar:
+      variant: primary
+      value: 75
+      show-label: true
+  - ProgressBar:
+      variant: success
+      value: 100
+      show-label: true
+  - ProgressBar:
+      variant: warning
+      value: 45
+      show-label: true
+  - ProgressBar:
+      variant: danger
+      value: 20
+      show-label: true
+  - ProgressBar:
+      variant: info
+      value: 60
+      size: lg
+      show-label: true
+  - ProgressBar:
+      variant: secondary
+      indeterminate: true

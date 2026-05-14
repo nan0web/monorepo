@@ -1,0 +1,9 @@
+$Confirm:
+  message:
+    default: Are you sure?
+  confirmText:
+    default: 'Yes'
+  cancelText:
+    default: 'No'
+content:
+  - Confirm: true

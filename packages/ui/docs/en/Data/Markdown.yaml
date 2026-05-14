@@ -1,0 +1,9 @@
+$Markdown:
+  content:
+    type: text/markdown
+    default: |-
+      # Hello
+
+      This is **markdown**.
+content:
+  - Markdown: true

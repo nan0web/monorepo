@@ -1,0 +1,6 @@
+- render:
+  ui-color:
+    alpha: false
+    label: Success Color (Hex)
+    value: "#22c55e"
+- result: {}

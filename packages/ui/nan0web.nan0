@@ -1,0 +1,36 @@
+name: "@nan0web/ui"
+agents:
+  - id: 'adapter-architect'
+    description: 'UI Adapter Creation (Step 4)'
+    workflows:
+      - 'src/agents/workflows/pipeline-no4-adapter.md'
+  - id: 'ui-web-architect'
+    description: 'UI-WEB Interface Creation (Step 7)'
+    workflows:
+      - 'src/agents/workflows/pipeline-no7-ui-web.md'
+      - 'src/agents/workflows/web-gallery.md'
+    inspectors:
+      - 'src/agents/inspectors/inspect-web.md'
+  - id: 'ui-mobile-architect'
+    description: 'UI-MOBILE Interface Creation (Step 8)'
+    workflows:
+      - 'src/agents/workflows/pipeline-no8-ui-mobile.md'
+  - id: 'olm-architect'
+    description: 'OLMUI Architecture & Adapters'
+    workflows:
+      - 'src/agents/workflows/olm-ui-architecture.md'
+      - 'src/agents/workflows/olm-ui-architecture-core.md'
+      - 'src/agents/workflows/olm-ui-architecture-adapters.md'
+      - 'src/agents/workflows/olm-ui-architecture-i18n.md'
+      - 'src/agents/workflows/olm-ui-architecture-testing.md'
+      - 'src/agents/workflows/nan0web-v2-roadmap.md'
+      - 'src/agents/workflows/nan0web.md'
+      - 'src/agents/workflows/architecture.md'
+  - id: 'component-forge'
+    description: 'UI Component Generation & Welding'
+    workflows:
+      - 'src/agents/workflows/forge-component.md'
+      - 'src/agents/workflows/ui-update.md'
+      - 'src/agents/workflows/interface-welding.md'
+    inspectors:
+      - 'src/agents/inspectors/prop-welder.md'

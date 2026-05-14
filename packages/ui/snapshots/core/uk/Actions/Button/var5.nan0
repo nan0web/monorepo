@@ -1,0 +1,8 @@
+- render:
+  ui-button:
+    content: Контур
+    disabled: false
+    loading: false
+    outline: true
+    variant: primary
+- result: {}

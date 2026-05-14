@@ -1,0 +1,7 @@
+- render:
+  ui-langselect:
+    current: uk
+    langs:
+      - uk
+      - en
+- result: {}

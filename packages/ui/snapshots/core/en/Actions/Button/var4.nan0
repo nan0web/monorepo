@@ -1,0 +1,8 @@
+- render:
+  ui-button:
+    content: Delete
+    disabled: false
+    loading: false
+    outline: false
+    variant: err
+- result: {}
