@@ -1,0 +1,36 @@
+{
+  "name": "@nan0web/share.app",
+  "version": "3.0.0",
+  "description": "Sovereign Social Distribution Layer (Rules Engine)",
+  "type": "module",
+  "main": "src/index.js",
+  "license": "ISC",
+  "author": "nan0web",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nan0web/share.app.git"
+  },
+  "keywords": [
+    "social",
+    "distribution",
+    "rules-engine",
+    "telegram",
+    "publish",
+    "nan0web"
+  ],
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test \"src/**/*.spec.js\"",
+    "test:docs": "node --test src/README.md.js",
+    "test:integration": "node --test \"src/test/releases/**/*.test.js\"",
+    "test:all": "npm run test ; npm run test:docs && npm run test:integration && npm run knip",
+    "knip": "knip --production",
+    "audit": "pnpm audit --prod || true"
+  },
+  "devDependencies": {
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "knip": "^5.85.0"
+  },
+  "dependencies": {}
+}

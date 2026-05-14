@@ -1,0 +1,7 @@
+name: Editor Project
+version: 1.0.0
+status: active
+features:
+  - Polymorphic Actions
+  - OLMUI Architecture
+  - DB-FS Staging

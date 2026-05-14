@@ -1,0 +1,84 @@
+title: 'NaN•UI React'
+description: 'Zero-dependency React UI library for the NaN•Web ecosystem'
+tags:
+  - react
+  - ui
+  - components
+
+content:
+  - ui-header:
+      brand: 'NaN•UI React'
+      github: 'https://github.com/nicholasgasior/nan0web'
+      platformUrl: 'https://nan0web.yaro.page'
+      platformLabel: 'NaN•Web'
+  - ui-hero:
+      badge: 'v1.2.0'
+      title: 'Data-Driven React Components'
+      subtitle: 'Zero UI dependencies. Pure HTML + Bootstrap CSS tokens. YAML-driven interfaces for enterprise applications.'
+      install: 'npm i @nan0web/ui-react'
+      cta: 'Documentation'
+      ctaHref: '#components'
+  - h2: 'Features'
+  - ui-feature-grid:
+      items:
+        - title: 'Zero UI Dependencies'
+          description: 'No react-bootstrap. Pure HTML with Bootstrap CSS Custom Properties for maximum performance.'
+          icon: '⚡'
+        - title: 'Data-Driven UI'
+          description: 'Content defined in YAML/JSON files and auto-rendered via the universal Element engine.'
+          icon: '📊'
+        - title: 'Dot-Notation Syntax'
+          description: 'Alert.warning.lg → CSS classes. Compact, declarative variant descriptions without extra code.'
+          icon: '✨'
+        - title: 'Universal Blocks'
+          description: 'Nav, Sidebar, Alert, Markdown, ThemeToggle, Page — ready-made blocks for building any site.'
+          icon: '🧱'
+        - title: 'OLMUI Architecture'
+          description: 'One Logic — Many UI. Same business logic works across CLI, Lit, React and mobile adapters.'
+          icon: '🔄'
+        - title: 'ProvenDocs'
+          description: '255 tests (Vitest + Node.js). README.md is an executable specification with 45 verified examples.'
+          icon: '✅'
+  - h2: 'Components'
+  - p: 'The library provides a full set of atomic and complex components:'
+  - ui-feature-grid:
+      items:
+        - title: 'Typography'
+          description: 'Semantic text rendering (h1-h6, p) with automatic YAML support.'
+          icon: '📝'
+        - title: 'Button'
+          description: 'Interactive buttons with variant, size and dot-notation support.'
+          icon: '🔘'
+        - title: 'Input / Select / Radio / Checkbox'
+          description: 'Full form element set with Data-Driven configuration.'
+          icon: '📋'
+        - title: 'Card / Modal / Table'
+          description: 'Complex container components for content organization.'
+          icon: '🗂'
+        - title: 'TreeView / Autocomplete'
+          description: 'Hierarchical navigation and filtered search.'
+          icon: '🌳'
+        - title: 'Form (renderForm)'
+          description: 'Schema-generated forms — Model-as-Schema v2.'
+          icon: '📄'
+  - h2: 'Architecture'
+  - p: 'The package is built on OLMUI (One Logic — Many UI) and Model-as-Schema v2 principles.'
+  - ui-code-block:
+      language: yaml
+      code: |
+        # data/index.yaml — Data-Driven configuration
+        $content:
+          - Content
+        content:
+          - h1: "Welcome"
+          - Alert.success: "Ready to go!"
+          - Button.primary: "Get Started"
+  - ui-code-block:
+      language: jsx
+      code: |
+        // React — automatic rendering from YAML
+        import { UIReact } from '@nan0web/ui-react'
+
+        <UIReact db={db} uri="index" />
+  - h2: 'Usage'
+  - source: README.md

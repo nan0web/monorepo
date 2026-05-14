@@ -11,6 +11,17 @@ import Component from './Component/index.js'
 import App from './App/index.js'
 
 export { Frame, FrameProps, Locale, StdIn, StdOut, View, RenderOptions, Model, Models, Component, App }
+export { default as Element } from './Model/Element.js'
+export {
+	default as Theme,
+	getUserTheme,
+	CustomTheme,
+	DarkLightTheme,
+	NightTheme,
+	createTheme,
+} from './Theme/index.js'
+export { resolveContext } from './utils/resolveContext.js'
+export { processI18n } from './utils/processI18n.js'
 export { format } from './format.js'
 export { default as Navigation } from './domain/Navigation.js'
 
@@ -26,6 +37,7 @@ export { default as UiStream } from './core/Stream.js'
 export { default as Error, CancelError } from './core/Error/index.js'
 export { default as UiAdapter } from './core/UiAdapter.js'
 export { resolvePositionalArgs } from './core/resolvePositionalArgs.js'
+export { tokens } from './Theme/tokens.js'
 
 // OLMUI Generator Engine
 /** @typedef {import('./core/Intent.js').LogLevel} LogLevel */

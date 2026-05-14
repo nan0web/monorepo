@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NaN•Web Editor Sandbox</title>
+    <style>
+        body { margin: 0; padding: 0; background: #000; color: #fff; }
+    </style>
+</head>
+<body>
+    <editor-web id="app"></editor-web>
+
+    <script type="module">
+        import DB from '@nan0web/db-browser'
+        import { EditorModel } from './src/domain/EditorModel.js'
+        import './src/ui/web/EditorWeb.js'
+
+        async function init() {
+            const db = new DB()
+            await db.connect()
+
+            const model = new EditorModel({}, { db })
+            const el = document.getElementById('app')
+            el.model = model
+            
+            console.log('Editor Sandbox Initialized')
+        }
+
+        init()
+    </script>
+</body>
+</html>

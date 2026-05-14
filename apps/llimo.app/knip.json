@@ -1,0 +1,12 @@
+{
+	"ignoreBinaries": ["dotenv"],
+	"ignore": [
+		"types/**",
+		"play/**",
+		"src/README.md.js"
+	],
+	"ignoreDependencies": [
+		"@nan0web/db-browser",
+		"@nan0web/ui-cli"
+	]
+}

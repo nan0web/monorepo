@@ -1,0 +1,402 @@
+/* Header.v2 — Pure CSS, no Bootstrap SCSS dependency */
+
+header.root {
+	background-color: var(--header-bg, var(--bs-white, #fff));
+	position: relative;
+	z-index: var(--header-z-index, 1000);
+	box-shadow: var(--header-shadow, 0 2px 10px rgba(0, 0, 0, 0.05));
+
+	.navbar {
+		min-height: var(--header-nav-height, 85px);
+		padding: 0;
+	}
+
+	.logo-brand {
+		color: var(--header-nav-link-color, var(--bs-dark, #212529));
+	}
+
+	ul.navbar-nav.main-nav {
+		flex: 1 1;
+		justify-content: space-around;
+		order: 1;
+
+		> li {
+			> a {
+				text-transform: var(--header-nav-link-transform, uppercase);
+				font-weight: var(--header-nav-link-weight, 700);
+				color: var(--header-nav-link-color, var(--bs-dark, #212529)) !important;
+				padding: var(--header-nav-link-padding-y, 0.8rem) var(--header-nav-link-padding-x, 0.5rem);
+				font-size: var(--header-nav-link-size, 0.9rem);
+				letter-spacing: var(--header-nav-link-spacing, 0.5px);
+
+				&:hover,
+				&.show,
+				&.active {
+					color: var(--header-active-color, var(--bs-primary, #0d6efd)) !important;
+				}
+
+				&.dropdown-toggle {
+					white-space: var(--header-1st-level-wrap, nowrap) !important;
+
+					&::after {
+						display: inline-block !important;
+						margin-left: 0.5rem;
+						vertical-align: middle;
+						content: '';
+						border-top: var(--header-caret-size, 0.35rem) solid;
+						border-right: var(--header-caret-size, 0.35rem) solid transparent;
+						border-bottom: 0;
+						border-left: var(--header-caret-size, 0.35rem) solid transparent;
+					}
+				}
+			}
+		}
+	}
+
+	.lang {
+		order: 2;
+
+		.dropdown-toggle {
+			&::after {
+				display: none !important;
+			}
+		}
+
+		.lang-bubble {
+			width: var(--header-lang-size, 2.8rem);
+			height: var(--header-lang-size, 2.8rem);
+			border-radius: 50%;
+			background: var(--header-lang-bg, var(--bs-white, #fff));
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: var(--header-lang-icon-size, 1.4rem);
+			border: var(--header-lang-border, 1px solid #dee2e6);
+			transition: all 0.2s;
+			box-shadow: var(--header-lang-shadow, 0 2px 5px rgba(0, 0, 0, 0.05));
+
+			&:hover {
+				border-color: var(--header-active-color, var(--bs-primary, #0d6efd));
+				transform: translateY(-2px);
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			}
+		}
+	}
+
+	.signin {
+		order: 3;
+
+		.btn-outline-primary {
+			border-color: var(--header-active-color, var(--bs-primary, #0d6efd));
+			color: var(--header-active-color, var(--bs-primary, #0d6efd));
+			border-radius: var(--header-btn-radius, 50px);
+			padding: var(--header-btn-padding, 0.6rem 1.8rem);
+			font-weight: var(--header-btn-weight, 700);
+			border-width: var(--header-btn-border-width, 2px);
+
+			&:hover {
+				background-color: var(--header-active-color, var(--bs-primary, #0d6efd));
+				color: var(--bs-white, #fff);
+			}
+		}
+	}
+
+	.search-btn {
+		color: var(--header-nav-link-color, var(--bs-dark, #212529));
+		order: 4;
+
+		&:hover {
+			color: var(--header-active-color, var(--bs-primary, #0d6efd));
+		}
+	}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════ */
+/* 2nd level horizontal bar — DESKTOP (xl+) */
+/* This is the SINGLE SOURCE OF TRUTH for header structure. */
+/* Themes only override via --header-* CSS Custom Properties. */
+/* ═══════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1200px) {
+	header.root {
+		padding-bottom: var(--header-subnav-height, 45px);
+
+		nav.navbar {
+			position: relative;
+
+			/* Blue subnav bar (full-width pseudo-element) */
+			&::after {
+				position: absolute;
+				content: '';
+				left: 0;
+				top: calc(var(--header-nav-height, 85px) + var(--header-subnav-offset, 0px));
+				height: var(--header-subnav-height, 45px);
+				width: 100%;
+				background-color: var(--header-subnav-bg, var(--bs-primary, #0d6efd));
+				z-index: -1;
+			}
+		}
+
+		/* ═══ 1st level nav items ═══════════════════════════════════════ */
+		ul.navbar-nav {
+			> li {
+				> .nav-link {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					height: var(--header-nav-height, 85px);
+					padding-top: 0;
+					padding-bottom: 0;
+					border-bottom: var(--header-active-line-width, 3px) solid transparent; /* Ensures a visible, uniform active line */
+
+					&.show {
+						color: var(--header-active-color, var(--bs-primary, #0d6efd));
+						border-bottom-color: var(--header-active-color, var(--bs-primary, #0d6efd));
+					}
+				}
+
+				/* Arrow ▼ for .show (click) */
+				> a.dropdown-toggle.show {
+					position: relative;
+
+					&::before {
+						content: '';
+						position: absolute;
+						top: 100%;
+						left: 50%;
+						border-left: var(--header-active-arrow-size, 0.5rem) solid transparent;
+						border-right: var(--header-active-arrow-size, 0.5rem) solid transparent;
+						border-top: var(--header-active-arrow-size, 0.5rem) solid
+							var(--header-active-color, var(--bs-primary, #0d6efd));
+						transform: translateX(-50%);
+						pointer-events: none;
+					}
+				}
+
+				/* Arrow ▼ for .active (activePath — programmatic) */
+				&.active > a.dropdown-toggle {
+					position: relative;
+					color: var(--header-active-color, var(--bs-primary, #0d6efd));
+					border-bottom-color: var(--header-active-color, var(--bs-primary, #0d6efd));
+
+					&::before {
+						content: '';
+						position: absolute;
+						top: 100%;
+						left: 50%;
+						border-left: var(--header-active-arrow-size, 0.5rem) solid transparent;
+						border-right: var(--header-active-arrow-size, 0.5rem) solid transparent;
+						border-top: var(--header-active-arrow-size, 0.5rem) solid
+							var(--header-active-color, var(--bs-primary, #0d6efd));
+						transform: translateX(-50%);
+						pointer-events: none;
+					}
+				}
+
+				/* Adjust the dropdown position for the right-most elements */
+				/* so they grow towards left instead of overflowing right off screen */
+				&:nth-last-child(-n + 3) {
+					> ul {
+						left: auto;
+						right: 0;
+					}
+				}
+
+				/* ═══ 2nd level (subnav items on blue bar) ══════════════ */
+				> ul {
+					position: absolute;
+					left: 0;
+					right: 0;
+					top: calc(var(--header-nav-height, 85px) + var(--header-subnav-offset, 0px));
+					height: var(--header-subnav-height, 45px);
+					min-width: min-content;
+					width: auto;
+					padding: 0;
+					box-shadow: none;
+					color: var(--bs-white, #fff);
+					background-color: transparent;
+					flex-direction: row;
+					justify-content: flex-start;
+					align-items: center;
+					display: none !important;
+
+					/* Prevent flicker from Bootstrap transitions */
+					&.dropdown-menu {
+						transition: none !important;
+					}
+
+					&.show {
+						display: flex !important;
+						margin-top: 0.125rem;
+					}
+
+					> li {
+						display: flex;
+						align-items: stretch;
+						height: var(--header-subnav-height, 45px);
+						padding: 0;
+						white-space: var(--header-1st-level-subnav-wrap, nowrap);
+
+						> a {
+							display: flex;
+							align-items: center;
+							padding: 0 1rem;
+							height: 100%;
+							white-space: var(--header-1st-level-subnav-wrap, nowrap);
+							--bs-dropdown-item-padding-y: 0;
+
+							&:hover,
+							&:focus {
+								transition: background-color 0.3s ease;
+							}
+						}
+
+						/* Active 2nd-level item */
+						> a.active,
+						&.active > a {
+							background-color: var(
+								--header-subnav-active-bg,
+								rgba(255, 255, 255, 0.22)
+							) !important;
+							color: var(--header-subnav-active-color, var(--bs-white, #fff)) !important;
+							font-weight: var(--header-subnav-active-weight, bold) !important;
+							border-radius: var(--header-subnav-active-radius, 0.25rem);
+						}
+					}
+				}
+
+				/* Auto-show subnav when section is active via activePath */
+				&.active > ul.dropdown-menu {
+					display: flex !important;
+					margin-top: 0;
+				}
+			}
+
+			/* Overlap fix: hide auto-active subnav when user opens another dropdown */
+			&:has(> li > ul.show) > li.active > ul.dropdown-menu:not(.show) {
+				display: none !important;
+			}
+		}
+
+		/* Horizontal bar items (level 1) — legacy .start class support */
+		.dropdown-menu.start {
+			position: absolute;
+			left: 0;
+			top: calc(var(--header-nav-height, 85px) + var(--header-subnav-offset, 0px));
+			width: 100%;
+			background: transparent;
+			border: none;
+			box-shadow: none;
+			padding: 0;
+			margin: 0;
+			overflow-x: clip;
+			overflow-y: visible;
+			display: none !important;
+
+			&.show {
+				display: flex !important;
+				justify-content: center;
+				align-items: center;
+				height: var(--header-subnav-height, 45px);
+				gap: 2.5rem;
+				z-index: 100;
+			}
+
+			.nav-item {
+				.nav-link {
+					display: flex;
+					align-items: center;
+					height: 100%;
+					color: var(--header-subnav-link-color, var(--bs-white, #fff)) !important;
+					font-size: var(--header-subnav-link-size, 0.95rem);
+					font-weight: var(--header-subnav-link-weight, 600);
+					white-space: var(--header-2nd-level-wrap, nowrap);
+					padding: 0;
+					text-transform: none;
+					background: transparent;
+					border: none;
+
+					&:hover,
+					&.active {
+						text-decoration: underline;
+						background: transparent;
+						color: var(--header-subnav-link-active-color, var(--bs-white, #fff)) !important;
+					}
+				}
+			}
+		}
+
+		/* Vertical sub-menus (Level 2+) */
+		ul.dropdown-menu.sub-menu {
+			position: absolute;
+			top: var(--header-subnav-height, 45px);
+			left: 0;
+			flex-direction: column;
+			background-color: var(--header-dropdown-bg, #0b5ed7);
+			min-width: var(--header-dropdown-min-width, 20rem);
+			box-shadow: var(--header-dropdown-shadow, 0 15px 35px rgba(0, 0, 0, 0.2));
+			display: none;
+			z-index: 1001;
+			padding: 0.5rem 0;
+			border: none;
+
+			&.show {
+				display: flex;
+			}
+
+			.dropdown-item {
+				text-align: left;
+				padding: var(--header-dropdown-item-padding, 0.8rem 1.5rem);
+				color: var(--header-dropdown-text-color, var(--bs-white, #fff)) !important;
+				font-size: var(--header-dropdown-text-size, 0.95rem);
+				white-space: var(--header-3rd-level-wrap, nowrap);
+				border: none;
+				transition: background 0.2s;
+
+				&:hover {
+					background-color: var(--header-dropdown-hover-bg, rgba(255, 255, 255, 0.1)) !important;
+					color: var(--header-dropdown-hover-color, var(--bs-white, #fff)) !important;
+				}
+			}
+
+			/* Sub-menu indicator (arrow) */
+			.dropdown-toggle {
+				&::after {
+					display: inline-block;
+					margin-left: auto;
+					vertical-align: middle;
+					content: '';
+					border-top: 0.3em solid;
+					border-right: 0.3em solid transparent;
+					border-left: 0.3em solid transparent;
+					transform: rotate(-90deg);
+				}
+			}
+		}
+	}
+}
+
+/* Search Modal */
+.search-modal {
+	.modal-content {
+		border: none;
+		border-radius: 2rem;
+		box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+	}
+
+	.modal-body {
+		padding: 3rem !important;
+	}
+
+	.form-control-lg {
+		height: 70px;
+		font-size: 1.25rem;
+		padding-left: 2.5rem;
+		border-radius: 50px;
+	}
+
+	.btn-primary {
+		padding-left: 2.5rem;
+		padding-right: 2.5rem;
+		border-radius: 50px;
+	}
+}

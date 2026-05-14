@@ -1,0 +1,39 @@
+{
+	"$content": [
+		{
+			"type": "Header",
+			"props": {
+				"title": "About nan0web"
+			},
+			"data": {
+				"title": "About Our Platform"
+			}
+		},
+		{
+			"type": "Body",
+			"props": {
+				"content": [
+					{
+						"text": "nan0web is a revolutionary platform designed to..."
+					}
+				]
+			},
+			"data": {
+				"content": [
+					{
+						"text": "Learn more about our innovative approach to web development."
+					}
+				]
+			}
+		},
+		{
+			"type": "Footer",
+			"props": {
+				"copyright": "© 2024 nan0web"
+			},
+			"data": {
+				"copyright": "All rights reserved"
+			}
+		}
+	]
+}

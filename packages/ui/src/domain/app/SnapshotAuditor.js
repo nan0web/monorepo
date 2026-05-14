@@ -182,7 +182,7 @@ export class SnapshotAuditor extends AuditorModel {
 		}
 
 		const files = []
-		const snapshotsDir = fsDb.resolveSync(this.dir || '.', 'snapshots/core')
+		const snapshotsDir = fsDb.resolveSync(this.dir)
 
 		// Use robust DB.browse for recursive snapshot detection
 		try {

@@ -1,0 +1,7 @@
+$content:
+  - App: SortableListDemo
+  - hr: true
+  - p:
+      - '← '
+      - a: Back to Playground
+        $href: /play/

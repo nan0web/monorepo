@@ -1,0 +1,139 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+
+footer.root {
+	position: relative;
+	background-color: $gray-100;
+
+	.nav-link {
+		color: $black;
+
+		&:hover,
+		&:active,
+		&:focus {
+			color: $primary !important;
+		}
+	}
+
+	.nav {
+		width: 100% !important; // @extend .w-100
+	}
+
+	nav.navbar {
+		width: 100% !important; // @extend .w-100
+		background: none;
+	}
+
+	nav.navbar>.navbar-nav>.nav-item>.nav-link>span:last-child {
+		border-top: $border-width solid $border-color; // @extend .hr (approximation)
+	}
+
+	.navbar-nav {
+		width: 100% !important; // @extend .w-100
+		padding-top: 1rem !important; // @extend .py-3
+		padding-bottom: 1rem !important; // @extend .py-3
+		flex-wrap: wrap !important; // @extend .flex-wrap
+		justify-content: center !important; // @extend .justify-content-center
+		gap: 0.5rem !important; // @extend .gap-2
+		text-align: center !important; // @extend .text-center
+
+		@include media-breakpoint-up(md) {
+			flex-direction: row !important; // @extend .flex-md-row
+			text-align: left !important; // @extend .text-md-start
+			gap: 1rem !important; // @extend .gap-md-3
+		}
+
+		@include media-breakpoint-up(lg) {
+			gap: 1.5rem !important; // @extend .gap-lg-4
+		}
+
+		li.nav-item {
+			flex: 1 1;
+		}
+
+		@include media-breakpoint-up(md) {
+			li.nav-item {
+				flex: 0 1 15rem;
+			}
+		}
+
+		a.nav-link {
+			display: flex !important; // @extend .d-flex
+			gap: 0.5rem !important; // @extend .gap-2
+			align-items: center !important; // @extend .align-items-center
+			justify-content: center !important; // @extend .justify-content-center
+
+			@include media-breakpoint-up(md) {
+				justify-content: flex-start !important; // @extend .justify-content-md-start
+			}
+		}
+
+		.navbar-nav {
+			flex-direction: column !important; // @extend .flex-column
+
+			li.nav-item {
+				flex-basis: auto;
+				margin-bottom: 0;
+			}
+
+			a.nav-link {
+				font-weight: bold;
+			}
+		}
+
+		.navbar-nav .navbar-nav {
+			a.nav-link {
+				font-weight: normal;
+			}
+		}
+
+		.navbar-nav .navbar-nav .navbar-nav {
+			display: none;
+
+			>li>a {
+				padding-left: 3rem;
+			}
+		}
+	}
+
+	>.container {
+		display: flex !important; // @extend .d-flex
+		flex-wrap: wrap !important; // @extend .flex-wrap
+		gap: 1rem;
+
+		&:first-child {
+			padding-top: 3rem;
+		}
+
+		&:last-child {
+			padding-top: 3rem;
+			padding-bottom: 3rem;
+		}
+	}
+
+	.btn {
+		display: flex !important; // @extend .d-flex
+		align-items: center !important; // @extend .align-items-center
+		justify-content: center !important; // @extend .justify-content-center
+		gap: 0.5rem;
+	}
+
+	.info {
+		flex: 0 1 100%;
+	}
+
+	.social {
+		flex: 1 1 auto;
+	}
+}
+
+@include color-mode(dark) {
+	footer.root {
+		background-color: $gray-800;
+
+		.nav-link {
+			color: $white;
+		}
+	}
+}

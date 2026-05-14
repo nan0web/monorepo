@@ -11,7 +11,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import Logger from '@nan0web/log'
-import { ProjectModel } from '@nan0web/core'
+import { ProjectModel } from '@nan0web/types'
 
 const logger = new Logger()
 

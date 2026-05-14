@@ -1,0 +1,48 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"lib": ["esnext", "dom"],
+		"declaration": true,
+		"declarationMap": false,
+		"emitDeclarationOnly": true,
+		"outDir": "./types",
+		"rootDir": "./src",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": false,
+		"allowJs": true,
+		"checkJs": true, "types": [],
+		"jsx": "react-jsx"
+	},
+	"include": [
+		"src/index.jsx",
+		"src/Element.jsx",
+		"src/UIReact.jsx",
+		"src/UIRoot.jsx",
+		"src/components/**/*.js",
+		"src/components/**/*.jsx",
+		"src/context/**/*.js",
+		"src/context/**/*.jsx",
+		"src/hooks/**/*.js",
+		"src/hooks/**/*.jsx",
+		"src/models/**/*.js",
+		"src/renderers/**/*.js",
+		"src/renderers/**/*.jsx",
+		"src/vite/**/*.js"
+	],
+	"exclude": [
+		"node_modules",
+		"types",
+		"dist",
+		"src/**/*.test.js",
+		"src/**/*.test.jsx",
+		"src/README.md.js",
+		"src/README.md.jsx",
+		"src/apps"
+	]
+}

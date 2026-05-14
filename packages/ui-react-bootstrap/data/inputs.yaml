@@ -1,0 +1,20 @@
+section: Inputs
+description: |
+  Input component with different types and placeholders.
+examples:
+  - title: Text Input
+    type: text
+    placeholder: Text input
+  - title: Password Input
+    type: password
+    placeholder: Password input
+  - title: Email Input
+    type: email
+    placeholder: Email input
+  - title: Number Input
+    type: number
+    placeholder: Number input
+  - title: Textarea
+    type: textarea
+    as: textarea
+    placeholder: Textarea input

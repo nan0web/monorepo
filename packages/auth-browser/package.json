@@ -1,0 +1,42 @@
+{
+	"name": "@nan0web/auth-browser",
+	"version": "3.0.0",
+	"description": "Authentication client with password and social sign-in support.",
+	"main": "src/index.js",
+	"type": "module",
+	"scripts": {
+		"build": "tsc",
+		"test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
+		"test:coverage": "node --test --experimental-test-coverage --test-coverage-include=src/**/*.js",
+		"clean": "rm -rf .cache/ && rm -rf dist/",
+		"clean:modules": "rm -rf node_modules",
+		"test:docs": "node --test src/README.md.js",
+		"test:coverage:collect": "nan0test coverage",
+		"test:status": "nan0test status",
+		"test:all": "npm run test && npm run test:docs && npm run build",
+		"precommit": "npm test",
+		"prepush": "npm test",
+		"playground": "node playground/main.js"
+	},
+	"keywords": [
+		"auth",
+		"signin",
+		"nan0web"
+	],
+	"author": "ЯRаСлав YaRaSlove <support@yaro.page>",
+	"license": "ISC",
+	"packageManager": "pnpm@10.11.0",
+	"devDependencies": {
+		"@nan0web/auth-core": "workspace:*",
+		"@nan0web/db-browser": "workspace:*",
+		"@nan0web/http": "workspace:*",
+		"@nan0web/log": "workspace:*",
+		"@nan0web/test": "workspace:*",
+		"husky": "^9.1.7"
+	},
+	"peerDependencies": {
+		"@nan0web/auth-core": "workspace:*",
+		"@nan0web/db-browser": "workspace:*",
+		"@nan0web/http": "workspace:*"
+	}
+}

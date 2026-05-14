@@ -1,0 +1,10 @@
+# PlaygroundModel i18n — English
+playground:
+  label: Playground
+  starting: "Starting Playground on port {$port}..."
+  ready: "Playground ready: http://localhost:{$port}/play/"
+  stopped: Playground stopped.
+  error_no_db: Database adapter not provided in options.db
+  port_help: Server port
+  state_file_help: Port state file
+  vite_args_help: Additional Vite arguments

@@ -1,0 +1,22 @@
+section: Typography
+description: |
+  Typography component with different variants for headings and text.
+examples:
+  - title: Body Text
+    variant: body
+    children: Body text with normal font size.
+  - title: Heading 1
+    variant: h1
+    children: Heading 1 - Largest heading
+  - title: Heading 2
+    variant: h2
+    children: Heading 2
+  - title: Heading 3
+    variant: h3
+    children: Heading 3
+  - title: Small Text
+    variant: small
+    children: Small text for fine print.
+  - title: Caption
+    variant: caption
+    children: Caption text for labels.

@@ -1,0 +1,15 @@
+{
+	"entry": [
+		"src/index.js",
+		"src/AuthApp.js",
+		"src/register.js",
+		"src/api/AuthAPI.js",
+		"src/ui-cli/main.js",
+		"src/ui-cli/AuthCLI.js",
+		"src/ui-api/main.js"
+	],
+	"project": ["src/**/*.js", "src/**/*.jsx", "!src/**/*.test.js", "!src/**/*.test.jsx"],
+	"ignore": ["play/", "types/", "src/README.md.js", "src/ui-react/"],
+	"ignoreDependencies": ["@nan0web/log"],
+	"ignoreExportsUsedInFile": true
+}

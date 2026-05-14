@@ -1,0 +1,36 @@
+// Custom SCSS overrides for Currency Calculator demo
+// Import this after Bootstrap to customize
+
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+// Override primary color for calculator theme
+$primary: #28a745; // Green for money theme
+$secondary: #6c757d;
+
+@import 'bootstrap/scss/bootstrap';
+
+// Calculator-specific styles
+.currency-calculator {
+	.form-group {
+		margin-bottom: 1rem;
+		label {
+			font-weight: 500;
+			margin-bottom: 0.25rem;
+			display: block;
+		}
+	}
+	.result-display {
+		background-color: $light;
+		padding: 0.75rem;
+		border-radius: $border-radius;
+		border: 1px solid $gray-300;
+	}
+	.rates-table {
+		th {
+			background-color: $gray-100;
+			font-weight: 600;
+		}
+	}
+}

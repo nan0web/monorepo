@@ -1,0 +1,25 @@
+$content:
+  - h1: Typography Component
+  - p: Typography renders text in various styles like headings and paragraphs.
+  - h2: Headings
+  - Typography: Heading 1 (h1)
+    $variant: h1
+  - Typography: Heading 2 (h2)
+    $variant: h2
+  - Typography: Heading 3 (h3)
+    $variant: h3
+  - Typography: Heading 4 (h4)
+    $variant: h4
+  - Typography: Heading 5 (h5)
+    $variant: h5
+  - Typography: Heading 6 (h6)
+    $variant: h6
+  - h2: Body Text
+  - Typography: This is body text.
+    $variant: body
+  - Typography: This is small text.
+    $variant: small
+  - Typography: This is caption text.
+    $variant: caption
+  - a: ← All Components
+    $href: /play/index.html

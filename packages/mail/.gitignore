@@ -1,0 +1,9 @@
+/.datasets/
+/node_modules/
+/dist/
+/chat/
+/me.md
+
+# Temporary until legacy version removed
+/test/
+/lib/

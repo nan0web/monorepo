@@ -1,0 +1,627 @@
+
+> @nan0web/ui-react-bootstrap@3.0.0 test:jsx /Users/i/src/nan.web/packages/ui-react-bootstrap
+> vitest run
+
+
+ RUN  v3.2.4 /Users/i/src/nan.web/packages/ui-react-bootstrap
+
+ ✓ src/Blocks/Nav.test.jsx > Nav component > should render brand 73ms
+ ✓ src/Blocks/Nav.test.jsx > Nav component > should render items correctly 16ms
+ ✓ src/Blocks/Nav.test.jsx > Nav component > should render items with children as dropdowns 31ms
+ × src/components/organisms/Modal.test.jsx > Modal > renders Modal when isOpen is true 38ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/organisms/Modal.test.jsx > Modal > does not render Modal when isOpen is false 3ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/organisms/Modal.test.jsx > Modal > calls onClose when backdrop is clicked 5ms
+   → Cannot read properties of null (reading 'useContext')
+ ↓ src/components/organisms/Modal.test.jsx > Modal > applies custom style in fallback mode (vi.doMock limitation)
+ × src/components/molecules/Card.test.jsx > Card > renders Card with children 123ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/molecules/Card.test.jsx > Card > renders Card without custom styles in bootstrap mode 5ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/molecules/Card.test.jsx > Card > renders Card with custom style in fallback mode 14ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/molecules/Card.test.jsx > Card > Card renders nested components 4ms
+   → Cannot read properties of null (reading 'useContext')
+ ✓ src/Blocks/LangSelect.test.jsx > LangSelect component > should render default locale 43ms
+ ✓ src/Blocks/LangSelect.test.jsx > LangSelect component > should list available locales when clicked 47ms
+ ✓ src/Blocks/LangSelect.test.jsx > LangSelect component > should trigger onChange when item clicked 27ms
+ × src/components/atoms/Button.test.jsx > renders Button with primary variant 42ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Button.test.jsx > renders Button with outline variant 4ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Button.test.jsx > renders Button with different sizes 3ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Button.test.jsx > renders disabled Button 1ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Button.test.jsx > applies custom style in fallback mode 4ms
+   → Cannot read properties of null (reading 'useContext')
+ ✓ src/README.md.jsx > README.md testing > Should have correct package name 2ms
+ × src/README.md.jsx > README.md testing > Should render Bootstrap TreeView 34ms
+   → Cannot read properties of null (reading 'useState')
+ × src/README.md.jsx > README.md testing > Should support multi-selection in Bootstrap TreeView 3ms
+   → Cannot read properties of null (reading 'useState')
+ × src/README.md.jsx > README.md testing > Should render Bootstrap Autocomplete 6ms
+   → Cannot read properties of null (reading 'useState')
+ ✓ src/README.md.jsx > README.md testing > Should have HeaderStyles schema 1ms
+ ✓ src/README.md.jsx > Rendering README.md > Generated README title 1ms
+ ✓ src/README.md.jsx > Rendering README.md > Generate dataset and README.md 24ms
+ × src/components/atoms/Typography.test.jsx > renders Typography with body variant 61ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Typography.test.jsx > renders Typography with heading variants 3ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Typography.test.jsx > renders small and caption variants 4ms
+   → Cannot read properties of null (reading 'useContext')
+ ↓ src/components/atoms/Typography.test.jsx > applies bootstrap variables when theme is bootstrap (happy-dom cannot resolve CSS vars)
+ × src/components/atoms/Typography.test.jsx > applies custom style 4ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Input.test.jsx > renders Input with text type 198ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Input.test.jsx > renders Input with different types 3ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Input.test.jsx > renders Textarea as Input 15ms
+   → Cannot read properties of null (reading 'useContext')
+ × src/components/atoms/Input.test.jsx > applies custom style in fallback mode 2ms
+   → Cannot read properties of null (reading 'useContext')
+ ↓ src/components/atoms/Input.test.jsx > does not apply style in bootstrap theme mode (vi.doMock limitation)
+ ✓ src/test/releases/0/2/v0.2.2/task.test.jsx > Playground Dynamic Components - Release 0.2.2 > 1. should hide base registry when disableBaseRegistry is true 113ms
+ ✓ src/test/releases/0/2/v0.2.2/task.test.jsx > Playground Dynamic Components - Release 0.2.2 > 2. should dynamically render extraComponents and label them correctly 45ms
+ ✓ src/test/releases/0/2/v0.2.2/task.test.jsx > Playground Dynamic Components - Release 0.2.2 > 3. should display rawmeta data as YAML format string 39ms
+ ✓ src/Blocks/Page.test.jsx > Page > renders page layout with children 45ms
+ ✓ src/Blocks/Page.test.jsx > Page > renders with Nav when nav prop is provided 49ms
+ ✓ src/Blocks/Page.test.jsx > Page > renders with Sidebar when sidebar prop is provided 17ms
+ ✓ src/Blocks/Page.test.jsx > Page > renders full layout with nav + sidebar + content 15ms
+ ✓ src/Blocks/Page.test.jsx > Page > renders without sidebar when items are empty 5ms
+ ✓ src/Blocks/Markdown.test.jsx > Markdown component > should render HTML content via dangerouslySetInnerHTML 35ms
+ ✓ src/Blocks/Markdown.test.jsx > Markdown component > should render children when html/content is absent 133ms
+ ✓ src/components/molecules/Blog/Blog.test.jsx > Blog Component > renders initial posts and loads more 300ms
+ ✓ src/Blocks/ThemeToggle.test.jsx > ThemeToggle component > should render correct icon for light theme 34ms
+ ✓ src/Blocks/ThemeToggle.test.jsx > ThemeToggle component > should toggle when clicked 339ms
+ ✓ src/Blocks/ThemeToggle.test.jsx > ThemeToggle component > should toggle back to light when currently dark 28ms
+ ✓ src/components/SortableList.test.jsx > SortableList > renders list with numbered items 434ms
+ ✓ src/components/SortableList.test.jsx > SortableList > renders item labels when no renderItem is provided 13ms
+ ✓ src/components/SortableList.test.jsx > SortableList > supports custom renderItem 37ms
+ ✓ src/components/SortableList.test.jsx > SortableList > disables up button for first item and down button for last 25ms
+ ✓ src/components/SortableList.test.jsx > SortableList > calls onReorder when items are moved down 51ms
+ ✓ src/components/SortableList.test.jsx > SortableList > renders nothing when items is empty 5ms
+ ✓ src/Blocks/Search.test.jsx > Search component > should render inline mode properly 352ms
+ ✓ src/Blocks/Search.test.jsx > Search component > should call onSearch when form is submitted 90ms
+ ✓ src/Blocks/Search.test.jsx > Search component > should show "no results" state 57ms
+ ✓ src/components/organisms/Header/Header.test.jsx > Header Component Navigation > renders multi-level dropdowns correctly 219ms
+ ↓ src/main.test.jsx > Testing output > should print todo with error
+ ↓ src/main.test.jsx > Testing output > should print todo with fail
+ ↓ src/main.test.jsx > Testing output > should print todo with success
+ ↓ src/main.test.jsx > Testing output > should print skip with error
+ ↓ src/main.test.jsx > Testing output > should print skip with fail
+ ↓ src/main.test.jsx > Testing output > should print skip with success
+ ✓ src/main.test.jsx > Testing output > should print error 7ms
+ ✓ src/main.test.jsx > Testing output > should print fail 8ms
+ ✓ src/main.test.jsx > Testing output > should print success 1ms
+ ✓ src/Blocks/Callout.test.jsx > Callout component > should render with default info type 46ms
+ ✓ src/Blocks/Callout.test.jsx > Callout component > should render warning type 6ms
+ ✓ src/Blocks/Callout.test.jsx > Callout component > should render with title 5ms
+ ✓ src/components/organisms/Header/useHeaderNav.test.jsx > useHeaderNav - calculateNewPath pure function > should add a new ID to an empty path array (user opens a dropdown) 2ms
+ ✓ src/components/organisms/Header/useHeaderNav.test.jsx > useHeaderNav - calculateNewPath pure function > should replace an item at the same level if the user clicks a sibling dropdown 0ms
+ ✓ src/components/organisms/Header/useHeaderNav.test.jsx > useHeaderNav - calculateNewPath pure function > should preserve parent and add sub-level if the user clicks a child element 1ms
+ ✓ src/components/organisms/Header/useHeaderNav.test.jsx > useHeaderNav - calculateNewPath pure function > should close the current ID and all its children if the user clicks it again (toggle behavior) 0ms
+ ✓ src/components/organisms/Header/useHeaderNav.test.jsx > useHeaderNav - calculateNewPath pure function > should collapse everything below level 0 if the user clicks on a different parent at level 0 0ms
+ ✓ src/Blocks/Sidebar.test.jsx > Sidebar component > should display the title if provided 163ms
+ ✓ src/Blocks/Sidebar.test.jsx > Sidebar component > should render items correctly 43ms
+ ✓ src/Blocks/Sidebar.test.jsx > Sidebar component > should highlight active items 6ms
+ ✓ src/components/organisms/Footer/Footer.test.jsx > Footer Component > renders all sections correctly 43ms
+ ✓ src/renderItem.test.jsx > renderItem / layoutToContent / Renderer > layoutToContent maps standard string to standard layout 2ms
+ ✓ src/renderItem.test.jsx > renderItem / layoutToContent / Renderer > layoutToContent fallback is Content 0ms
+ ✓ src/renderItem.test.jsx > renderItem / layoutToContent / Renderer > renderItem can render raw strings directly 1ms
+ ✓ src/renderItem.test.jsx > renderItem / layoutToContent / Renderer > renderItem can render strings with HTML entities as raw text 0ms
+ ✓ src/renderItem.test.jsx > renderItem / layoutToContent / Renderer > renderItem can render standard HTML tags via JSON payload 0ms
+ ✓ src/renderItem.test.jsx > renderItem / layoutToContent / Renderer > renderItem renders standard Blocks mapping 0ms
+ ✓ src/renderItem.test.jsx > renderItem / layoutToContent / Renderer > Renderer mounts without errors if no doc passed 0ms
+ ✓ src/renderItem.test.jsx > renderItem / layoutToContent / Renderer > Renderer explicitly builds page from content array 0ms
+TAP version 13
+1..22
+not ok 1 - src/README.md.jsx # time=80.21ms {
+    1..2
+    not ok 1 - README.md testing # time=47.73ms {
+        1..5
+        ok 1 - Should have correct package name # time=2.34ms
+        not ok 2 - Should render Bootstrap TreeView # time=33.98ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useState')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1622:21"
+            ...
+        not ok 3 - Should support multi-selection in Bootstrap TreeView # time=3.44ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useState')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1622:21"
+            ...
+        not ok 4 - Should render Bootstrap Autocomplete # time=5.92ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useState')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1622:21"
+            ...
+        ok 5 - Should have HeaderStyles schema # time=0.64ms
+    }
+    ok 2 - Rendering README.md # time=25.19ms {
+        1..2
+        ok 1 - Generated README title # time=1.15ms
+        ok 2 - Generate dataset and README.md # time=23.96ms
+    }
+}
+ok 2 - src/main.test.jsx # time=17.39ms {
+    1..1
+    ok 1 - Testing output # time=16.40ms {
+        1..9
+        ok 1 - should print todo with error # TODO
+        ok 2 - should print todo with fail # TODO
+        ok 3 - should print todo with success # TODO
+        ok 4 - should print skip with error # SKIP
+        ok 5 - should print skip with fail # SKIP
+        ok 6 - should print skip with success # SKIP
+        ok 7 - should print error # time=7.09ms
+        ok 8 - should print fail # time=7.59ms
+        ok 9 - should print success # time=0.95ms
+    }
+}
+ok 3 - src/renderItem.test.jsx # time=5.37ms {
+    1..1
+    ok 1 - renderItem / layoutToContent / Renderer # time=4.85ms {
+        1..8
+        ok 1 - layoutToContent maps standard string to standard layout # time=1.90ms
+        ok 2 - layoutToContent fallback is Content # time=0.26ms
+        ok 3 - renderItem can render raw strings directly # time=0.81ms
+        ok 4 - renderItem can render strings with HTML entities as raw text # time=0.20ms
+        ok 5 - renderItem can render standard HTML tags via JSON payload # time=0.44ms
+        ok 6 - renderItem renders standard Blocks mapping # time=0.14ms
+        ok 7 - Renderer mounts without errors if no doc passed # time=0.23ms
+        ok 8 - Renderer explicitly builds page from content array # time=0.29ms
+    }
+}
+ok 4 - src/components/SortableList.test.jsx # time=569.56ms {
+    1..1
+    ok 1 - SortableList # time=568.67ms {
+        1..6
+        ok 1 - renders list with numbered items # time=433.70ms
+        ok 2 - renders item labels when no renderItem is provided # time=12.68ms
+        ok 3 - supports custom renderItem # time=37.33ms
+        ok 4 - disables up button for first item and down button for last # time=24.78ms
+        ok 5 - calls onReorder when items are moved down # time=51.35ms
+        ok 6 - renders nothing when items is empty # time=4.55ms
+    }
+}
+ok 5 - src/Blocks/Callout.test.jsx # time=60.31ms {
+    1..1
+    ok 1 - Callout component # time=58.99ms {
+        1..3
+        ok 1 - should render with default info type # time=46.39ms
+        ok 2 - should render warning type # time=6.37ms
+        ok 3 - should render with title # time=5.04ms
+    }
+}
+ok 6 - src/Blocks/LangSelect.test.jsx # time=118.79ms {
+    1..1
+    ok 1 - LangSelect component # time=117.84ms {
+        1..3
+        ok 1 - should render default locale # time=43.11ms
+        ok 2 - should list available locales when clicked # time=46.64ms
+        ok 3 - should trigger onChange when item clicked # time=27.46ms
+    }
+}
+ok 7 - src/Blocks/Markdown.test.jsx # time=173.32ms {
+    1..1
+    ok 1 - Markdown component # time=171.49ms {
+        1..2
+        ok 1 - should render HTML content via dangerouslySetInnerHTML # time=35.25ms
+        ok 2 - should render children when html/content is absent # time=132.83ms
+    }
+}
+ok 8 - src/Blocks/Nav.test.jsx # time=124.55ms {
+    1..1
+    ok 1 - Nav component # time=120.72ms {
+        1..3
+        ok 1 - should render brand # time=72.71ms
+        ok 2 - should render items correctly # time=15.89ms
+        ok 3 - should render items with children as dropdowns # time=31.13ms
+    }
+}
+ok 9 - src/Blocks/Page.test.jsx # time=134.56ms {
+    1..1
+    ok 1 - Page # time=132.50ms {
+        1..5
+        ok 1 - renders page layout with children # time=44.84ms
+        ok 2 - renders with Nav when nav prop is provided # time=49.26ms
+        ok 3 - renders with Sidebar when sidebar prop is provided # time=17.37ms
+        ok 4 - renders full layout with nav + sidebar + content # time=15.48ms
+        ok 5 - renders without sidebar when items are empty # time=4.69ms
+    }
+}
+ok 10 - src/Blocks/Search.test.jsx # time=506.76ms {
+    1..1
+    ok 1 - Search component # time=502.92ms {
+        1..3
+        ok 1 - should render inline mode properly # time=352.01ms
+        ok 2 - should call onSearch when form is submitted # time=89.60ms
+        ok 3 - should show "no results" state # time=57.49ms
+    }
+}
+ok 11 - src/Blocks/Sidebar.test.jsx # time=215.29ms {
+    1..1
+    ok 1 - Sidebar component # time=213.54ms {
+        1..3
+        ok 1 - should display the title if provided # time=163.08ms
+        ok 2 - should render items correctly # time=42.67ms
+        ok 3 - should highlight active items # time=5.99ms
+    }
+}
+ok 12 - src/Blocks/ThemeToggle.test.jsx # time=402.81ms {
+    1..1
+    ok 1 - ThemeToggle component # time=401.11ms {
+        1..3
+        ok 1 - should render correct icon for light theme # time=33.95ms
+        ok 2 - should toggle when clicked # time=338.72ms
+        ok 3 - should toggle back to light when currently dark # time=27.59ms
+    }
+}
+not ok 13 - src/components/atoms/Button.test.jsx # time=56.59ms {
+    1..5
+    not ok 1 - renders Button with primary variant # time=41.87ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    not ok 2 - renders Button with outline variant # time=4.26ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    not ok 3 - renders Button with different sizes # time=2.84ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    not ok 4 - renders disabled Button # time=1.45ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    not ok 5 - applies custom style in fallback mode # time=3.53ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+}
+not ok 14 - src/components/atoms/Input.test.jsx # time=220.75ms {
+    1..5
+    not ok 1 - renders Input with text type # time=197.58ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    not ok 2 - renders Input with different types # time=3.28ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    not ok 3 - renders Textarea as Input # time=15.44ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    not ok 4 - applies custom style in fallback mode # time=2.45ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    ok 5 - does not apply style in bootstrap theme mode (vi.doMock limitation) # SKIP
+}
+not ok 15 - src/components/atoms/Typography.test.jsx # time=74.48ms {
+    1..5
+    not ok 1 - renders Typography with body variant # time=61.34ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    not ok 2 - renders Typography with heading variants # time=2.69ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    not ok 3 - renders small and caption variants # time=4.22ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+    ok 4 - applies bootstrap variables when theme is bootstrap (happy-dom cannot resolve CSS vars) # SKIP
+    not ok 5 - applies custom style # time=3.56ms
+        ---
+        error:
+            name: "TypeError"
+            message: "Cannot read properties of null (reading 'useContext')"
+        at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+        ...
+}
+not ok 16 - src/components/organisms/Modal.test.jsx # time=47.66ms {
+    1..1
+    not ok 1 - Modal # time=46.62ms {
+        1..4
+        not ok 1 - renders Modal when isOpen is true # time=38.20ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useContext')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+            ...
+        not ok 2 - does not render Modal when isOpen is false # time=3.19ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useContext')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+            ...
+        not ok 3 - calls onClose when backdrop is clicked # time=4.60ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useContext')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+            ...
+        ok 4 - applies custom style in fallback mode (vi.doMock limitation) # SKIP
+    }
+}
+not ok 17 - src/components/molecules/Card.test.jsx # time=153.23ms {
+    1..1
+    not ok 1 - Card # time=147.18ms {
+        1..4
+        not ok 1 - renders Card with children # time=123.30ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useContext')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+            ...
+        not ok 2 - renders Card without custom styles in bootstrap mode # time=4.85ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useContext')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+            ...
+        not ok 3 - renders Card with custom style in fallback mode # time=13.68ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useContext')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+            ...
+        not ok 4 - Card renders nested components # time=4.07ms
+            ---
+            error:
+                name: "TypeError"
+                message: "Cannot read properties of null (reading 'useContext')"
+            at: "/Users/i/src/nan.web/node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21"
+            ...
+    }
+}
+ok 18 - src/components/organisms/Footer/Footer.test.jsx # time=44.27ms {
+    1..1
+    ok 1 - Footer Component # time=43.16ms {
+        1..1
+        ok 1 - renders all sections correctly # time=42.67ms
+    }
+}
+ok 19 - src/components/organisms/Header/Header.test.jsx # time=220.87ms {
+    1..1
+    ok 1 - Header Component Navigation # time=219.62ms {
+        1..1
+        ok 1 - renders multi-level dropdowns correctly # time=218.67ms
+    }
+}
+ok 20 - src/components/organisms/Header/useHeaderNav.test.jsx # time=5.07ms {
+    1..1
+    ok 1 - useHeaderNav - calculateNewPath pure function # time=4.41ms {
+        1..5
+        ok 1 - should add a new ID to an empty path array (user opens a dropdown) # time=1.74ms
+        ok 2 - should replace an item at the same level if the user clicks a sibling dropdown # time=0.33ms
+        ok 3 - should preserve parent and add sub-level if the user clicks a child element # time=0.97ms
+        ok 4 - should close the current ID and all its children if the user clicks it again (toggle behavior) # time=0.38ms
+        ok 5 - should collapse everything below level 0 if the user clicks on a different parent at level 0 # time=0.16ms
+    }
+}
+ok 21 - src/components/molecules/Blog/Blog.test.jsx # time=308.13ms {
+    1..1
+    ok 1 - Blog Component # time=305.18ms {
+        1..1
+        ok 1 - renders initial posts and loads more # time=300.39ms
+    }
+}
+ok 22 - src/test/releases/0/2/v0.2.2/task.test.jsx # time=200.42ms {
+    1..1
+    ok 1 - Playground Dynamic Components - Release 0.2.2 # time=197.93ms {
+        1..3
+        ok 1 - 1. should hide base registry when disableBaseRegistry is true # time=113.09ms
+        ok 2 - 2. should dynamically render extraComponents and label them correctly # time=45.46ms
+        ok 3 - 3. should display rawmeta data as YAML format string # time=38.76ms
+    }
+}
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 23 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/README.md.jsx > README.md testing > Should render Bootstrap TreeView
+ FAIL  src/README.md.jsx > README.md testing > Should support multi-selection in Bootstrap TreeView
+ FAIL  src/README.md.jsx > README.md testing > Should render Bootstrap Autocomplete
+TypeError: Cannot read properties of null (reading 'useState')
+ ❯ useState ../../node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1622:21
+ ❯ UIProvider ../ui-react/src/context/UIContext.jsx:23:28
+     21|  */
+     22| export function UIProvider({ children, value: initValue = {} }) {
+     23|  const [theme, setTheme] = useState(() => initValue.theme || Theme)
+       |                            ^
+     24|  const [lang, setLang] = useState(() => initValue.lang || 'en')
+     25|  const [db, setDb] = useState(() => initValue.db)
+ ❯ Object.react_stack_bottom_frame ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+ ❯ renderRootSync ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17450:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/23]⎯
+
+ FAIL  src/components/atoms/Button.test.jsx > renders Button with primary variant
+ FAIL  src/components/atoms/Button.test.jsx > renders Button with outline variant
+ FAIL  src/components/atoms/Button.test.jsx > renders Button with different sizes
+ FAIL  src/components/atoms/Button.test.jsx > renders disabled Button
+ FAIL  src/components/atoms/Button.test.jsx > applies custom style in fallback mode
+TypeError: Cannot read properties of null (reading 'useContext')
+ ❯ useContext ../../node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21
+ ❯ useUI ../ui-react/src/context/UIContext.jsx:14:28
+     12|  * @returns {UIContextValue} context
+     13|  */
+     14| export const useUI = () => useContext(UIContext)
+       |                            ^
+     15| 
+     16| /**
+ ❯ Button src/components/atoms/Button.jsx:25:20
+ ❯ Object.react_stack_bottom_frame ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/23]⎯
+
+ FAIL  src/components/atoms/Input.test.jsx > renders Input with text type
+ FAIL  src/components/atoms/Input.test.jsx > renders Input with different types
+ FAIL  src/components/atoms/Input.test.jsx > renders Textarea as Input
+ FAIL  src/components/atoms/Input.test.jsx > applies custom style in fallback mode
+TypeError: Cannot read properties of null (reading 'useContext')
+ ❯ useContext ../../node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21
+ ❯ useUI ../ui-react/src/context/UIContext.jsx:14:28
+     12|  * @returns {UIContextValue} context
+     13|  */
+     14| export const useUI = () => useContext(UIContext)
+       |                            ^
+     15| 
+     16| /**
+ ❯ Input src/components/atoms/Input.jsx:12:20
+ ❯ Object.react_stack_bottom_frame ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/23]⎯
+
+ FAIL  src/components/atoms/Typography.test.jsx > renders Typography with body variant
+ FAIL  src/components/atoms/Typography.test.jsx > renders Typography with heading variants
+ FAIL  src/components/atoms/Typography.test.jsx > renders small and caption variants
+ FAIL  src/components/atoms/Typography.test.jsx > applies custom style
+TypeError: Cannot read properties of null (reading 'useContext')
+ ❯ useContext ../../node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21
+ ❯ useUI ../ui-react/src/context/UIContext.jsx:14:28
+     12|  * @returns {UIContextValue} context
+     13|  */
+     14| export const useUI = () => useContext(UIContext)
+       |                            ^
+     15| 
+     16| /**
+ ❯ Typography src/components/atoms/Typography.jsx:18:20
+ ❯ Object.react_stack_bottom_frame ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/23]⎯
+
+ FAIL  src/components/organisms/Modal.test.jsx > Modal > renders Modal when isOpen is true
+ FAIL  src/components/organisms/Modal.test.jsx > Modal > does not render Modal when isOpen is false
+ FAIL  src/components/organisms/Modal.test.jsx > Modal > calls onClose when backdrop is clicked
+TypeError: Cannot read properties of null (reading 'useContext')
+ ❯ useContext ../../node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21
+ ❯ useUI ../ui-react/src/context/UIContext.jsx:14:28
+     12|  * @returns {UIContextValue} context
+     13|  */
+     14| export const useUI = () => useContext(UIContext)
+       |                            ^
+     15| 
+     16| /**
+ ❯ Modal src/components/organisms/Modal.jsx:7:20
+ ❯ Object.react_stack_bottom_frame ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/23]⎯
+
+ FAIL  src/components/molecules/Card.test.jsx > Card > renders Card with children
+ FAIL  src/components/molecules/Card.test.jsx > Card > renders Card without custom styles in bootstrap mode
+ FAIL  src/components/molecules/Card.test.jsx > Card > renders Card with custom style in fallback mode
+ FAIL  src/components/molecules/Card.test.jsx > Card > Card renders nested components
+TypeError: Cannot read properties of null (reading 'useContext')
+ ❯ useContext ../../node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:1618:21
+ ❯ useUI ../ui-react/src/context/UIContext.jsx:14:28
+     12|  * @returns {UIContextValue} context
+     13|  */
+     14| export const useUI = () => useContext(UIContext)
+       |                            ^
+     15| 
+     16| /**
+ ❯ Card src/components/molecules/Card.jsx:22:20
+ ❯ Object.react_stack_bottom_frame ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20
+ ❯ renderWithHooks ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22
+ ❯ updateFunctionComponent ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19
+ ❯ beginWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18
+ ❯ runWithFiberInDEV ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ performUnitOfWork ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22
+ ❯ workLoopSync ../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/23]⎯
+
+
+ Test Files  6 failed | 16 passed (22)
+      Tests  23 failed | 57 passed | 6 skipped | 3 todo (89)
+   Start at  21:13:13
+   Duration  15.85s (transform 5.46s, setup 11.30s, collect 56.73s, tests 3.74s, environment 17.10s, prepare 4.51s)
+
+ ELIFECYCLE  Command failed with exit code 1.

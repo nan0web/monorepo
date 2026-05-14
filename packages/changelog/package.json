@@ -1,0 +1,52 @@
+{
+  "name": "@nan0web/changelog",
+  "version": "3.0.0",
+  "description": "A simple, typed, and tested API for working with CHANGELOG.md files",
+  "type": "module",
+  "main": "src/index.js",
+  "types": "./types/index.d.ts",
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "types/**/*.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "test": "node --test --test-timeout=9999 \"src/**/*.test.js\" | nan0test parse tap --fail",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status --hide-name",
+    "test:all": "npm run test && npm run test:docs && npm run test:release && npm run build",
+    "release": "nan0release publish",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "play": "node play/main.js"
+  },
+  "keywords": [
+    "changelog",
+    "markdown",
+    "nan0web"
+  ],
+  "author": "ЯRаСлав YaRaSLove <support@yaro.page>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@nan0web/log": "workspace:*",
+    "@nan0web/markdown": "workspace:*",
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*"
+  },
+  "peerDependencies": {
+    "@nan0web/markdown": "workspace:*",
+    "@nan0web/types": "workspace:*"
+  },
+  "dependencies": {
+    "@nan0web/db-browser": "workspace:*"
+  }
+}

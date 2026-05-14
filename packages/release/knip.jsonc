@@ -1,0 +1,15 @@
+{
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"ignore": [
+		"releases/**",
+		"types/**",
+		"src/README.md.js",
+		"src/ui/cli/index.js",
+		"src/cli/index.js",
+		"src/Team.js",
+		"src/db/ReleaseDB.js",
+		"src/co/AppCommandOptions.js",
+		"src/utils/runSpawn.js",
+	],
+	"ignoreDependencies": ["@nan0web/changelog", "supports-color"],
+}

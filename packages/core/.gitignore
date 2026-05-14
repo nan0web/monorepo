@@ -1,0 +1,7 @@
+/.cache/
+/.datasets/
+/.coverage/
+.vscode/
+/node_modules/
+/chat/
+/me.md

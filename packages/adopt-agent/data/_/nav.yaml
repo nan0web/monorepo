@@ -1,0 +1,12 @@
+title: English Navigation
+url: /en
+children:
+  - title: Documents
+    url: /en/docs
+    children:
+      - title: README.md
+        url: /en/docs/README.md
+        src: /docs/en/README.md
+      - title: PROJECT.md
+        url: /en/docs/PROJECT.md
+        src: /docs/en/project.md

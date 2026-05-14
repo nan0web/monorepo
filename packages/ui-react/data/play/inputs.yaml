@@ -1,0 +1,17 @@
+$content:
+  - h1: Input Component
+  - p: Inputs allow users to enter text and other data.
+  - h2: Text Input
+  - Input: true
+    $type: text
+    $placeholder: Enter text
+  - h2: Email Input
+  - Input: true
+    $type: email
+    $placeholder: Enter email
+  - h2: Password Input
+  - Input: true
+    $type: password
+    $placeholder: Enter password
+  - a: ← All Components
+    $href: /play/index.html

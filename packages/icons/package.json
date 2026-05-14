@@ -1,0 +1,68 @@
+{
+  "name": "@nan0web/icons",
+  "version": "3.0.0",
+  "description": "Framework-agnostic SVG icons from react-icons sets — zero React dependency",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./bs": "./src/sets/bs.js",
+    "./fa": "./src/sets/fa.js",
+    "./fa6": "./src/sets/fa6.js",
+    "./fi": "./src/sets/fi.js",
+    "./md": "./src/sets/md.js",
+    "./hi": "./src/sets/hi.js",
+    "./hi2": "./src/sets/hi2.js",
+    "./adapters/lit": "./src/adapters/lit.js",
+    "./adapters/react": "./src/adapters/react.js",
+    "./adapters/string": "./src/adapters/string.js",
+    "./adapters/cli": "./src/adapters/cli.js",
+    "./inspect": {
+      "import": "./src/inspect.js",
+      "types": "./types/inspect.d.ts"
+    }
+  },
+  "scripts": {
+    "generate": "node scripts/generate.js",
+    "test": "node --test test/*.test.js",
+    "test:docs": "node --test src/README.md.js",
+    "test:e2e": "start-server-and-test 'http-server . -p 39111 -a 127.0.0.1 --cors' http://127.0.0.1:39111/play/index.html 'node --test play/*.e2e.js'",
+    "test:all": "npm test && npm run test:docs && npm run test:e2e && npm run knip && npm run audit",
+    "build": "npm run generate",
+    "knip": "knip --production",
+    "audit": "pnpm audit --prod || true",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "test:release": "node --test \"src/test/releases/**/*.test.js\""
+  },
+  "devDependencies": {
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "knip": "^5.86.0",
+    "playwright": "^1.58.2",
+    "react-icons": "^5.6.0",
+    "start-server-and-test": "^2.1.5"
+  },
+  "keywords": [
+    "icons",
+    "svg",
+    "lit",
+    "web-components",
+    "react-icons",
+    "framework-agnostic",
+    "cli"
+  ],
+  "license": "ISC",
+  "peerDependencies": {
+    "react": ">=17"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@nan0web/db-browser": "workspace:*",
+    "lit": "3.2.1"
+  }
+}

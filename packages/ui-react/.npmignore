@@ -1,0 +1,51 @@
+# Tests
+src/**/*.test.js
+src/**/*.test.jsx
+src/test/
+types/test/
+
+# ProvenDoc generator
+src/README.md.js
+src/README.md.jsx
+
+# Dev files
+play/
+data/play/
+releases/
+docs/
+knip.json
+system.md
+next.md
+tsconfig.json
+tsconfig.build.json
+.editorconfig
+CONTRIBUTING.md
+vitest.config.js
+vitest.setup.js
+vite.config.js
+playwright.config.js
+index.html
+
+# LLiMo / AI artifacts
+chat/
+.datasets/
+me.md
+
+# Generated
+dist/
+.cache/
+
+# E2E tests and IDE
+e2e/
+.vscode/
+
+# Internal docs and misc
+memory.md
+features.md
+REQUESTS.md
+public/
+bin/
+src/__mocks__/
+types/__mocks__/
+types/README.md.d.ts
+.agent/

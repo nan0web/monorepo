@@ -1,0 +1,114 @@
+---
+metadata:
+  description: ""
+  tags: []
+  status: planned
+  locale: uk
+sections:
+  - title: "🧭 Фаза 1: Філософія та Абстракція (The Seed)"
+    content: []
+    tasks:
+      - title: "1. Місія та Філософія"
+        content:
+          - "**Місія:** Забезпечити суверенний контроль над ідентичністю та доступом, де право на авторизацію належить власнику вузла, а не централізованому провайдеру."
+          - "**Філософія:**"
+          - "- **Identity Integrity:** Ідентичність користувача — це набір валідованих властивостей (email, soulId), а не просто рядок у БД."
+          - "- **Polymorphic Access:** Доступ має перевірятися однаково в CLI, Web та API через єдиний доменний шар."
+          - "- **Fail-Fast Security:** Якщо інфраструктура (DB, Logger) не завалена (\"Interface Welding\"), додаток не запуститься."
+        items: []
+        total: 0
+        completed: 0
+      - title: "2. Абстракція (Base App)"
+        content:
+          - "- **Core:** `AuthApp` — ядро логіки, що наслідує `Model`. Використовує асинхронні генератори (`yield*`) для потокової передачі статусів."
+          - "- **UI Adapters:**"
+          - "- `AuthCLI` — інтерактивне керування через термінал."
+          - "- `AuthRouter` — автоматичне підключення до HTTP-серверів на основі доменних повідомлень."
+          - "- `AuthWeb` — (майбутнє) Lit/React компоненти для кастомних форм."
+          - "---"
+        items: []
+        total: 0
+        completed: 0
+  - title: "📐 Фаза 2: Доменне Моделювання (v1.4.0)"
+    content: []
+    tasks:
+      - title: "1. Моделі (Model-as-Schema)"
+        content:
+          - "#### 🛡 AuthPolicy (extends Model)"
+          - "Визначає правила доступу до ресурсів за допомогою glob-патернів."
+          - "- `protectedPaths` — патерни захисту (напр. `/api/**`)."
+          - "- `publicPaths` — виключення (напр. `/api/health`)."
+          - "- **Метод `isProtected(path)`**: перевірка за Законом Тотожності."
+          - "#### 👤 UserAccount (extends Model)"
+          - "Доменна сутність користувача."
+          - "- `verified` — підтверджено емейл / DID."
+          - "- `approved` — схвалено адміністратором спільноти."
+          - "- `soulId` — суверенний міст ідентичності."
+          - "#### ⚙️ AuthConfig (extends Model)"
+          - "Налаштування поведінки системи."
+          - "- `verificationFlow` — стратегія реєстрації (`email-only`, `admin-only`, `email+admin`)."
+          - "- `passwordMinLength` — правила валідації."
+        items: []
+        total: 0
+        completed: 0
+      - title: "2. Повідомлення (Intent Messages)"
+        content:
+          - "Кожна дія — це доменне повідомлення (`SignUpMessage`, `LoginMessage`), яке валідує себе перед відправкою в логіку."
+          - "---"
+        items: []
+        total: 0
+        completed: 0
+  - title: "🛠 Фаза 3: Верифікація Логіки (Dispatcher)"
+    content:
+      - "**Статус:** ✅ Завершено (v1.4.0)"
+      - "Реалізовано **Polymorphic Dispatcher `run(msg)`**:"
+      - "- Додаток автоматично маршрутизує вхідні повідомлення на відповідні методи логіки на основі їхнього імені."
+      - "- Потік виводу (`OutputMessage`) забезпечує зворотний зв'язок у реальному часі (\"Registration successful\" ⇢ \"Check email\")."
+      - "---"
+    tasks: []
+  - title: "🪐 Фаза 4: Onboarding Strategies"
+    content: []
+    tasks:
+      - title: "1. Стратегії Реєстрації"
+        content:
+          - "- **Sovereign (`email-only`)**: Швидка реєстрація з авто-затвердженням після коду в пошті."
+          - "- **High-Trust (`email+admin`)**: Підтвердження пошти + ручне схвалення модератором."
+          - "- **Private (`admin-only`)**: Створення акаунта тільки адміністратором, або реєстрація без коду з очікуванням схвалення."
+        items: []
+        total: 0
+        completed: 0
+      - title: "2. Interface Welding (Fail-Fast)"
+        content:
+          - "Контракт інфраструктури перевіряється в конструкторі. Відсутність `db` або `tokenManager` призводить до негайної зупинки."
+          - "---"
+        items: []
+        total: 0
+        completed: 0
+  - title: "🎨 Фаза 5: Тематизація та UX"
+    content:
+      - "- **CLI Aesthetics:** Використання `nan0test` для візуалізації станів та `UI-CLI` форм."
+      - "- **Web Components:** Адаптивні форми входу, що наслідують доменну схему `UserAccount`."
+      - "---"
+    tasks: []
+  - title: "🏁 Чек-лист v1.4.0"
+    content: []
+    tasks:
+      - title: "General"
+        content: []
+        items:
+          - text: "Відмова від `@nan0web/types` на користь чистого `Model`."
+            completed: true
+          - text: "Впровадження `run(msg)` диспетчера."
+            completed: true
+          - text: "Поле `approved` у `UserAccount`."
+            completed: true
+          - text: "Підтримка `verificationFlow` стратегій."
+            completed: true
+          - text: "Повне документування в README та Seed."
+            completed: true
+        total: 5
+        completed: 5
+stats:
+  totalTasks: 5
+  completedTasks: 5
+  progress: 100

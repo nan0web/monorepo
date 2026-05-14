@@ -1,0 +1,57 @@
+{
+  "name": "@nan0web/html",
+  "version": "3.0.0",
+  "description": "HTML transformer and utilities.",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "types/**/*.d.ts"
+  ],
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test \"src/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "test:status": "nan0test status --hide-name --debug",
+    "play": "node play/main.js",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "release": "nan0release publish",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules"
+  },
+  "keywords": [
+    "html",
+    "transformer",
+    "nan0web"
+  ],
+  "author": "YaRaSLove (ЯRаСлав) <support@yaro.page>",
+  "license": "ISC",
+  "devDependencies": {
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@nan0web/transformer": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "@nan0web/xml": "workspace:*",
+    "husky": "^9.1.7"
+  },
+  "peerDependencies": {
+    "@nan0web/transformer": "workspace:*",
+    "@nan0web/xml": "workspace:*"
+  },
+  "dependencies": {
+    "@nan0web/db-browser": "workspace:*"
+  }
+}

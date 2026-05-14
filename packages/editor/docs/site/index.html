@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>@nan0web/editor — Documentation Portal</title>
+		<!-- SSG dynamic loader for ui-lit -->
+		<script type="module" src="https://unpkg.com/@nan0web/ui-lit@latest/dist/index.js"></script>
+		<style>
+			:root {
+				--co: #0066cc;
+				--ba-surface: #ffffff;
+				--co-text: #333333;
+			}
+			@media (prefers-color-scheme: dark) {
+				:root {
+					--ba-surface: #111111;
+					--co-text: #eeeeee;
+				}
+			}
+			body {
+				margin: 0;
+				font-family: -apple-system, sans-serif;
+				background: var(--ba-surface);
+				color: var(--co-text);
+			}
+			.split {
+				display: flex;
+				height: 100vh;
+			}
+			nav {
+				width: 250px;
+				padding: 2rem;
+				border-right: 1px solid #333;
+			}
+			nav ul {
+				list-style: none;
+				padding: 0;
+			}
+			nav a {
+				color: var(--co);
+				text-decoration: none;
+				display: block;
+				padding: 0.5rem 0;
+			}
+			main {
+				flex: 1;
+				padding: 2rem;
+				overflow-y: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="split">
+			<nav>
+				<h2>@nan0web/editor</h2>
+				<ul>
+					<li><a href="../../README.md">Overview (README)</a></li>
+					<li><a href="pages/getting-started.md">Getting Started</a></li>
+					<li><a href="pages/api.md">API Reference</a></li>
+					<li><a href="pages/examples.md">Examples</a></li>
+					<li><a href="sandbox/index.html">Live Sandbox</a></li>
+					<li><a href="pages/economy.md">Economy & Themes</a></li>
+				</ul>
+			</nav>
+			<main id="content">
+				<!-- In a real SSG, this would load the markdown dynamically -->
+				<h1>Welcome to @nan0web/editor Portal</h1>
+				<nan0-markdown>
+					Please select a page from the menu. (Note: standard SSG JS logic can dynamically load .md files here).
+				</nan0-markdown>
+			</main>
+		</div>
+	</body>
+</html>

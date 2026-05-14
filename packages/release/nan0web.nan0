@@ -1,0 +1,16 @@
+name: "@nan0web/release"
+agents:
+  - id: 'release-manager'
+    description: 'Release & NPM Publication Manager'
+    workflows:
+      - 'src/agents/workflows/release.md'
+      - 'src/agents/workflows/npm-release.md'
+    inspectors:
+      - 'src/agents/inspectors/package-hygiene.md'
+  - id: 'git-reviewer'
+    description: 'Architectural Git Commit Validator'
+    workflows:
+      - 'src/agents/workflows/commit.md'
+      - 'src/agents/workflows/zero-tolerance-git.md'
+    inspectors:
+      - 'src/agents/inspectors/git-reviewer.md'

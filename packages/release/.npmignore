@@ -1,0 +1,37 @@
+# Tests
+src/**/*.test.js
+src/test/
+types/test/
+releases/
+src/releases/
+test_data/
+.cache/
+
+# ProvenDoc generator
+/src/README.md.js
+**/README.md.js
+
+# Dev files
+play/
+docs/
+knip.jsonc
+system.md
+next.md
+project.md
+tsconfig.json
+.editorconfig
+CONTRIBUTING.md
+CHANGELOG.md
+.datasets/
+.husky/
+
+# Legacy and temp
+bin/temp/
+bin/lib/
+legacy/
+bin/release.test.js
+
+# LLiMo / AI artifacts
+chat/
+.datasets/
+me.md

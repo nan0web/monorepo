@@ -1,0 +1,6 @@
+{
+	"ignore": [
+		"src/README.md.js",
+		"types/**"
+	]
+}

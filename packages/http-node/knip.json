@@ -1,0 +1,4 @@
+{
+	"ignore": ["types/**/*.d.ts"],
+	"ignoreBinaries": ["tsc", "nan0release"]
+}

@@ -1,0 +1,33 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"lib": [
+			"esnext"
+		],
+		"declaration": true,
+		"declarationMap": false,
+		"emitDeclarationOnly": true,
+		"outDir": "./types",
+		"rootDir": "./src",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": false,
+		"allowJs": true,
+		"checkJs": true,
+		"jsx": "react-jsx"
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"**/*.test.js",
+		"**/*.story.js",
+		"src/test"
+	]
+}

@@ -1,0 +1,2488 @@
+
+> @nan0web/llimo.app@1.0.0 test
+> node --test --test-timeout=3333 --test-reporter=tap 'src/**/*.test.js'
+
+TAP version 13
+# Subtest: Commands index
+    # Subtest: exports all commands
+    ok 1 - exports all commands
+      ---
+      duration_ms: 0.380208
+      type: 'test'
+      ...
+    1..1
+ok 1 - Commands index
+  ---
+  duration_ms: 0.803208
+  type: 'suite'
+  ...
+# Subtest: ListCommand
+    # Subtest: creates instance correctly
+    ok 1 - creates instance correctly
+      ---
+      duration_ms: 1.468125
+      type: 'test'
+      ...
+    # Subtest: runs without error
+    ok 2 - runs without error
+      ---
+      duration_ms: 43.136125
+      type: 'test'
+      ...
+    1..2
+ok 2 - ListCommand
+  ---
+  duration_ms: 45.797291
+  type: 'suite'
+  ...
+# Subtest: ReleaseCommand
+    # Subtest: task status transitions from pending to working to complete
+    ok 1 - task status transitions from pending to working to complete
+      ---
+      duration_ms: 1.642333
+      type: 'test'
+      ...
+    # Subtest: runs tasks in parallel respecting thread limit
+    ok 2 - runs tasks in parallel respecting thread limit
+      ---
+      duration_ms: 9.661833
+      type: 'test'
+      ...
+    # Subtest: emits working status when processing task
+    ok 3 - emits working status when processing task
+      ---
+      duration_ms: 0.984542
+      type: 'test'
+      ...
+    # Subtest: properly calculates stage progress percentage
+    ok 4 - properly calculates stage progress percentage
+      ---
+      duration_ms: 0.314125
+      type: 'test'
+      ...
+    1..4
+ok 3 - ReleaseCommand
+  ---
+  duration_ms: 13.742042
+  type: 'suite'
+  ...
+# Subtest: ANSI
+    # Subtest: should provide empty strings when not TTY
+    ok 1 - should provide empty strings when not TTY
+      ---
+      duration_ms: 1.360167
+      type: 'test'
+      ...
+    # Subtest: should export COLORS object with foreground colors
+    ok 2 - should export COLORS object with foreground colors
+      ---
+      duration_ms: 0.330125
+      type: 'test'
+      ...
+    # Subtest: should provide CLEAR_LINE constant
+    ok 3 - should provide CLEAR_LINE constant
+      ---
+      duration_ms: 0.586875
+      type: 'test'
+      ...
+    # Subtest: should provide OVERWRITE_LINE constant
+    ok 4 - should provide OVERWRITE_LINE constant
+      ---
+      duration_ms: 0.243625
+      type: 'test'
+      ...
+    # Subtest: should overwrite line with string
+    ok 5 - should overwrite line with string
+      ---
+      duration_ms: 0.219083
+      type: 'test'
+      ...
+    # Subtest: should overwrite line with empty string
+    ok 6 - should overwrite line with empty string
+      ---
+      duration_ms: 0.858166
+      type: 'test'
+      ...
+    # Subtest: should move cursor up by default 1 row
+    ok 7 - should move cursor up by default 1 row
+      ---
+      duration_ms: 0.164833
+      type: 'test'
+      ...
+    # Subtest: should move cursor up by 3 rows
+    ok 8 - should move cursor up by 3 rows
+      ---
+      duration_ms: 0.15225
+      type: 'test'
+      ...
+    1..8
+ok 4 - ANSI
+  ---
+  duration_ms: 7.995417
+  type: 'suite'
+  ...
+# Subtest: ChatCLiApp
+    # Subtest: initializes successfully
+    ok 1 - initializes successfully
+      ---
+      duration_ms: 1.324833
+      type: 'test'
+      ...
+    1..1
+ok 5 - ChatCLiApp
+  ---
+  duration_ms: 1.76125
+  type: 'suite'
+  ...
+# Subtest: ModelsOptions – filter parsing
+    # Subtest: equality filter on price with precision
+    ok 1 - equality filter on price with precision
+      ---
+      duration_ms: 3.225792
+      type: 'test'
+      ...
+    # Subtest: regex filter on id
+    ok 2 - regex filter on id
+      ---
+      duration_ms: 0.317583
+      type: 'test'
+      ...
+    # Subtest: exact id filter
+    ok 3 - exact id filter
+      ---
+      duration_ms: 0.152042
+      type: 'test'
+      ...
+    # Subtest: context length greater than
+    ok 4 - context length greater than
+      ---
+      duration_ms: 0.438042
+      type: 'test'
+      ...
+    # Subtest: provider regex filter
+    ok 5 - provider regex filter
+      ---
+      duration_ms: 0.170375
+      type: 'test'
+      ...
+    # Subtest: invalid operation throws
+    ok 6 - invalid operation throws
+      ---
+      duration_ms: 0.325625
+      type: 'test'
+      ...
+    # Subtest: equality filter on price with precision
+    ok 7 - equality filter on price with precision
+      ---
+      duration_ms: 0.176792
+      type: 'test'
+      ...
+    # Subtest: regex filter on id
+    ok 8 - regex filter on id
+      ---
+      duration_ms: 0.098
+      type: 'test'
+      ...
+    # Subtest: exact id filter
+    ok 9 - exact id filter
+      ---
+      duration_ms: 0.100167
+      type: 'test'
+      ...
+    # Subtest: context length greater than
+    ok 10 - context length greater than
+      ---
+      duration_ms: 0.145542
+      type: 'test'
+      ...
+    # Subtest: provider regex filter
+    ok 11 - provider regex filter
+      ---
+      duration_ms: 0.3415
+      type: 'test'
+      ...
+    # Subtest: invalid operation throws
+    ok 12 - invalid operation throws
+      ---
+      duration_ms: 0.259
+      type: 'test'
+      ...
+    1..12
+ok 6 - ModelsOptions – filter parsing
+  ---
+  duration_ms: 6.640042
+  type: 'suite'
+  ...
+# Q1: first
+# Q2: second
+# Subtest: Ui predefined STDIN handling
+    # Subtest: uses predefined inputs from STDIN env var
+    ok 1 - uses predefined inputs from STDIN env var
+      ---
+      duration_ms: 3.224625
+      type: 'test'
+      ...
+    # Subtest: falls back to normal prompt when no predefined inputs
+    ok 2 - falls back to normal prompt when no predefined inputs
+      ---
+      duration_ms: 0.237666
+      type: 'test'
+      ...
+    1..2
+ok 7 - Ui predefined STDIN handling
+  ---
+  duration_ms: 4.252167
+  type: 'suite'
+  ...
+# Subtest: UiConsole.full line handling
+    # Subtest: truncates lines longer than window width
+    ok 1 - truncates lines longer than window width
+      ---
+      duration_ms: 0.161417
+      type: 'test'
+      ...
+    # Subtest: pads lines shorter than window width
+    ok 2 - pads lines shorter than window width
+      ---
+      duration_ms: 0.09875
+      type: 'test'
+      ...
+    1..2
+ok 8 - UiConsole.full line handling
+  ---
+  duration_ms: 0.364125
+  type: 'suite'
+  ...
+# + 33 | message(s)           | (111,222 byte(s))
+#    1 | system message(s)    |     (222 byte(s))
+#   15 | user message(s)      | (100,000 byte(s))
+#   15 | assistant message(s) |   (8,000 byte(s))
+#    3 | tool message(s)      |   (3,000 byte(s))
+# Subtest: UiConsole
+    # Subtest: does not output debug when debugMode is false
+    ok 1 - does not output debug when debugMode is false
+      ---
+      duration_ms: 0.731708
+      type: 'test'
+      ...
+    # Subtest: outputs debug when debugMode is true
+    ok 2 - outputs debug when debugMode is true
+      ---
+      duration_ms: 0.399833
+      type: 'test'
+      ...
+    # Subtest: success method forwards message via console.info
+    ok 3 - success method forwards message via console.info
+      ---
+      duration_ms: 0.210083
+      type: 'test'
+      ...
+    # Subtest: should properly print table
+    ok 4 - should properly print table
+      ---
+      duration_ms: 1.235083
+      type: 'test'
+      ...
+    1..4
+ok 9 - UiConsole
+  ---
+  duration_ms: 3.726375
+  type: 'suite'
+  ...
+# Subtest: Ui
+    # Subtest: isDebug reflects internal state
+    ok 1 - isDebug reflects internal state
+      ---
+      duration_ms: 0.608041
+      type: 'test'
+      ...
+    # Subtest: askYesNo returns "yes" for affirmative answers
+    ok 2 - askYesNo returns "yes" for affirmative answers
+      ---
+      duration_ms: 0.355
+      type: 'test'
+      ...
+    # Subtest: askYesNo returns "no" for negative answers
+    ok 3 - askYesNo returns "no" for negative answers
+      ---
+      duration_ms: 0.255709
+      type: 'test'
+      ...
+    # Subtest: askYesNo returns raw answer when not recognisable
+    ok 4 - askYesNo returns raw answer when not recognisable
+      ---
+      duration_ms: 0.199542
+      type: 'test'
+      ...
+    1..4
+ok 10 - Ui
+  ---
+  duration_ms: 1.815708
+  type: 'suite'
+  ...
+# Subtest: UiFormats.money formatting
+    # Subtest: formats zero correctly
+    ok 1 - formats zero correctly
+      ---
+      duration_ms: 17.404791
+      type: 'test'
+      ...
+    # Subtest: formats large numbers with thousands separators
+    ok 2 - formats large numbers with thousands separators
+      ---
+      duration_ms: 0.197958
+      type: 'test'
+      ...
+    # Subtest: formats with custom digits
+    ok 3 - formats with custom digits
+      ---
+      duration_ms: 0.134667
+      type: 'test'
+      ...
+    # Subtest: formats negative numbers
+    ok 4 - formats negative numbers
+      ---
+      duration_ms: 0.109833
+      type: 'test'
+      ...
+    1..4
+ok 11 - UiFormats.money formatting
+  ---
+  duration_ms: 18.004542
+  type: 'suite'
+  ...
+# Subtest: Ui.bar
+    # Subtest: should render bar correctly [0,10,null,null]
+    ok 1 - should render bar correctly [0,10,null,null]
+      ---
+      duration_ms: 0.108167
+      type: 'test'
+      ...
+    # Subtest: should render bar correctly [0.1,10,null,null]
+    ok 2 - should render bar correctly [0.1,10,null,null]
+      ---
+      duration_ms: 0.043
+      type: 'test'
+      ...
+    # Subtest: should render bar correctly [0.4,10,null,null]
+    ok 3 - should render bar correctly [0.4,10,null,null]
+      ---
+      duration_ms: 0.033916
+      type: 'test'
+      ...
+    # Subtest: should render bar correctly [0.4,10,"+","-"]
+    ok 4 - should render bar correctly [0.4,10,"+","-"]
+      ---
+      duration_ms: 0.028709
+      type: 'test'
+      ...
+    # Subtest: should render bar correctly [0.5,10,null,null]
+    ok 5 - should render bar correctly [0.5,10,null,null]
+      ---
+      duration_ms: 0.026667
+      type: 'test'
+      ...
+    # Subtest: should render bar correctly [1,10,null,null]
+    ok 6 - should render bar correctly [1,10,null,null]
+      ---
+      duration_ms: 0.025917
+      type: 'test'
+      ...
+    1..6
+ok 12 - Ui.bar
+  ---
+  duration_ms: 0.336417
+  type: 'suite'
+  ...
+# Subtest: argvHelper
+    # Subtest: parseArgv
+        # Subtest: should parse ["--yes"]
+        ok 1 - should parse ["--yes"]
+          ---
+          duration_ms: 2.60325
+          type: 'test'
+          ...
+        # Subtest: should parse ["me.md","--new"]
+        ok 2 - should parse ["me.md","--new"]
+          ---
+          duration_ms: 0.470541
+          type: 'test'
+          ...
+        # Subtest: should parse ["me.md","--new","--yes"]
+        ok 3 - should parse ["me.md","--new","--yes"]
+          ---
+          duration_ms: 0.282959
+          type: 'test'
+          ...
+        # Subtest: should parse ["me.md","--new","--yes","new"]
+        ok 4 - should parse ["me.md","--new","--yes","new"]
+          ---
+          duration_ms: 1.432916
+          type: 'test'
+          ...
+        # Subtest: should parse ["me.md","--new","--some","new"]
+        ok 5 - should parse ["me.md","--new","--some","new"]
+          ---
+          duration_ms: 0.111083
+          type: 'test'
+          ...
+        # Subtest: should parse ["--test=1.md"]
+        ok 6 - should parse ["--test=1.md"]
+          ---
+          duration_ms: 0.099667
+          type: 'test'
+          ...
+        # Subtest: should parse ["--test","1.md"]
+        ok 7 - should parse ["--test","1.md"]
+          ---
+          duration_ms: 0.105
+          type: 'test'
+          ...
+        # Subtest: should parse ["--test-dir=1.md"]
+        ok 8 - should parse ["--test-dir=1.md"]
+          ---
+          duration_ms: 0.0925
+          type: 'test'
+          ...
+        # Subtest: should parse ["--test-dir","1.md"]
+        ok 9 - should parse ["--test-dir","1.md"]
+          ---
+          duration_ms: 0.070666
+          type: 'test'
+          ...
+        # Subtest: should parse ["--some","thing"]
+        ok 10 - should parse ["--some","thing"]
+          ---
+          duration_ms: 0.718792
+          type: 'test'
+          ...
+        # Subtest: should parse ["--some=thing"]
+        ok 11 - should parse ["--some=thing"]
+          ---
+          duration_ms: 0.251375
+          type: 'test'
+          ...
+        # Subtest: should parse ["--new"]
+        ok 12 - should parse ["--new"]
+          ---
+          duration_ms: 0.1555
+          type: 'test'
+          ...
+        # Subtest: should parse ["--yes"]
+        ok 13 - should parse ["--yes"]
+          ---
+          duration_ms: 0.286833
+          type: 'test'
+          ...
+        # Subtest: should parse {"yes":true}
+        ok 14 - should parse {"yes":true}
+          ---
+          duration_ms: 0.195875
+          type: 'test'
+          ...
+        # Subtest: should parse {"argv":["me.md","--some","new"],"new":true}
+        ok 15 - should parse {"argv":["me.md","--some","new"],"new":true}
+          ---
+          duration_ms: 0.1655
+          type: 'test'
+          ...
+        # Subtest: should parse {"argv":["me.md","--some","new"],"new":true}
+        ok 16 - should parse {"argv":["me.md","--some","new"],"new":true}
+          ---
+          duration_ms: 0.387083
+          type: 'test'
+          ...
+        # Subtest: should throw error for missing value
+        ok 17 - should throw error for missing value
+          ---
+          duration_ms: 0.690334
+          type: 'test'
+          ...
+        # Subtest: should not affect changes on defaults
+        ok 18 - should not affect changes on defaults
+          ---
+          duration_ms: 0.428416
+          type: 'test'
+          ...
+        # Subtest: should process 2 steps defaults: default, system, agent, user
+        ok 19 - should process 2 steps defaults: default, system, agent, user
+          ---
+          duration_ms: 0.124416
+          type: 'test'
+          ...
+        1..19
+    ok 1 - parseArgv
+      ---
+      duration_ms: 12.929458
+      type: 'suite'
+      ...
+    1..1
+ok 13 - argvHelper
+  ---
+  duration_ms: 13.167875
+  type: 'suite'
+  ...
+# Subtest: autocomplete – core utilities
+    # Subtest: modelRows flattens map correctly
+    ok 1 - modelRows flattens map correctly
+      ---
+      duration_ms: 11.538333
+      type: 'test'
+      ...
+    # Subtest: formatContext handles units
+    ok 2 - formatContext handles units
+      ---
+      duration_ms: 0.1315
+      type: 'test'
+      ...
+    # Subtest: highlightCell highlights correctly
+    ok 3 - highlightCell highlights correctly
+      ---
+      duration_ms: 0.104541
+      type: 'test'
+      ...
+    # Subtest: parseFieldFilter parses all variants
+    ok 4 - parseFieldFilter parses all variants
+      ---
+      duration_ms: 0.536375
+      type: 'test'
+      ...
+    # Subtest: filterModels matches by id *or* provider (partial match via includes)
+    ok 5 - filterModels matches by id *or* provider (partial match via includes)
+      ---
+      duration_ms: 0.248542
+      type: 'test'
+      ...
+    # Subtest: filterModels supports field filters and numeric comparisons
+    ok 6 - filterModels supports field filters and numeric comparisons
+      ---
+      duration_ms: 0.169958
+      type: 'test'
+      ...
+    # Subtest: renderTable produces a table and respects highlighting
+    ok 7 - renderTable produces a table and respects highlighting
+      ---
+      duration_ms: 8.547417
+      type: 'test'
+      ...
+    # Subtest: clearLines writes correct escape sequence
+    ok 8 - clearLines writes correct escape sequence
+      ---
+      duration_ms: 0.48625
+      type: 'test'
+      ...
+# \\r[K[3A\\r[K
+    # Subtest: interactive resolves on Ctrl+C
+    ok 9 - interactive resolves on Ctrl+C
+      ---
+      duration_ms: 11.925083
+      type: 'test'
+      ...
+    # Subtest: pipeOutput produces correct rows
+    ok 10 - pipeOutput produces correct rows
+      ---
+      duration_ms: 0.523583
+      type: 'test'
+      ...
+    1..10
+ok 14 - autocomplete – core utilities
+  ---
+  duration_ms: 35.196458
+  type: 'suite'
+  ...
+# Subtest: autocomplete – core functions
+    # Subtest: modelRows
+        # Subtest: flattens map correctly
+        ok 1 - flattens map correctly
+          ---
+          duration_ms: 0.468292
+          type: 'test'
+          ...
+        1..1
+    ok 1 - modelRows
+      ---
+      duration_ms: 1.207542
+      type: 'suite'
+      ...
+    # Subtest: formatContext
+        # Subtest: formats small numbers as T
+        ok 1 - formats small numbers as T
+          ---
+          duration_ms: 0.182708
+          type: 'test'
+          ...
+        # Subtest: formats thousands as K
+        ok 2 - formats thousands as K
+          ---
+          duration_ms: 0.087583
+          type: 'test'
+          ...
+        # Subtest: formats millions as M
+        ok 3 - formats millions as M
+          ---
+          duration_ms: 0.08625
+          type: 'test'
+          ...
+        1..3
+    ok 2 - formatContext
+      ---
+      duration_ms: 0.487708
+      type: 'suite'
+      ...
+    # Subtest: highlightCell
+        # Subtest: no highlight for empty search
+        ok 1 - no highlight for empty search
+          ---
+          duration_ms: 0.155541
+          type: 'test'
+          ...
+        # Subtest: highlights match in ID
+        ok 2 - highlights match in ID
+          ---
+          duration_ms: 0.24825
+          type: 'test'
+          ...
+        # Subtest: highlights match in provider
+        ok 3 - highlights match in provider
+          ---
+          duration_ms: 0.276375
+          type: 'test'
+          ...
+        # Subtest: no highlight for command search
+        ok 4 - no highlight for command search
+          ---
+          duration_ms: 0.264125
+          type: 'test'
+          ...
+        1..4
+    ok 3 - highlightCell
+      ---
+      duration_ms: 1.316625
+      type: 'suite'
+      ...
+    # Subtest: parseFieldFilter
+        # Subtest: parses field=value
+        ok 1 - parses field=value
+          ---
+          duration_ms: 1.166209
+          type: 'test'
+          ...
+        # Subtest: parses field op value
+        ok 2 - parses field op value
+          ---
+          duration_ms: 0.21175
+          type: 'test'
+          ...
+        # Subtest: parses simple includes (no =)
+        ok 3 - parses simple includes (no =)
+          ---
+          duration_ms: 0.126375
+          type: 'test'
+          ...
+        1..3
+    ok 4 - parseFieldFilter
+      ---
+      duration_ms: 1.618708
+      type: 'suite'
+      ...
+    # Subtest: filterModels
+        # Subtest: filters by ID substring (partial match via includes)
+        ok 1 - filters by ID substring (partial match via includes)
+          ---
+          duration_ms: 0.409583
+          type: 'test'
+          ...
+        # Subtest: filters by provider substring
+        ok 2 - filters by provider substring
+          ---
+          duration_ms: 0.098375
+          type: 'test'
+          ...
+        # Subtest: filters by @provider=value
+        ok 3 - filters by @provider=value
+          ---
+          duration_ms: 0.287959
+          type: 'test'
+          ...
+        # Subtest: filters by @id=value
+        ok 4 - filters by @id=value
+          ---
+          duration_ms: 0.070791
+          type: 'test'
+          ...
+        # Subtest: filters numerically by @context>4096
+        ok 5 - filters numerically by @context>4096
+          ---
+          duration_ms: 0.060917
+          type: 'test'
+          ...
+        # Subtest: supports K/M suffixes in numeric filters
+        ok 6 - supports K/M suffixes in numeric filters
+          ---
+          duration_ms: 0.070584
+          type: 'test'
+          ...
+        # Subtest: returns all for empty search
+        ok 7 - returns all for empty search
+          ---
+          duration_ms: 0.850709
+          type: 'test'
+          ...
+        # Subtest: ignores filtering in command mode
+        ok 8 - ignores filtering in command mode
+          ---
+          duration_ms: 0.157083
+          type: 'test'
+          ...
+        # Subtest: handles invalid field as no match
+        ok 9 - handles invalid field as no match
+          ---
+          duration_ms: 0.199292
+          type: 'test'
+          ...
+        1..9
+    ok 5 - filterModels
+      ---
+      duration_ms: 2.547125
+      type: 'suite'
+      ...
+    1..5
+ok 15 - autocomplete – core functions
+  ---
+  duration_ms: 7.736084
+  type: 'suite'
+  ...
+# Subtest: renderTable
+    # Subtest: renders table with highlighting in ID and provider
+    ok 1 - renders table with highlighting in ID and provider
+      ---
+      duration_ms: 10.897
+      type: 'test'
+      ...
+    # Subtest: handles negative pricing as '-'
+    ok 2 - handles negative pricing as '-'
+      ---
+      duration_ms: 0.201667
+      type: 'test'
+      ...
+    1..2
+ok 16 - renderTable
+  ---
+  duration_ms: 11.202625
+  type: 'suite'
+  ...
+# Subtest: Table
+    # Subtest: normalizeRows
+        # Subtest: keeps array rows
+        ok 1 - keeps array rows
+          ---
+          duration_ms: 0.921125
+          type: 'test'
+          ...
+        # Subtest: converts object rows
+        ok 2 - converts object rows
+          ---
+          duration_ms: 0.418041
+          type: 'test'
+          ...
+        1..2
+    ok 1 - normalizeRows
+      ---
+      duration_ms: 2.564917
+      type: 'suite'
+      ...
+    # Subtest: renderLines
+        # Subtest: renders aligned table matching UiConsole.table
+        ok 1 - renders aligned table matching UiConsole.table
+          ---
+          duration_ms: 0.510875
+          type: 'test'
+          ...
+        # Subtest: supports center align
+        ok 2 - supports center align
+          ---
+          duration_ms: 0.136417
+          type: 'test'
+          ...
+        # Subtest: handles padding
+        ok 3 - handles padding
+          ---
+          duration_ms: 0.423958
+          type: 'test'
+          ...
+        # Subtest: handles per-column widths %
+        ok 4 - handles per-column widths %
+          ---
+          duration_ms: 0.315917
+          type: 'test'
+          ...
+        1..4
+    ok 2 - renderLines
+      ---
+      duration_ms: 3.265083
+      type: 'suite'
+      ...
+    # Subtest: Padding
+        # Subtest: constructor defaults
+        ok 1 - constructor defaults
+          ---
+          duration_ms: 0.161417
+          type: 'test'
+          ...
+        # Subtest: parse single
+        ok 2 - parse single
+          ---
+          duration_ms: 0.092875
+          type: 'test'
+          ...
+        # Subtest: parse dual
+        ok 3 - parse dual
+          ---
+          duration_ms: 0.073708
+          type: 'test'
+          ...
+        # Subtest: from string/number
+        ok 4 - from string/number
+          ---
+          duration_ms: 0.107375
+          type: 'test'
+          ...
+        1..4
+    ok 3 - Padding
+      ---
+      duration_ms: 0.571
+      type: 'suite'
+      ...
+    # Subtest: instance
+        # Subtest: new Table toLines
+        ok 1 - new Table toLines
+          ---
+          duration_ms: 0.145708
+          type: 'test'
+          ...
+        # Subtest: normalize in toLines
+        ok 2 - normalize in toLines
+          ---
+          duration_ms: 0.655083
+          type: 'test'
+          ...
+        1..2
+    ok 4 - instance
+      ---
+      duration_ms: 0.866958
+      type: 'suite'
+      ...
+    1..4
+ok 17 - Table
+  ---
+  duration_ms: 8.010708
+  type: 'suite'
+  ...
+# Subtest: Table.normalizeAlign
+    # Subtest: normalizes shorthands
+    ok 1 - normalizes shorthands
+      ---
+      duration_ms: 0.082125
+      type: 'test'
+      ...
+    1..1
+ok 18 - Table.normalizeAlign
+  ---
+  duration_ms: 0.131667
+  type: 'suite'
+  ...
+# Subtest: runCommand (mocked spawn)
+    # Subtest: executes a command and returns trimmed stdout
+    ok 1 - executes a command and returns trimmed stdout
+      ---
+      duration_ms: 1.095083
+      type: 'test'
+      ...
+    # Subtest: collects stderr and forwards it as Error to onData
+    ok 2 - collects stderr and forwards it as Error to onData
+      ---
+      duration_ms: 0.493375
+      type: 'test'
+      ...
+    # Subtest: uses provided cwd option
+    ok 3 - uses provided cwd option
+      ---
+      duration_ms: 0.248333
+      type: 'test'
+      ...
+    # Subtest: defaults onData to process.stdout.write when not supplied
+    ok 4 - defaults onData to process.stdout.write when not supplied
+      ---
+      duration_ms: 0.392458
+      type: 'test'
+      ...
+    # Subtest: rejects when spawn throws
+    ok 5 - rejects when spawn throws
+      ---
+      duration_ms: 1.972292
+      type: 'test'
+      ...
+    1..5
+ok 19 - runCommand (mocked spawn)
+  ---
+  duration_ms: 4.846042
+  type: 'suite'
+  ...
+# Subtest: node.failure.txt handling
+    # Subtest: should parse a failing TAP run from node.failure.txt
+    ok 1 - should parse a failing TAP run from node.failure.txt
+      ---
+      duration_ms: 7.349042
+      type: 'test'
+      ...
+    1..1
+ok 20 - node.failure.txt handling
+  ---
+  duration_ms: 11.325375
+  type: 'suite'
+  ...
+# Subtest: Suite
+    # Subtest: should parse TAP version 13
+    ok 1 - should parse TAP version 13
+      ---
+      duration_ms: 14.812417
+      type: 'test'
+      ...
+    # Subtest: should produce OK
+    ok 2 - should produce OK
+      ---
+      duration_ms: 0.663958
+      type: 'test'
+      ...
+    1..2
+ok 21 - Suite
+  ---
+  duration_ms: 20.278209
+  type: 'suite'
+  ...
+# Subtest: Suite
+    # Subtest: should parse TAP version 13
+    ok 1 - should parse TAP version 13
+      ---
+      duration_ms: 9.76675
+      type: 'test'
+      ...
+    1..1
+ok 22 - Suite
+  ---
+  duration_ms: 14.1075
+  type: 'suite'
+  ...
+# Subtest: testingProgress
+    # Subtest: should print some progress
+    ok 1 - should print some progress
+      ---
+      duration_ms: 170.380875
+      type: 'test'
+      ...
+    1..1
+ok 23 - testingProgress
+  ---
+  duration_ms: 172.570292
+  type: 'suite'
+  ...
+# Subtest: KBIndexModel Contract
+    # Subtest: resolves default static properties
+    ok 1 - resolves default static properties
+      ---
+      duration_ms: 2.269958
+      type: 'test'
+      ...
+    # Subtest: parses source string correctly
+    ok 2 - parses source string correctly
+      ---
+      duration_ms: 0.582709
+      type: 'test'
+      ...
+    # Subtest: returns correct env and workDir
+    ok 3 - returns correct env and workDir
+      ---
+      duration_ms: 0.1365
+      type: 'test'
+      ...
+    # Subtest: runs local CWD indexing successfully (fresh hash)
+    ok 4 - runs local CWD indexing successfully (fresh hash)
+      ---
+      duration_ms: 0.863333
+      type: 'test'
+      ...
+    # Subtest: runs local CWD indexing successfully (stale hash)
+    ok 5 - runs local CWD indexing successfully (stale hash)
+      ---
+      duration_ms: 0.194416
+      type: 'test'
+      ...
+    # Subtest: runs external package indexing successfully
+    ok 6 - runs external package indexing successfully
+      ---
+      duration_ms: 0.252417
+      type: 'test'
+      ...
+    # Subtest: detects registry automatically and handles ambiguity
+    ok 7 - detects registry automatically and handles ambiguity
+      ---
+      duration_ms: 0.139916
+      type: 'test'
+      ...
+    1..7
+ok 24 - KBIndexModel Contract
+  ---
+  duration_ms: 10.852416
+  type: 'suite'
+  ...
+# Subtest: KBSearchModel Contract
+    # Subtest: resolves default properties and aliases
+    ok 1 - resolves default properties and aliases
+      ---
+      duration_ms: 2.1805
+      type: 'test'
+      ...
+    # Subtest: validates query presence
+    ok 2 - validates query presence
+      ---
+      duration_ms: 3.783333
+      type: 'test'
+      ...
+    # Subtest: searches direct package (--in)
+    ok 3 - searches direct package (--in)
+      ---
+      duration_ms: 2.882417
+      type: 'test'
+      ...
+    # Subtest: runs cascade search with Smart Stop
+    ok 4 - runs cascade search with Smart Stop
+      ---
+      duration_ms: 0.629458
+      type: 'test'
+      ...
+    # Subtest: runs full cascade when limit not reached
+    ok 5 - runs full cascade when limit not reached
+      ---
+      duration_ms: 0.329541
+      type: 'test'
+      ...
+    # Subtest: detects unindexed dependencies and asks to download
+    ok 6 - detects unindexed dependencies and asks to download
+      ---
+      duration_ms: 0.257708
+      type: 'test'
+      ...
+    1..6
+ok 25 - KBSearchModel Contract
+  ---
+  duration_ms: 11.594917
+  type: 'suite'
+  ...
+# Subtest: PipelineModel
+    # Subtest: Model-as-Schema (Static Fields)
+        # Subtest: has static intent with positional: true
+        ok 1 - has static intent with positional: true
+          ---
+          duration_ms: 0.647292
+          type: 'test'
+          ...
+        # Subtest: has static dir with positional: true
+        ok 2 - has static dir with positional: true
+          ---
+          duration_ms: 0.102708
+          type: 'test'
+          ...
+        # Subtest: has static appName field
+        ok 3 - has static appName field
+          ---
+          duration_ms: 0.46875
+          type: 'test'
+          ...
+        # Subtest: has static quiet with boolean type
+        ok 4 - has static quiet with boolean type
+          ---
+          duration_ms: 1.720666
+          type: 'test'
+          ...
+        # Subtest: has static from with default seed
+        ok 5 - has static from with default seed
+          ---
+          duration_ms: 0.095625
+          type: 'test'
+          ...
+        1..5
+    ok 1 - Model-as-Schema (Static Fields)
+      ---
+      duration_ms: 8.605166
+      type: 'suite'
+      ...
+    # Subtest: Constructor & Defaults
+        # Subtest: creates with all defaults
+        ok 1 - creates with all defaults
+          ---
+          duration_ms: 0.210459
+          type: 'test'
+          ...
+        # Subtest: overrides specified fields
+        ok 2 - overrides specified fields
+          ---
+          duration_ms: 0.110125
+          type: 'test'
+          ...
+        1..2
+    ok 2 - Constructor & Defaults
+      ---
+      duration_ms: 0.441625
+      type: 'suite'
+      ...
+    # Subtest: inferName
+        # Subtest: extracts last significant word from intent
+        ok 1 - extracts last significant word from intent
+          ---
+          duration_ms: 0.926167
+          type: 'test'
+          ...
+        # Subtest: returns explicit name if provided
+        ok 2 - returns explicit name if provided
+          ---
+          duration_ms: 0.123583
+          type: 'test'
+          ...
+        # Subtest: returns App for empty intent
+        ok 3 - returns App for empty intent
+          ---
+          duration_ms: 1.183583
+          type: 'test'
+          ...
+        1..3
+    ok 3 - inferName
+      ---
+      duration_ms: 2.43725
+      type: 'suite'
+      ...
+    # Subtest: OLMUI Generator Contract
+        # Subtest: has an async generator run() method
+        ok 1 - has an async generator run() method
+          ---
+          duration_ms: 0.144583
+          type: 'test'
+          ...
+        # Subtest: yields error when no intent provided
+        ok 2 - yields error when no intent provided
+          ---
+          duration_ms: 5.634292
+          type: 'test'
+          ...
+        1..2
+    ok 4 - OLMUI Generator Contract
+      ---
+      duration_ms: 8.840084
+      type: 'suite'
+      ...
+    1..4
+ok 26 - PipelineModel
+  ---
+  duration_ms: 21.14425
+  type: 'suite'
+  ...
+# Subtest: SecurityGateModel Contract
+    # Subtest: 1. Basic initialization with strict defaults
+    ok 1 - 1. Basic initialization with strict defaults
+      ---
+      duration_ms: 0.802875
+      type: 'test'
+      ...
+    # Subtest: 2. Injecting custom security matrix rules
+    ok 2 - 2. Injecting custom security matrix rules
+      ---
+      duration_ms: 0.231708
+      type: 'test'
+      ...
+    # Subtest: 3. Static Schema Validation: Proxies array limit
+    ok 3 - 3. Static Schema Validation: Proxies array limit
+      ---
+      duration_ms: 0.362708
+      type: 'test'
+      ...
+    1..3
+ok 27 - SecurityGateModel Contract
+  ---
+  duration_ms: 1.968459
+  type: 'suite'
+  ...
+# Subtest: SubagentModel
+    # Subtest: Model-as-Schema static fields
+        # Subtest: has static model with help and default
+        ok 1 - has static model with help and default
+          ---
+          duration_ms: 3.729667
+          type: 'test'
+          ...
+        # Subtest: has static provider with help and default
+        ok 2 - has static provider with help and default
+          ---
+          duration_ms: 0.164
+          type: 'test'
+          ...
+        # Subtest: has static input with help, default and validate
+        ok 3 - has static input with help, default and validate
+          ---
+          duration_ms: 0.090417
+          type: 'test'
+          ...
+        # Subtest: has static file with help and default
+        ok 4 - has static file with help and default
+          ---
+          duration_ms: 0.290667
+          type: 'test'
+          ...
+        # Subtest: has static system with default prompt
+        ok 5 - has static system with default prompt
+          ---
+          duration_ms: 0.119584
+          type: 'test'
+          ...
+        1..5
+    ok 1 - Model-as-Schema static fields
+      ---
+      duration_ms: 5.019
+      type: 'suite'
+      ...
+    # Subtest: Model-as-Schema UI (i18n)
+        # Subtest: has i18n keys for all error messages
+        ok 1 - has i18n keys for all error messages
+          ---
+          duration_ms: 0.082
+          type: 'test'
+          ...
+        1..1
+    ok 2 - Model-as-Schema UI (i18n)
+      ---
+      duration_ms: 0.141375
+      type: 'suite'
+      ...
+    # Subtest: Constructor defaults
+        # Subtest: creates instance with all defaults
+        ok 1 - creates instance with all defaults
+          ---
+          duration_ms: 0.190625
+          type: 'test'
+          ...
+        # Subtest: overrides with partial data
+        ok 2 - overrides with partial data
+          ---
+          duration_ms: 0.089458
+          type: 'test'
+          ...
+        1..2
+    ok 3 - Constructor defaults
+      ---
+      duration_ms: 0.643917
+      type: 'suite'
+      ...
+    # Subtest: OLMUI Generator contract
+        # Subtest: run() is an async generator
+        ok 1 - run() is an async generator
+          ---
+          duration_ms: 0.823458
+          type: 'test'
+          ...
+        # Subtest: yields error log when no model and no strategy
+        ok 2 - yields error log when no model and no strategy
+          ---
+          duration_ms: 0.336208
+          type: 'test'
+          ...
+        # Subtest: yields error log when no input and no file
+        ok 3 - yields error log when no input and no file
+          ---
+          duration_ms: 0.112542
+          type: 'test'
+          ...
+        # Subtest: yields status intent with model and provider
+        ok 4 - yields status intent with model and provider
+          ---
+          duration_ms: 0.111291
+          type: 'test'
+          ...
+        # Subtest: full happy path: status → progress → chunk → summary → result
+        ok 5 - full happy path: status → progress → chunk → summary → result
+          ---
+          duration_ms: 1.122333
+          type: 'test'
+          ...
+        1..5
+    ok 4 - OLMUI Generator contract
+      ---
+      duration_ms: 3.024042
+      type: 'suite'
+      ...
+    1..4
+ok 28 - SubagentModel
+  ---
+  duration_ms: 9.28925
+  type: 'suite'
+  ...
+# Subtest: TranslateDocsModel
+    # Subtest: Model-as-Schema (Static Fields)
+        # Subtest: has static source with help, default and positional
+        ok 1 - has static source with help, default and positional
+          ---
+          duration_ms: 0.429292
+          type: 'test'
+          ...
+        # Subtest: has static target with help, default and positional
+        ok 2 - has static target with help, default and positional
+          ---
+          duration_ms: 0.094959
+          type: 'test'
+          ...
+        # Subtest: has static from with help and default (non-positional)
+        ok 3 - has static from with help and default (non-positional)
+          ---
+          duration_ms: 0.069208
+          type: 'test'
+          ...
+        # Subtest: has static to with help and default (non-positional)
+        ok 4 - has static to with help and default (non-positional)
+          ---
+          duration_ms: 0.066541
+          type: 'test'
+          ...
+        # Subtest: has static quiet with help, default and type
+        ok 5 - has static quiet with help, default and type
+          ---
+          duration_ms: 0.071625
+          type: 'test'
+          ...
+        1..5
+    ok 1 - Model-as-Schema (Static Fields)
+      ---
+      duration_ms: 1.141875
+      type: 'suite'
+      ...
+    # Subtest: Constructor & Defaults
+        # Subtest: creates instance with all defaults when no data given
+        ok 1 - creates instance with all defaults when no data given
+          ---
+          duration_ms: 0.2005
+          type: 'test'
+          ...
+        # Subtest: overrides specified fields while keeping defaults for others
+        ok 2 - overrides specified fields while keeping defaults for others
+          ---
+          duration_ms: 0.103916
+          type: 'test'
+          ...
+        # Subtest: ignores undefined values in data (falls back to defaults)
+        ok 3 - ignores undefined values in data (falls back to defaults)
+          ---
+          duration_ms: 0.092041
+          type: 'test'
+          ...
+        1..3
+    ok 2 - Constructor & Defaults
+      ---
+      duration_ms: 0.502958
+      type: 'suite'
+      ...
+    # Subtest: OLMUI Generator Contract
+        # Subtest: has an async generator run() method
+        ok 1 - has an async generator run() method
+          ---
+          duration_ms: 0.092875
+          type: 'test'
+          ...
+        # Subtest: yields warning log when no files match the glob
+        ok 2 - yields warning log when no files match the glob
+          ---
+          duration_ms: 46.125959
+          type: 'test'
+          ...
+        1..2
+    ok 3 - OLMUI Generator Contract
+      ---
+      duration_ms: 46.370208
+      type: 'suite'
+      ...
+    1..3
+ok 29 - TranslateDocsModel
+  ---
+  duration_ms: 48.313625
+  type: 'suite'
+  ...
+# Subtest: WebToolModel Contract
+    # Subtest: 1. Basic initialization with defaults
+    ok 1 - 1. Basic initialization with defaults
+      ---
+      duration_ms: 0.735666
+      type: 'test'
+      ...
+    # Subtest: 2. Parsing full payload object
+    ok 2 - 2. Parsing full payload object
+      ---
+      duration_ms: 0.091959
+      type: 'test'
+      ...
+    # Subtest: 3. Static Schema Validation: URL Format
+    ok 3 - 3. Static Schema Validation: URL Format
+      ---
+      duration_ms: 0.135958
+      type: 'test'
+      ...
+    # Subtest: 4. Static Schema Validation: Engines minimum
+    ok 4 - 4. Static Schema Validation: Engines minimum
+      ---
+      duration_ms: 1.197167
+      type: 'test'
+      ...
+    1..4
+ok 30 - WebToolModel Contract
+  ---
+  duration_ms: 3.492416
+  type: 'suite'
+  ...
+# { type: 'result', data: { status: 'ok', duration: 0 } }
+# [
+#   'progress:Ініціалізація workflow: test.md',
+#   'progress:Processing step: @bash echo "hello world"',
+#   'asked:echo "hello world"',
+#   'log:success',
+#   'progress:Processing step: @llimo index',
+#   'asked:pnpm run index',
+#   'log:success',
+#   'log:success'
+# ]
+# Subtest: WorkflowModel OLMUI Scenario
+    # Subtest: 1. Full workflow execution with DB fetching and command delegation
+    ok 1 - 1. Full workflow execution with DB fetching and command delegation
+      ---
+      duration_ms: 4.416958
+      type: 'test'
+      ...
+    # Subtest: 2. Workflow fails gracefully on security violation
+    ok 2 - 2. Workflow fails gracefully on security violation
+      ---
+      duration_ms: 0.620084
+      type: 'test'
+      ...
+    1..2
+ok 31 - WorkflowModel OLMUI Scenario
+  ---
+  duration_ms: 5.96575
+  type: 'suite'
+  ...
+# Subtest: WorkflowModel Contract
+    # Subtest: 1. Default initializations
+    ok 1 - 1. Default initializations
+      ---
+      duration_ms: 2.962958
+      type: 'test'
+      ...
+    # Subtest: 2. Proper instantiation with nested steps array map
+    ok 2 - 2. Proper instantiation with nested steps array map
+      ---
+      duration_ms: 0.46875
+      type: 'test'
+      ...
+    # Subtest: 3. Static Schema Validation: Filename
+    ok 3 - 3. Static Schema Validation: Filename
+      ---
+      duration_ms: 0.192292
+      type: 'test'
+      ...
+    1..3
+ok 32 - WorkflowModel Contract
+  ---
+  duration_ms: 4.521667
+  type: 'suite'
+  ...
+# Subtest: WorkflowStepModel Contract
+    # Subtest: 1. Basic initialization with default values
+    ok 1 - 1. Basic initialization with default values
+      ---
+      duration_ms: 1.564125
+      type: 'test'
+      ...
+    # Subtest: 2. Parsing full payload object
+    ok 2 - 2. Parsing full payload object
+      ---
+      duration_ms: 0.172833
+      type: 'test'
+      ...
+    # Subtest: 3. Static Schema Validation: Name
+    ok 3 - 3. Static Schema Validation: Name
+      ---
+      duration_ms: 0.118625
+      type: 'test'
+      ...
+    # Subtest: 4. Static Schema Validation: Command starts with @
+    ok 4 - 4. Static Schema Validation: Command starts with @
+      ---
+      duration_ms: 0.088042
+      type: 'test'
+      ...
+    1..4
+ok 33 - WorkflowStepModel Contract
+  ---
+  duration_ms: 3.297416
+  type: 'suite'
+  ...
+# Subtest: Architecture
+    # Subtest: creates with defaults
+    ok 1 - creates with defaults
+      ---
+      duration_ms: 1.774916
+      type: 'test'
+      ...
+    # Subtest: sets values from input
+    ok 2 - sets values from input
+      ---
+      duration_ms: 0.408375
+      type: 'test'
+      ...
+    # Subtest: handles invalid arrays
+    ok 3 - handles invalid arrays
+      ---
+      duration_ms: 0.208042
+      type: 'test'
+      ...
+    1..3
+ok 34 - Architecture
+  ---
+  duration_ms: 3.374208
+  type: 'suite'
+  ...
+# Subtest: Chat – message persistence
+    # Subtest: loads messages from messages.jsonl
+    ok 1 - loads messages from messages.jsonl
+      ---
+      duration_ms: 16.738792
+      type: 'test'
+      ...
+# Error reading directory /var/folders/_2/fnmmtk4570v51qh97qs0l4300000gn/T/llimo-chat-test-8V3UuU/chat/test-empty: ENOENT: no such file or directory, scandir '/var/folders/_2/fnmmtk4570v51qh97qs0l4300000gn/T/llimo-chat-test-8V3UuU/chat/test-empty'
+    # Subtest: handles empty or non-existent messages.jsonl
+    ok 2 - handles empty or non-existent messages.jsonl
+      ---
+      duration_ms: 5.652625
+      type: 'test'
+      ...
+    # Subtest: saves and loads messages correctly
+    ok 3 - saves and loads messages correctly
+      ---
+      duration_ms: 14.1365
+      type: 'test'
+      ...
+    1..3
+ok 35 - Chat – message persistence
+  ---
+  duration_ms: 56.247875
+  type: 'suite'
+  ...
+# Subtest: ModelInfo
+    # Subtest: creates with defaults
+    ok 1 - creates with defaults
+      ---
+      duration_ms: 0.893167
+      type: 'test'
+      ...
+    # Subtest: sets values from input
+    ok 2 - sets values from input
+      ---
+      duration_ms: 0.163834
+      type: 'test'
+      ...
+    # Subtest: handles nested objects
+    ok 3 - handles nested objects
+      ---
+      duration_ms: 0.123459
+      type: 'test'
+      ...
+    # Subtest: copies arrays and objects shallowly
+    ok 4 - copies arrays and objects shallowly
+      ---
+      duration_ms: 0.115458
+      type: 'test'
+      ...
+    1..4
+ok 36 - ModelInfo
+  ---
+  duration_ms: 1.903333
+  type: 'suite'
+  ...
+# Fetch failed for cerebras, using static: CEREBRAS_API_KEY required for Cerebras models
+# Incorrect HuggingFace model (missing providers)
+# Fetch failed for cerebras, using static: CEREBRAS_API_KEY required for Cerebras models
+# Incorrect HuggingFace model (missing providers)
+# Fetch failed for cerebras, using static: CEREBRAS_API_KEY required for Cerebras models
+# Subtest: ModelProvider
+    # Subtest: initializes with resolved cache path
+    ok 1 - initializes with resolved cache path
+      ---
+      duration_ms: 0.980875
+      type: 'test'
+      ...
+    # Subtest: cache handling
+        # Subtest: loads fresh cerebras cache if within TTL
+        ok 1 - loads fresh cerebras cache if within TTL
+          ---
+          duration_ms: 0.703625
+          type: 'test'
+          ...
+        # Subtest: loads fresh huggingface cache if within TTL
+        ok 2 - loads fresh huggingface cache if within TTL
+          ---
+          duration_ms: 0.237125
+          type: 'test'
+          ...
+        # Subtest: loads fresh openrouter cache if within TTL
+        ok 3 - loads fresh openrouter cache if within TTL
+          ---
+          duration_ms: 0.212292
+          type: 'test'
+          ...
+        # Subtest: ignores stale cache beyond TTL
+        ok 4 - ignores stale cache beyond TTL
+          ---
+          duration_ms: 0.23875
+          type: 'test'
+          ...
+        # Subtest: writes cache as JSONL
+        ok 5 - writes cache as JSONL
+          ---
+          duration_ms: 0.412459
+          type: 'test'
+          ...
+        1..5
+    ok 2 - cache handling
+      ---
+      duration_ms: 2.041916
+      type: 'suite'
+      ...
+    # Subtest: fetchFromProvider
+        # Subtest: fetches Cerebras with API key
+        ok 1 - fetches Cerebras with API key
+          ---
+          duration_ms: 0.508667
+          type: 'test'
+          ...
+        # Subtest: throws without API key for Cerebras
+        ok 2 - throws without API key for Cerebras
+          ---
+          duration_ms: 0.628792
+          type: 'test'
+          ...
+        # Subtest: fetches OpenRouter with API key
+        ok 3 - fetches OpenRouter with API key
+          ---
+          duration_ms: 0.131791
+          type: 'test'
+          ...
+        # Subtest: fetches HuggingFace and falls back to empty on error
+        ok 4 - fetches HuggingFace and falls back to empty on error
+          ---
+          duration_ms: 0.1425
+          type: 'test'
+          ...
+        1..4
+    ok 3 - fetchFromProvider
+      ---
+      duration_ms: 1.564375
+      type: 'suite'
+      ...
+    # Subtest: _makeFlat
+        # Subtest: flattens single models unchanged
+        ok 1 - flattens single models unchanged
+          ---
+          duration_ms: 0.336041
+          type: 'test'
+          ...
+        # Subtest: flattens multi-provider models
+        ok 2 - flattens multi-provider models
+          ---
+          duration_ms: 0.272625
+          type: 'test'
+          ...
+        1..2
+    ok 4 - _makeFlat
+      ---
+      duration_ms: 0.664166
+      type: 'suite'
+      ...
+    # Subtest: getAll
+        # Subtest: caches and loads on second call
+        ok 1 - caches and loads on second call
+          ---
+          duration_ms: 0.841584
+          type: 'test'
+          ...
+        # Subtest: handles onBefore/onData callbacks
+        ok 2 - handles onBefore/onData callbacks
+          ---
+          duration_ms: 3.073042
+          type: 'test'
+          ...
+        1..2
+    ok 5 - getAll
+      ---
+      duration_ms: 4.0045
+      type: 'suite'
+      ...
+    # Subtest: correct data
+        # Subtest: should properly load models info
+        ok 1 - should properly load models info
+          ---
+          duration_ms: 1.013208
+          type: 'test'
+          ...
+        1..1
+    ok 6 - correct data
+      ---
+      duration_ms: 1.060208
+      type: 'suite'
+      ...
+    1..6
+ok 37 - ModelProvider
+  ---
+  duration_ms: 16.692416
+  type: 'suite'
+  ...
+# Subtest: Pricing
+    # Subtest: creates with defaults
+    ok 1 - creates with defaults
+      ---
+      duration_ms: 0.454542
+      type: 'test'
+      ...
+    # Subtest: sets values from input
+    ok 2 - sets values from input
+      ---
+      duration_ms: 0.102625
+      type: 'test'
+      ...
+    # Subtest: handles invalid numbers
+    ok 3 - handles invalid numbers
+      ---
+      duration_ms: 0.076042
+      type: 'test'
+      ...
+    1..3
+ok 38 - Pricing
+  ---
+  duration_ms: 4.938667
+  type: 'suite'
+  ...
+# Subtest: TopProvider
+    # Subtest: creates with defaults
+    ok 1 - creates with defaults
+      ---
+      duration_ms: 0.475333
+      type: 'test'
+      ...
+    # Subtest: sets values from input
+    ok 2 - sets values from input
+      ---
+      duration_ms: 3.761125
+      type: 'test'
+      ...
+    # Subtest: handles invalid types
+    ok 3 - handles invalid types
+      ---
+      duration_ms: 0.23825
+      type: 'test'
+      ...
+    1..3
+ok 39 - TopProvider
+  ---
+  duration_ms: 5.190291
+  type: 'suite'
+  ...
+# Subtest: Usage
+    # Subtest: creates with defaults
+    ok 1 - creates with defaults
+      ---
+      duration_ms: 2.083
+      type: 'test'
+      ...
+    # Subtest: sets values from input
+    ok 2 - sets values from input
+      ---
+      duration_ms: 0.134667
+      type: 'test'
+      ...
+    # Subtest: handles invalid numbers
+    ok 3 - handles invalid numbers
+      ---
+      duration_ms: 0.092958
+      type: 'test'
+      ...
+    1..3
+ok 40 - Usage
+  ---
+  duration_ms: 3.322
+  type: 'suite'
+  ...
+# Subtest: chatProgress - Standard multi‑line format
+    # Subtest: should draw empty progress
+    ok 1 - should draw empty progress
+      ---
+      duration_ms: 18.620375
+      type: 'test'
+      ...
+    # Subtest: should draw first progress (read)
+    ok 2 - should draw first progress (read)
+      ---
+      duration_ms: 1.543583
+      type: 'test'
+      ...
+    # Subtest: should draw second progress (read + reason)
+    ok 3 - should draw second progress (read + reason)
+      ---
+      duration_ms: 0.365416
+      type: 'test'
+      ...
+    # Subtest: should draw third progress (read + reason + asnwer)
+    ok 4 - should draw third progress (read + reason + asnwer)
+      ---
+      duration_ms: 0.422625
+      type: 'test'
+      ...
+    # Subtest: produces correctly padded lines
+    ok 5 - produces correctly padded lines
+      ---
+      duration_ms: 0.414
+      type: 'test'
+      ...
+    # Subtest: handles zero tokens gracefully
+    ok 6 - handles zero tokens gracefully
+      ---
+      duration_ms: 4.578167
+      type: 'test'
+      ...
+    1..6
+ok 41 - chatProgress - Standard multi‑line format
+  ---
+  duration_ms: 26.927208
+  type: 'suite'
+  ...
+# Subtest: chatProgress - One‑line format (--tiny mode)
+    # Subtest: should draw empty progress
+    ok 1 - should draw empty progress
+      ---
+      duration_ms: 0.763167
+      type: 'test'
+      ...
+    # Subtest: should draw first progress (read)
+    ok 2 - should draw first progress (read)
+      ---
+      duration_ms: 2.922666
+      type: 'test'
+      ...
+    # Subtest: should draw second progress (read + reason)
+    ok 3 - should draw second progress (read + reason)
+      ---
+      duration_ms: 3.860084
+      type: 'test'
+      ...
+    # Subtest: should draw third progress (read + reason + asnwer)
+    ok 4 - should draw third progress (read + reason + asnwer)
+      ---
+      duration_ms: 0.334333
+      type: 'test'
+      ...
+    # Subtest: produces single line for tiny mode
+    ok 5 - produces single line for tiny mode
+      ---
+      duration_ms: 0.241375
+      type: 'test'
+      ...
+    # Subtest: handles zero tokens in one‑line mode
+    ok 6 - handles zero tokens in one‑line mode
+      ---
+      duration_ms: 0.184
+      type: 'test'
+      ...
+    1..6
+ok 42 - chatProgress - One‑line format (--tiny mode)
+  ---
+  duration_ms: 9.555458
+  type: 'suite'
+  ...
+# Subtest: chatSteps – readInput
+    # Subtest: reads from argv when provided
+    ok 1 - reads from argv when provided
+      ---
+      duration_ms: 2.767292
+      type: 'test'
+      ...
+    1..1
+ok 43 - chatSteps – readInput
+  ---
+  duration_ms: 14.21325
+  type: 'suite'
+  ...
+# Subtest: chatSteps – startStreaming
+    # Subtest: returns a stream that yields expected parts
+    ok 1 - returns a stream that yields expected parts
+      ---
+      duration_ms: 4.706916
+      type: 'test'
+      ...
+    1..1
+ok 44 - chatSteps – startStreaming
+  ---
+  duration_ms: 4.852
+  type: 'suite'
+  ...
+# + 6e631896-8065-4387-9c85-2253ab417cf7 new chat created
+# Subtest: chatSteps – packPrompt (integration with mock)
+    # Subtest: packs prompt and writes file
+    ok 1 - packs prompt and writes file
+      ---
+      duration_ms: 24.74325
+      type: 'test'
+      ...
+    1..1
+ok 45 - chatSteps – packPrompt (integration with mock)
+  ---
+  duration_ms: 162.082333
+  type: 'suite'
+  ...
+# Subtest: chatSteps – initialiseChat
+    # Subtest: creates new chat with system prompt
+    ok 1 - creates new chat with system prompt
+      ---
+      duration_ms: 16.9595
+      type: 'test'
+      ...
+    1..1
+ok 46 - chatSteps – initialiseChat
+  ---
+  duration_ms: 28.391875
+  type: 'suite'
+  ...
+# Subtest: BashCommand
+    # Subtest: should emit the command block with proper markers
+    ok 1 - should emit the command block with proper markers
+      ---
+      duration_ms: 0.793166
+      type: 'test'
+      ...
+    1..1
+ok 47 - BashCommand
+  ---
+  duration_ms: 1.244084
+  type: 'suite'
+  ...
+# Subtest: GetFilesCommand
+    # Subtest: should list files respecting negative patterns
+    ok 1 - should list files respecting negative patterns
+      ---
+      duration_ms: 3.751458
+      type: 'test'
+      ...
+    # Subtest: should ignore node_modules and .git by default
+    ok 2 - should ignore node_modules and .git by default
+      ---
+      duration_ms: 0.870333
+      type: 'test'
+      ...
+    # Subtest: should handle multiple patterns
+    ok 3 - should handle multiple patterns
+      ---
+      duration_ms: 0.687541
+      type: 'test'
+      ...
+    1..3
+ok 48 - GetFilesCommand
+  ---
+  duration_ms: 10.725417
+  type: 'suite'
+  ...
+# Subtest: ListFilesCommand
+    # Subtest: should list files respecting patterns
+    ok 1 - should list files respecting patterns
+      ---
+      duration_ms: 7.06975
+      type: 'test'
+      ...
+    # Subtest: should ignore node_modules and .git by default
+    ok 2 - should ignore node_modules and .git by default
+      ---
+      duration_ms: 5.644916
+      type: 'test'
+      ...
+    1..2
+ok 49 - ListFilesCommand
+  ---
+  duration_ms: 37.641375
+  type: 'suite'
+  ...
+# Subtest: RemoveCommand
+    # Subtest: should remove specified files
+    ok 1 - should remove specified files
+      ---
+      duration_ms: 3.93675
+      type: 'test'
+      ...
+    # Subtest: should handle non-existent files gracefully
+    ok 2 - should handle non-existent files gracefully
+      ---
+      duration_ms: 1.386583
+      type: 'test'
+      ...
+    1..2
+ok 50 - RemoveCommand
+  ---
+  duration_ms: 16.649667
+  type: 'suite'
+  ...
+# Subtest: SummaryCommand
+    # Subtest: should display summary message
+    ok 1 - should display summary message
+      ---
+      duration_ms: 1.253583
+      type: 'test'
+      ...
+    # Subtest: should handle empty summary
+    ok 2 - should handle empty summary
+      ---
+      duration_ms: 0.172916
+      type: 'test'
+      ...
+    1..2
+ok 51 - SummaryCommand
+  ---
+  duration_ms: 1.9185
+  type: 'suite'
+  ...
+# Subtest: ValidateCommand
+    # Subtest: should validate answer
+    ok 1 - should validate answer
+      ---
+      duration_ms: 4.436583
+      type: 'test'
+      ...
+    1..1
+ok 52 - ValidateCommand
+  ---
+  duration_ms: 4.984625
+  type: 'suite'
+  ...
+# Subtest: resolveAlias
+    # Subtest: resolves known alias prefix
+    ok 1 - resolves known alias prefix
+      ---
+      duration_ms: 1.392041
+      type: 'test'
+      ...
+    # Subtest: resolves exact alias (no trailing path)
+    ok 2 - resolves exact alias (no trailing path)
+      ---
+      duration_ms: 0.104708
+      type: 'test'
+      ...
+    # Subtest: resolves second alias
+    ok 3 - resolves second alias
+      ---
+      duration_ms: 0.073416
+      type: 'test'
+      ...
+    # Subtest: returns path unchanged if no alias matches
+    ok 4 - returns path unchanged if no alias matches
+      ---
+      duration_ms: 0.068166
+      type: 'test'
+      ...
+    # Subtest: does not resolve partial match (e.g. @workflowX)
+    ok 5 - does not resolve partial match (e.g. @workflowX)
+      ---
+      duration_ms: 0.077
+      type: 'test'
+      ...
+    # Subtest: handles empty aliases gracefully
+    ok 6 - handles empty aliases gracefully
+      ---
+      duration_ms: 0.072125
+      type: 'test'
+      ...
+    1..6
+ok 53 - resolveAlias
+  ---
+  duration_ms: 2.76625
+  type: 'suite'
+  ...
+# Subtest: loadConfig
+    # Subtest: returns empty aliases when no .llimorc exists
+    ok 1 - returns empty aliases when no .llimorc exists
+      ---
+      duration_ms: 6.010833
+      type: 'test'
+      ...
+    # Subtest: loads local .llimorc from current project
+    ok 2 - loads local .llimorc from current project
+      ---
+      duration_ms: 1.500792
+      type: 'test'
+      ...
+    1..2
+ok 54 - loadConfig
+  ---
+  duration_ms: 7.979792
+  type: 'suite'
+  ...
+# Subtest: packMarkdown OLMUI Scenario
+    # Subtest: Scenario: single file via @workflow alias
+    ok 1 - Scenario: single file via @workflow alias
+      ---
+      duration_ms: 5.987417
+      type: 'test'
+      ...
+    # Subtest: Scenario: glob pattern via @workflow alias
+    ok 2 - Scenario: glob pattern via @workflow alias
+      ---
+      duration_ms: 13.342
+      type: 'test'
+      ...
+    # Subtest: Scenario: unknown alias falls through to relative path
+    ok 3 - Scenario: unknown alias falls through to relative path
+      ---
+      duration_ms: 2.661542
+      type: 'test'
+      ...
+    # Subtest: Scenario: real file without alias works unchanged
+    ok 4 - Scenario: real file without alias works unchanged
+      ---
+      duration_ms: 1.838125
+      type: 'test'
+      ...
+    1..4
+ok 55 - packMarkdown OLMUI Scenario
+  ---
+  duration_ms: 24.156875
+  type: 'suite'
+  ...
+# Subtest: pack module
+    # Subtest: should pack message with files
+    ok 1 - should pack message with files
+      ---
+      duration_ms: 13.1145
+      type: 'test'
+      ...
+    # Subtest: should pack message with file listing and ignores
+    ok 2 - should pack message with file listing and ignores
+      ---
+      duration_ms: 3.574542
+      type: 'test'
+      ...
+    # Subtest: should pack message with file listing and ignores words
+    ok 3 - should pack message with file listing and ignores words
+      ---
+      duration_ms: 4.750958
+      type: 'test'
+      ...
+    1..3
+ok 56 - pack module
+  ---
+  duration_ms: 34.102125
+  type: 'suite'
+  ...
+# ! No models match the criteria – model:nonexistent provider:*
+#   Looking for the same model pattern in all providers
+# Subtest: selectModel – model/provider selection logic
+    # Subtest: basic selection
+        # Subtest: returns undefined when no model matches
+        ok 1 - returns undefined when no model matches
+          ---
+          duration_ms: 6.723875
+          type: 'test'
+          ...
+        # Subtest: returns the sole match without prompting
+        ok 2 - returns the sole match without prompting
+          ---
+          duration_ms: 1.63375
+          type: 'test'
+          ...
+# Multiple models match your criteria [model = oss, provider = undefined]:
+#  No | Model id     | Provider | Context | Input | Output
+# --- | ---          | ---      |     --- |   --- |    ---
+#   1 | gpt-oss-120b | openai   |      0T | $0.00 |  $0.00
+#   2 | gpt-oss-40b  | openai   |      0T | $0.00 |  $0.00
+        # Subtest: asks user when several candidates, respects numeric choice
+        ok 3 - asks user when several candidates, respects numeric choice
+          ---
+          duration_ms: 18.812417
+          type: 'test'
+          ...
+# Multiple models match your criteria [model = , provider = ]:
+#  No | Model id    | Provider | Context | Input | Output
+# --- | ---         | ---      |     --- |   --- |    ---
+#   1 | exact-match | test     |      0T | $0.00 |  $0.00
+#   2 | test1       |          |      0T | $0.00 |  $0.00
+#   3 | test2       |          |      0T | $0.00 |  $0.00
+        # Subtest: handles direct ID input
+        ok 4 - handles direct ID input
+          ---
+          duration_ms: 2.364833
+          type: 'test'
+          ...
+        1..4
+    ok 1 - basic selection
+      ---
+      duration_ms: 30.649541
+      type: 'suite'
+      ...
+    1..1
+ok 57 - selectModel – model/provider selection logic
+  ---
+  duration_ms: 30.87
+  type: 'suite'
+  ...
+# Subtest: system module
+    # Subtest: should generate system prompt string
+    ok 1 - should generate system prompt string
+      ---
+      duration_ms: 10.027083
+      type: 'test'
+      ...
+    # Subtest: should write system prompt to a file
+    ok 2 - should write system prompt to a file
+      ---
+      duration_ms: 9.029083
+      type: 'test'
+      ...
+    # Subtest: should parse system prompt without variables
+    ok 3 - should parse system prompt without variables
+      ---
+      duration_ms: 1.218584
+      type: 'test'
+      ...
+    # Subtest: should parse system prompt with variables
+    ok 4 - should parse system prompt with variables
+      ---
+      duration_ms: 7.085875
+      type: 'test'
+      ...
+    # Subtest: should merge prompts
+    ok 5 - should merge prompts
+      ---
+      duration_ms: 8.645875
+      type: 'test'
+      ...
+    1..5
+ok 58 - system module
+  ---
+  duration_ms: 36.988291
+  type: 'suite'
+  ...
+# Subtest: unpackAnswer
+    # Subtest: processes file entries in dry mode
+    ok 1 - processes file entries in dry mode
+      ---
+      duration_ms: 21.944792
+      type: 'test'
+      ...
+    # Subtest: saves files and generates save messages
+    ok 2 - saves files and generates save messages
+      ---
+      duration_ms: 0.528667
+      type: 'test'
+      ...
+    # Subtest: handles empty file content without saving
+    ok 3 - handles empty file content without saving
+      ---
+      duration_ms: 0.26925
+      type: 'test'
+      ...
+    # Subtest: processes command entries (@ prefixed)
+    ok 4 - processes command entries (@ prefixed)
+      ---
+      duration_ms: 0.409666
+      type: 'test'
+      ...
+    # Subtest: groups and reports parse errors from failed entries
+    ok 5 - groups and reports parse errors from failed entries
+      ---
+      duration_ms: 0.273208
+      type: 'test'
+      ...
+    1..5
+ok 59 - unpackAnswer
+  ---
+  duration_ms: 24.053042
+  type: 'suite'
+  ...
+# Subtest: test-utils – workspace and script execution
+    # Subtest: createTempWorkspace creates files correctly
+    ok 1 - createTempWorkspace creates files correctly
+      ---
+      duration_ms: 3.880166
+      type: 'test'
+      ...
+# Echo: Hello from test
+    # Subtest: runNodeScript
+        # Subtest: executes a simple echo script
+        ok 1 - executes a simple echo script
+          ---
+          duration_ms: 34.477584
+          type: 'test'
+          ...
+        1..1
+    ok 2 - runNodeScript
+      ---
+      duration_ms: 34.625125
+      type: 'suite'
+      ...
+    1..2
+ok 60 - test-utils – workspace and script execution
+  ---
+  duration_ms: 38.996042
+  type: 'suite'
+  ...
+# Subtest: FileSystem.browse – default ignore handling (bug fix)
+    # Subtest: should return only non‑ignored files
+    ok 1 - should return only non‑ignored files
+      ---
+      duration_ms: 8.084417
+      type: 'test'
+      ...
+    1..1
+ok 61 - FileSystem.browse – default ignore handling (bug fix)
+  ---
+  duration_ms: 49.548875
+  type: 'suite'
+  ...
+# Subtest: FileSystem – JSON loader & saver
+    # Subtest: saves and loads a JSON file correctly
+    ok 1 - saves and loads a JSON file correctly
+      ---
+      duration_ms: 9.976667
+      type: 'test'
+      ...
+    # Subtest: appends to a JSONL file without affecting JSON handling
+    ok 2 - appends to a JSONL file without affecting JSON handling
+      ---
+      duration_ms: 10.004375
+      type: 'test'
+      ...
+    1..2
+ok 62 - FileSystem – JSON loader & saver
+  ---
+  duration_ms: 22.632709
+  type: 'suite'
+  ...
+# Subtest: FileSystem.browse
+    # Subtest: should list top-level entries when not recursive
+    ok 1 - should list top-level entries when not recursive
+      ---
+      duration_ms: 8.710042
+      type: 'test'
+      ...
+    # Subtest: should list all entries recursively
+    ok 2 - should list all entries recursively
+      ---
+      duration_ms: 10.55925
+      type: 'test'
+      ...
+    # Subtest: should ignore specified directories
+    ok 3 - should ignore specified directories
+      ---
+      duration_ms: 21.411875
+      type: 'test'
+      ...
+    # Subtest: should call onRead for each traversed directory
+    ok 4 - should call onRead for each traversed directory
+      ---
+      duration_ms: 16.486541
+      type: 'test'
+      ...
+    # Subtest: should support glob patterns in ignore
+    ok 5 - should support glob patterns in ignore
+      ---
+      duration_ms: 5.393667
+      type: 'test'
+      ...
+    # Subtest: should ignore directories with glob patterns
+    ok 6 - should ignore directories with glob patterns
+      ---
+      duration_ms: 4.3375
+      type: 'test'
+      ...
+    # Subtest: should handle complex ignore patterns
+    ok 7 - should handle complex ignore patterns
+      ---
+      duration_ms: 8.033083
+      type: 'test'
+      ...
+    1..7
+ok 63 - FileSystem.browse
+  ---
+  duration_ms: 89.730667
+  type: 'suite'
+  ...
+# Subtest: MarkdownProtocol.parseStream
+ok 64 - MarkdownProtocol.parseStream # SKIP
+  ---
+  duration_ms: 0.293084
+  type: 'suite'
+  ...
+# Subtest: MarkdownProtocol.extractPath
+    # Subtest: extractPath helper
+        # Subtest: returns null for non‑checklist lines
+        ok 1 - returns null for non‑checklist lines
+          ---
+          duration_ms: 0.332167
+          type: 'test'
+          ...
+        # Subtest: parses empty name correctly
+        ok 2 - parses empty name correctly
+          ---
+          duration_ms: 0.417666
+          type: 'test'
+          ...
+        # Subtest: parses explicit name correctly
+        ok 3 - parses explicit name correctly
+          ---
+          duration_ms: 0.0775
+          type: 'test'
+          ...
+        # Subtest: rejects malformed headers
+        ok 4 - rejects malformed headers
+          ---
+          duration_ms: 0.071209
+          type: 'test'
+          ...
+        1..4
+    ok 1 - extractPath helper
+      ---
+      duration_ms: 1.172875
+      type: 'suite'
+      ...
+    1..1
+ok 65 - MarkdownProtocol.extractPath
+  ---
+  duration_ms: 1.276291
+  type: 'suite'
+  ...
+# Subtest: Release.parseStream
+    # Subtest: should correctly read → parse → save file
+    ok 1 - should correctly read → parse → save file
+      ---
+      duration_ms: 2.851416
+      type: 'test'
+      ...
+    1..1
+ok 66 - Release.parseStream
+  ---
+  duration_ms: 6.087833
+  type: 'suite'
+  ...
+1..66
+# tests 295
+# suites 95
+# pass 295
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1482.497125

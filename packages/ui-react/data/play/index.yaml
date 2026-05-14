@@ -1,0 +1,210 @@
+# Playground index — v1.2.0
+$content:
+  - div:
+      - div:
+          - h1: 'NaN•Web'
+            $style:
+              fontSize: 1.8rem
+              fontWeight: 800
+              margin: 0
+              letterSpacing: -0.5px
+          - p: UI React Playground
+            $style:
+              fontSize: 0.85rem
+              opacity: 0.5
+              margin: 2px 0 0
+      - ThemeSwitcher: '☾'
+    $style:
+      display: flex
+      justifyContent: space-between
+      alignItems: center
+      padding: 0 0 1.2rem
+
+  - h2: Hooks
+    $style:
+      fontSize: 0.75rem
+      textTransform: uppercase
+      letterSpacing: 2px
+      opacity: 0.3
+      margin: 1.2rem 0 0.6rem
+
+  - div:
+      - a: '🔀  useSortableList'
+        $href: /play/sortable.html
+        $style:
+          display: block
+          padding: 10px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+    $style:
+      display: flex
+      flexDirection: column
+      gap: 6px
+
+  - h2: Components
+    $style:
+      fontSize: 0.75rem
+      textTransform: uppercase
+      letterSpacing: 2px
+      opacity: 0.3
+      margin: 1.5rem 0 0.6rem
+
+  - div:
+      - a: Avatar
+        $href: /play/avatars.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: Badge
+        $href: /play/badges.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: Button
+        $href: /play/buttons.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: Card
+        $href: /play/cards.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: Checkbox
+        $href: /play/checkboxes.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: Input
+        $href: /play/inputs.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: Modal
+        $href: /play/modals.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: Radio
+        $href: /play/radios.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: Select
+        $href: /play/selects.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: TextArea
+        $href: /play/textareas.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: Typography
+        $href: /play/typography.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+    $style:
+      display: grid
+      gridTemplateColumns: 1fr 1fr
+      gap: 6px
+
+  - h2: Apps
+    $style:
+      fontSize: 0.75rem
+      textTransform: uppercase
+      letterSpacing: 2px
+      opacity: 0.3
+      margin: 1.5rem 0 0.6rem
+
+  - div:
+      - a: Sandbox Showcase
+        $href: /play/sandbox.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+      - a: DemoApp
+        $href: /play/demo-app.html
+        $style:
+          display: block
+          padding: 8px 14px
+          borderRadius: 8px
+          textDecoration: none
+          color: inherit
+          background: 'rgba(255,255,255,0.04)'
+          border: '1px solid rgba(255,255,255,0.06)'
+    $style:
+      display: grid
+      gridTemplateColumns: 1fr 1fr
+      gap: 6px
+
+  - p: 'v1.2.0 · @nan0web/ui-react'
+    $style:
+      fontSize: 0.65rem
+      opacity: 0.2
+      margin: 2rem 0 0
+      textAlign: center

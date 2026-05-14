@@ -1,0 +1,16 @@
+.env
+.datasets/
+dist/
+node_modules/
+coverage/
+build.log
+next.md
+.madge-worker-*
+test_design/
+test_prod/
+test_seed/
+test_stable/
+**/.*.mjs
+**/.*.js
+**/.*.mjs
+

@@ -1,4 +1,4 @@
-import { suite, describe, it, before, after, beforeEach } from 'node:test'
+import { suite, describe, it, before, after, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import os from 'node:os'
@@ -14,15 +14,9 @@ suite('Cross-driver integration (db ↔ db-fs)', () => {
 	/** @type {DB} */
 	let memDb
 
-	before(async () => {
-		tmpDir = fs.mkdtempSync(join(os.tmpdir(), 'nan0web-cross-'))
-	})
-
 	beforeEach(async () => {
-		// Clean up and recreate DBs for each test to keep state isolated
-		fs.rmSync(tmpDir, { recursive: true, force: true })
-		fs.mkdirSync(tmpDir, { recursive: true })
-
+		tmpDir = fs.mkdtempSync(join(os.tmpdir(), 'nan0web-cross-'))
+		
 		fsDb = new DBFS({ root: tmpDir, cwd: tmpDir, console })
 		memDb = new DB({
 			console,
@@ -44,8 +38,10 @@ suite('Cross-driver integration (db ↔ db-fs)', () => {
 		await memDb.push()
 	})
 
-	after(() => {
-		fs.rmSync(tmpDir, { recursive: true, force: true })
+	afterEach(() => {
+		if (tmpDir && fs.existsSync(tmpDir)) {
+			fs.rmSync(tmpDir, { recursive: true, force: true })
+		}
 	})
 
 	it('should resolve references across mounted drivers', async () => {

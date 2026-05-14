@@ -1,0 +1,33 @@
+title: "@nan0web/comment"
+subtitle: Interactive Developer Sandbox & Presentation
+description: >
+  Welcome to the self-explainable demo of the Commentator component. 
+  This page itself is built from data/en/demo.yaml to demonstrate the power of Model-as-Schema.
+  You can click the "💬 Activate Commentator" button below to start leaving comments on any element of this presentation!
+
+features:
+  - id: zero-hardcode
+    icon: 🛡️
+    title: Zero-Hardcode Text (Anti-Hallucination)
+    description: All text is dynamically injected via I18n strings. The CommentModel contains no static Ukrainian or English strings directly in code.
+    
+  - id: zero-logic
+    icon: 🧠
+    title: Zero-Logic UI (Dumb Render)
+    description: The WebCommentAdapter only handles DOM layout. All state transitions, validation, and business logic run inside the CommentModel generator flow.
+
+  - id: responsive-css
+    icon: 🎨
+    title: Token-Based CSS Design
+    description: Over 30 semantic CSS Custom Properties are used to easily integrate the overlay into any light or dark theme project without overriding specific pixels.
+
+  - id: ssr-safe
+    icon: 🚀
+    title: SSR/SSG Safe
+    description: Window, Dialog, and Document objects are guarded, ensuring universal compatibility across static site generators and Node server-side rendering tools.
+
+actions:
+  toggle_demo: 💬 Activate Commentator
+  reset_demo: 📋 Comments
+
+footer: © 2026 NaN0Web Ecosystem. Developed according to Architechnomag principles.

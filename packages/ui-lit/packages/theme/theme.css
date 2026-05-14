@@ -1,0 +1,33 @@
+:root {
+	--ra-sm: 4px;
+	--ra-md: 8px;
+	--ra-lg: 12px;
+	--ra-xl: 16px;
+	--ra-round: 50%;
+
+	--co: #005fcc; /* primary */
+	--co-on: white; /* on primary */
+	--co-danger: #d32f2f;
+	--co-success: #2e7d32;
+
+	--ba: white; /* background */
+	--ba-surface: #f8f9fa;
+	--ba-overlay: rgba(0, 0, 0, 0.4);
+
+	--pa-xs: 4px;
+	--pa-sm: 8px;
+	--pa-md: 16px;
+	--pa-lg: 24px;
+
+	--ma-sm: 8px;
+	--ma-md: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--co: #4dabf7;
+		--ba: #121212;
+		--ba-surface: #1e1e1e;
+		--co-text: #e0e0e0;
+	}
+}

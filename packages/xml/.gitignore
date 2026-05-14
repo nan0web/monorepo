@@ -1,0 +1,10 @@
+/.datasets/
+/.vscode/
+/node_modules/
+/dist/
+/chat/
+/me.md
+/reports/
+
+# Private agent under LICENSE
+.agent/

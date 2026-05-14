@@ -1,0 +1,23 @@
+section: Cards
+description: |
+  Card component with nested content, demonstrating basic and advanced usage.
+examples:
+  - title: Basic Card
+    children:
+      - type: Typography
+        variant: h3
+        children: Card Title
+      - type: Typography
+        variant: body
+        children: This is a sample card body with some text and a button inside.
+      - type: Button
+        variant: primary
+        children: Card Button
+  - title: Card with Input
+    children:
+      - type: Typography
+        variant: body
+        children: Another card with input:
+      - type: Input
+        type: text
+        placeholder: Input inside card

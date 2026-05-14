@@ -1,0 +1,49 @@
+$content:
+  - h1: Buttons
+  - blockquote: |
+      Bootstrap Button component with different variants, sizes, and outline styles.
+  - h2: Primary Button
+  - Button: Primary
+    $variant: primary
+    $size: md
+  - h2: Primary Outline
+  - Button: Primary Outline
+    $variant: primary
+    $size: md
+    $outline: true
+  - h2: Secondary Small
+  - Button: Secondary
+    $variant: secondary
+    $size: sm
+  - h2: Secondary Outline Large
+  - Button: Secondary Outline Large
+    $variant: secondary
+    $size: lg
+    $outline: true
+  - h2: Success Large
+  - Button: Success
+    $variant: success
+    $size: lg
+  - h2: Danger Disabled
+  - Button: Danger Disabled
+    $variant: danger
+    $size: md
+    $disabled: true
+  - h2: Warning Outline Small
+  - Button: Warning Outline
+    $variant: warning
+    $size: sm
+    $outline: true
+  - h2: Info Medium
+  - Button: Info
+    $variant: info
+    $size: md
+  - h2: Light Large
+  - Button: Light
+    $variant: light
+    $size: lg
+  - h2: Dark Outline Small
+  - Button: Dark Outline
+    $variant: dark
+    $size: sm
+    $outline: true

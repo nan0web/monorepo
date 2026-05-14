@@ -1,0 +1,11 @@
+*.test.js
+*.test.jsx
+*.test.d.ts
+src/README.md.jsx
+types/README.md.d.ts
+types/apps/
+chat/
+.datasets/
+play/
+releases/
+system.md

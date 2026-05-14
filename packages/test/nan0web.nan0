@@ -1,0 +1,32 @@
+name: "@nan0web/test"
+agents:
+  - id: 'test-runner'
+    description: 'Test Execution & Verification'
+    workflows:
+      - 'src/agents/workflows/check.md'
+      - 'src/agents/workflows/test-fast.md'
+    inspectors:
+      - 'src/agents/inspectors/check-all.md'
+  - id: 'test-style'
+    description: 'Test Style Scanner'
+    inspectors:
+      - 'src/agents/inspectors/test-style-scanner.md'
+  - id: 'sandbox-manager'
+    description: 'Sandbox & TDD Manager'
+    workflows:
+      - 'src/agents/workflows/sandbox-template.md'
+      - 'src/agents/workflows/sandbox-verify.md'
+    inspectors:
+      - 'src/agents/inspectors/inspect-playground.md'
+  - id: 'snapshot-auditor'
+    description: 'Snapshot Verification'
+    workflows:
+      - 'src/agents/workflows/snapshot.md'
+      - 'src/agents/workflows/jsonl-gallery.md'
+      - 'src/agents/workflows/ssg-gallery.md'
+    inspectors:
+      - 'src/agents/inspectors/inspect-snapshot.md'
+  - id: 'scenario-tester'
+    description: 'Canonical OLMUI Scenario Test'
+    workflows:
+      - 'src/agents/workflows/olmui-scenario-test.md'

@@ -1,0 +1,37 @@
+# @nan0web/catalog-watch — Base translations (English)
+# Source of truth: CatalogIndexModel.UI + CatalogWatcherModel.UI
+
+CatalogIndexModel:
+  progress_scanning: "Scanning catalog directory..."
+  progress_hashing: "Hashing content (SHA-256)..."
+  progress_writing: "Writing index file..."
+  log_generated: "Index generated"
+  log_empty: "Catalog is empty, skipping"
+  error_no_catalog: "Catalog name is required"
+  error_no_root: "Root directory is required"
+  label_version: "v{version}"
+  label_items: "{count} items"
+  label_hash: "hash: {hash}"
+
+CatalogWatcherModel:
+  label_watching: "Watching"
+  label_updated: "Catalog updated!"
+  label_unchanged: "No changes"
+  label_checking: "Checking for updates..."
+  label_error: "Check failed"
+  label_interval: "Check every {interval}s"
+  label_lastCheck: "Last check: {time}"
+  label_items: "{count} items"
+  label_version: "v{version}"
+  label_download: "Download now?"
+  label_downloaded: "Catalog downloaded successfully"
+  label_skipped: "Update skipped by user"
+  label_next_check: "Next check in {seconds}s"
+  error_no_url: "Watcher URL is required"
+  error_fetch: "Failed to fetch index: {message}"
+  error_parse: "Failed to parse index: {message}"
+  progress_init: "Initializing watcher..."
+  progress_checking: "Checking {url}..."
+  abort:
+    user_cancelled: "Watching cancelled by user"
+    timeout: "Watcher timed out"

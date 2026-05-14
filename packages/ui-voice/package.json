@@ -1,0 +1,20 @@
+{
+  "name": "@nan0web/ui-voice",
+  "version": "3.0.0",
+  "description": "Voice Prompt Verification Adapter — OLMUI",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./testing": "./src/testing/index.js"
+  },
+  "files": [
+    "src/**/*.js",
+    "docs/**/*.md"
+  ],
+  "author": "YaRaSLove (ЯRаСлав) <support@yaro.page>",
+  "license": "ISC",
+  "peerDependencies": {
+    "@nan0web/ui": "workspace:*"
+  }
+}

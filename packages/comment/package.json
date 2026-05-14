@@ -1,0 +1,50 @@
+{
+  "name": "@nan0web/comment",
+  "version": "3.0.0",
+  "description": "Universal comment & feedback overlay for QA auditing and page annotation. Activate via URL param, hotkey, or nav toggle.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./domain": "./src/domain/CommentModel.js",
+    "./ui": "./src/ui/WebCommentAdapter.js",
+    "./ui/style": "./src/ui/comment.css"
+  },
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/README.md.js",
+    "data/**/*.yaml",
+    "!data/**/demo.yaml"
+  ],
+  "scripts": {
+    "test": "node --test src/domain/*.test.js",
+    "test:docs": "node --test src/README.md.js",
+    "test:web-gallery": "playwright test e2e/web-gallery.test.js --workers=1",
+    "test:ssg-gallery": "node bin/ssg-gallery.js",
+    "test:all": "npm run test && npm run test:docs && npm run test:web-gallery && npm run test:ssg-gallery",
+    "play:web": "vite"
+  },
+  "keywords": [
+    "comment",
+    "feedback",
+    "qa",
+    "overlay",
+    "spotlight",
+    "nan0web"
+  ],
+  "dependencies": {
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui": "workspace:*"
+  },
+  "license": "ISC",
+  "author": "YaRaSLove (ЯRаСлав) <support@yaro.page>",
+  "devDependencies": {
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@playwright/test": "^1.58.2",
+    "playwright": "^1.58.2",
+    "vite": "^8.0.1"
+  }
+}

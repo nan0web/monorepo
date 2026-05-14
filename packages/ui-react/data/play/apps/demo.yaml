@@ -1,0 +1,7 @@
+$content:
+  - h1: NaN•Web UI React Playground
+  - p: Interactive demo of all components. Click on a component to explore variations.
+  - ThemeSwitcher: Toggle Theme # Data-driven theme toggle
+  - h2: Apps
+  - App: DemoApp
+    $children: This playground uses the standard <code>Document</code> format. Components are rendered via type mapping in <code>Components</code> registry.

@@ -1,0 +1,72 @@
+---
+metadata:
+  description: ""
+  tags: []
+  status: planned
+  locale: uk
+sections:
+  - title: "🧭 Фаза 1: Архітектурний Матричний Аналіз"
+    content:
+      - "Для створення лідера ринку ми орієнтуємось на ключові можливості 12+ топових систем (див. детальний аналіз у [docs/uk/architecture/index.md](docs/uk/architecture/index.md)):"
+      - "| Система | Ключова можливість | Еквівалент NaN•Web |"
+      - "| :--- | :--- | :--- |"
+      - "| **VS Code** | API Розширень | Поліморфні Дії (`ExplorerAction`) |"
+      - "| **Figma** | Багатокористувацький Граф | Рекурсивний `ModalStack` |"
+      - "| **WordPress** | Життєвий цикл Документа | Успадкування через `_.nan0` |"
+      - "| **Odoo / ERP** | Модель-як-Схема | `EditorModel` + `ModelAsApp` |"
+      - "| **Antigravity** | Агентна Логіка | Інтегрований `SpecRunner` |"
+      - "| **GitHub** | Версіонування та Стейджинг | `Local Stage` (stageDb) |"
+      - "| **Notion** | Блочна структура | Зв'язані Документи |"
+      - "---"
+    tasks: []
+  - title: "📐 Фаза 2: Уніфікована Модель Документа"
+    content:
+      - "Ми впроваджуємо **Поліморфний Документ** ([Document.js](src/domain/Document.js)):"
+      - "- **Мета-дані**: Версіонування, права доступу та успадкування налаштувань директорії (`_.nan0`)."
+      - "- **Логіка**: Само-валідовані властивості через `Model-as-Schema`."
+      - "- **Презентація**: Відв'язані UI-адаптери (`lit`, `cli`), що рендерять одну й ту саму модель залежно від контексту."
+      - "---"
+    tasks: []
+  - title: "🧭 Фаза 4: Презентаційний сайт (Self-Hosting Demo)"
+    content: []
+    tasks:
+      - title: "1. Мета"
+        content:
+          - "Демонстрація \"Self-Hosting\": використання редактора для редагування власного презентаційного сайту."
+        items: []
+        total: 0
+        completed: 0
+      - title: "2. Архітектура \"Document-as-Slide\""
+        content:
+          - "- Кожен \"слайд\" — це об'єкт класу `Document`."
+          - "- `PresentationModel` агрегує ці документи для візуалізації."
+          - "- Редагування контенту слайдів відбувається через стандартний інтерфейс `EditorModel`."
+          - "---"
+        items: []
+        total: 0
+        completed: 0
+  - title: "🛠 Фаза 3: Stabilization (v0.1.0)"
+    content:
+      - "**Поточні завдання:**"
+    tasks:
+      - title: "General"
+        content: []
+        items:
+          - text: "Впровадження уніфікованої моделі `Document.js`."
+            completed: true
+          - text: "Рефакторинг `PresentationModel` на базі `Document`."
+            completed: true
+          - text: "Опис Матриці Можливостей Редактора (12+ платформ)."
+            completed: true
+          - text: "Переклад архітектурної документації на українську."
+            completed: true
+          - text: "Розробка інтерфейсу редагування (Edit Mode) для `PresentationView`."
+            completed: false
+          - text: "Інтеграція з `@nan0web/auth.app` для захищеного редагування."
+            completed: false
+        total: 6
+        completed: 4
+stats:
+  totalTasks: 6
+  completedTasks: 4
+  progress: 67

@@ -1,0 +1,158 @@
+---
+metadata:
+  description: ""
+  tags: []
+  status: planned
+  locale: uk
+sections:
+  - title: "History"
+    content: []
+    tasks:
+      - title: "[2.13.1] — 2026-04-25"
+        content:
+          - "- **Polymorphic Router**: Simplified `AiAppModel` using `run()` polymorphism."
+          - "- **Nested Commands**: Added support for nested model options (`store add`, `store list`)."
+          - "- **Piping Support**: Integrated `raw` intent flag in `IntentDispatcher` for clean data output."
+        items: []
+        total: 0
+        completed: 0
+      - title: "[2.13.0] — 2026-04-23"
+        content:
+          - "- Standardized terminal gutter (5-char)."
+          - "- Optimized build speed (22s)."
+          - "- Fixed CI snapshot testing."
+          - "**Призначення:** Пакет `@nan0web/ui-cli` забезпечує текстову репрезентацію \"One Logic — Many UI\" архітектури. Він перетворює Доменні Моделі на інтерактивні діалоги в терміналі."
+          - "---"
+        items: []
+        total: 0
+        completed: 0
+  - title: "🧭 Фаза 1: Філософія та Абстракція (The Seed)"
+    content:
+      - "1. **Місія та Філософія:**"
+      - "- **Взаємодія як Діалог:** Додаток — це цикл запитань і відповідей. CLI формалізує цей діалог через атомарні примітиви."
+      - "- **Мінімалістична Істина:** Якщо бізнес-логіку неможливо виразити в CLI, вона ще не достатньо формалізована."
+      - "- **LLM-First:** CLI компоненти слугують базою для ШІ-агентів, які використовують ці примітиви для керування системою."
+      - "2. **Абстракція (Базовий Додаток):**"
+      - "- Пакет розширює базові концепції `@nan0web/ui` та адаптує їх під обмеження `stdio`."
+      - "- Використовує `InputAdapter.js` як уніфікований міст між логікою моделі та термінальними драйверами."
+      - "3. **Термінологія (Глосарій):**"
+      - "- **Prompt:** Інтерактивний вузол вводу (Input, Select, Confirm)."
+      - "- **View:** Статичний вузол виводу (Table, Alert, Badge)."
+      - "- **CGI (Command Graphic Interface):** Система рендерингу складних елементів у текстовому режимі."
+      - "---"
+    tasks: []
+  - title: "📐 Фаза 2: Доменне Моделювання (Data-Driven Models)"
+    content:
+      - "1. **Створення Model.js:**"
+      - "- Моделі використовують JSDoc для опису типів, які `ui-cli` автоматично мапить на конкретні промпти."
+      - "- Наприклад, `type: \"Model\"` автоматично відкриває рекурсивне меню вибору, або якщо type не вказано, а default: Model, то теж відкриває рекурсивне меню вибору, або якщо options: [ModelA, ModelB, ...] то відкриває меню вибору з цих моделей."
+      - "2. **Metadata Types:**"
+      - "3. **Data Sources:**"
+      - "- Взаємодіє з NaN•Web-сховищами через `@nan0web/db`, забезпечуючи миттєвий відгук без накладних витрат на мережу."
+      - "---"
+    tasks:
+      - title: "General"
+        content: []
+        items:
+          - text: "`text` -> Input"
+            completed: true
+          - text: "`boolean` -> Toggle/Confirm"
+            completed: true
+          - text: "`enum` -> Select"
+            completed: true
+          - text: "`collection` -> Multiselect/Tree"
+            completed: true
+          - text: "`positional: true` -> Позиційний CLI аргумент (порядок = порядок оголошення `static` полів)"
+            completed: true
+        total: 5
+        completed: 5
+  - title: "🛠 Фаза 3: Верифікація Логіки (CLI-First)"
+    content:
+      - "1. **Інтеграція з `ui-cli`:**"
+      - "- Весь функціонал пакета доступний через `bin/cli.js`."
+      - "- Команди будуються декларативно через `CommandParser.js`."
+      - "2. **Утиліти запуску (Core Runners):**"
+      - "- `runGenerator(model, adapter)` — з'єднує `async *run()` генератор моделі з `CLiInputAdapter`."
+      - "- `runApp(EntryModel, adapter)` — цикл додатку для multi-command OLMUI систем."
+      - "- `resolvePositionalArgs(Model, args, named)` — універсальний маппер CLI positional → model fields. Сканує `static` поля з `positional: true`, розподіляє за порядком оголошення. Іменовані опції мають пріоритет."
+      - "3. **Snapshot-тестування:**"
+      - "- Кожен компонент покритий 34 \"Golden Master\" снепшотами."
+      - "- Снепшоти фіксують точний ASCII-вивід, включаючи ANSI-кольори та спецсимволи."
+      - "---"
+    tasks: []
+  - title: "🪐 Фаза 4: Sovereign Workbench (The Master IDE)"
+    content:
+      - "1. **Підключення Models до Sandbox:**"
+      - "- `OlmuiInspector.js` — це інтерактивна пісочниця всередині терміналу."
+      - "- Дозволяє змінювати `props` компонентів та бачити миттєвий результат рендерингу."
+      - "2. **Інтеграція Документації:**"
+      - "- `docs/en/` та `docs/uk/` містять глибоку документацію, яка інтегрована в довідку CLI (`--help`)."
+      - "---"
+    tasks: []
+  - title: "🎨 Фаза 5: Тематизація та Інтерфейси (Theming)"
+    content:
+      - "1. **Базовий UI та Брендування:**"
+      - "- Використовує `@nan0web/log` для кольорової схеми (Magenta/Blue/Green)."
+      - "- Стилізація через ANSI-коди, що мапляться на системні палітри терміналів."
+      - "2. **Конфігурація:**"
+      - "- Підтримка Light/Dark режимів через адаптивні палітри Chalk/Colors."
+      - "---"
+    tasks: []
+  - title: "✅ Фаза 6: Якість та Дистрибуція (Quality & Distribution)"
+    content:
+      - "1. **Snapshots & Verifications:**"
+      - "- Регулярні перевірки `Golden Masters` для стабільності ASCII рендерів."
+      - "- Незалежний конвеєр `test:all`."
+      - "2. **Дистрибуція:**"
+      - "- Робочий npm-пакет з правильно експортованими типами (`@nan0web/ui-cli`)."
+      - "- `README.md.js` генерує еталонну документацію на основі живого коду."
+      - "---"
+    tasks: []
+  - title: "💎 Фаза 7: Цінність та Економіка (Value & Economy)"
+    content:
+      - "1. **Цінність:** Розробник отримує готову \"безкоштовну\" адмінку/CLI до свого додатку просто правильно описавши доменну модель, без написання UI логіки."
+      - "2. **Ліцензія:** ISC — вільно і назавжди."
+      - "---"
+    tasks: []
+  - title: "🌐 Фаза 8: Децентралізація та Суверенітет (Sovereignty)"
+    content:
+      - "1. **Автономність терміналу:** CLI компоненти не залежать від браузера, інтернету чи UI-бібліотек. Локальний комп'ютер є самодостатнім сервером рішень."
+      - "2. **Текстовий базис:** Будь-яка складна система керується текстом та конвеєрами POSIX, що дає суверенний контроль автору."
+      - "---"
+    tasks: []
+  - title: "🌍 Фаза 9: Місія та Вплив (World Impact)"
+    content:
+      - "1. **Місія:** Довести, що навіть без графіки будь-який додаток може мати логічно досконалий інтерфейс, відшліфовуючи лише \"Суть\" (потоки даних)."
+      - "2. **Вплив:** Інструмент стає невидимою мовою для спілкування Agent-to-Human (`prompts`) та Human-to-Agent (зрозумілі структури Models)."
+      - "---"
+    tasks: []
+  - title: "🏁 Чек-лист готовності проєкту (Definition of Done)"
+    content: []
+    tasks:
+      - title: "General"
+        content: []
+        items:
+          - text: "Є чітка місія в `project.md` (всі 9 фаз)."
+            completed: true
+          - text: "Реалізовано 19 базових компонентів (Views/Prompts)."
+            completed: true
+          - text: "Покриття снепшотами (34/34 Golden Masters)."
+            completed: true
+          - text: "Sandbox (OlmuiInspector) керує компонентами."
+            completed: true
+          - text: "Документація локалізована (UK/EN)."
+            completed: true
+          - text: "Код не містить жорстко зашитих кольорів (використовує Logger tokens)."
+            completed: true
+          - text: "Вбудована дистрибуція (npm)."
+            completed: true
+          - text: "Core Utilities: `runGenerator`, `runApp`, `resolvePositionalArgs`."
+            completed: true
+          - text: "Model-as-Schema: `positional: true` конвенція для маппінгу CLI аргументів."
+            completed: true
+        total: 9
+        completed: 9
+stats:
+  totalTasks: 14
+  completedTasks: 14
+  progress: 100

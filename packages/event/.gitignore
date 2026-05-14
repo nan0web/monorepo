@@ -1,0 +1,9 @@
+/.cache/
+/.coverage/
+/.datasets/
+/node_modules/
+
+# Chat
+/chat/
+/llm/
+/me.md

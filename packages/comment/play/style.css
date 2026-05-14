@@ -1,0 +1,218 @@
+/* ─── Design Tokens ─── */
+
+:root {
+	--play-bg: hsl(220, 20%, 97%);
+	--play-surface: hsl(0, 0%, 100%);
+	--play-border: hsl(220, 15%, 88%);
+	--play-text: hsl(220, 15%, 15%);
+	--play-text-muted: hsl(220, 10%, 40%);
+	--play-text-subtle: hsl(220, 10%, 50%);
+	--play-accent: hsl(210, 100%, 50%);
+	--play-accent-hover: hsl(210, 100%, 42%);
+	--play-card-shadow: 0 2px 12px hsla(220, 30%, 0%, 0.08);
+	--play-card-hover-shadow: 0 8px 24px hsla(210, 80%, 50%, 0.12);
+	--play-gradient-from: hsl(210, 100%, 50%);
+	--play-gradient-to: hsl(280, 80%, 55%);
+	--play-btn-secondary-bg: hsl(220, 15%, 92%);
+	--play-btn-secondary-hover: hsl(220, 15%, 85%);
+	--play-btn-secondary-text: hsl(220, 15%, 25%);
+	--play-footer: hsl(220, 10%, 60%);
+	--play-divider: hsl(220, 15%, 90%);
+}
+
+[data-bs-theme="dark"] {
+	--play-bg: hsl(220, 18%, 8%);
+	--play-surface: hsl(220, 16%, 14%);
+	--play-border: hsl(220, 14%, 22%);
+	--play-text: hsl(220, 10%, 92%);
+	--play-text-muted: hsl(220, 8%, 72%);
+	--play-text-subtle: hsl(220, 8%, 58%);
+	--play-accent: hsl(210, 100%, 60%);
+	--play-accent-hover: hsl(210, 100%, 52%);
+	--play-card-shadow: 0 2px 12px hsla(0, 0%, 0%, 0.3);
+	--play-card-hover-shadow: 0 8px 24px hsla(210, 80%, 50%, 0.2);
+	--play-gradient-from: hsl(210, 100%, 65%);
+	--play-gradient-to: hsl(280, 100%, 75%);
+	--play-btn-secondary-bg: hsl(220, 15%, 20%);
+	--play-btn-secondary-hover: hsl(220, 15%, 28%);
+	--play-btn-secondary-text: hsl(220, 10%, 85%);
+	--play-footer: hsl(220, 8%, 45%);
+	--play-divider: hsl(220, 14%, 20%);
+}
+
+/* ─── Base ─── */
+
+body {
+	margin: 0;
+	background: var(--play-bg);
+	color: var(--play-text);
+	font-family: system-ui, -apple-system, sans-serif;
+	display: flex;
+	justify-content: center;
+	min-height: 100vh;
+	transition: background 0.3s ease, color 0.3s ease;
+}
+
+#presentation {
+	max-width: 800px;
+	width: 100%;
+	padding: 40px 20px;
+}
+
+/* ─── Theme Toggle ─── */
+
+.theme-toggle {
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	z-index: 1000;
+	background: var(--play-surface);
+	border: 1px solid var(--play-border);
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	font-size: 1.2rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: var(--play-card-shadow);
+	transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+	transform: scale(1.1);
+	box-shadow: var(--play-card-hover-shadow);
+}
+
+/* ─── Hero ─── */
+
+.hero {
+	text-align: center;
+	padding: 60px 0;
+	border-bottom: 1px solid var(--play-divider);
+}
+
+.hero h1 {
+	font-size: 3rem;
+	background: linear-gradient(135deg, var(--play-gradient-from), var(--play-gradient-to));
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	margin: 0 0 10px 0;
+}
+
+.hero h2 {
+	font-size: 1.25rem;
+	font-weight: 400;
+	color: var(--play-text-muted);
+	margin: 0 0 30px 0;
+}
+
+.hero p {
+	font-size: 1.05rem;
+	line-height: 1.7;
+	color: var(--play-text-muted);
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+/* ─── Feature Cards ─── */
+
+.features {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 20px;
+	margin: 40px 0;
+}
+
+.feature-card {
+	background: var(--play-surface);
+	border: 1px solid var(--play-border);
+	border-radius: 12px;
+	padding: 24px;
+	box-shadow: var(--play-card-shadow);
+	transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+	cursor: default;
+}
+
+.feature-card:hover {
+	transform: translateY(-4px);
+	border-color: var(--play-accent);
+	box-shadow: var(--play-card-hover-shadow);
+}
+
+.feature-card .icon {
+	font-size: 2rem;
+	margin-bottom: 16px;
+}
+
+.feature-card h3 {
+	margin: 0 0 10px 0;
+	font-size: 1.15rem;
+	color: var(--play-text);
+}
+
+.feature-card p {
+	margin: 0;
+	color: var(--play-text-muted);
+	line-height: 1.6;
+	font-size: 0.95rem;
+}
+
+/* ─── Actions ─── */
+
+.actions {
+	display: flex;
+	justify-content: center;
+	gap: 16px;
+	padding: 40px 0;
+	border-top: 1px solid var(--play-divider);
+}
+
+button.demo-btn {
+	background: var(--play-accent);
+	color: white;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.2s, transform 0.1s;
+}
+
+button.demo-btn:hover {
+	background: var(--play-accent-hover);
+}
+
+button.demo-btn:active {
+	transform: scale(0.98);
+}
+
+button.demo-btn.secondary {
+	background: var(--play-btn-secondary-bg);
+	color: var(--play-btn-secondary-text);
+}
+
+button.demo-btn.secondary:hover {
+	background: var(--play-btn-secondary-hover);
+}
+
+/* ─── Footer ─── */
+
+footer {
+	text-align: center;
+	padding: 40px 0;
+	color: var(--play-footer);
+	font-size: 0.85rem;
+}
+
+/* ─── Loader ─── */
+
+.loader {
+	text-align: center;
+	padding: 100px 20px;
+	color: var(--play-text-subtle);
+	font-size: 1.1rem;
+}

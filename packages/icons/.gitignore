@@ -1,0 +1,12 @@
+# llimo chat
+chat/
+me.md
+.vscode/
+
+# dist
+.datasets/
+
+# npm
+node_modules/
+package-lock.json
+.temp/

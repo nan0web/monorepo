@@ -1,0 +1,12 @@
+{
+	"borderRadius": "md",
+	"borderWidth": "md",
+	"borderColor": "primary",
+	"fontSize": "base",
+	"paddingX": "lg",
+	"paddingY": "md",
+	"color": "text",
+	"background": "primary",
+	"hoverBackground": "color-mix(in srgb, var(--color-primary) 80%, black)",
+	"shadow": "sm"
+}

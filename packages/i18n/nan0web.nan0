@@ -1,0 +1,9 @@
+name: "@nan0web/i18n"
+agents:
+  - id: 'i18n-architect'
+    description: 'Localization & Dictionary Architect'
+    workflows:
+      - 'src/agents/workflows/i18n-builder.md'
+      - 'src/agents/workflows/i18n-standards.md'
+    inspectors:
+      - 'src/agents/inspectors/inspect-i18n.md'

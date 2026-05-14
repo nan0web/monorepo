@@ -1,0 +1,8 @@
+$content:
+  - h1: TextArea Component
+  - p: TextAreas allow multiline text input.
+  - h2: Default TextArea
+  - TextArea: true
+    $placeholder: Enter your message here...
+  - a: ← All Components
+    $href: /play/index.html

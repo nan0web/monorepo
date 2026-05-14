@@ -1,0 +1,22 @@
+section: Modals
+
+description: |
+  Modal component example - click button to open modal with content.
+examples:
+  - title: Simple Modal
+    trigger: true
+    triggerText: Open Modal
+    children:
+      - type: Typography
+        variant: h3
+        children: Modal Title
+      - type: Typography
+        variant: body
+        children: This is the modal body. It can contain any components like buttons or inputs.
+      - type: Button
+        variant: secondary
+        children: Close Modal
+        onClick: close
+      - type: Button
+        variant: primary
+        children: Action Button

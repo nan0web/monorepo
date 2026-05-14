@@ -1,0 +1,7 @@
+{
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"entry": ["packages/core/index.js"],
+	"project": ["packages/**/*.js"],
+	"ignore": ["e2e/**", "scripts/**", "releases/**", "dist/**", "src/README.md.js", "data/**"],
+	"ignoreDependencies": ["@nan0web/test", "@nan0web/db-browser", "@nan0web/log", "lit"]
+}

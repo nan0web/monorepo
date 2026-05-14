@@ -1,0 +1,93 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "NaN0",
+	"scopeName": "source.nan0",
+	"fileTypes": ["nan0", "n0"],
+	"patterns": [
+		{ "include": "#comment" },
+		{ "include": "#array-item" },
+		{ "include": "#key-value" },
+		{ "include": "#empty-collection" },
+		{ "include": "#value" }
+	],
+	"repository": {
+		"comment": {
+			"match": "^\\s*(#.*)$",
+			"captures": {
+				"1": { "name": "comment.line.number-sign.nan0" }
+			}
+		},
+		"array-item": {
+			"match": "^(\\s*)(-)\\s+(.*)",
+			"captures": {
+				"2": { "name": "punctuation.definition.list.nan0" },
+				"3": {
+					"patterns": [
+						{ "include": "#inline-key-value" },
+						{ "include": "#value" }
+					]
+				}
+			}
+		},
+		"key-value": {
+			"match": "^(\\s*)([^#:\\-][^:]*)(:)\\s*(.*)?$",
+			"captures": {
+				"2": { "name": "entity.name.tag.nan0" },
+				"3": { "name": "punctuation.separator.key-value.nan0" },
+				"4": {
+					"patterns": [
+						{ "include": "#value" }
+					]
+				}
+			}
+		},
+		"inline-key-value": {
+			"match": "([^#:]+)(:)\\s*(.*)?$",
+			"captures": {
+				"1": { "name": "entity.name.tag.nan0" },
+				"2": { "name": "punctuation.separator.key-value.nan0" },
+				"3": {
+					"patterns": [
+						{ "include": "#value" }
+					]
+				}
+			}
+		},
+		"empty-collection": {
+			"match": "(\\[\\]|\\{\\})",
+			"name": "constant.language.empty.nan0"
+		},
+		"value": {
+			"patterns": [
+				{
+					"match": "\\b(true|false)\\b",
+					"name": "constant.language.boolean.nan0"
+				},
+				{
+					"match": "\\b(null)\\b",
+					"name": "constant.language.null.nan0"
+				},
+				{
+					"match": "\\b\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}(:\\d{2})?([+-]\\d{2}:\\d{2}|Z)?)?\\b",
+					"name": "constant.other.date.nan0"
+				},
+				{
+					"match": "-?\\b\\d[\\d_]*(\\.[\\d_]+)?\\b",
+					"name": "constant.numeric.nan0"
+				},
+				{
+					"match": "(\")((?:[^\"\\\\]|\\\\.)*)(\")$",
+					"captures": {
+						"1": { "name": "punctuation.definition.string.begin.nan0" },
+						"2": { "name": "string.quoted.double.nan0" },
+						"3": { "name": "punctuation.definition.string.end.nan0" }
+					}
+				},
+				{
+					"match": "\\|\\s*$",
+					"name": "keyword.operator.multiline.nan0"
+				}
+			]
+		}
+	}
+}

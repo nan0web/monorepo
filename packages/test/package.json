@@ -1,0 +1,82 @@
+{
+  "name": "@nan0web/test",
+  "version": "3.0.0",
+  "description": "A test package with simple utilities for testing in node.js runtime",
+  "main": "src/index.js",
+  "type": "module",
+  "types": "types/index.d.ts",
+  "bin": {
+    "nan0test": "./bin/nan0test.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./jsdom": {
+      "import": "./src/jsdom.js",
+      "types": "./types/jsdom.d.ts"
+    },
+    "./parsers": {
+      "import": "./src/Parser/index.js",
+      "types": "./types/Parser/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "test": "node --test \"src/**/*.test.js\"",
+    "test:nan0test": "node --test \"src/**/*.test.js\" | node bin/nan0test.js parse --fail",
+    "test:docs": "node --test src/README.md.js",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "node bin/nan0test.js coverage",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "test:status": "node bin/nan0test.js status --hide-name",
+    "test:play": "node --test --test-timeout=3333 play/**/*.test.js",
+    "test:all": "npm run test && npm run test:play && npm run test:docs && npm run build && npm run knip",
+    "knip": "knip --production",
+    "play": "node play/main.js",
+    "release": "nan0release publish",
+    "precommit": "npm test",
+    "prepush": "npm test"},
+  "keywords": [
+    "fetch",
+    "mock",
+    "testing",
+    "http",
+    "utility"
+  ],
+  "author": "ЯRаСлав YaRaSLove <support@yaro.page>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "types/**/*.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nan0web/test.git"
+  },
+  "homepage": "https://github.com/nan0web/test#readme",
+  "bugs": {
+    "url": "https://github.com/nan0web/test/issues"
+  },
+  "dependencies": {
+    "@nan0web/co": "workspace:*",
+    "@nan0web/db": "workspace:*",
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/i18n": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "@nan0web/markdown": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "happy-dom": "^20.8.3"
+  },
+  "devDependencies": {
+    "@nan0web/http-node": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "husky": "^9.1.7",
+    "knip": "^6.6.0"
+  }
+}

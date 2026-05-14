@@ -1,0 +1,29 @@
+# Tests
+packages/*/test/
+*.test.js
+*.spec.js
+
+# ProvenDoc generator
+src/README.md.js
+
+# Dev files
+play/
+releases/
+scripts/
+docs/
+e2e/
+knip.json
+system.md
+next.md
+tsconfig.json
+.editorconfig
+CONTRIBUTING.md
+
+# LLiMo / AI artifacts
+chat/
+.datasets/
+me.md
+
+# Generated
+dist/
+.cache/

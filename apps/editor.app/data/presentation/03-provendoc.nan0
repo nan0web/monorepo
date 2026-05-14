@@ -1,0 +1,15 @@
+title: "ProvenDoc Hardening"
+description: "Documentation that never lies because it's tested."
+icon: "shield-check"
+order: 3
+metrics:
+  tests_in_docs: "100%"
+  regression_safety: "High"
+content: |
+  # ProvenDoc Standard
+  We don't just write documentation; we test it. 
+  
+  Every code example in our `README.md` is a live test case executed by the `node:test` runner. This ensures that:
+  - Examples are always up-to-date.
+  - API changes are immediately reflected in docs.
+  - Users can copy-paste with 100% confidence.

@@ -1,0 +1,75 @@
+{
+  "name": "@nan0web/i18n",
+  "version": "3.0.0",
+  "description": "A tiny, zero-dependency i18n helper for Java•Script",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./inspect": "./src/inspect/I18nInspector.js"
+  },
+  "dependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/event": "workspace:*",
+    "@nan0web/inspect": "workspace:*",
+    "@nan0web/types": "workspace:*"
+  },
+  "types": "types/index.d.ts",
+  "bin": {
+    "i18n": "bin/i18n.js"
+  },
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/README.md.js",
+    "types/**/*.d.ts",
+    "!types/README.md.d.ts",
+    "bin/**/*.js"
+  ],
+  "scripts": {
+    "postinstall": "node bin/postinstall.js",
+    "i18n": "node bin/i18n.js audit && node bin/i18n.js sync",
+    "i18n:prod": "npx i18n audit && npx i18n sync",
+    "prebuild": "rm -rf types/",
+    "build": "tsc",
+    "audit": "pnpm audit --audit-level=moderate",
+    "test": "node --test \"src/**/*.test.js\" | nan0test parse --fail",
+    "test:all": "pnpm test && pnpm run test:docs && pnpm test:release && pnpm build && pnpm run knip && pnpm run audit || true",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"releases/**/*.test.js\" \"src/test/releases/**/*.test.js\"",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "release:verify": "node --test \"src/test/releases/**/*.test.js\"",
+    "test:status": "nan0test status --hide-name --debug",
+    "knip": "knip --production",
+    "play": "node play/main.js",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "release": "nan0release publish",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules"
+  },
+  "keywords": [
+    "i18n",
+    "internationalization",
+    "translation",
+    "localization"
+  ],
+  "author": "ЯRаСлав YaRaSLove <support@yaro.page>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.0",
+  "devDependencies": {
+    "@nan0web/log": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "@types/node": "^25.5.2",
+    "husky": "^9.1.7",
+    "knip": "^6.3.0"
+  },
+  "peerDependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/event": "workspace:*"
+  }
+}

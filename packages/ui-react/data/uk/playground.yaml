@@ -1,0 +1,10 @@
+# PlaygroundModel i18n — Українська
+playground:
+  label: Пісочниця
+  starting: "Запуск Playground на порту {$port}..."
+  ready: "Playground готовий: http://localhost:{$port}/play/"
+  stopped: Playground зупинено.
+  error_no_db: Адаптер бази даних не надано в options.db
+  port_help: Порт сервера
+  state_file_help: Файл стану порту
+  vite_args_help: Додаткові аргументи Vite

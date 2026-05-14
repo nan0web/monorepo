@@ -1,0 +1,2122 @@
+# Sandbox Component Examples
+
+title: Каталог OLMUI
+subtitle: '@nan0web/ui-lit'
+sections:
+  - title: 'Phase 1 — Core'
+    items:
+      - id: 'block-nav'
+        title: 'Nav'
+        desc: 'Верхня навігація (Navbar).'
+        schema:
+          - name: ui-nav-height
+            label: Висота навігації
+            type: size
+            default: 60px
+          - name: ui-nav-bg
+            label: Колір фону
+            type: color
+            default: '#ffffff'
+          - name: ui-nav-fg
+            label: Колір тексту
+            type: color
+            default: '#212529'
+          - name: ui-nav-link-hover
+            label: Активний колір (hover)
+            type: color
+            default: '#0d6efd'
+          - name: ui-nav-border
+            label: Колір розділювача
+            type: color
+            default: '#e9ecef'
+          - name: ui-nav-blur
+            label: Ефект скла (blur)
+            type: string
+            default: saturate(180%) blur(20px)
+        examples:
+          - label: 'Проста навігація'
+            previewHtml: |
+              <ui-nav id="e2e-nav" ></ui-nav>
+            codeHtml: |
+              <ui-nav id="my-nav"></ui-nav>
+              <script>
+                nav.brand = { title: 'Bank Shell', url: '#' }
+                nav.items = [
+                  { label: 'Головна', url: '#' },
+                  { label: 'Про нас', url: '#' },
+                  { label: 'Послуги', children: [
+                    { label: 'Депозити' },
+                    { label: 'Кредити' }
+                  ]}
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Nav
+              $nav:
+                brand:
+                  title: Bank Shell
+                  url: "#"
+              nav:
+                - label: Головна
+                  url: "#"
+                - label: Про нас
+                  url: "#"
+                - label: Послуги
+                  children:
+                    - label: Депозити
+                    - label: Кредити
+          - label: 'Мінімальна навігація'
+            previewHtml: |
+              <ui-nav id="e2e-nav-min"></ui-nav>
+              <script>
+                document.getElementById('e2e-nav-min').brand = { title: 'My App' }
+                document.getElementById('e2e-nav-min').items = [
+                  { label: 'Головна', url: '#' },
+                ]
+              </script>
+            codeHtml: |
+              <ui-nav id="nav"></ui-nav>
+              <script>
+                nav.brand = { title: 'My App' }
+                nav.items = [{ label: 'Головна', url: '#' }]
+              </script>
+            codeYaml: |
+              $content:
+              - Nav
+              $nav:
+                brand:
+                  title: My App
+              nav:
+                - label: Головна
+                  url: "#"
+      - id: 'block-sidebar'
+        title: 'Sidebar'
+        desc: 'Бокове меню для навігації.'
+        schema:
+          - name: ui-sidebar-width
+            label: Ширина бокового меню
+            type: size
+            default: 260px
+          - name: ui-sidebar-bg
+            label: Колір фону
+            type: color
+            default: #f8f9fa
+          - name: ui-sidebar-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-sidebar-border
+            label: Колір розділювача
+            type: color
+            default: #e9ecef
+          - name: ui-sidebar-active
+            label: Колір активного пункту
+            type: color
+            default: #0d6efd
+          - name: ui-sidebar-group-fg
+            label: Колір заголовків груп
+            type: color
+            default: #6c757d
+        examples:
+          - label: 'Ієрархічне меню'
+            previewHtml: |
+              <div style="max-width: 300px; height: 300px" >
+              						<ui-sidebar id="e2e-sidebar"></ui-sidebar>
+              					</div>
+            codeHtml: |
+              <ui-sidebar id="sb"></ui-sidebar>
+              <script>
+                sb.title = 'Налаштування'
+                sb.items = [
+                  { label: 'Профіль', url: '#profile', active: true },
+                  { label: 'Безпека', url: '#security' },
+                  { label: 'Сповіщення', children: [{ label: 'Email' }] }
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Sidebar
+              $sidebar:
+                title: Налаштування
+              sidebar:
+                - label: Профіль
+                  url: "#profile"
+                  active: true
+                - label: Безпека
+                  url: "#security"
+                - label: Сповіщення
+                  children:
+                    - label: Email
+          - label: 'Просте меню'
+            previewHtml: |
+              <div style="max-width: 300px; height: 200px">
+                <ui-sidebar id="e2e-sidebar-simple"></ui-sidebar>
+                <script>
+                  document.getElementById('e2e-sidebar-simple').title = 'Меню'
+                  document.getElementById('e2e-sidebar-simple').items = [
+                    { label: 'Головна', active: true },
+                    { label: 'Контакти' },
+                  ]
+                </script>
+              </div>
+            codeHtml: |
+              <ui-sidebar id="sb"></ui-sidebar>
+              <script>
+                sb.title = 'Меню'
+                sb.items = [
+                  { label: 'Головна', active: true },
+                  { label: 'Контакти' },
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Sidebar
+              $sidebar:
+                title: Меню
+              sidebar:
+                - label: Головна
+                  active: true
+                - label: Контакти
+      - id: 'block-callout'
+        title: 'Alert / Callout'
+        desc: 'Блоки уваги.'
+        schema:
+          - name: ui-alert-radius
+            label: Заокруглення кутів
+            type: size
+            default: 8px
+          - name: ui-alert-border-width
+            label: Ширина лівої лінії
+            type: size
+            default: 4px
+          - name: ui-alert-bg
+            label: Колір фону
+            type: color
+            default: #f0f9ff
+          - name: ui-alert-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-alert-accent
+            label: Акцентний колір
+            type: color
+            default: #0d6efd
+          - name: ui-alert-icon-color
+            label: Колір іконки
+            type: color
+            default: #0d6efd
+        examples:
+          - label: 'Info'
+            previewHtml: |
+              <ui-alert
+              	id="e2e-alert-info"
+              	variant="info"
+              	title="Info"
+              	content="Informational message."
+              ></ui-alert>
+            codeHtml: |
+              <ui-alert variant="info" title="Info" content="Informational message."></ui-alert>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Alert.info:
+                  title: Info
+                  content: Informational message.
+          - label: 'Success'
+            previewHtml: |
+              <ui-alert
+              	id="e2e-alert-success"
+              	variant="success"
+              	title="Success"
+              	content="Operation completed successfully."
+              ></ui-alert>
+            codeHtml: |
+              <ui-alert variant="success" title="Success" content="Operation completed successfully."></ui-alert>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Alert.success:
+                  title: Success
+                  content: Operation completed successfully.
+          - label: 'Warning'
+            previewHtml: |
+              <ui-alert
+              	id="e2e-alert-warning"
+              	variant="warning"
+              	title="Warning"
+              	content="Please check your input."
+              ></ui-alert>
+            codeHtml: |
+              <ui-alert variant="warning" title="Warning" content="Please check your input."></ui-alert>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Alert.warn:
+                  title: Warning
+                  content: Please check your input.
+          - label: 'Error'
+            previewHtml: |
+              <ui-alert
+              	id="e2e-alert-error"
+              	variant="error"
+              	title="Error"
+              	content="Something went wrong."
+              ></ui-alert>
+            codeHtml: |
+              <ui-alert variant="error" title="Error" content="Something went wrong."></ui-alert>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Alert.err:
+                  title: Error
+                  content: Something went wrong.
+          - label: 'Tip'
+            previewHtml: |
+              <ui-alert
+              	id="e2e-alert-tip"
+              	variant="tip"
+              	title="Tip"
+              	content="Use keyboard shortcuts for faster navigation."
+              ></ui-alert>
+            codeHtml: |
+              <ui-alert variant="tip" title="Tip" content="Use keyboard shortcuts for faster navigation."></ui-alert>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Alert.tip:
+                  title: Tip
+                  content: Use keyboard shortcuts for faster navigation.
+      - id: 'block-markdown'
+        title: 'Markdown'
+        desc: 'Рендер HTML контенту.'
+        schema:
+          - name: ui-md-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-md-link
+            label: Колір посилань
+            type: color
+            default: #0d6efd
+          - name: ui-md-border
+            label: Колір розділювачів
+            type: color
+            default: #e9ecef
+          - name: ui-md-code-bg
+            label: Фон коду
+            type: color
+            default: #f8f9fa
+          - name: ui-md-code-fg
+            label: Колір коду
+            type: color
+            default: #e83e8c
+          - name: ui-md-font
+            label: Основний шрифт
+            type: string
+            default: "system-ui, sans-serif"
+          - name: ui-md-heading-font
+            label: Шрифт заголовків
+            type: string
+            default: inherit
+        examples:
+          - label: 'Заголовки та списки'
+            previewHtml: |
+              <ui-markdown id="e2e-markdown" ></ui-markdown>
+            codeHtml: |
+              <ui-markdown id="md"></ui-markdown>
+              <script>
+                md.content = `
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                  <p>Here is a list of</p>
+                  <ul>
+                    <li>apple</li>
+                    <li>banana</li>
+                  </ul>
+                `
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Markdown: |
+                  # Title
+                  ## Subtitle
+                  Here is a list of
+                  - apple
+                  - banana
+          - label: 'Код і цитата'
+            previewHtml: |
+              <ui-markdown id="e2e-markdown-code"></ui-markdown>
+              <script>
+                document.getElementById('e2e-markdown-code').content = `
+                  <p><strong>Bold text</strong> and <a href="#">link</a></p>
+                  <pre><code>const hello = 'world'</code></pre>
+                  <blockquote><p>This is a quote</p></blockquote>
+                `
+              </script>
+            codeHtml: |
+              <ui-markdown id="md"></ui-markdown>
+              <script>
+                md.content = `
+                  <p><strong>Bold</strong> and <a href="#">link</a></p>
+                  <pre><code>const hello = 'world'</code></pre>
+                  <blockquote><p>This is a quote</p></blockquote>
+                `
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Markdown: |
+                  **Bold text** and [link](#)
+
+                  ```js
+                  const hello = 'world'
+                  ```
+
+                  > This is a quote
+      - id: 'block-themetoggle'
+        title: 'ThemeToggle'
+        desc: 'Перемикач теми.'
+        schema:
+          - name: ui-toggle-size
+            label: Розмір кнопки
+            type: size
+            default: 40px
+          - name: ui-toggle-color
+            label: Колір іконки
+            type: color
+            default: #6c757d
+          - name: ui-toggle-hover
+            label: Колір при наведенні
+            type: color
+            default: #0d6efd
+        examples:
+          - label: 'Перемикач light/dark'
+            previewHtml: |
+              <div
+              	class="d-flex align-items-center gap-3 p-3 border rounded shadow-sm"
+              >
+              	<span class="text-muted small">Тема: <strong id="e2e-theme-value"></strong></span>
+              	<ui-theme-toggle id="e2e-theme-toggle"></ui-theme-toggle>
+              </div>
+            codeHtml: |
+              <ui-theme-toggle></ui-theme-toggle>
+            codeYaml: |
+              $content:
+              - ThemeToggle
+          - label: 'У навігації'
+            previewHtml: |
+              <div class="d-flex align-items-center gap-3 p-3 border rounded shadow-sm">
+                <span class="text-muted small">Для використання в Nav/Sidebar</span>
+                <ui-theme-toggle></ui-theme-toggle>
+              </div>
+            codeHtml: |
+              <ui-nav id="nav"></ui-nav>
+              <script>
+                // ThemeToggle вбудовується автоматично
+                nav.brand = { title: 'App' }
+              </script>
+            codeYaml: |
+              $content:
+              - Nav
+              - ThemeToggle
+              $nav:
+                brand:
+                  title: App
+      - id: 'block-langselect'
+        title: 'LangSelect'
+        desc: 'Перемикач мови.'
+        schema:
+          - name: ui-lang-color
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-lang-hover
+            label: Фон при наведенні
+            type: color
+            default: #f0f0f0
+          - name: ui-lang-active-bg
+            label: Фон вибраного
+            type: color
+            default: #e9ecef
+          - name: ui-lang-font
+            label: Шрифт
+            type: string
+            default: "system-ui, sans-serif"
+        examples:
+          - label: 'Вибір мови'
+            previewHtml: |
+              <div
+              	class="d-flex align-items-center gap-3 p-3 border rounded shadow-sm"
+              >
+              	<span class="text-muted small">Мова: <strong id="e2e-locale-value"></strong></span>
+              	<ui-lang-select id="e2e-lang-select"></ui-lang-select>
+              </div>
+            codeHtml: |
+              <ui-lang-select></ui-lang-select>
+            codeYaml: |
+              $content:
+              - LangSelect
+          - label: 'У навігації'
+            previewHtml: |
+              <div class="d-flex align-items-center gap-3 p-3 border rounded shadow-sm">
+                <span class="text-muted small">Для використання в Nav</span>
+                <ui-lang-select></ui-lang-select>
+              </div>
+            codeHtml: |
+              <ui-nav id="nav"></ui-nav>
+              <script>
+                // LangSelect вбудовується автоматично
+                nav.brand = { title: 'App' }
+              </script>
+            codeYaml: |
+              $content:
+              - Nav
+              - LangSelect
+              $nav:
+                brand:
+                  title: App
+      - id: 'block-badge'
+        title: 'Badge'
+        desc: 'Позначки статусів.'
+        schema:
+          - name: ui-badge-bg
+            label: Колір фону
+            type: color
+            default: #0d6efd
+          - name: ui-badge-fg
+            label: Колір тексту
+            type: color
+            default: #ffffff
+          - name: ui-badge-radius
+            label: Заокруглення
+            type: size
+            default: 999px
+          - name: ui-badge-border
+            label: Бордер
+            type: string
+            default: none
+          - name: ui-badge-font
+            label: Розмір шрифту
+            type: size
+            default: 0.75rem
+        examples:
+          - label: 'Всі варіанти'
+            previewHtml: |
+              <div class="d-flex gap-2 flex-wrap" >
+              	<ui-badge>neutral</ui-badge>
+              	<ui-badge variant="unread">unread</ui-badge>
+              	<ui-badge variant="complete">complete</ui-badge>
+              	<ui-badge variant="dangerous">dangerous</ui-badge>
+              	<ui-badge variant="not-found">not-found</ui-badge>
+              </div>
+            codeHtml: |
+              <ui-badge>neutral</ui-badge>
+              <ui-badge variant="unread">unread</ui-badge>
+              <ui-badge variant="complete">complete</ui-badge>
+              <ui-badge variant="dangerous">dangerous</ui-badge>
+              <ui-badge variant="not-found">not-found</ui-badge>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - badge: neutral
+              - badge.unread: unread
+              - badge.complete: complete
+              - badge.dangerous: dangerous
+              - badge.not-found: not-found
+          - label: 'У контексті'
+            previewHtml: |
+              <div class="d-flex gap-2 flex-wrap align-items-center">
+                <span>Статус замовлення:</span>
+                <ui-badge variant="complete">оплачено</ui-badge>
+              </div>
+            codeHtml: |
+              <span>Статус замовлення:</span>
+              <ui-badge variant="complete">оплачено</ui-badge>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - "Статус замовлення:"
+              - badge.complete: оплачено
+      - id: 'block-code'
+        title: 'CodeBlock'
+        desc: 'Відображення коду.'
+        schema:
+          - name: ui-code-bg
+            label: Фон блоку
+            type: color
+            default: #1e1e2e
+          - name: ui-code-fg
+            label: Колір коду
+            type: color
+            default: #cdd6f4
+          - name: ui-code-radius
+            label: Заокруглення
+            type: size
+            default: 12px
+          - name: ui-code-border
+            label: Бордер
+            type: string
+            default: none
+          - name: ui-code-font
+            label: Шрифт
+            type: string
+            default: "'SF Mono', monospace"
+          - name: ui-code-title-fg
+            label: Колір заголовка
+            type: color
+            default: #a6adc8
+        examples:
+          - label: 'JavaScript'
+            previewHtml: |
+              <ui-code-block
+              	id="e2e-code-block"
+              	title="example.js"
+              	lang="javascript"
+              ></ui-code-block>
+            codeHtml: |
+              <ui-code-block id="cb" title="example.js" lang="javascript"></ui-code-block>
+              <script>
+                cb.code = "import { UIAlert } from '@nan0web/ui-lit/core'\n\nconst alert = document.createElement('ui-alert')\nalert.variant = 'success'\nalert.title = 'Done!'"
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - CodeBlock:
+                  title: example.js
+                  lang: javascript
+                  code: |
+                    import { UIAlert } from '@nan0web/ui-lit/core'
+
+                    const alert = document.createElement('ui-alert')
+                    alert.variant = 'success'
+                    alert.title = 'Done!'
+          - label: 'YAML'
+            previewHtml: |
+              <ui-code-block
+              	id="e2e-code-block-yaml"
+              	title="config.yaml"
+              	lang="yaml"
+              ></ui-code-block>
+              <script>
+                document.getElementById('e2e-code-block-yaml').code = "title: My App\nversion: 1.0.0\nmodules:\n  - auth\n  - test"
+              </script>
+            codeHtml: |
+              <ui-code-block id="cb" title="config.yaml" lang="yaml"></ui-code-block>
+              <script>
+                cb.code = "title: My App\nversion: 1.0.0"
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - CodeBlock:
+                  title: config.yaml
+                  lang: yaml
+                  code: |
+                    title: My App
+                    version: 1.0.0
+                    modules:
+                      - auth
+                      - test
+      - id: 'block-table'
+        title: 'Table'
+        desc: 'Таблиці даних.'
+        schema:
+          - name: ui-table-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-table-fg-muted
+            label: Приглушений колір
+            type: color
+            default: #6c757d
+          - name: ui-table-border
+            label: Колір ліній
+            type: color
+            default: #dee2e6
+          - name: ui-table-hover-bg
+            label: Фон при наведенні
+            type: color
+            default: "rgba(0,0,0,0.02)"
+          - name: ui-table-header-color
+            label: Колір заголовків
+            type: color
+            default: #6c757d
+          - name: ui-table-font
+            label: Шрифт
+            type: string
+            default: "system-ui, sans-serif"
+        examples:
+          - label: 'Список компонентів'
+            previewHtml: |
+              <ui-table id="e2e-table" ></ui-table>
+            codeHtml: |
+              <ui-table id="tb"></ui-table>
+              <script>
+                tb.data = [
+                  { component: 'Alert', status: '✅', variants: 'info, success, warning, error' },
+                  { component: 'Badge', status: '✅', variants: 'neutral, info, success, warning, error' },
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Table:
+                  data:
+                    - component: Alert
+                      status: "✅"
+                      variants: "info, success, warning, error"
+                    - component: Badge
+                      status: "✅"
+                      variants: "neutral, unread, complete, dangerous, not-found"
+          - label: 'Прості дані'
+            previewHtml: |
+              <ui-table id="e2e-table-simple"></ui-table>
+              <script>
+                document.getElementById('e2e-table-simple').data = [
+                  { name: 'Київ', population: '2.9M' },
+                  { name: 'Харків', population: '1.4M' },
+                  { name: 'Одеса', population: '1.0M' },
+                ]
+              </script>
+            codeHtml: |
+              <ui-table id="tb"></ui-table>
+              <script>
+                tb.data = [
+                  { name: 'Київ', population: '2.9M' },
+                  { name: 'Харків', population: '1.4M' },
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Table:
+                  data:
+                    - name: Київ
+                      population: "2.9M"
+                    - name: Харків
+                      population: "1.4M"
+                    - name: Одеса
+                      population: "1.0M"
+  - title: 'Phase 2 — Forms'
+    items:
+      - id: 'block-input'
+        title: 'Input'
+        desc: 'Текстове поле з label, placeholder, validation.'
+        schema:
+          - name: ui-input-bg
+            label: Фон поля
+            type: color
+            default: #ffffff
+          - name: ui-input-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-input-border
+            label: Колір рамки
+            type: color
+            default: #dee2e6
+          - name: ui-input-focus
+            label: Колір фокусу
+            type: color
+            default: #0d6efd
+          - name: ui-input-error
+            label: Колір помилки
+            type: color
+            default: #dc3545
+          - name: ui-input-success
+            label: Колір успіху
+            type: color
+            default: #198754
+          - name: ui-input-radius
+            label: Заокруглення
+            type: size
+            default: 8px
+          - name: ui-input-label-color
+            label: Колір мітки
+            type: color
+            default: #495057
+          - name: ui-input-placeholder
+            label: Колір placeholder
+            type: color
+            default: #adb5bd
+          - name: ui-input-font
+            label: Шрифт
+            type: string
+            default: "system-ui, sans-serif"
+        examples:
+          - label: 'Звичайне поле'
+            previewHtml: |
+              <div style="max-width: 400px">
+                <ui-input
+              		id="e2e-input"
+              		label="Ім'я"
+              		placeholder="Введіть ім'я"
+              		hint="Обов'язкове поле"
+              		required
+              	></ui-input>
+              </div>
+            codeHtml: |
+              <ui-input
+                label="Ім'я"
+                placeholder="Введіть ім'я"
+                hint="Обов'язкове поле"
+                required
+              ></ui-input>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Input:
+                  label: "Ім'я"
+                  placeholder: "Введіть ім'я"
+                  required: true
+                  hint: "Обов'язкове поле"
+          - label: 'Стани валідації'
+            previewHtml: |
+              <div class="d-flex flex-column gap-3" style="max-width: 400px">
+              	<ui-input label="Email" placeholder="user@example.com" type="email" state="success" hint="Валідний email"></ui-input>
+              	<ui-input label="Пароль" type="password" state="error" hint="Мінімум 8 символів" value="short"></ui-input>
+              	<ui-input label="Disabled" placeholder="Не можна редагувати" disabled></ui-input>
+              </div>
+            codeHtml: |
+              <ui-input label="Email" type="email" state="success" hint="Валідний email"></ui-input>
+              <ui-input label="Пароль" type="password" state="error" hint="Мінімум 8 символів"></ui-input>
+              <ui-input label="Disabled" placeholder="Не можна редагувати" disabled></ui-input>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Input:
+                  label: Email
+                  type: email
+                  state: success
+                  hint: Валідний email
+              - Input:
+                  label: Пароль
+                  type: password
+                  state: error
+                  hint: Мінімум 8 символів
+              - Input:
+                  label: Disabled
+                  placeholder: Не можна редагувати
+                  disabled: true
+      - id: 'block-select'
+        title: 'Select'
+        desc: 'Dropdown вибір.'
+        schema:
+          - name: ui-select-bg
+            label: Фон
+            type: color
+            default: #ffffff
+          - name: ui-select-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-select-border
+            label: Колір рамки
+            type: color
+            default: #dee2e6
+          - name: ui-select-focus
+            label: Колір фокусу
+            type: color
+            default: #0d6efd
+          - name: ui-select-radius
+            label: Заокруглення
+            type: size
+            default: 8px
+          - name: ui-select-option-hover
+            label: Фон опції при наведенні
+            type: color
+            default: #f8f9fa
+          - name: ui-select-option-active
+            label: Фон вибраної опції
+            type: color
+            default: #e9ecef
+          - name: ui-select-font
+            label: Шрифт
+            type: string
+            default: "system-ui, sans-serif"
+        examples:
+          - label: 'Вибір категорії'
+            previewHtml: |
+              <div style="max-width: 400px" >
+              	<ui-select id="e2e-select" label="Категорія" placeholder="Оберіть..."></ui-select>
+              </div>
+            codeHtml: |
+              <ui-select id="sel" label="Категорія" placeholder="Оберіть..."></ui-select>
+              <script>
+                sel.options = [
+                  { value: 'dep', label: 'Депозити' },
+                  { value: 'crd', label: 'Кредити' },
+                  { value: 'ins', label: 'Страхування' },
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Select:
+                  label: Категорія
+                  placeholder: "Оберіть..."
+                  options:
+                    - value: dep
+                      label: Депозити
+                    - value: crd
+                      label: Кредити
+                    - value: ins
+                      label: Страхування
+          - label: 'З попередньо вибраним значенням'
+            previewHtml: |
+              <div style="max-width: 400px">
+                <ui-select id="e2e-select-presel" label="Валюта" value="uah"></ui-select>
+                <script>
+                  document.getElementById('e2e-select-presel').options = [
+                    { value: 'uah', label: 'UAH — Гривня' },
+                    { value: 'usd', label: 'USD — Долар' },
+                    { value: 'eur', label: 'EUR — Євро' },
+                  ]
+                </script>
+              </div>
+            codeHtml: |
+              <ui-select id="sel" label="Валюта" value="uah"></ui-select>
+              <script>
+                sel.options = [
+                  { value: 'uah', label: 'UAH — Гривня' },
+                  { value: 'usd', label: 'USD — Долар' },
+                  { value: 'eur', label: 'EUR — Євро' },
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Select:
+                  label: Валюта
+                  value: uah
+                  options:
+                    - value: uah
+                      label: "UAH — Гривня"
+                    - value: usd
+                      label: "USD — Долар"
+                    - value: eur
+                      label: "EUR — Євро"
+      - id: 'block-button'
+        title: 'Button'
+        desc: 'Кнопки дії з варіантами та розмірами.'
+        schema:
+          - name: ui-btn-bg
+            label: Фон кнопки
+            type: color
+            default: #0d6efd
+          - name: ui-btn-fg
+            label: Колір тексту
+            type: color
+            default: #ffffff
+          - name: ui-btn-hover-bg
+            label: Фон при наведенні
+            type: color
+            default: #0b5ed7
+          - name: ui-btn-border
+            label: Бордер
+            type: string
+            default: none
+          - name: ui-btn-radius
+            label: Заокруглення
+            type: size
+            default: 8px
+          - name: ui-btn-shadow
+            label: Тінь
+            type: string
+            default: none
+          - name: ui-btn-font
+            label: Шрифт
+            type: string
+            default: "system-ui, sans-serif"
+        examples:
+          - label: 'Варіанти'
+            previewHtml: |
+              <div class="d-flex gap-2 flex-wrap align-items-center" >
+              	<ui-button id="e2e-btn-primary" label="Primary" variant="primary"></ui-button>
+              	<ui-button label="Secondary" variant="secondary"></ui-button>
+              	<ui-button label="Danger" variant="danger"></ui-button>
+              	<ui-button label="Ghost" variant="ghost"></ui-button>
+              	<ui-button label="Outline" variant="outline"></ui-button>
+              </div>
+            codeHtml: |
+              <ui-button label="Primary" variant="primary"></ui-button>
+              <ui-button label="Secondary" variant="secondary"></ui-button>
+              <ui-button label="Danger" variant="danger"></ui-button>
+              <ui-button label="Ghost" variant="ghost"></ui-button>
+              <ui-button label="Outline" variant="outline"></ui-button>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Button:
+                  label: Primary
+                  variant: primary
+              - Button:
+                  label: Secondary
+                  variant: secondary
+              - Button:
+                  label: Danger
+                  variant: danger
+              - Button:
+                  label: Ghost
+                  variant: ghost
+              - Button:
+                  label: Outline
+                  variant: outline
+          - label: 'Розміри та стани'
+            previewHtml: |
+              <div class="d-flex gap-2 flex-wrap align-items-center" >
+              	<ui-button label="Small" size="sm"></ui-button>
+              	<ui-button label="Medium" size="md"></ui-button>
+              	<ui-button label="Large" size="lg"></ui-button>
+              	<ui-button label="Loading..." loading></ui-button>
+              	<ui-button label="Disabled" disabled></ui-button>
+              </div>
+            codeHtml: |
+              <ui-button label="Small" size="sm"></ui-button>
+              <ui-button label="Medium" size="md"></ui-button>
+              <ui-button label="Large" size="lg"></ui-button>
+              <ui-button label="Loading..." loading></ui-button>
+              <ui-button label="Disabled" disabled></ui-button>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Button:
+                  label: Small
+                  size: sm
+              - Button:
+                  label: Medium
+                  size: md
+              - Button:
+                  label: Large
+                  size: lg
+              - Button:
+                  label: Loading...
+                  loading: true
+              - Button:
+                  label: Disabled
+                  disabled: true
+      - id: 'block-toggle'
+        title: 'Toggle'
+        desc: 'Перемикач on/off.'
+        schema:
+          - name: ui-toggle-width
+            label: Ширина треку
+            type: size
+            default: 44px
+          - name: ui-toggle-height
+            label: Висота треку
+            type: size
+            default: 24px
+          - name: ui-toggle-track-bg
+            label: Фон треку (вимк.)
+            type: color
+            default: #dee2e6
+          - name: ui-toggle-track-active
+            label: Фон треку (увімк.)
+            type: color
+            default: #0d6efd
+          - name: ui-toggle-thumb
+            label: Колір повзунка
+            type: color
+            default: #ffffff
+          - name: ui-toggle-thumb-active
+            label: Повзунок (увімк.)
+            type: color
+            default: #ffffff
+        examples:
+          - label: 'Різні стани'
+            previewHtml: |
+              <div class="d-flex flex-column gap-3" >
+              	<ui-toggle id="e2e-toggle" label="Сповіщення"></ui-toggle>
+              	<ui-toggle label="Автозбереження" checked></ui-toggle>
+              	<ui-toggle label="Вимкнений" disabled></ui-toggle>
+              </div>
+            codeHtml: |
+              <ui-toggle label="Сповіщення"></ui-toggle>
+              <ui-toggle label="Автозбереження" checked></ui-toggle>
+              <ui-toggle label="Вимкнений" disabled></ui-toggle>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Toggle:
+                  label: Сповіщення
+              - Toggle:
+                  label: Автозбереження
+                  checked: true
+              - Toggle:
+                  label: Вимкнений
+                  disabled: true
+      - id: 'block-confirm'
+        title: 'Confirm'
+        desc: 'Діалог підтвердження (inline та modal).'
+        schema:
+          - name: ui-confirm-bg
+            label: Фон діалогу
+            type: color
+            default: #ffffff
+          - name: ui-confirm-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-confirm-border
+            label: Колір рамки
+            type: color
+            default: #dee2e6
+          - name: ui-confirm-radius
+            label: Заокруглення
+            type: size
+            default: 12px
+          - name: ui-confirm-backdrop
+            label: Фон підкладки
+            type: color
+            default: "rgba(0,0,0,0.5)"
+        examples:
+          - label: 'Inline режим'
+            previewHtml: |
+              <ui-confirm
+              	id="e2e-confirm"
+              	message="Видалити запис?"
+              	confirm-label="Так"
+              	cancel-label="Ні"
+              	open
+              ></ui-confirm>
+            codeHtml: |
+              <ui-confirm
+                message="Видалити запис?"
+                confirm-label="Так"
+                cancel-label="Ні"
+                open
+              ></ui-confirm>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Confirm:
+                  message: "Видалити запис?"
+                  confirm-label: "Так"
+                  cancel-label: "Ні"
+                  open: true
+          - label: 'Modal режим'
+            previewHtml: |
+              <div >
+              	<ui-button
+              		id="e2e-confirm-open"
+              		label="Відкрити діалог"
+              		variant="danger"
+              	></ui-button>
+              	<ui-confirm
+              		id="e2e-confirm-modal"
+              		message="Ви впевнені? Цю дію неможливо скасувати."
+              		modal
+              		confirm-label="Підтвердити"
+              		cancel-label="Скасувати"
+              	></ui-confirm>
+              </div>
+            codeHtml: |
+              <ui-button id="btn" label="Видалити" variant="danger"></ui-button>
+              <ui-confirm
+                id="dlg"
+                message="Ви впевнені? Цю дію неможливо скасувати."
+                modal
+                confirm-label="Підтвердити"
+                cancel-label="Скасувати"
+              ></ui-confirm>
+              <script>
+                btn.addEventListener('btn-click', () => { dlg.open = true })
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Button:
+                  label: Видалити
+                  variant: danger
+              - Confirm:
+                  message: "Ви впевнені? Цю дію неможливо скасувати."
+                  modal: true
+                  confirm-label: Підтвердити
+                  cancel-label: Скасувати
+  - title: 'Phase 2 — Structure'
+    items:
+      - id: 'block-page'
+        title: 'Page'
+        desc: 'Responsive layout (nav + sidebar + content).'
+        schema:
+          - name: ui-page-bg
+            label: Фон сторінки
+            type: color
+            default: #ffffff
+          - name: ui-page-max-width
+            label: Макс. ширина контенту
+            type: size
+            default: 1200px
+          - name: ui-page-sidebar-width
+            label: Ширина сайдбару
+            type: size
+            default: 260px
+          - name: ui-page-gap
+            label: Відступ layout
+            type: size
+            default: 0
+          - name: ui-page-content-padding
+            label: Відступ контенту
+            type: size
+            default: 2rem
+        examples:
+          - label: 'Layout з sidebar'
+            previewHtml: |
+              <div
+              	style="
+              		height: 200px;
+              		border: 1px solid var(--border);
+              		border-radius: 8px;
+              		overflow: hidden;
+              	"
+              >
+              	<ui-page
+              		id="e2e-page"
+              		style="
+              			min-height: 200px;
+              			--ui-page-sidebar-width: 140px;
+              			--ui-page-content-padding: 1rem;
+              		"
+              	>
+              		<div
+              			slot="nav"
+              			style="
+              				background: var(--ba-surface);
+              				padding: 0.5rem 1rem;
+              				border-bottom: 1px solid var(--border);
+              			"
+              		>
+              			NAV BAR
+              		</div>
+              		<div slot="sidebar" style="padding: 0.5rem">Sidebar Menu</div>
+              		<p>Main content area</p>
+              	</ui-page>
+              </div>
+            codeHtml: |
+              <ui-page>
+                <div slot="nav">NAV BAR</div>
+                <div slot="sidebar">Menu</div>
+                <p>Main content</p>
+              </ui-page>
+            codeYaml: |
+              $content:
+              - Nav
+              - Sidebar
+              - Content
+              $nav:
+                brand:
+                  title: NAV BAR
+              $sidebar:
+                title: Menu
+              content:
+              - "Main content"
+          - label: 'Без sidebar'
+            previewHtml: |
+              <div style="height: 150px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+                <ui-page style="min-height: 150px; --ui-page-content-padding: 1rem;">
+                  <div slot="nav" style="background: var(--ba-surface); padding: 0.5rem 1rem; border-bottom: 1px solid var(--border);">NAV BAR</div>
+                  <p>Full-width content without sidebar</p>
+                </ui-page>
+              </div>
+            codeHtml: |
+              <ui-page>
+                <div slot="nav">NAV BAR</div>
+                <p>Full-width content</p>
+              </ui-page>
+            codeYaml: |
+              $content:
+              - Nav
+              - Content
+              $nav:
+                brand:
+                  title: NAV BAR
+              content:
+              - "Full-width content"
+      - id: 'block-card'
+        title: 'Card'
+        desc: 'Картка контенту.'
+        schema:
+          - name: ui-card-bg
+            label: Фон картки
+            type: color
+            default: #ffffff
+          - name: ui-card-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-card-border
+            label: Бордер
+            type: string
+            default: 1px solid #dee2e6
+          - name: ui-card-radius
+            label: Заокруглення
+            type: size
+            default: 12px
+          - name: ui-card-shadow
+            label: Тінь
+            type: string
+            default: "0 2px 8px rgba(0,0,0,0.08)"
+          - name: ui-card-padding
+            label: Внутрішній відступ
+            type: size
+            default: 1.25rem
+          - name: ui-card-header-border
+            label: Бордер заголовка
+            type: string
+            default: 1px solid #f0f0f0
+        examples:
+          - label: 'Hoverable картка'
+            previewHtml: |
+              <div style="width: 250px">
+              	<ui-card
+              		id="e2e-card"
+              		title="Депозит +"
+              		subtitle="12% річних"
+              		hoverable
+              	>
+              		<p style="margin: 0; font-size: 0.9rem">
+              			Найвигідніший вклад з щомісячною капіталізацією.
+              		</p>
+              	</ui-card>
+              </div>
+            codeHtml: |
+              <ui-card title="Депозит +" subtitle="12% річних" hoverable>
+                <p>Найвигідніший вклад з щомісячною капіталізацією.</p>
+              </ui-card>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Card:
+                  title: "Депозит +"
+                  subtitle: "12% річних"
+                  hoverable: true
+                  content: Найвигідніший вклад з щомісячною капіталізацією.
+          - label: 'Звичайна картка'
+            previewHtml: |
+              <div style="width: 250px">
+              	<ui-card title="Кредит" subtitle="від 0.01% на день">
+              		<p style="margin: 0; font-size: 0.9rem">Швидке кредитування без довідок.</p>
+              	</ui-card>
+              </div>
+            codeHtml: |
+              <ui-card title="Кредит" subtitle="від 0.01% на день">
+                <p>Швидке кредитування без довідок.</p>
+              </ui-card>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Card:
+                  title: Кредит
+                  subtitle: "від 0.01% на день"
+                  content: Швидке кредитування без довідок.
+      - id: 'block-modal'
+        title: 'Modal'
+        desc: 'Модальне вікно.'
+        schema:
+          - name: ui-modal-bg
+            label: Фон вікна
+            type: color
+            default: #ffffff
+          - name: ui-modal-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-modal-width
+            label: Ширина вікна
+            type: size
+            default: 500px
+          - name: ui-modal-radius
+            label: Заокруглення
+            type: size
+            default: 16px
+          - name: ui-modal-shadow
+            label: Тінь
+            type: string
+            default: "0 25px 50px rgba(0,0,0,0.25)"
+          - name: ui-modal-border
+            label: Бордер
+            type: string
+            default: none
+          - name: ui-modal-backdrop
+            label: Фон підкладки
+            type: color
+            default: "rgba(0,0,0,0.5)"
+        examples:
+          - label: 'Відкрити модалку'
+            previewHtml: |
+              <div >
+              	<ui-button id="e2e-modal-open" label="Відкрити Modal" variant="primary"></ui-button>
+              	<ui-modal id="e2e-modal" title="Нова заявка">
+              		<p>Заповніть форму для подачі заявки на кредит.</p>
+              		<ui-input label="ПІБ" placeholder="Іванов Іван"></ui-input>
+              	</ui-modal>
+              </div>
+            codeHtml: |
+              <ui-button id="btn" label="Відкрити Modal" variant="primary"></ui-button>
+              <ui-modal id="modal" title="Нова заявка">
+                <p>Заповніть форму.</p>
+                <ui-input label="ПІБ" placeholder="Іванов Іван"></ui-input>
+              </ui-modal>
+              <script>
+                btn.addEventListener('btn-click', () => { modal.open = true })
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Button:
+                  label: Відкрити Modal
+                  variant: primary
+              - Modal:
+                  title: Нова заявка
+                  content:
+                  - "Заповніть форму."
+                  - Input:
+                      label: ПІБ
+                      placeholder: Іванов Іван
+      - id: 'block-accordion'
+        title: 'Accordion'
+        desc: 'Collapsible секції.'
+        schema:
+          - name: ui-accordion-bg
+            label: Фон панелі
+            type: color
+            default: #ffffff
+          - name: ui-accordion-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-accordion-border
+            label: Колір розділювачів
+            type: color
+            default: #e9ecef
+          - name: ui-accordion-radius
+            label: Заокруглення
+            type: size
+            default: 12px
+          - name: ui-accordion-active
+            label: Фон відкритої секції
+            type: color
+            default: #f8f9fa
+          - name: ui-accordion-header-hover
+            label: Фон заголовка hover
+            type: color
+            default: #f0f0f0
+        examples:
+          - label: 'FAQ'
+            previewHtml: |
+              <ui-accordion id="e2e-accordion" ></ui-accordion>
+            codeHtml: |
+              <ui-accordion id="acc"></ui-accordion>
+              <script>
+                acc.items = [
+                  { title: 'Як відкрити рахунок?', content: 'Онлайн за 5 хв.' },
+                  { title: 'Які документи?', content: 'Паспорт та ІПН.' },
+                  { title: 'Скільки коштує?', content: 'Базове — безкоштовно.', open: true },
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Accordion:
+                  items:
+                    - title: "Як відкрити рахунок?"
+                      content: "Онлайн за 5 хв."
+                    - title: "Які документи?"
+                      content: "Паспорт та ІПН."
+                    - title: "Скільки коштує?"
+                      content: "Базове — безкоштовно."
+                      open: true
+          - label: 'Без початково відкритих'
+            previewHtml: |
+              <ui-accordion id="e2e-accordion-closed"></ui-accordion>
+              <script>
+                document.getElementById('e2e-accordion-closed').items = [
+                  { title: 'Перший розділ', content: 'Зміст першого.' },
+                  { title: 'Другий розділ', content: 'Зміст другого.' },
+                ]
+              </script>
+            codeHtml: |
+              <ui-accordion id="acc"></ui-accordion>
+              <script>
+                acc.items = [
+                  { title: 'Перший розділ', content: 'Зміст першого.' },
+                  { title: 'Другий розділ', content: 'Зміст другого.' },
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Accordion:
+                  items:
+                    - title: "Перший розділ"
+                      content: "Зміст першого."
+                    - title: "Другий розділ"
+                      content: "Зміст другого."
+      - id: 'block-toast'
+        title: 'Toast'
+        desc: 'Повідомлення-нотифікація.'
+        schema:
+          - name: ui-toast-bg
+            label: Фон повідомлення
+            type: color
+            default: #ffffff
+          - name: ui-toast-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-toast-radius
+            label: Заокруглення
+            type: size
+            default: 12px
+          - name: ui-toast-shadow
+            label: Тінь
+            type: string
+            default: "0 10px 40px rgba(0,0,0,0.15)"
+          - name: ui-toast-border
+            label: Бордер
+            type: string
+            default: none
+          - name: ui-toast-progress
+            label: Колір прогрес-бару
+            type: color
+            default: #0d6efd
+        examples:
+          - label: 'Всі варіанти'
+            previewHtml: |
+              <div class="d-flex flex-column gap-2" >
+              	<ui-toast id="e2e-toast-info" variant="info" message="Дані збережено." open></ui-toast>
+              	<ui-toast variant="success" message="Операція успішна!" open></ui-toast>
+              	<ui-toast variant="warning" message="Перевірте дані." open></ui-toast>
+              	<ui-toast variant="error" message="Помилка з'єднання." open></ui-toast>
+              </div>
+            codeHtml: |
+              <ui-toast variant="info" message="Дані збережено." open></ui-toast>
+              <ui-toast variant="success" message="Операція успішна!" open></ui-toast>
+              <ui-toast variant="warning" message="Перевірте дані." open></ui-toast>
+              <ui-toast variant="error" message="Помилка з'єднання." open></ui-toast>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Toast.info: Дані збережено.
+              - Toast.pass: Операція успішна!
+              - Toast.warn: Перевірте дані.
+              - Toast.err: Помилка з'єднання.
+          - label: 'Одне повідомлення'
+            previewHtml: |
+              <ui-toast variant="success" message="Файл завантажено!" open></ui-toast>
+            codeHtml: |
+              <ui-toast variant="success" message="Файл завантажено!" open></ui-toast>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Toast.pass: Файл завантажено!
+  - title: 'Phase 2 — Advanced'
+    items:
+      - id: 'block-spinner'
+        title: 'Spinner'
+        desc: 'Індикатор завантаження.'
+        schema:
+          - name: ui-spinner-color
+            label: Колір спінера
+            type: color
+            default: #0d6efd
+          - name: ui-spinner-size
+            label: Розмір
+            type: size
+            default: 40px
+          - name: ui-spinner-width
+            label: Товщина лінії
+            type: size
+            default: 3px
+          - name: ui-spinner-speed
+            label: Швидкість (с)
+            type: string
+            default: 0.8s
+        examples:
+          - label: 'Варіанти'
+            previewHtml: |
+              <div class="d-flex gap-4 align-items-center flex-wrap" >
+              	<div class="text-center">
+              		<ui-spinner variant="ring" size="sm"></ui-spinner><br /><small class="text-muted">Ring SM</small>
+              	</div>
+              	<div class="text-center">
+              		<ui-spinner id="e2e-spinner" variant="ring" size="md"></ui-spinner><br /><small class="text-muted">Ring MD</small>
+              	</div>
+              	<div class="text-center">
+              		<ui-spinner variant="ring" size="lg"></ui-spinner><br /><small class="text-muted">Ring LG</small>
+              	</div>
+              	<div class="text-center">
+              		<ui-spinner variant="dots" size="md"></ui-spinner><br /><small class="text-muted">Dots</small>
+              	</div>
+              	<div class="text-center">
+              		<ui-spinner variant="pulse" size="md"></ui-spinner><br /><small class="text-muted">Pulse</small>
+              	</div>
+              </div>
+            codeHtml: |
+              <ui-spinner variant="ring" size="sm"></ui-spinner>
+              <ui-spinner variant="ring" size="md"></ui-spinner>
+              <ui-spinner variant="ring" size="lg"></ui-spinner>
+              <ui-spinner variant="dots" size="md"></ui-spinner>
+              <ui-spinner variant="pulse" size="md"></ui-spinner>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Spinner:
+                  variant: ring
+                  size: sm
+              - Spinner:
+                  variant: ring
+                  size: md
+              - Spinner:
+                  variant: ring
+                  size: lg
+              - Spinner:
+                  variant: dots
+                  size: md
+              - Spinner:
+                  variant: pulse
+                  size: md
+          - label: 'В контексті кнопки'
+            previewHtml: |
+              <ui-button label="Завантаження..." loading></ui-button>
+            codeHtml: |
+              <ui-button label="Завантаження..." loading></ui-button>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Button:
+                  label: "Завантаження..."
+                  loading: true
+      - id: 'block-progress'
+        title: 'ProgressBar'
+        desc: 'Прогрес-бар.'
+        schema:
+          - name: ui-progress-fill
+            label: Колір заповнення
+            type: color
+            default: #0d6efd
+          - name: ui-progress-bg
+            label: Фон треку
+            type: color
+            default: #e9ecef
+          - name: ui-progress-height
+            label: Висота
+            type: size
+            default: 8px
+          - name: ui-progress-radius
+            label: Заокруглення
+            type: size
+            default: 999px
+          - name: ui-progress-label-color
+            label: Колір підпису
+            type: color
+            default: #6c757d
+        examples:
+          - label: 'Розміри'
+            previewHtml: |
+              <div class="d-flex flex-column gap-3" style="max-width: 500px" >
+              	<ui-progress id="e2e-progress" value="35" show-label size="sm"></ui-progress>
+              	<ui-progress value="68" show-label size="md"></ui-progress>
+              	<ui-progress value="92" show-label size="lg"></ui-progress>
+              </div>
+            codeHtml: |
+              <ui-progress value="35" show-label size="sm"></ui-progress>
+              <ui-progress value="68" show-label size="md"></ui-progress>
+              <ui-progress value="92" show-label size="lg"></ui-progress>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Progress:
+                  value: 35
+                  show-label: true
+                  size: sm
+              - Progress:
+                  value: 68
+                  show-label: true
+                  size: md
+              - Progress:
+                  value: 92
+                  show-label: true
+                  size: lg
+          - label: 'Indeterminate'
+            previewHtml: |
+              <div style="max-width: 500px">
+                <ui-progress indeterminate size="md"></ui-progress>
+              </div>
+            codeHtml: |
+              <ui-progress indeterminate size="md"></ui-progress>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Progress:
+                  indeterminate: true
+                  size: md
+      - id: 'block-slider'
+        title: 'Slider'
+        desc: 'Range slider.'
+        schema:
+          - name: ui-slider-track-bg
+            label: Фон треку
+            type: color
+            default: #dee2e6
+          - name: ui-slider-track-fill
+            label: Колір заповнення
+            type: color
+            default: #0d6efd
+          - name: ui-slider-thumb
+            label: Колір повзунка
+            type: color
+            default: #0d6efd
+          - name: ui-slider-thumb-size
+            label: Розмір повзунка
+            type: size
+            default: 20px
+          - name: ui-slider-height
+            label: Висота треку
+            type: size
+            default: 6px
+        examples:
+          - label: 'Z діапазоном'
+            previewHtml: |
+              <div style="max-width: 400px">
+              	<ui-slider
+              		id="e2e-slider"
+              		label="Сума (грн)"
+              		value="50000"
+              		min="1000"
+              		max="100000"
+              		step="1000"
+              		show-value
+              	></ui-slider>
+              </div>
+            codeHtml: |
+              <ui-slider
+                label="Сума (грн)"
+                value="50000"
+                min="1000"
+                max="100000"
+                step="1000"
+                show-value
+              ></ui-slider>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Slider:
+                  label: "Сума (грн)"
+                  min: 1000
+                  max: 100000
+                  value: 50000
+                  step: 1000
+                  show-value: true
+          - label: 'Простий'
+            previewHtml: |
+              <div style="max-width: 400px">
+              	<ui-slider label="Термін (міс)" value="12" min="1" max="60" show-value></ui-slider>
+              </div>
+            codeHtml: |
+              <ui-slider label="Термін (міс)" value="12" min="1" max="60" show-value></ui-slider>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Slider:
+                  label: "Термін (міс)"
+                  min: 1
+                  max: 60
+                  value: 12
+                  show-value: true
+      - id: 'block-autocomplete'
+        title: 'Autocomplete'
+        desc: 'Поле з автодоповненням.'
+        schema:
+          - name: ui-auto-bg
+            label: Фон поля
+            type: color
+            default: #ffffff
+          - name: ui-auto-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-auto-border
+            label: Колір рамки
+            type: color
+            default: #dee2e6
+          - name: ui-auto-focus
+            label: Колір фокусу
+            type: color
+            default: #0d6efd
+          - name: ui-auto-radius
+            label: Заокруглення
+            type: size
+            default: 8px
+          - name: ui-auto-highlight
+            label: Фон підсвітки
+            type: color
+            default: #fff3cd
+        examples:
+          - label: 'Пошук міста'
+            previewHtml: |
+              <div style="max-width: 400px" >
+              	<ui-autocomplete
+              		id="e2e-autocomplete"
+              		label="Місто"
+              		placeholder="Введіть назву..."
+              	></ui-autocomplete>
+              </div>
+            codeHtml: |
+              <ui-autocomplete id="ac" label="Місто" placeholder="Введіть назву..."></ui-autocomplete>
+              <script>
+                ac.options = ['Київ', 'Харків', 'Одеса', 'Дніпро', 'Львів']
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Autocomplete:
+                  label: Місто
+                  placeholder: "Введіть назву..."
+                  options:
+                    - Київ
+                    - Харків
+                    - Одеса
+                    - Дніпро
+                    - Львів
+          - label: 'З підказкою'
+            previewHtml: |
+              <div style="max-width: 400px">
+                <ui-autocomplete
+                  id="e2e-autocomplete-hint"
+                  label="Країна"
+                  placeholder="Почніть вводити..."
+                  hint="Оберіть країну зі списку"
+                ></ui-autocomplete>
+                <script>
+                  document.getElementById('e2e-autocomplete-hint').options = ['Україна', 'Польща', 'Німеччина', 'Ісландія', 'Норвегія']
+                </script>
+              </div>
+            codeHtml: |
+              <ui-autocomplete id="ac" label="Країна" placeholder="Почніть вводити..." hint="Оберіть країну зі списку"></ui-autocomplete>
+              <script>
+                ac.options = ['Україна', 'Польща', 'Німеччина', 'Ісландія', 'Норвегія']
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Autocomplete:
+                  label: Країна
+                  placeholder: "Почніть вводити..."
+                  hint: "Оберіть країну зі списку"
+                  options:
+                    - Україна
+                    - Польща
+                    - Німеччина
+                    - Ісландія
+                    - Норвегія
+      - id: 'block-sortable'
+        title: 'Sortable'
+        desc: 'Drag-and-drop список.'
+        schema:
+          - name: ui-sortable-bg
+            label: Фон елемента
+            type: color
+            default: #ffffff
+          - name: ui-sortable-border
+            label: Бордер
+            type: color
+            default: #e9ecef
+          - name: ui-sortable-radius
+            label: Заокруглення
+            type: size
+            default: 8px
+          - name: ui-sortable-drag-bg
+            label: Фон при перетягуванні
+            type: color
+            default: #f0f7ff
+          - name: ui-sortable-handle
+            label: Колір ручки
+            type: color
+            default: #adb5bd
+        examples:
+          - label: 'Пріоритет задач'
+            previewHtml: |
+              <div style="max-width: 400px" >
+              	<ui-sortable id="e2e-sortable"></ui-sortable>
+              </div>
+            codeHtml: |
+              <ui-sortable id="sl"></ui-sortable>
+              <script>
+                sl.items = ['Написати тести', 'Зробити code review', 'Оновити документацію', 'Deploy']
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Sortable:
+                  items:
+                    - Написати тести
+                    - Зробити code review
+                    - Оновити документацію
+                    - Deploy
+          - label: 'Нумерований список'
+            previewHtml: |
+              <div style="max-width: 400px">
+                <ui-sortable id="e2e-sortable-num" numbered></ui-sortable>
+                <script>
+                  document.getElementById('e2e-sortable-num').items = ['Перший крок', 'Другий крок', 'Третій крок']
+                </script>
+              </div>
+            codeHtml: |
+              <ui-sortable id="sl"></ui-sortable>
+              <script>
+                sl.items = ['Перший крок', 'Другий крок', 'Третій крок']
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Sortable:
+                  items:
+                    - Перший крок
+                    - Другий крок
+                    - Третій крок
+      - id: 'block-tree'
+        title: 'Tree'
+        desc: 'Ієрархічне дерево (Tree View).'
+        schema:
+          - name: ui-tree-fg
+            label: Колір тексту
+            type: color
+            default: #212529
+          - name: ui-tree-active
+            label: Фон активного
+            type: color
+            default: #e7f1ff
+          - name: ui-tree-hover
+            label: Фон при наведенні
+            type: color
+            default: #f8f9fa
+          - name: ui-tree-border
+            label: Лінія відступу
+            type: color
+            default: #e9ecef
+          - name: ui-tree-indent
+            label: Відступ рівня
+            type: size
+            default: 1.25rem
+        examples:
+          - label: 'Дерево файлів'
+            previewHtml: |
+              <div style="max-width: 400px; max-height: 300px; overflow: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--ba-surface)">
+                <ui-tree id="e2e-tree"></ui-tree>
+              </div>
+            codeHtml: |
+              <ui-tree id="tree"></ui-tree>
+              <script>
+                tree.items = [
+                  { label: '📁 src/', expanded: true, children: [
+                    { label: '📄 index.js', active: true },
+                    { label: '📁 components/', children: [
+                      { label: '📄 Alert.js' },
+                      { label: '📄 Button.js' },
+                    ]}
+                  ]},
+                  { label: '📄 package.json' },
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Tree:
+                  items:
+                    - label: "📁 src/"
+                      expanded: true
+                      children:
+                        - label: "📄 index.js"
+                          active: true
+                        - label: "📁 components/"
+                          children:
+                            - label: "📄 Alert.js"
+                            - label: "📄 Button.js"
+                    - label: "📄 package.json"
+          - label: 'Просте дерево'
+            previewHtml: |
+              <div style="max-width: 400px; border: 1px solid var(--border); border-radius: 8px; background: var(--ba-surface)">
+                <ui-tree id="e2e-tree-simple"></ui-tree>
+                <script>
+                  document.getElementById('e2e-tree-simple').items = [
+                    { label: '📁 docs/', children: [
+                      { label: '📄 README.md' },
+                      { label: '📄 CHANGELOG.md' },
+                    ]},
+                    { label: '📄 LICENSE' },
+                  ]
+                </script>
+              </div>
+            codeHtml: |
+              <ui-tree id="tree"></ui-tree>
+              <script>
+                tree.items = [
+                  { label: '📁 docs/', children: [
+                    { label: '📄 README.md' },
+                    { label: '📄 CHANGELOG.md' },
+                  ]},
+                  { label: '📄 LICENSE' },
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Tree:
+                  items:
+                    - label: "📁 docs/"
+                      children:
+                        - label: "📄 README.md"
+                        - label: "📄 CHANGELOG.md"
+                    - label: "📄 LICENSE"
+  - title: 'Phase 3 — Form Wrapper'
+    items:
+      - id: 'block-form'
+        title: 'Form'
+        desc: 'Автогенерація форм з масиву полів.'
+        schema:
+          - name: ui-form-max-width
+            label: Максимальна ширина
+            type: size
+            default: 100%
+          - name: ui-form-gap
+            label: Відступ між полями (gap)
+            type: size
+            default: 1.2rem
+          - name: ui-form-bg
+            label: Колір фону
+            type: color
+            default: transparent
+          - name: ui-form-padding
+            label: Внутрішній відступ (padding)
+            type: size
+            default: 0
+          - name: ui-form-radius
+            label: Заокруглення кутів
+            type: size
+            default: 0
+          - name: ui-form-border
+            label: Бордер
+            type: string
+            default: none
+        examples:
+          - label: 'Реєстрація'
+            previewHtml: |
+              <ui-form id="e2e-form-register" submit-label="Зареєструватись"></ui-form>
+            codeHtml: |
+              <ui-form id="register-form" submit-label="Зареєструватись"></ui-form>
+              <script>
+                const form = document.getElementById('register-form')
+                form.fields = [
+                  { name: 'email', type: 'input', label: 'Email', inputType: 'email', required: true, placeholder: 'your@email.com' },
+                  { name: 'password', type: 'input', label: 'Пароль', inputType: 'password', required: true },
+                  { name: 'city', type: 'select', label: 'Місто', options: [{ value: 'kyiv', label: 'Київ' }, { value: 'lviv', label: 'Львів' }] },
+                  { name: 'agree', type: 'toggle', label: 'Погоджуюсь з умовами' }
+                ]
+                form.addEventListener('form-submit', e => console.log(e.detail.values))
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Form:
+                  submit-label: "Зареєструватись"
+                  fields:
+                    - name: email
+                      type: input
+                      label: Email
+                      inputType: email
+                      required: true
+                    - name: password
+                      type: input
+                      label: Пароль
+                      inputType: password
+                      required: true
+                    - name: city
+                      type: select
+                      label: Місто
+                      options:
+                        - value: kyiv
+                          label: Київ
+                    - name: agree
+                      type: toggle
+                      label: "Погоджуюсь з умовами"
+          - label: 'Налаштування'
+            previewHtml: |
+              <ui-form id="e2e-form-settings" submit-label="Зберегти"></ui-form>
+            codeHtml: |
+              <ui-form id="settings-form" submit-label="Зберегти"></ui-form>
+              <script>
+                const form = document.getElementById('settings-form')
+                form.fields = [
+                  { name: 'name', type: 'input', label: "Ім'я", required: true },
+                  { name: 'volume', type: 'slider', label: 'Гучність', value: 75, min: 0, max: 100 },
+                  { name: 'lang', type: 'autocomplete', label: 'Мова', options: ['Українська', 'English', 'Deutsch'] },
+                  { name: 'notifications', type: 'toggle', label: 'Сповіщення', value: true }
+                ]
+              </script>
+            codeYaml: |
+              $content:
+              - Content
+              content:
+              - Form:
+                  submit-label: "Зберегти"
+                  fields:
+                    - name: name
+                      type: input
+                      label: "Ім'я"
+                      required: true
+                    - name: volume
+                      type: slider
+                      label: Гучність
+                      value: 75
+                    - name: lang
+                      type: autocomplete
+                      label: Мова
+                    - name: notifications
+                      type: toggle
+                      label: Сповіщення

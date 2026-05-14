@@ -1,0 +1,106 @@
+{
+  "name": "@nan0web/llimo.app",
+  "version": "3.0.0",
+  "description": "LLiMo: Language Living Models for software development",
+  "engines": {
+    "node": ">=25"
+  },
+  "main": "src/index.js",
+  "bin": {
+    "llimo": "bin/llimo.js",
+    "llimo-chat": "bin/llimo-chat.js",
+    "llimo-list": "bin/llimo-list.js",
+    "llimo-models": "bin/llimo-models.js",
+    "llimo-release": "bin/llimo-release.js",
+    "llimo-system": "bin/llimo-system.js",
+    "llimo-pack": "bin/llimo-pack.js",
+    "llimo-unpack": "bin/llimo-unpack.js"
+  },
+  "type": "module",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./release": {
+      "types": "./types/release/index.d.ts",
+      "import": "./src/release/index.js"
+    },
+    "./domain": {
+      "import": "./src/domain/index.js"
+    },
+    "./utils": {
+      "types": "./types/utils/index.d.ts",
+      "import": "./src/utils/index.js"
+    },
+    "./ui/vscode": {
+      "require": "./src/ui/vscode/extension.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean:modules": "rm -rf node_modules/",
+    "play": "node play/main.js",
+    "test": "node --test --test-timeout=3333 --test-reporter=tap 'src/**/*.test.js'",
+    "test:all": "npm run test && npm run build && npm run test:docs && npm run test:play && npm run knip:production",
+    "test:chat": "node bin/llimo.js chat --test=chat-dir",
+    "test:docs": "node --test --test-timeout=3333 --test-reporter=tap src/README.md.js",
+    "test:gallery": "npx nan0gallery --dir=snapshots/cli",
+    "test:coverage": "node --experimental-test-coverage --test-reporter=tap --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:play": "node --test --test-timeout=9999 --test-reporter=tap 'play/**/*.test.js'",
+    "test:reproduce": "node bin/llimo.js chat --test-dir=/path/to/chat/archive --input test-prompt.md",
+    "test:releases": "node --test --test-timeout=3333 --test-reporter=tap 'releases/**/task.test.js' && node --test --test-timeout=3333 --test-reporter=tap 'releases/*/*/index.test.js'",
+    "test:release:v1.0.0": "node --test --test-timeout=3333 --test-reporter=tap 'releases/1/v1.0.0/*/task.test.js'",
+    "knip": "knip",
+    "knip:production": "knip --production",
+    "initKey": "dotenv node bin/llimo chat",
+    "demo:readline": "node play/readline-demo.js",
+    "demo:progress-testing": "node play/progress-testing-demo.js"
+  },
+  "keywords": [
+    "llm",
+    "ai",
+    "chat",
+    "release",
+    "testing"
+  ],
+  "author": "nan0web",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nan0web/llimo.app.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@nan0web/test": "workspace:*",
+    "adm-zip": "^0.5.16",
+    "husky": "^9.1.7",
+    "knip": "^5.86.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@ai-sdk/cerebras": "^1.0.39",
+    "@ai-sdk/huggingface": "^1.0.37",
+    "@ai-sdk/openai": "^2.0.98",
+    "@nan0web/ai": "workspace:*",
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "@openrouter/ai-sdk-provider": "^1.5.4",
+    "ai": "^5.0.150",
+    "micromatch": "^4.0.8",
+    "yaml": "^2.8.3"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ]
+}

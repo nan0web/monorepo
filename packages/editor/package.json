@@ -1,0 +1,55 @@
+{
+  "name": "@nan0web/editor",
+  "version": "3.0.0",
+  "description": "Pure logic Core for nan0web editors with optional UI adapters",
+  "type": "module",
+  "main": "src/core/index.js",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./src/core/index.js",
+      "types": "./types/index.d.ts"
+    }
+  },
+  "files": [
+    "src/",
+    "!src/**/*.test.js",
+    "!src/**/*.test.jsx",
+    "!src/README.md.js",
+    "types/",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test \"src/**/*.test.js\"",
+    "test:docs": "node --test src/README.md.js",
+    "docs:build": "echo 'Not implemented yet'",
+    "docs:serve": "vite docs/site",
+    "docs:dev": "vite docs/site",
+    "docs:translate": "llimo translate docs/site/pages --to uk",
+    "test:all": "npm run test && npm run test:docs && npm run build && npm run knip",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "release:verify": "node --test \"src/test/releases/**/*.test.js\"",
+    "build": "tsc",
+    "knip": "pnpm dlx knip --production",
+    "audit": "pnpm audit --prod --audit-level=moderate || true",
+    "clean": "rm -rf types/ && rm -rf .cache/",
+    "clean:modules": "rm -rf node_modules",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "dev": "npm run play",
+    "play": "vite play/lit",
+    "test:e2e": "start-server-and-test 'npx vite play/lit --port 5021' http://127.0.0.1:5021 'node --test play/lit/*.e2e.js'"
+  },
+  "devDependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/ui-lit": "workspace:*",
+    "lit": "^3.3.2",
+    "playwright": "^1.58.2",
+    "start-server-and-test": "^2.1.5",
+    "vite": "^7.3.1",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "@nan0web/db": "workspace:*"
+  }
+}

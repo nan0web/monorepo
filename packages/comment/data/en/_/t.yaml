@@ -1,0 +1,61 @@
+# @nan0web/comment — English translations
+# Auto-extracted from CommentModel.js static UI, help, abort, mode.options
+
+# ─── Field Help ───
+targetRef_help: CSS selector or ID of the commented element
+text_help: Comment text (supports markdown)
+author_help: Author name or identifier
+url_help: Page URL where the comment was made
+timestamp_help: Creation time (ISO 8601)
+viewport_help: Screen size at the time of commenting
+mode_help: Comment overlay activation mode
+
+# ─── Mode Options ───
+mode_off: Off
+mode_url: URL parameter
+mode_hotkey: Hotkey (Alt/Option)
+mode_toggle: Navigation Toggle
+
+# ─── Labels ───
+label_title: Comment
+label_activate: Activate comment mode
+label_deactivate: Deactivate comment mode
+label_spotlight: Spotlight active — hover to highlight, click to comment
+label_select_element: Click on an element to add a comment
+label_form_title: New Comment
+label_badge: 💬
+label_badge_count: "{count} comments"
+label_saved: Comment saved
+label_deleted: Comment deleted
+label_no_comments: No comments yet
+label_read_comment: "{author}: {text}"
+label_timestamp: "Created: {time}"
+
+# ─── Dashboard ───
+label_dashboard: Comment Dashboard
+label_export: Export JSON
+label_import: Import JSON
+label_clear: Clear all comments
+label_exported: "Exported {count} comments"
+label_imported: "Imported {count} comments"
+label_cleared: All comments cleared
+
+# ─── Errors ───
+error_text_required: Comment text cannot be empty
+error_no_target: No target element selected
+error_save_failed: "Failed to save comment: {message}"
+error_import_invalid: Invalid import file format
+error_export_empty: No comments to export
+
+# ─── Progress ───
+progress_init: Initializing comment overlay...
+progress_saving: Saving comment...
+progress_loading: Loading comments...
+progress_exporting: Exporting comments...
+progress_importing: Importing comments...
+progress_clearing: Clearing all comments...
+
+# ─── Icons ───
+icon_submit: ✓
+icon_cancel: ✕
+icon_close: Close

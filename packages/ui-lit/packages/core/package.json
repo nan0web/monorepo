@@ -1,0 +1,60 @@
+{
+	"name": "@nan0web/ui-lit",
+	"version": "3.0.0",
+	"description": "Universal Web Components UI Kit on Lit — zero-dependency, data-driven, OLMUI-ready",
+	"type": "module",
+	"main": "./index.js",
+	"exports": {
+		".": "./index.js",
+		"./alert": "./alert.js",
+		"./accordion": "./accordion.js",
+		"./autocomplete": "./autocomplete.js",
+		"./badge": "./badge.js",
+		"./button": "./button.js",
+		"./card": "./card.js",
+		"./code-block": "./code-block.js",
+		"./confirm": "./confirm.js",
+		"./input": "./input.js",
+		"./lang-select": "./lang-select.js",
+		"./markdown": "./markdown.js",
+		"./modal": "./modal.js",
+		"./nav": "./nav.js",
+		"./page": "./page.js",
+		"./progress": "./progress.js",
+		"./select": "./select.js",
+		"./sidebar": "./sidebar.js",
+		"./slider": "./slider.js",
+		"./sortable": "./sortable.js",
+		"./spinner": "./spinner.js",
+		"./table": "./table.js",
+		"./theme-toggle": "./theme-toggle.js",
+		"./toast": "./toast.js",
+		"./toggle": "./toggle.js",
+		"./tree": "./tree.js",
+		"./form": "./form.js"
+	},
+	"files": [
+		"*.js",
+		"!test/"
+	],
+	"keywords": [
+		"web-components",
+		"lit",
+		"ui-kit",
+		"design-system",
+		"olmui",
+		"custom-elements",
+		"nan0web"
+	],
+	"author": "ЯRаСлав YaRaSLove <support@yaro.page>",
+	"license": "ISC",
+	"engines": {
+		"node": ">=18"
+	},
+	"scripts": {
+		"test": "node --test ./test/*.test.js"
+	},
+	"dependencies": {
+		"lit": "^3.3.1"
+	}
+}

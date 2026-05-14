@@ -1,0 +1,8 @@
+editor:
+  bundled: 0
+  publicWrite: 0
+  defaultExport: "incremental"
+  diffPreview: 1
+  permissions:
+    roles: ["admin", "moderator"]
+    allowAnonymous: 1

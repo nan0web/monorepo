@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+reports/
+.DS_Store
+.datasets/
+.vscode/
+
+# Private agent under LICENSE
+.agent/
+package-lock.json
+
+# Temporary test artifacts
+*.bin
+*.bin.meta.json

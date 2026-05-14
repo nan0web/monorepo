@@ -1,0 +1,81 @@
+{
+  "name": "@nan0web/event",
+  "version": "3.0.0",
+  "description": "Agnostic extendable Event System",
+  "type": "module",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./oop": {
+      "import": "./src/oop.js",
+      "types": "./types/oop.d.ts"
+    },
+    "./command": {
+      "import": "./src/command.js",
+      "types": "./types/command.d.ts"
+    },
+    "./adapters/dom": {
+      "import": "./src/adapters/dom.js",
+      "types": "./types/adapters/dom.d.ts"
+    },
+    "./adapters/memory": {
+      "import": "./src/adapters/memory.js",
+      "types": "./types/adapters/memory.d.ts"
+    },
+    "./adapters/node": {
+      "import": "./src/adapters/node.js",
+      "types": "./types/adapters/node.d.ts"
+    },
+    "./types": {
+      "import": "./src/types/index.js",
+      "types": "./types/types/index.d.ts"
+    }
+  },
+  "files": [
+    "src/",
+    "types/",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=src/**/*.js",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "prepublishOnly": "npm test && npm run build",
+    "release": "nan0release publish",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "test:docs": "node --test --test-timeout=3333 src/README.md.js",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status",
+    "test:all": "npm run test && npm run test:docs && npm run build",
+    "play": "node play/main.js"
+  },
+  "keywords": [
+    "nan0web",
+    "event",
+    "emitter",
+    "pubsub",
+    "async",
+    "universal"
+  ],
+  "author": "ЯRаСлав (YaRaSLove) <support@yaro.page>",
+  "license": "ISC",
+  "devDependencies": {
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "husky": "^9.1.7"
+  },
+  "dependencies": {
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/log": "workspace:*"
+  }
+}

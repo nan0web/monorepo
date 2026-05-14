@@ -1,4 +1,5 @@
-import { resolve, sep } from 'node:path'
+import os from 'node:os'
+import { resolve, sep, join } from 'node:path'
 import { rmdirSync, rmSync, mkdirSync, existsSync } from 'node:fs'
 import DBFSBase from './DBFS.js'
 
@@ -23,7 +24,7 @@ export class DBFS extends DBFSBase {
 
 export default class TestDir {
 	constructor(root) {
-		this.root = '__test_fs__/' + root
+		this.root = join(os.tmpdir(), 'nan0web-db-fs-' + root)
 	}
 	erase() {
 		const resolvedDir = resolve(this.root)

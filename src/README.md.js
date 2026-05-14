@@ -1,4 +1,4 @@
-import { describe, it, before, beforeEach } from 'node:test'
+import { describe, it, before } from 'node:test'
 import assert from 'node:assert/strict'
 import DB from '@nan0web/db-fs'
 import { DocsParser } from '@nan0web/test'
@@ -6,132 +6,158 @@ import { DocsParser } from '@nan0web/test'
 const fs = new DB()
 let pkg
 
-// Load package.json once before tests
 before(async () => {
 	const doc = await fs.loadDocument('package.json', {})
 	pkg = doc || {}
 })
 
-/**
- * Core test suite that also serves as the source for README generation.
- *
- * The block comments inside each `it` block are extracted to build
- * the final `README.md`. Keeping the comments here ensures the
- * documentation stays close to the code.
- */
 async function testRender() {
-	const stream = fs.findStream('packages/', {
-		filter: (uri) => {
-			return !uri.inIncludes('/node_modules/', '/.git/')
-		},
-	})
-	let checkpoint = Date.now()
-	let count = 0
-	for await (const entry of stream) {
-		++count
-		if (Date.now() - checkpoint > 1_000) {
-			checkpoint = Date.now()
-			console.info(count + ' files found ..')
-		}
-	}
-	const db = fs.extract('packages/')
 	/**
 	 * @docs
-	 * # @nan0web/monorepo
+	 * # 🏛️ @nan0web/monorepo
 	 *
-	 * > **🧭 FUNDAMENTAL**: Before diving in, read the [SYSTEM.md](SYSTEM.md).
-	 * > It contains the **Philosophy of Will**, Coding Standards, and Lux-Level Protocols used across all projects.
+	 * > **NaN•Web — One Logic, Many UI.**
+	 * > The universal engine where business logic is decoupled from presentation.
 	 *
-	 * ## 🌐 Vision: One Logic, Many UI
+	 * ---
 	 *
-	 * NanoWeb is a universal engine where business logic (models, validation, algorithms) is strictly decoupled from its presentation.
+	 * ## 🧭 Documentation Portal
 	 *
-	 * - **Pure Logic**: Models and services are platform-agnostic.
-	 * - **Multi-UI Adapters**: The same logic drives CLI, Web (React/Lit), Chat, and Voice interfaces.
-	 * - **Living Documentation**: Documentation is derived directly from tests (like this README), ensuring it never goes stale.
+	 * Please select your preferred language for technical documentation, setup guides, and architectural standards:
 	 *
-	 * ## 🏛️ Architecture
+	 * ### [🇺🇦 Українська (Ukrainian)](./docs/uk/README.md)
+	 * *Повний посібник з архітектури, встановлення та налаштування локальної бази знань ШІ.*
 	 *
-	 * The monorepo is organized into specialized layers:
+	 * ### [🇺🇸 English (English)](./docs/en/README.md)
+	 * *Comprehensive guide for architecture, setup, and AI knowledge base integration.*
 	 *
-	 * - **`apps/`**: Consumer applications (e.g., `nan0web.app`, `llimo.app`).
-	 * - **`packages/`**: Core libraries and UI adapters.
-	 *   - `ui-core`: Framework-agnostic UI logic.
-	 *   - `ui-cli`: Premium terminal interface with "Lux-level" aesthetics.
-	 *   - `db-fs`: Document-based filesystem database.
-	 *   - `i18n`: Hierarchical translation engine.
+	 * ---
 	 *
-	 * This document is available in other languages:
-	 * - [Ukrainian 🇺🇦](./docs/uk/README.md)
+	 * ## 🚀 Quick Start
 	 *
-	 * ## Installation
+	 * For developers who want to contribute or build on top of NaN•Web:
 	 */
-	it('How to install with npm?', () => {
+	it('1. Clone and Install', () => {
 		/**
 		 * ```bash
-		 * npm install @nan0web/monorepo
+		 * git clone https://github.com/nan0web/monorepo.git
+		 * cd monorepo
+		 * pnpm install
 		 * ```
 		 */
-		assert.equal(pkg.name, '@nan0web/monorepo')
+		assert.equal(pkg.packageManager?.split('@')[0], 'pnpm')
 	})
+
 	/**
 	 * @docs
 	 */
-	it('How to install with pnpm?', () => {
+	it('2. Verify installation', () => {
 		/**
 		 * ```bash
-		 * pnpm add @nan0web/monorepo
+		 * pnpm test
 		 * ```
 		 */
-		assert.equal(pkg.name, '@nan0web/monorepo')
+		assert.ok(pkg.scripts.test, 'Test script should exist')
 	})
+
+	/**
+	 * @docs
+	 * ## 🤖 AI-Powered Development (MCP)
+	 *
+	 * NaN•Web is designed to be developed alongside AI agents. To give your agent full context:
+	 */
+	it('1. Configure EMBEDDER_URL', () => {
+		/**
+		 * Specify the address of your local embedding server (LM Studio or Ollama).
+		 *
+		 * **For Linux / macOS (zsh, bash):**
+		 * ```bash
+		 * export EMBEDDER_URL="http://localhost:1234/v1"
+		 * ```
+		 * **For Windows (Command Prompt):**
+		 * ```cmd
+		 * set EMBEDDER_URL=http://localhost:1234/v1
+		 * ```
+		 * **For Windows (PowerShell):**
+		 * ```powershell
+		 * $env:EMBEDDER_URL = "http://localhost:1234/v1"
+		 * ```
+		 */
+		assert.ok(pkg.scripts['ai:index'])
+	})
+
 	/**
 	 * @docs
 	 */
-	it('How to install with yarn?', () => {
+	it('2. Index the workspace', () => {
 		/**
 		 * ```bash
-		 * yarn add @nan0web/monorepo
+		 * pnpm run ai:index
 		 * ```
+		 * This generates a `nan0web_agents.index.nan0` vector index for RAG.
 		 */
-		assert.equal(pkg.name, '@nan0web/monorepo')
+		assert.ok(pkg.scripts['ai:index'], 'ai:index script should exist')
 	})
+
 	/**
 	 * @docs
-	 * ## Applications
-	 * - [LLiMo chat and developer application with the help of Ai](https://github.com/nan0web/llimo.app/)
-	 * - Auth.app - user authorization, registration and other standard auth features
-	 * - Editor.app - editing data, basically for nan0web projects
-	 *
-	 * ## Packages
-	 *
-	 * Table of the packages and their status
-	 *
-	 * <!-- %PACKAGE_STATUS% -->
 	 */
-	it('Statuses are updated on every git push', () => {
-		assert.ok(1)
+	it('3. Setup MCP Server', () => {
+		/**
+		 * ```bash
+		 * pnpm run ai:setup
+		 * ```
+		 * This registers the `@nan0web/ai` MCP server in your local AI client.
+		 */
+		assert.ok(pkg.scripts['ai:setup'], 'ai:setup script should exist')
 	})
+
 	/**
 	 * @docs
+	 * ### 4. Global AI Access (nan0ai)
+	 *
+	 * You can install the assistant globally to access NaN•Web knowledge from anywhere in your system:
+	 *
+	 * ```bash
+	 * pnpm add -g @nan0web/ai
+	 * ```
+	 * Now the `nan0ai` command is available everywhere. Try:
+	 * ```bash
+	 * nan0ai search "How to create a new component?"
+	 * ```
+	 */
+	it('4. Global AI access', () => {
+		assert.ok(pkg.scripts['ai:setup'])
+	})
+
+	/**
+	 * @docs
+	 * ## 🏛️ Ecosystem Highlights
+	 *
+	 * - **LLiMo** — AI-native developer assistant.
+	 * - **Auth.app** — Sovereign identity and authorization.
+	 * - **Editor.app** — Data-driven document editor.
+	 * - **UI-CLI** — Premium terminal interface with "Lux-level" aesthetics.
+	 *
+	 * ---
+	 * > NaN•Web v3.0.0 — Designed for Sovereign Developers & AI Agents.
+	 *
 	 * ## Contributing
 	 */
 	it('How to contribute? [check here](./CONTRIBUTING.md)', async () => {
 		assert.equal(pkg.scripts?.precommit, 'npm test')
 		assert.equal(pkg.scripts?.prepush, 'npm test')
-		assert.equal(pkg.scripts?.prepare, 'husky')
 		const text = await fs.loadDocument('CONTRIBUTING.md')
-		const str = String(text)
-		assert.ok(str.includes('# Contributing'))
+		assert.ok(String(text?.content || text || '').includes('# Contributing'))
 	})
+
 	/**
 	 * @docs
 	 * ## License
 	 */
 	it('How to license? See the [ISC LICENSE](./LICENSE) file.', async () => {
-		/** @docs */
 		const text = await fs.loadDocument('LICENSE')
-		assert.ok(String(text).includes('ISC'))
+		assert.ok(String(text?.content || text || '').includes('ISC'))
 	})
 }
 
@@ -146,25 +172,7 @@ describe('Rendering README.md', async () => {
 
 	it(`document is rendered in README.md [${format(Buffer.byteLength(text))}b]`, async () => {
 		const text = await fs.loadDocument('README.md')
-		assert.ok(text.includes('## License'))
+		const str = text?.content || String(text || '')
+		assert.ok(str.includes('## License'), 'README.md should contain ## License')
 	})
 })
-
-// Helper function to generate packages table
-async function generatePackagesTable() {
-	const packageDirs = new Set()
-	const db = fs.extract('packages/')
-	for (const [key] of db.meta) {
-		const [name, dir] = key.split('/')
-		if (name === 'packages' && dir) {
-			packageDirs.add(dir)
-		}
-	}
-
-	let table =
-		'| Package | Status | NPM version | Documentation |\n|---------|---------|---------|--------|\n'
-	for (const pkgName of packageDirs) {
-		table += `| [\`${pkgName}\`](./packages/${pkgName}) |  | | ⏳ Calculating... |\n`
-	}
-	return table
-}

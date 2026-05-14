@@ -1,0 +1,35 @@
+{
+	"$app": "navigation",
+	"$content": [
+		{
+			"Typography": [
+				{
+					"$t": "navigation.title"
+				}
+			],
+			"$variant": "h2",
+			"$style": "margin-bottom: 1rem;"
+		},
+		{
+			"Navigation": [
+				{
+					"$href": "home",
+					"$title": {
+						"$t": "navigation.home"
+					}
+				},
+				{
+					"$href": "avatar",
+					"$title": {
+						"$t": "navigation.avatar"
+					}
+				}
+			],
+			"$variant": "default"
+		},
+		{
+			"App": "ThemeSwitcher",
+			"$style": "margin-top: 1rem;"
+		}
+	]
+}

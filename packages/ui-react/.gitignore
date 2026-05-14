@@ -1,0 +1,27 @@
+/.cache/
+/.datasets/
+node_modules/
+/chat/
+/dist/
+/me.md
+/memory.md
+
+
+# Runtime State
+.port
+.docs-port
+
+# Testing Artifacts
+/playwright-report/
+/test-results/
+test_output*.txt
+test-output*.txt
+*_FIXES.md
+*_REPORT*.md
+
+# Lockfiles from other package managers (since we use pnpm)
+package-lock.json
+yarn.lock
+
+# Private agent under LICENSE
+.agent/

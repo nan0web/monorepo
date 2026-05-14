@@ -1,0 +1,45 @@
+{
+	"$content": [
+		{
+			"type": "Header",
+			"props": {
+				"title": "Welcome to nan0web"
+			},
+			"data": {
+				"title": "nan0web Platform"
+			}
+		},
+		{
+			"type": "Body",
+			"props": {
+				"content": [
+					{
+						"text": "This is the main content area."
+					},
+					{
+						"text": "Here you can add your page content."
+					}
+				]
+			},
+			"data": {
+				"content": [
+					{
+						"text": "SSG and SSR rendering with React"
+					},
+					{
+						"text": "Powered by @nan0web/db-browser"
+					}
+				]
+			}
+		},
+		{
+			"type": "Footer",
+			"props": {
+				"copyright": "© 2024 nan0web"
+			},
+			"data": {
+				"copyright": "All rights reserved"
+			}
+		}
+	]
+}

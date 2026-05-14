@@ -1,0 +1,35 @@
+{
+  "name": "@nan0web/logos",
+  "version": "3.0.0",
+  "description": "Sovereign Logic Hub: Intent, Observer, and Identity models.",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./intent": "./src/domain/intent/index.js",
+    "./observer": "./src/domain/observer/index.js",
+    "./identity": "./src/domain/identity/index.js"
+  },
+  "scripts": {
+    "test": "node --test \"src/**/*.test.js\"",
+    "build": "tsc",
+    "knip": "knip"
+  },
+  "author": "NaN0Web",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@nan0web/ai": "workspace:*",
+    "@nan0web/co": "workspace:*",
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*"
+  },
+  "devDependencies": {
+    "@nan0web/test": "workspace:*",
+    "knip": "^5.86.0",
+    "typescript": "^5.9.3"
+  }
+}

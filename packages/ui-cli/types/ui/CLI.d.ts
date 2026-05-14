@@ -1,0 +1,63 @@
+/**
+ * Main CLi class.
+ */
+export default class CLi {
+    /**
+     * Factory to create a CLi instance from various inputs.
+     *
+     * @param {CLi|Object} input - Existing CLi instance or configuration object.
+     * @returns {CLi}
+     * @throws {TypeError} If input is neither a CLi nor an object.
+     */
+    static from(input: CLi | any): CLi;
+    /**
+     * @param {Object} [input={}]
+     * @param {string[]} [input.argv] - Command‑line arguments (defaults to `process.argv.slice(2)`).
+     * @param {Object} [input.commands] - Map of command names to handlers.
+     * @param {Logger} [input.logger] - Optional logger instance.
+     * @param {Array<Function>} [input.Messages] - Message classes for root commands.
+     */
+    constructor(input?: {
+        argv?: string[] | undefined;
+        commands?: any;
+        logger?: Logger | undefined;
+        Messages?: Function[] | undefined;
+    });
+    /** @type {string[]} */
+    argv: string[];
+    /** @type {Logger} */
+    logger: Logger;
+    /** @type {Array<Function>} */
+    Messages: Array<Function>;
+    _commands: Map<string, any>;
+    /** @returns {Map<string,Function>} The command map. */
+    get commands(): Map<string, Function>;
+    /**
+     * Register message‑based commands derived from classes.
+     *
+     * @param {any} cmdClasses - Array of Message classes exposing a `run` generator.
+     */
+    _registerMessageCommands(cmdClasses: any): void;
+    /**
+     * Execute the CLi workflow.
+     *
+     * @param {Message} [msg] - Optional pre‑built message.
+     * @returns {AsyncGenerator<OutputMessage>}
+     */
+    run(msg?: Message): AsyncGenerator<OutputMessage>;
+    /**
+     * Determine the command name from the positional arguments.
+     *
+     * @returns {string}
+     */
+    _parseCommandName(): string;
+    /**
+     * Generate help output for all registered commands.
+     *
+     * @yields {OutputMessage}
+     */
+    _help(): AsyncGenerator<OutputMessage, void, unknown>;
+}
+import Logger from '@nan0web/log';
+import { Message } from '@nan0web/co';
+import { OutputMessage } from '@nan0web/co';

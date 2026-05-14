@@ -1,0 +1,26 @@
+{
+    "$content": [
+        {
+            "Typography": [
+                "NaN•Web UI React Bootstrap Playground"
+            ],
+            "$variant": "h1"
+        },
+        {
+            "Typography": [
+                "Interactive demo of components using React Bootstrap theme."
+            ],
+            "$variant": "p"
+        },
+        {
+            "ul": [
+                {
+                    "a": [
+                        "Sandbox Showcase"
+                    ],
+                    "$href": "/sandbox.html"
+                }
+            ]
+        }
+    ]
+}

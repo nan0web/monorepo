@@ -1,0 +1,15 @@
+{
+	"$app": "theme-switcher",
+	"$content": [
+		{
+			"Button": [
+				{
+					"$t": "theme.switcher.button"
+				}
+			],
+			"$id": "theme-switcher",
+			"$variant": "link",
+			"$onClick": "action:themeToggle"
+		}
+	]
+}

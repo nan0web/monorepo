@@ -1,0 +1,15 @@
+$content:
+  - h1: Modal Component
+  - p: Modals display content in a focused overlay on top of the main page.
+  - h2: Modal Example
+  - p: Click the button below to open the modal.
+  - Modal:
+      $triggerText: Open Modal Window
+      $content:
+        - h3: Modal Title
+        - p: This is the modal content. Click outside or Close button to close it.
+        - Button: Close
+          $onClick: action:closeModal # Placeholder action or handled by built-in close
+  - a: ← All Components
+    $href: /play/index.html
+# Force update

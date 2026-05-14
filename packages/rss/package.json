@@ -1,0 +1,9 @@
+{
+  "name": "@nan0web/rss",
+  "version": "3.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "dependencies": {
+    "@nan0web/xml": "workspace:*"
+  }
+}

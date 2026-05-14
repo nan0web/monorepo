@@ -2,8 +2,10 @@ import { describe, it, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import DBFS from './DBFS.js'
 import { EventContext } from '@nan0web/event'
+import TestDir from './test.js'
 
-const TEST_DIR = '__test_fs__/events'
+const testDir = new TestDir('events')
+const TEST_DIR = testDir.root
 
 /**
  * Test suite for DBFS event system

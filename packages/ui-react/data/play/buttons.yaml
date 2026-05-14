@@ -1,0 +1,63 @@
+$content:
+  - h1: Button Component
+  - p: Buttons trigger actions. Supports different variants and sizes.
+  - h2: Primary Button (with Tooltip)
+  - Button: Primary Action
+    $variant: primary
+    $title: This is a primary action tooltip
+  - h2: Secondary Button
+  - Button: Secondary Action
+    $variant: secondary
+  - h2: Success Button
+  - Button: Success
+    $variant: success
+  - h2: Warning Button
+  - Button: Warning
+    $variant: warning
+  - h2: Danger Button
+  - Button: Danger
+    $variant: danger
+  - h2: Info Button
+  - Button: Info
+    $variant: info
+  - h2: Link Button
+  - Button: Link
+    $variant: link
+  - h2: Outline Primary
+  - Button: Primary
+    $variant: primary
+    $outline: true
+  - h2: Outline Secondary
+  - Button: Secondary
+    $variant: secondary
+    $outline: true
+  - h2: Outline Success
+  - Button: Success
+    $variant: success
+    $outline: true
+  - h2: Outline Warning
+  - Button: Warning
+    $variant: warning
+    $outline: true
+  - h2: Outline Danger
+  - Button: Outline Danger
+    $variant: danger
+    $outline: true
+  - h2: Outline Info
+  - Button: Outline Info
+    $variant: info
+    $outline: true
+  - h2: Small Button
+  - Button: Small
+    $size: sm
+    $outline: true
+  - h2: Disabled Button
+  - Button: Cannot click
+    $disabled: true
+  - h2: Theme Switcher
+  - ThemeSwitcher: Toggle Theme
+  - Button: DOM Button
+    $onClick: () => alert('Clicked')
+  - a: ← All Components
+    $href: /play/index.html
+# Force update

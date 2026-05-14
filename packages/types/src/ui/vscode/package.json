@@ -1,0 +1,68 @@
+{
+	"name": "nan0-vscode",
+	"displayName": "NaN0 Language Support",
+	"description": "Syntax highlighting and formatting for the NaN0 data format — a fast, human-readable YAML subset.",
+	"icon": "logo.png",
+	"version": "3.0.0",
+	"type": "module",
+	"publisher": "nan0web",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/nan0web/types.git",
+		"directory": "src/ui/vscode"
+	},
+	"license": "ISC",
+	"engines": {
+		"vscode": "^1.80.0"
+	},
+	"categories": [
+		"Programming Languages",
+		"Formatters"
+	],
+	"keywords": [
+		"nan0",
+		"yaml",
+		"data",
+		"format",
+		"parser"
+	],
+	"main": "./dist/extension.js",
+	"files": [
+		"dist/extension.js",
+		"language-configuration.json",
+		"syntaxes/nan0.tmLanguage.json",
+		"LICENSE",
+		"logo.png"
+	],
+	"contributes": {
+		"languages": [
+			{
+				"id": "nan0",
+				"aliases": [
+					"NaN0",
+					"nan0"
+				],
+				"extensions": [
+					".nan0",
+					".n0"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "nan0",
+				"scopeName": "source.nan0",
+				"path": "./syntaxes/nan0.tmLanguage.json"
+			}
+		]
+	},
+	"scripts": {
+		"build": "node esbuild.config.js",
+		"package": "npx -y @vscode/vsce package --no-dependencies"
+	},
+	"devDependencies": {
+		"esbuild": "^0.25.0",
+		"@vscode/vsce": "^3.0.0"
+	}
+}

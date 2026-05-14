@@ -1,0 +1,352 @@
+{
+	"groups": [
+		{
+			"id": "phase-1-core",
+			"title": "Phase 1 — Core",
+			"items": [
+				{
+					"id": "block-nav",
+					"title": "Nav",
+					"desc": "Верхня навігація (Navbar).",
+					"examples": [
+						{
+							"label": "Головна навігація",
+							"previewHtml": "<ui-nav id=\"e2e-nav\" ></ui-nav>\n\t\t\t\t\t\t\t<template slot=\"html-code\"\n\t\t\t\t\t\t\t\t><ui-nav id=\"my-nav\"></ui-nav>\n\t\t\t\t\t\t\t\t<script>\n\t\t\t\t\t\t\t\t\tnav.brand = { title: 'Bank Shell', url: '#' }\n\t\t\t\t\t\t\t\t\tnav.items = [\n\t\t\t\t\t\t\t\t\t\t{ label: 'Головна', url: '#' },\n\t\t\t\t\t\t\t\t\t\t{ label: 'Про нас', url: '#' },\n\t\t\t\t\t\t\t\t\t]\n\t\t\t\t\t\t\t\t</script></template\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>brand: title: Bank Shell url: \"#\" items: - label: Головна url: \"#\" - label: Про нас\n\t\t\t\t\t\t\t\turl: \"#\"</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-sidebar",
+					"title": "Sidebar",
+					"desc": "Бокове меню для навігації.",
+					"examples": [
+						{
+							"label": "Ієрархічне меню",
+							"previewHtml": "<div style=\"max-width: 300px; height: 300px\" >\n\t\t\t\t\t\t\t\t<ui-sidebar id=\"e2e-sidebar\"></ui-sidebar>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<template slot=\"html-code\"\n\t\t\t\t\t\t\t\t><ui-sidebar id=\"sb\"></ui-sidebar>\n\t\t\t\t\t\t\t\t<script>\n\t\t\t\t\t\t\t\t\tsb.title = 'Settings'\n\t\t\t\t\t\t\t\t\tsb.items = [{ label: 'Profile', active: true }, { label: 'Security' }]\n\t\t\t\t\t\t\t\t</script></template\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>title: Settings items: - label: Profile active: true - label: Security</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-callout",
+					"title": "Alert / Callout",
+					"desc": "Блоки уваги.",
+					"examples": [
+						{
+							"label": "Всі типи",
+							"previewHtml": "<div class=\"d-flex flex-column gap-3\" >\n\t\t\t\t\t\t\t\t<ui-alert\n\t\t\t\t\t\t\t\t\tid=\"e2e-alert-info\"\n\t\t\t\t\t\t\t\t\tvariant=\"info\"\n\t\t\t\t\t\t\t\t\ttitle=\"Info\"\n\t\t\t\t\t\t\t\t\tcontent=\"Informational message.\"\n\t\t\t\t\t\t\t\t></ui-alert>\n\t\t\t\t\t\t\t\t<ui-alert\n\t\t\t\t\t\t\t\t\tid=\"e2e-alert-warning\"\n\t\t\t\t\t\t\t\t\tvariant=\"warning\"\n\t\t\t\t\t\t\t\t\ttitle=\"Warning\"\n\t\t\t\t\t\t\t\t\tcontent=\"Warning message.\"\n\t\t\t\t\t\t\t\t></ui-alert>\n\t\t\t\t\t\t\t\t<ui-alert\n\t\t\t\t\t\t\t\t\tid=\"e2e-alert-error\"\n\t\t\t\t\t\t\t\t\tvariant=\"error\"\n\t\t\t\t\t\t\t\t\ttitle=\"Error\"\n\t\t\t\t\t\t\t\t\tcontent=\"Error message.\"\n\t\t\t\t\t\t\t\t></ui-alert>\n\t\t\t\t\t\t\t\t<ui-alert\n\t\t\t\t\t\t\t\t\tid=\"e2e-alert-success\"\n\t\t\t\t\t\t\t\t\tvariant=\"success\"\n\t\t\t\t\t\t\t\t\ttitle=\"Success\"\n\t\t\t\t\t\t\t\t\tcontent=\"Success message.\"\n\t\t\t\t\t\t\t\t></ui-alert>\n\t\t\t\t\t\t\t\t<ui-alert\n\t\t\t\t\t\t\t\t\tid=\"e2e-alert-tip\"\n\t\t\t\t\t\t\t\t\tvariant=\"tip\"\n\t\t\t\t\t\t\t\t\ttitle=\"Tip\"\n\t\t\t\t\t\t\t\t\tcontent=\"Pro tip.\"\n\t\t\t\t\t\t\t\t></ui-alert>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>$content: - Callout: Informational message. type: info - Callout: Warning message.\n\t\t\t\t\t\t\t\ttype: warning</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-markdown",
+					"title": "Markdown",
+					"desc": "Рендер HTML контенту.",
+					"examples": [
+						{
+							"label": "HTML рендер",
+							"previewHtml": "<ui-markdown id=\"e2e-markdown\" ></ui-markdown>\n\t\t\t\t\t\t\t<template slot=\"html-code\"\n\t\t\t\t\t\t\t\t><ui-markdown id=\"md\"></ui-markdown>\n\t\t\t\t\t\t\t\t<script>\n\t\t\t\t\t\t\t\t\tmd.content = '<p><strong>Bold</strong> and <a href=\"#\">link</a></p>'\n\t\t\t\t\t\t\t\t</script></template\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>$content: - Markdown: |\n\t\t\t\t\t\t\t\t<p><strong>Bold</strong> and <a href=\"#\">link</a></p></template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-themetoggle",
+					"title": "ThemeToggle",
+					"desc": "Перемикач теми.",
+					"examples": [
+						{
+							"label": "Компонент в дії",
+							"previewHtml": "<div\n\t\t\t\t\t\t\t\tclass=\"d-flex align-items-center gap-3 p-3 border rounded shadow-sm\"\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t<span class=\"text-muted small\">Тема: <strong id=\"e2e-theme-value\"></strong></span>\n\t\t\t\t\t\t\t\t<ui-theme-toggle id=\"e2e-theme-toggle\"></ui-theme-toggle>\n\t\t\t\t\t\t\t</div>",
+							"codeHtml": "<ui-theme-toggle></ui-theme-toggle>",
+							"codeYaml": "$content: [ThemeToggle]"
+						}
+					]
+				},
+				{
+					"id": "block-langselect",
+					"title": "LangSelect",
+					"desc": "Перемикач мови.",
+					"examples": [
+						{
+							"label": "Вибір мови",
+							"previewHtml": "<div\n\t\t\t\t\t\t\t\tclass=\"d-flex align-items-center gap-3 p-3 border rounded shadow-sm\"\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t<span class=\"text-muted small\">Мова: <strong id=\"e2e-locale-value\"></strong></span>\n\t\t\t\t\t\t\t\t<ui-lang-select id=\"e2e-lang-select\"></ui-lang-select>\n\t\t\t\t\t\t\t</div>",
+							"codeHtml": "<ui-lang-select></ui-lang-select>",
+							"codeYaml": "$content: [LangSelect]"
+						}
+					]
+				},
+				{
+					"id": "block-badge",
+					"title": "Badge",
+					"desc": "Позначки статусів.",
+					"examples": [
+						{
+							"label": "Кольорові варіанти",
+							"previewHtml": "<div class=\"d-flex gap-2 flex-wrap\" >\n\t\t\t\t\t\t\t\t<ui-badge>neutral</ui-badge>\n\t\t\t\t\t\t\t\t<ui-badge variant=\"unread\">unread</ui-badge>\n\t\t\t\t\t\t\t\t<ui-badge variant=\"complete\">complete</ui-badge>\n\t\t\t\t\t\t\t\t<ui-badge variant=\"dangerous\">dangerous</ui-badge>\n\t\t\t\t\t\t\t\t<ui-badge variant=\"not-found\">not-found</ui-badge>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>$content: - Badge: neutral - Badge.unread: unread</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-code",
+					"title": "CodeBlock",
+					"desc": "Відображення коду.",
+					"examples": [
+						{
+							"label": "JS Snippet",
+							"previewHtml": "<ui-code-block\n\t\t\t\t\t\t\t\tid=\"e2e-code-block\"\n\t\t\t\t\t\t\t\ttitle=\"example.js\"\n\t\t\t\t\t\t\t\tlang=\"javascript\"\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t></ui-code-block>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>CodeBlock: \"console.log('hello')\" title: example.js</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-table",
+					"title": "Table",
+					"desc": "Таблиці даних.",
+					"examples": [
+						{
+							"label": "Список компонентів",
+							"previewHtml": "<ui-table id=\"e2e-table\" ></ui-table>",
+							"codeHtml": "",
+							"codeYaml": "Table: - component: Alert status: ✅"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "phase-2-forms",
+			"title": "Phase 2 — Forms",
+			"items": [
+				{
+					"id": "block-input",
+					"title": "Input",
+					"desc": "Текстове поле з label, placeholder, validation.",
+					"examples": [
+						{
+							"label": "Різні стани",
+							"previewHtml": "<div class=\"d-flex flex-column gap-3\" style=\"max-width: 400px\" >\n\t\t\t\t\t\t\t\t<ui-input\n\t\t\t\t\t\t\t\t\tid=\"e2e-input\"\n\t\t\t\t\t\t\t\t\tlabel=\"Ім'я\"\n\t\t\t\t\t\t\t\t\tplaceholder=\"Введіть ім'я\"\n\t\t\t\t\t\t\t\t\thint=\"Обов'язкове поле\"\n\t\t\t\t\t\t\t\t\trequired\n\t\t\t\t\t\t\t\t></ui-input>\n\t\t\t\t\t\t\t\t<ui-input\n\t\t\t\t\t\t\t\t\tlabel=\"Email\"\n\t\t\t\t\t\t\t\t\tplaceholder=\"user@example.com\"\n\t\t\t\t\t\t\t\t\ttype=\"email\"\n\t\t\t\t\t\t\t\t\tstate=\"success\"\n\t\t\t\t\t\t\t\t\thint=\"Валідний email\"\n\t\t\t\t\t\t\t\t></ui-input>\n\t\t\t\t\t\t\t\t<ui-input\n\t\t\t\t\t\t\t\t\tlabel=\"Пароль\"\n\t\t\t\t\t\t\t\t\ttype=\"password\"\n\t\t\t\t\t\t\t\t\tstate=\"error\"\n\t\t\t\t\t\t\t\t\thint=\"Мінімум 8 символів\"\n\t\t\t\t\t\t\t\t\tvalue=\"short\"\n\t\t\t\t\t\t\t\t></ui-input>\n\t\t\t\t\t\t\t\t<ui-input label=\"Disabled\" placeholder=\"Не можна редагувати\" disabled></ui-input>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>Input: label: Ім'я placeholder: Введіть ім'я required: true hint: Обов'язкове\n\t\t\t\t\t\t\t\tполе</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-select",
+					"title": "Select",
+					"desc": "Dropdown вибір.",
+					"examples": [
+						{
+							"label": "Вибір категорії",
+							"previewHtml": "<div style=\"max-width: 400px\" >\n\t\t\t\t\t\t\t\t<ui-select id=\"e2e-select\" label=\"Категорія\" placeholder=\"Оберіть...\"></ui-select>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<template slot=\"html-code\"\n\t\t\t\t\t\t\t\t><ui-select id=\"sel\" label=\"Категорія\"></ui-select>\n\t\t\t\t\t\t\t\t<script>\n\t\t\t\t\t\t\t\t\tsel.options = [\n\t\t\t\t\t\t\t\t\t\t{ value: 'dep', label: 'Депозити' },\n\t\t\t\t\t\t\t\t\t\t{ value: 'crd', label: 'Кредити' },\n\t\t\t\t\t\t\t\t\t\t{ value: 'ins', label: 'Страхування' },\n\t\t\t\t\t\t\t\t\t]\n\t\t\t\t\t\t\t\t</script></template\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>Select: label: Категорія options: - value: dep label: Депозити - value: crd label:\n\t\t\t\t\t\t\t\tКредити</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-button",
+					"title": "Button",
+					"desc": "Кнопки дії з варіантами та розмірами.",
+					"examples": [
+						{
+							"label": "Варіанти",
+							"previewHtml": "<div class=\"d-flex gap-2 flex-wrap align-items-center\" >\n\t\t\t\t\t\t\t\t<ui-button id=\"e2e-btn-primary\" label=\"Primary\" variant=\"primary\"></ui-button>\n\t\t\t\t\t\t\t\t<ui-button label=\"Secondary\" variant=\"secondary\"></ui-button>\n\t\t\t\t\t\t\t\t<ui-button label=\"Danger\" variant=\"danger\"></ui-button>\n\t\t\t\t\t\t\t\t<ui-button label=\"Ghost\" variant=\"ghost\"></ui-button>\n\t\t\t\t\t\t\t\t<ui-button label=\"Outline\" variant=\"outline\"></ui-button>\n\t\t\t\t\t\t\t</div>",
+							"codeHtml": "",
+							"codeYaml": "Button: label: Primary variant: primary"
+						},
+						{
+							"label": "Розміри та стани",
+							"previewHtml": "<div class=\"d-flex gap-2 flex-wrap align-items-center\" >\n\t\t\t\t\t\t\t\t<ui-button label=\"Small\" size=\"sm\"></ui-button>\n\t\t\t\t\t\t\t\t<ui-button label=\"Medium\" size=\"md\"></ui-button>\n\t\t\t\t\t\t\t\t<ui-button label=\"Large\" size=\"lg\"></ui-button>\n\t\t\t\t\t\t\t\t<ui-button label=\"Loading...\" loading></ui-button>\n\t\t\t\t\t\t\t\t<ui-button label=\"Disabled\" disabled></ui-button>\n\t\t\t\t\t\t\t</div>",
+							"codeHtml": "",
+							"codeYaml": "Button: label: Small size: sm"
+						}
+					]
+				},
+				{
+					"id": "block-toggle",
+					"title": "Toggle",
+					"desc": "Перемикач on/off.",
+					"examples": [
+						{
+							"label": "Різні стани",
+							"previewHtml": "<div class=\"d-flex flex-column gap-3\" >\n\t\t\t\t\t\t\t\t<ui-toggle id=\"e2e-toggle\" label=\"Сповіщення\"></ui-toggle>\n\t\t\t\t\t\t\t\t<ui-toggle label=\"Автозбереження\" checked></ui-toggle>\n\t\t\t\t\t\t\t\t<ui-toggle label=\"Вимкнений\" disabled></ui-toggle>\n\t\t\t\t\t\t\t</div>",
+							"codeHtml": "",
+							"codeYaml": "Toggle: label: Сповіщення checked: false"
+						}
+					]
+				},
+				{
+					"id": "block-confirm",
+					"title": "Confirm",
+					"desc": "Діалог підтвердження (inline та modal).",
+					"examples": [
+						{
+							"label": "Inline режим",
+							"previewHtml": "<ui-confirm\n\t\t\t\t\t\t\t\tid=\"e2e-confirm\"\n\t\t\t\t\t\t\t\tmessage=\"Видалити запис?\"\n\t\t\t\t\t\t\t\tconfirm-label=\"Так\"\n\t\t\t\t\t\t\t\tcancel-label=\"Ні\"\n\t\t\t\t\t\t\t\topen\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t></ui-confirm>",
+							"codeHtml": "",
+							"codeYaml": "Confirm: message: Видалити запис? open: true"
+						},
+						{
+							"label": "Modal режим",
+							"previewHtml": "<div >\n\t\t\t\t\t\t\t\t<ui-button\n\t\t\t\t\t\t\t\t\tid=\"e2e-confirm-open\"\n\t\t\t\t\t\t\t\t\tlabel=\"Відкрити діалог\"\n\t\t\t\t\t\t\t\t\tvariant=\"danger\"\n\t\t\t\t\t\t\t\t></ui-button>\n\t\t\t\t\t\t\t\t<ui-confirm\n\t\t\t\t\t\t\t\t\tid=\"e2e-confirm-modal\"\n\t\t\t\t\t\t\t\t\tmessage=\"Ви впевнені? Цю дію неможливо скасувати.\"\n\t\t\t\t\t\t\t\t\tmodal\n\t\t\t\t\t\t\t\t\tconfirm-label=\"Підтвердити\"\n\t\t\t\t\t\t\t\t\tcancel-label=\"Скасувати\"\n\t\t\t\t\t\t\t\t></ui-confirm>\n\t\t\t\t\t\t\t</div>",
+							"codeHtml": "",
+							"codeYaml": "Confirm: message: Ви впевнені? modal: true"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "phase-2-structure",
+			"title": "Phase 2 — Structure",
+			"items": [
+				{
+					"id": "block-page",
+					"title": "Page",
+					"desc": "Responsive layout (nav + sidebar + content).",
+					"examples": [
+						{
+							"label": "Layout з sidebar",
+							"previewHtml": "<div\n\t\t\t\t\t\t\t\tstyle=\"\n\t\t\t\t\t\t\t\t\theight: 200px;\n\t\t\t\t\t\t\t\t\tborder: 1px solid var(--border);\n\t\t\t\t\t\t\t\t\tborder-radius: 8px;\n\t\t\t\t\t\t\t\t\toverflow: hidden;\n\t\t\t\t\t\t\t\t\"\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t<ui-page\n\t\t\t\t\t\t\t\t\tid=\"e2e-page\"\n\t\t\t\t\t\t\t\t\tstyle=\"\n\t\t\t\t\t\t\t\t\t\tmin-height: 200px;\n\t\t\t\t\t\t\t\t\t\t--ui-page-sidebar-width: 140px;\n\t\t\t\t\t\t\t\t\t\t--ui-page-content-padding: 1rem;\n\t\t\t\t\t\t\t\t\t\"\n\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t<div\n\t\t\t\t\t\t\t\t\t\tslot=\"nav\"\n\t\t\t\t\t\t\t\t\t\tstyle=\"\n\t\t\t\t\t\t\t\t\t\t\tbackground: var(--ba-surface);\n\t\t\t\t\t\t\t\t\t\t\tpadding: 0.5rem 1rem;\n\t\t\t\t\t\t\t\t\t\t\tborder-bottom: 1px solid var(--border);\n\t\t\t\t\t\t\t\t\t\t\"\n\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\tNAV BAR\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div slot=\"sidebar\" style=\"padding: 0.5rem\">Sidebar Menu</div>\n\t\t\t\t\t\t\t\t\t<p>Main content area</p>\n\t\t\t\t\t\t\t\t</ui-page>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<template slot=\"html-code\"\n\t\t\t\t\t\t\t\t><ui-page>\n\t\t\t\t\t\t\t\t\t<div slot=\"nav\">NAV BAR</div>\n\t\t\t\t\t\t\t\t\t<div slot=\"sidebar\">Menu</div>\n\t\t\t\t\t\t\t\t\t<p>Main content</p>\n\t\t\t\t\t\t\t\t</ui-page></template\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>Page: nav: NAV BAR sidebar: Menu items content: Main content</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-card",
+					"title": "Card",
+					"desc": "Картка контенту.",
+					"examples": [
+						{
+							"label": "Картки з різними варіантами",
+							"previewHtml": "<div class=\"d-flex gap-3 flex-wrap\" >\n\t\t\t\t\t\t\t\t<ui-card\n\t\t\t\t\t\t\t\t\tid=\"e2e-card\"\n\t\t\t\t\t\t\t\t\ttitle=\"Депозит +\"\n\t\t\t\t\t\t\t\t\tsubtitle=\"12% річних\"\n\t\t\t\t\t\t\t\t\thoverable\n\t\t\t\t\t\t\t\t\tstyle=\"width: 250px\"\n\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t<p style=\"margin: 0; font-size: 0.9rem\">\n\t\t\t\t\t\t\t\t\t\tНайвигідніший вклад з щомісячною капіталізацією.\n\t\t\t\t\t\t\t\t\t</p>\n\t\t\t\t\t\t\t\t</ui-card>\n\t\t\t\t\t\t\t\t<ui-card title=\"Кредит\" subtitle=\"від 0.01% на день\" style=\"width: 250px\">\n\t\t\t\t\t\t\t\t\t<p style=\"margin: 0; font-size: 0.9rem\">Швидке кредитування без довідок.</p>\n\t\t\t\t\t\t\t\t</ui-card>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<template slot=\"html-code\"\n\t\t\t\t\t\t\t\t><ui-card title=\"Депозит +\" subtitle=\"12%\" hoverable>\n\t\t\t\t\t\t\t\t\t<p>Найвигідніший вклад.</p>\n\t\t\t\t\t\t\t\t</ui-card></template\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>Card: title: Депозит + subtitle: 12% річних hoverable: true</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-modal",
+					"title": "Modal",
+					"desc": "Модальне вікно.",
+					"examples": [
+						{
+							"label": "Відкрити модалку",
+							"previewHtml": "<div >\n\t\t\t\t\t\t\t\t<ui-button id=\"e2e-modal-open\" label=\"Відкрити Modal\" variant=\"primary\"></ui-button>\n\t\t\t\t\t\t\t\t<ui-modal id=\"e2e-modal\" title=\"Нова заявка\">\n\t\t\t\t\t\t\t\t\t<p>Заповніть форму для подачі заявки на кредит.</p>\n\t\t\t\t\t\t\t\t\t<ui-input label=\"ПІБ\" placeholder=\"Іванов Іван\"></ui-input>\n\t\t\t\t\t\t\t\t</ui-modal>\n\t\t\t\t\t\t\t</div>",
+							"codeHtml": "",
+							"codeYaml": "Modal: title: Нова заявка content: Форма"
+						}
+					]
+				},
+				{
+					"id": "block-accordion",
+					"title": "Accordion",
+					"desc": "Collapsible секції.",
+					"examples": [
+						{
+							"label": "FAQ",
+							"previewHtml": "<ui-accordion id=\"e2e-accordion\" ></ui-accordion>\n\t\t\t\t\t\t\t<template slot=\"html-code\"\n\t\t\t\t\t\t\t\t><ui-accordion id=\"acc\"></ui-accordion>\n\t\t\t\t\t\t\t\t<script>\n\t\t\t\t\t\t\t\t\tacc.items = [\n\t\t\t\t\t\t\t\t\t\t{ title: 'Як відкрити рахунок?', content: 'Онлайн за 5 хв.' },\n\t\t\t\t\t\t\t\t\t\t{ title: 'Які документи потрібні?', content: 'Паспорт та ІПН.' },\n\t\t\t\t\t\t\t\t\t]\n\t\t\t\t\t\t\t\t</script></template\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>Accordion: - title: Як відкрити рахунок? content: Онлайн за 5 хв. - title: Які\n\t\t\t\t\t\t\t\tдокументи? content: Паспорт та ІПН.</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-toast",
+					"title": "Toast",
+					"desc": "Повідомлення-нотифікація.",
+					"examples": [
+						{
+							"label": "Варіанти",
+							"previewHtml": "<div class=\"d-flex flex-column gap-2\" >\n\t\t\t\t\t\t\t\t<ui-toast\n\t\t\t\t\t\t\t\t\tid=\"e2e-toast-info\"\n\t\t\t\t\t\t\t\t\tvariant=\"info\"\n\t\t\t\t\t\t\t\t\tmessage=\"Дані збережено.\"\n\t\t\t\t\t\t\t\t\topen\n\t\t\t\t\t\t\t\t></ui-toast>\n\t\t\t\t\t\t\t\t<ui-toast\n\t\t\t\t\t\t\t\t\tvariant=\"success\"\n\t\t\t\t\t\t\t\t\tmessage=\"Операція успішна!\"\n\t\t\t\t\t\t\t\t\topen\n\t\t\t\t\t\t\t\t></ui-toast>\n\t\t\t\t\t\t\t\t<ui-toast variant=\"warning\" message=\"Перевірте дані.\" open></ui-toast>\n\t\t\t\t\t\t\t\t<ui-toast variant=\"error\" message=\"Помилка з'єднання.\" open></ui-toast>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>Toast: variant: success message: Операція успішна!</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "phase-2-advanced",
+			"title": "Phase 2 — Advanced",
+			"items": [
+				{
+					"id": "block-spinner",
+					"title": "Spinner",
+					"desc": "Індикатор завантаження.",
+					"examples": [
+						{
+							"label": "Варіанти та розміри",
+							"previewHtml": "<div class=\"d-flex gap-4 align-items-center flex-wrap\" >\n\t\t\t\t\t\t\t\t<div class=\"text-center\">\n\t\t\t\t\t\t\t\t\t<ui-spinner variant=\"ring\" size=\"sm\"></ui-spinner><br /><small class=\"text-muted\"\n\t\t\t\t\t\t\t\t\t\t>Ring SM</small\n\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"text-center\">\n\t\t\t\t\t\t\t\t\t<ui-spinner id=\"e2e-spinner\" variant=\"ring\" size=\"md\"></ui-spinner><br /><small\n\t\t\t\t\t\t\t\t\t\tclass=\"text-muted\"\n\t\t\t\t\t\t\t\t\t\t>Ring MD</small\n\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"text-center\">\n\t\t\t\t\t\t\t\t\t<ui-spinner variant=\"ring\" size=\"lg\"></ui-spinner><br /><small class=\"text-muted\"\n\t\t\t\t\t\t\t\t\t\t>Ring LG</small\n\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"text-center\">\n\t\t\t\t\t\t\t\t\t<ui-spinner variant=\"dots\" size=\"md\"></ui-spinner><br /><small class=\"text-muted\"\n\t\t\t\t\t\t\t\t\t\t>Dots</small\n\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"text-center\">\n\t\t\t\t\t\t\t\t\t<ui-spinner variant=\"pulse\" size=\"md\"></ui-spinner><br /><small class=\"text-muted\"\n\t\t\t\t\t\t\t\t\t\t>Pulse</small\n\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>",
+							"codeHtml": "",
+							"codeYaml": "Spinner: variant: ring size: md"
+						}
+					]
+				},
+				{
+					"id": "block-progress",
+					"title": "ProgressBar",
+					"desc": "Прогрес-бар.",
+					"examples": [
+						{
+							"label": "Розміри та стани",
+							"previewHtml": "<div class=\"d-flex flex-column gap-3\" style=\"max-width: 500px\" >\n\t\t\t\t\t\t\t\t<ui-progress id=\"e2e-progress\" value=\"35\" show-label size=\"sm\"></ui-progress>\n\t\t\t\t\t\t\t\t<ui-progress value=\"68\" show-label size=\"md\"></ui-progress>\n\t\t\t\t\t\t\t\t<ui-progress value=\"92\" show-label size=\"lg\"></ui-progress>\n\t\t\t\t\t\t\t\t<ui-progress indeterminate size=\"md\"></ui-progress>\n\t\t\t\t\t\t\t</div>",
+							"codeHtml": "",
+							"codeYaml": "Progress: value: 68 show-label: true"
+						}
+					]
+				},
+				{
+					"id": "block-slider",
+					"title": "Slider",
+					"desc": "Range slider.",
+					"examples": [
+						{
+							"label": "Різні діапазони",
+							"previewHtml": "<div class=\"d-flex flex-column gap-3\" style=\"max-width: 400px\" >\n\t\t\t\t\t\t\t\t<ui-slider\n\t\t\t\t\t\t\t\t\tid=\"e2e-slider\"\n\t\t\t\t\t\t\t\t\tlabel=\"Сума (грн)\"\n\t\t\t\t\t\t\t\t\tvalue=\"50000\"\n\t\t\t\t\t\t\t\t\tmin=\"1000\"\n\t\t\t\t\t\t\t\t\tmax=\"100000\"\n\t\t\t\t\t\t\t\t\tstep=\"1000\"\n\t\t\t\t\t\t\t\t\tshow-value\n\t\t\t\t\t\t\t\t></ui-slider>\n\t\t\t\t\t\t\t\t<ui-slider label=\"Термін (міс)\" value=\"12\" min=\"1\" max=\"60\" show-value></ui-slider>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>Slider: label: Сума (грн) min: 1000 max: 100000 value: 50000</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-autocomplete",
+					"title": "Autocomplete",
+					"desc": "Поле з автодоповненням.",
+					"examples": [
+						{
+							"label": "Пошук міста",
+							"previewHtml": "<div style=\"max-width: 400px\" >\n\t\t\t\t\t\t\t\t<ui-autocomplete\n\t\t\t\t\t\t\t\t\tid=\"e2e-autocomplete\"\n\t\t\t\t\t\t\t\t\tlabel=\"Місто\"\n\t\t\t\t\t\t\t\t\tplaceholder=\"Введіть назву...\"\n\t\t\t\t\t\t\t\t></ui-autocomplete>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<template slot=\"html-code\"\n\t\t\t\t\t\t\t\t><ui-autocomplete id=\"ac\" label=\"Місто\"></ui-autocomplete>\n\t\t\t\t\t\t\t\t<script>\n\t\t\t\t\t\t\t\t\tac.options = ['Київ', 'Харків', 'Одеса', 'Дніпро', 'Львів']\n\t\t\t\t\t\t\t\t</script></template\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>Autocomplete: label: Місто options: [Київ, Харків, Одеса, Дніпро, Львів]</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				},
+				{
+					"id": "block-sortable",
+					"title": "Sortable",
+					"desc": "Drag-and-drop список.",
+					"examples": [
+						{
+							"label": "Пріоритет задач",
+							"previewHtml": "<div style=\"max-width: 400px\" >\n\t\t\t\t\t\t\t\t<ui-sortable id=\"e2e-sortable\"></ui-sortable>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<template slot=\"html-code\"\n\t\t\t\t\t\t\t\t><ui-sortable id=\"sl\"></ui-sortable>\n\t\t\t\t\t\t\t\t<script>\n\t\t\t\t\t\t\t\t\tsl.items = ['Зробити тести', 'Написати код', 'Code review', 'Deploy']\n\t\t\t\t\t\t\t\t</script></template\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t<template slot=\"yaml-code\"\n\t\t\t\t\t\t\t\t>Sortable: items: - Зробити тести - Написати код - Code review - Deploy</template\n\t\t\t\t\t\t\t>",
+							"codeHtml": "",
+							"codeYaml": ""
+						}
+					]
+				}
+			]
+		}
+	]
+}

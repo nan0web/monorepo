@@ -1,0 +1,6 @@
+{
+	"entry": ["src/index.js", "src/sets/*.js", "src/adapters/*.js"],
+	"project": ["src/**/*.js"],
+	"ignore": ["play/", "releases/", "scripts/", "src/test/", "src/README.md.js"],
+	"ignoreDependencies": ["react-icons", "react"]
+}

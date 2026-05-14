@@ -1,0 +1,40 @@
+{
+  "name": "@nan0web/catalog-watch",
+  "version": "3.0.0",
+  "description": "Lightweight catalog subscription watcher via HTTP HEAD + ETag. Zero-State Server.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./server": "./src/server/buildCatalogIndex.js",
+    "./sw": "./src/sw.js",
+    "./domain": "./src/domain/CatalogIndexModel.js"
+  },
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "data/**/*.yaml"
+  ],
+  "scripts": {
+    "test": "node --test src/domain/*.test.js",
+    "test:story": "node --test src/domain/*.story.js",
+    "test:all": "npm run test && npm run test:story"
+  },
+  "keywords": [
+    "catalog",
+    "watch",
+    "etag",
+    "pwa",
+    "service-worker",
+    "nan0web"
+  ],
+  "dependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/event": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/core": "workspace:*",
+    "@nan0web/ui": "workspace:*"
+  },
+  "license": "ISC",
+  "author": "YaRaSLove (ЯRаСлав) <support@yaro.page>"
+}

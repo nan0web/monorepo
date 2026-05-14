@@ -1,0 +1,81 @@
+{
+  "name": "@nan0web/types",
+  "version": "3.0.0",
+  "description": "Universal system for managing data structures and types in JavaScript applications based on the nan0 philosophy where zero represents the universe.",
+  "type": "module",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./src": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./src/*": {
+      "types": "./types/*.d.ts",
+      "import": "./src/*.js"
+    },
+    "./ui/vscode": {
+      "types": "./src/ui/vscode/index.d.ts",
+      "import": "./src/ui/vscode/index.js"
+    }
+  },
+  "files": [
+    "src/**/*.js",
+    "types/**/*.d.ts",
+    "README.md",
+    "!src/**/*.test.js",
+    "!src/README.md.js",
+    "!src/NaN0.examples.js",
+    "!types/NaN0.examples.d.ts",
+    "!src/ui/vscode/**"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf types/",
+    "build": "tsc",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "audit": "pnpm audit --prod || true",
+    "knip": "knip --production",
+    "play": "node play/main.js",
+    "release": "nan0release publish",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "test": "node --test \"src/**/*.test.js\"",
+    "test:all": "npm run test && npm run test:docs && npm run build && npm run test:release && npm run knip && npm run audit",
+    "test:nan0test": "node --test \"src/**/*.test.js\" | nan0test parse --fail",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"src/test/releases/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test-coverage-exclude=\"src/**/index.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status --hide-name"
+  },
+  "keywords": [
+    "nan0",
+    "data",
+    "types",
+    "utilities",
+    "object",
+    "array",
+    "validation",
+    "format",
+    "parser"
+  ],
+  "author": "ЯRаСлав YaRaSLove <support@yaro.page>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "husky": "^9.1.7",
+    "knip": "^6.0.5",
+    "yaml": "^2.7.1"
+  },
+  "dependencies": {
+    "@nan0web/log": "workspace:*"
+  }
+}

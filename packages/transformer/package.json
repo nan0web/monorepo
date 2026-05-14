@@ -1,0 +1,44 @@
+{
+  "name": "@nan0web/transformer",
+  "version": "3.0.0",
+  "description": "Basic and agnostic transformer.",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test --test-timeout=9999 \"src/**/*.test.js\" | nan0test parse --fail",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "play": "node play/main.js"
+  },
+  "keywords": [
+    "ui",
+    "nanoweb"
+  ],
+  "author": "YaRaSlove [ЯRаСлав]",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@nan0web/test": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "husky": "^9.1.7"
+  },
+  "dependencies": {
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/log": "workspace:*"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "name": "@nan0web/ui-lit",
+  "version": "3.0.0",
+  "description": "Universal Web Components UI Kit on Lit — zero-dependency, data-driven, OLMUI-ready",
+  "type": "module",
+  "main": "packages/core/index.js",
+  "exports": {
+    ".": "./packages/core/index.js",
+    "./core": "./packages/core/index.js",
+    "./core/*": "./packages/core/*.js",
+    "./theme": "./packages/theme/index.js",
+    "./theme/*": "./packages/theme/*.js",
+    "./auth": "./packages/auth/index.js",
+    "./auth/*": "./packages/auth/*.js",
+    "./edit": "./packages/edit/index.js",
+    "./edit/*": "./packages/edit/*.js",
+    "./form": "./packages/form/index.js",
+    "./form/*": "./packages/form/*.js",
+    "./i18n": "./packages/i18n/index.js",
+    "./i18n/*": "./packages/i18n/*.js",
+    "./testing": "./src/testing/index.js"
+  },
+  "files": [
+    "packages/core/*.js",
+    "packages/core/package.json",
+    "!packages/core/test/",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "web-components",
+    "lit",
+    "ui-kit",
+    "design-system",
+    "olmui",
+    "zero-dependency",
+    "data-driven",
+    "shadow-dom",
+    "custom-elements",
+    "nan0web"
+  ],
+  "author": "ЯRаСлав YaRaSLove <support@yaro.page>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicoth-in/nan.web.git",
+    "directory": "packages/ui-lit"
+  },
+  "homepage": "https://ui-lit.nan0web.org",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test ./packages/*/test/*.test.js",
+    "test:docs": "node --test src/README.md.js",
+    "test:all": "npm run test && npm run test:docs && npm run build && npm run knip",
+    "test:e2e": "open http://localhost:4260/e2e/playground.html",
+    "test:ci": "node e2e/ci-runner.js",
+    "knip": "knip --production",
+    "build": "echo 'No build required'",
+    "dev": "vite --config e2e/vite.config.js",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "release:verify": "node --test \"src/test/releases/**/*.test.js\""
+  },
+  "devDependencies": {
+    "@nan0web/test": "workspace:*",
+    "knip": "^5.86.0",
+    "vite": "^7.3.1"
+  },
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "lit": "^3.3.2"
+  }
+}

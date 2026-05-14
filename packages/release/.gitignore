@@ -1,0 +1,7 @@
+/.datasets/
+/.cache/
+/chat/
+/coverage/
+/node_modules/
+/test_data/
+me.md

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <!-- Зверніть увагу: nonce використовується для безпеки CSP (Content-Security-Policy) -->
+    <!-- У реальному додатку CSP має бути налаштована суворіше, але тут ми допускаємо basic setup -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src var(--vscode-csp-nonce) 'unsafe-inline'; script-src 'nonce-{{CSP_NONCE}}' 'unsafe-eval'; connect-src 'self' ws: wss:;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLiMo Universal Runner</title>
+    
+    <!-- Lightweight Webview (Zero-React) based on ui-lit / HTML -->
+    <style>
+        :root {
+            --bg-color: var(--vscode-editor-background);
+            --text-color: var(--vscode-editor-foreground);
+            --btn-bg: var(--vscode-button-background);
+            --btn-hover: var(--vscode-button-hoverBackground);
+            --btn-fg: var(--vscode-button-foreground);
+            --error-color: var(--vscode-errorForeground);
+            --border-color: var(--vscode-panel-border);
+        }
+        body {
+            font-family: var(--vscode-font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        h2 {
+            margin-top: 0;
+            font-weight: 600;
+        }
+        button {
+            background-color: var(--btn-bg);
+            color: var(--btn-fg);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 20px;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button:hover {
+            background-color: var(--btn-hover);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 15px;
+            font-style: italic;
+            opacity: 0.8;
+            min-height: 24px;
+        }
+        #feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            display: none;
+        }
+        .mic-icon {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>🤖 LLiMo Voice Runner</h2>
+        <p>Інтегрований OLMUI Webview адаптер. Натисніть кнопку нижче, щоб захопити голосовий намір для субагентів.</p>
+        
+        <button id="recordBtn">
+            <span class="mic-icon">🎤</span> 
+            <span id="btnText">Передати Намір (Voice-to-App)</span>
+        </button>
+        
+        <div id="status">Очікування наміру...</div>
+        <div id="feedback"></div>
+    </div>
+
+    <script nonce="{{CSP_NONCE}}">
+        const vscode = acquireVsCodeApi();
+        
+        const recordBtn = document.getElementById('recordBtn');
+        const btnText = document.getElementById('btnText');
+        const statusEl = document.getElementById('status');
+        const feedbackEl = document.getElementById('feedback');
+        const micIcon = document.querySelector('.mic-icon');
+
+        recordBtn.addEventListener('click', () => {
+            statusEl.textContent = 'Перехід до VSCode для вводу наміру...';
+            recordBtn.style.backgroundColor = 'var(--vscode-button-hoverBackground)';
+            
+            // VSCode Webview не підтримує мікрофон, тому делегуємо обробку розширенню
+            vscode.postMessage({ type: 'start-capture' });
+            
+            setTimeout(() => {
+                recordBtn.style.backgroundColor = 'var(--btn-bg)';
+            }, 1000);
+        });
+
+        // Обробка зворотного зв'язку (Feedback) з Node.js
+        window.addEventListener('message', event => {
+            const message = event.data;
+            if (message.type === 'feedback') {
+                feedbackEl.style.display = 'block';
+                feedbackEl.textContent = `Субагент підтверджує: ${message.text}`;
+            }
+        });
+    </script>
+</body>
+</html>

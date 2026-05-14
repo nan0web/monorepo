@@ -1,0 +1,29 @@
+nav:
+  - href: /play/index.html
+    title: Home
+  - href: /play/avatars.html
+    title: Avatar
+  - href: /play/badges.html
+    title: Badge
+  - href: /play/buttons.html
+    title: Button
+  - href: /play/inputs.html
+    title: Input
+  - href: /play/checkboxes.html
+    title: Checkbox
+  - href: /play/radios.html
+    title: Radio
+  - href: /play/selects.html
+    title: Select
+  - href: /play/textareas.html
+    title: TextArea
+  - href: /play/typography.html
+    title: Typography
+  - href: /play/cards.html
+    title: Card
+  - href: /play/modals.html
+    title: Modal
+  - href: /play/theme.html
+    title: Theme
+theme:
+  current: light # 'light' or 'night' - controlled via data, toggled by ThemeSwitcher

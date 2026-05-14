@@ -1,0 +1,44 @@
+{
+  "name": "@nan0web/adopt-agent",
+  "version": "3.0.0",
+  "description": "[ОПИС З SEED.MD]",
+  "author": "NaN0Web",
+  "license": "ISC",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node --test src/**/*.test.js",
+    "test:docs": "node --test src/README.md.js",
+    "build": "node ./build.js",
+    "test:e2e": "node --test play/play.e2e.js",
+    "test:e2e:update": "UPDATE_SNAPSHOTS=1 node --test play/play.e2e.js",
+    "test:snapshot": "node --test play/snapshot.test.js",
+    "test:snapshot:update": "UPDATE_SNAPSHOTS=1 node --test play/snapshot.test.js",
+    "test:release": "node --test releases/**/*.spec.js",
+    "test:all": "npm run test && npm run test:docs && npm run test:snapshot && npm run test:e2e",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "knip": "knip",
+    "audit": "npm audit --audit-level=high",
+    "play": "node play/cli.js",
+    "play:cli": "node play/cli.js",
+    "play:chat": "node play/chat.js",
+    "play:web": "node play/web.js",
+    "play:voice": "node play/voice.js"
+  },
+  "dependencies": {
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/i18n": "workspace:*",
+    "@nan0web/markdown": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/core": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.3",
+    "knip": "^5.0.0",
+    "playwright": "^1.58.2"
+  }
+}

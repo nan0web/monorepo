@@ -27,7 +27,7 @@
     "test:play": "node --test --test-timeout=3333 \"play/**/*.test.js\"",
     "test:snapshots": "node src/testing/GalleryGenerator.js",
     "test:gallery": "npm run test:snapshots && npx nan0gallery --dir=snapshots/core",
-    "test:audit": "nan0cli audit --dir snapshots/core --data .",
+    "test:audit": "nan0cli snapshots --dir snapshots/core --data .",
     "test:stories": "node --test \"src/**/*.story.js\"",
     "test:all": "npm run test && npm run test:docs && npm run test:play && npm run test:stories && npm run knip",
     "knip": "knip --production",

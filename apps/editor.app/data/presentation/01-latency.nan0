@@ -1,0 +1,13 @@
+title: "Zero Latency Editing"
+description: "High-performance editing for large-scale knowledge bases."
+icon: "bolt"
+order: 1
+metrics:
+  latency: "0 ms"
+  performance: "100%"
+content: |
+  # Zero Latency
+  Our editor is built for speed. Using the OLMUI architecture and specialized database adapters, we achieve near-zero latency even on huge documents.
+  
+  - **Instant Preview**: Markdown renders as you type.
+  - **DB-FS Integration**: Local staging ensures no network lag.

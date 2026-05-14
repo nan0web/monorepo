@@ -1,0 +1,13 @@
+/.cache/
+/.datasets/
+chat/
+legacy/
+node_modules/
+test-auth-data/
+me.md
+
+.agent
+.vscode/
+
+# Private agent under LICENSE
+.agent/

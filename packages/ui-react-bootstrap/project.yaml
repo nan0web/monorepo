@@ -1,0 +1,81 @@
+---
+metadata:
+  description: ""
+  tags: []
+  status: planned
+  locale: uk
+sections:
+  - title: "🧭 Фаза 1: Філософія та Абстракція (The Seed)"
+    content:
+      - "1. **Місія:** Надати інструментарій для створення \"Живих Моделей\" (Living Models), де UI є лише відображенням даних."
+      - "2. **Абстракція:** Пакет не містить бізнес-логіки, лише адаптери між `@nan0web/core` та DOM."
+      - "3. **Глосарій:**"
+      - "- **Welder (Зварювальник):** Система автоматичного підключення (welding) даних до компонентів через Interface Welding Contract."
+      - "- **Variation:** Стан компонента, збережений як набір CSS-класів та пропсів."
+      - "---"
+    tasks: []
+  - title: "📐 Фаза 2: Доменне Моделювання (Data-Driven Models)"
+    content:
+      - "1. **Model-as-Schema:** Компоненти форм автоматично споживають `ProjectModel` та інші класи, генеруючи ввідні поля на основі `static` метаданих."
+      - "2. **Типи:** Підтримка складних типів, таких як `text/markdown` (через Prosemirror) та рекурсивні `Model[]`."
+      - "---"
+    tasks: []
+  - title: "🛠 Фаза 3: Верифікація Логіки (CLI-First)"
+    content:
+      - "1. **Snapshots:** Кожен React компонент покривається HTML-снепшотами для перевірки рендерингу в різних станах."
+      - "---"
+    tasks: []
+  - title: "🪐 Фаза 4: Sovereign Workbench (The Master IDE)"
+    content:
+      - "1. **OlmuiInspector:** Вбудована пісочниця для кожного компонента."
+      - "2. **Variation Manager:** Можливість зберігати та перемикати стани компонентів прямо в браузері."
+      - "---"
+    tasks: []
+  - title: "🎨 Фаза 5: Тематизація та Інтерфейси (Theming)"
+    content:
+      - "1. **Bootstrap 5:** Використання стандартних сіток та утиліт."
+      - "2. **Custom Tokens:** Керування брендами через SCSS змінні."
+      - "3. **ComponentSandbox:** Візуальний редактор стилів, інтегрований у бібліотеку."
+      - "---"
+    tasks: []
+  - title: "✅ Фаза 6: Якість та Дистрибуція (Quality & Distribution)"
+    content:
+      - "1. **ProvenDocs:** README.md.js, який демонструє кожен компонент у живих тестах."
+      - "2. **Release:** Автоматична публікація в npm."
+      - "---"
+    tasks: []
+  - title: "💎 Фаза 7: Цінність та Економіка (Value & Economy)"
+    content:
+      - "1. **Цінність:** Скорочення часу на редизайн цілої екосистеми додатків через зміну одного токена в ядрі."
+      - "---"
+    tasks: []
+  - title: "🌐 Фаза 8: Децентралізація та Суверенітет (Sovereignty)"
+    content:
+      - "1. **Self-contained:** Компоненти не потребують зовнішніх CDN або API для базового рендерингу."
+      - "---"
+    tasks: []
+  - title: "🌍 Фаза 9: Місія та Вплив (World Impact)"
+    content:
+      - "1. **Мета:** Зробити якісний фінансовий дизайн доступним для швидкої розробки суверенних додатків."
+      - "---"
+    tasks: []
+  - title: "🏁 Чек-лист готовності проєкту (Definition of Done)"
+    content: []
+    tasks:
+      - title: "General"
+        content: []
+        items:
+          - text: "Сформовано архітектурний опис (9 фаз)."
+            completed: true
+          - text: "Портовано `ComponentSandbox`."
+            completed: false
+          - text: "Покриття снепшотами 80% компонентів."
+            completed: false
+          - text: "Інтегровано IndexedDB для варіацій."
+            completed: false
+        total: 4
+        completed: 1
+stats:
+  totalTasks: 4
+  completedTasks: 1
+  progress: 25

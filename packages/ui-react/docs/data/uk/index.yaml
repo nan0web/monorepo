@@ -1,0 +1,84 @@
+title: 'NaN•UI React'
+description: 'Zero-dependency React UI бібліотека для екосистеми NaN•Web'
+tags:
+  - react
+  - ui
+  - components
+
+content:
+  - ui-header:
+      brand: 'NaN•UI React'
+      github: 'https://github.com/nicholasgasior/nan0web'
+      platformUrl: 'https://nan0web.yaro.page'
+      platformLabel: 'NaN•Web'
+  - ui-hero:
+      badge: 'v1.2.0'
+      title: 'Data-Driven React Компоненти'
+      subtitle: 'Нуль UI-залежностей. Чистий HTML + Bootstrap CSS токени. YAML-driven інтерфейси для корпоративних застосунків.'
+      install: 'npm i @nan0web/ui-react'
+      cta: 'Документація'
+      ctaHref: '#компоненти'
+  - h2: 'Можливості'
+  - ui-feature-grid:
+      items:
+        - title: 'Zero UI Dependencies'
+          description: 'Жодного react-bootstrap. Чистий HTML з Bootstrap CSS Custom Properties для максимальної продуктивності.'
+          icon: '⚡'
+        - title: 'Data-Driven UI'
+          description: 'Контент визначається в YAML/JSON файлах і автоматично рендериться через універсальний Element engine.'
+          icon: '📊'
+        - title: 'Dot-Notation Синтаксис'
+          description: 'Alert.warning.lg → CSS класи. Компактний, декларативний опис варіантів без зайвого коду.'
+          icon: '✨'
+        - title: 'Universal Blocks'
+          description: 'Nav, Sidebar, Alert, Markdown, ThemeToggle, Page — готові блоки для побудови будь-якого сайту.'
+          icon: '🧱'
+        - title: 'OLMUI Architecture'
+          description: 'One Logic — Many UI. Та сама бізнес-логіка працює в CLI, Lit, React та мобільних адаптерах.'
+          icon: '🔄'
+        - title: 'ProvenDocs'
+          description: '255 тестів (Vitest + Node.js). README.md є виконуваною специфікацією з 45 верифікованими прикладами.'
+          icon: '✅'
+  - h2: 'Компоненти'
+  - p: 'Бібліотека надає повний набір атомарних та складних компонентів:'
+  - ui-feature-grid:
+      items:
+        - title: 'Typography'
+          description: 'Семантичний рендеринг тексту (h1-h6, p) з автоматичною підтримкою YAML.'
+          icon: '📝'
+        - title: 'Button'
+          description: 'Інтерактивні кнопки з підтримкою варіантів, розмірів та dot-notation.'
+          icon: '🔘'
+        - title: 'Input / Select / Radio / Checkbox'
+          description: 'Повний набір елементів форм з Data-Driven конфігурацією.'
+          icon: '📋'
+        - title: 'Card / Modal / Table'
+          description: 'Складні контейнерні компоненти для організації контенту.'
+          icon: '🗂'
+        - title: 'TreeView / Autocomplete'
+          description: 'Ієрархічна навігація та пошук з фільтрацією.'
+          icon: '🌳'
+        - title: 'Form (renderForm)'
+          description: 'Генерація форм зі схеми — Model-as-Schema v2.'
+          icon: '📄'
+  - h2: 'Архітектура'
+  - p: 'Пакет побудований на принципах OLMUI (One Logic — Many UI) та Model-as-Schema v2.'
+  - ui-code-block:
+      language: yaml
+      code: |
+        # data/index.yaml — Data-Driven конфігурація
+        $content:
+          - Content
+        content:
+          - h1: "Ласкаво просимо"
+          - Alert.success: "Готово до роботи!"
+          - Button.primary: "Почати"
+  - ui-code-block:
+      language: jsx
+      code: |
+        // React — автоматичний рендеринг з YAML
+        import { UIReact } from '@nan0web/ui-react'
+
+        <UIReact db={db} uri="index" />
+  - h2: 'Використання'
+  - source: docs/uk/README.md

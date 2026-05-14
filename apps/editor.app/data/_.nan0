@@ -1,0 +1,12 @@
+$content:
+- Header: true
+- App.Auth: true
+- Content: true
+- Footer: true
+
+ui:
+  theme: "dark"
+  font: "Outfit"
+  i18n:
+    default: "en"
+    available: ["en", "uk"]

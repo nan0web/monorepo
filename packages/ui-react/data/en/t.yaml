@@ -1,0 +1,39 @@
+# Global translations for @nan0web/ui-react — EN
+feedback:
+  title: Feedback Form
+  field:
+    name: Your Full Name
+    contacts: Contact Information
+    position: Your Position
+    bank_employee: Bank Employee Details
+    date: Date of Incident
+    message: Additional Information
+    agreement_text: "I consent to the storage, processing, and use of my personal data in accordance with the law"
+  position:
+    bank_employee: Bank Employee
+    bank_client: Bank Client
+    business_partner: Business Partner
+    investor: Investor
+    other_interested_party: Other Interested Party
+  action:
+    submit: Submit Data
+    submitting: Submitting...
+    send_another: Send another
+  error:
+    full_name_short: |
+      Please provide your full name (minimum 3 characters)
+    contacts_missing: Please provide your contact information
+    position_missing: Please select one option
+    employee_missing: Please provide details about the bank employee
+    date_missing: Please select the date of the incident
+    message_short: Please add more information (minimum 10 characters)
+    agreement_required: |
+      We need your consent to processing personal data
+    submission_failed: Submission failed. Please try again.
+  success:
+    title: Thank You!
+    message: Your message has been sent successfully. We will review it shortly.
+
+news:
+  action:
+    read_more: Read More

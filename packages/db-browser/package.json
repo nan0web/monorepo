@@ -1,0 +1,56 @@
+{
+  "name": "@nan0web/db-browser",
+  "version": "3.0.0",
+  "description": "Browser Database client as extension of @nan0web/db",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
+    "test:coverage": "node --test --experimental-test-coverage src/",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"src/test/releases/**/*.test.js\"",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status",
+    "test:all": "npm run test; npm run test:docs && npm run build && npm run knip && npm run audit",
+    "knip": "knip --production",
+    "audit": "pnpm audit --prod || true",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "prepare": "husky",
+    "release": "nan0release publish",
+    "play": "node play/main.js"
+  },
+  "keywords": [
+    "nan0",
+    "database",
+    "browser",
+    "authentication",
+    "http",
+    "json"
+  ],
+  "author": "ЯRаСлав (YaRaSLove) <support@yaro.page>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.0",
+  "devDependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/http": "workspace:*",
+    "@nan0web/http-node": "workspace:*",
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "husky": "^9.1.7",
+    "knip": "^5.84.1"
+  },
+  "peerDependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/http": "workspace:*"
+  },
+  "dependencies": {
+    "@nan0web/log": "workspace:*"
+  }
+}

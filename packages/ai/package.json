@@ -1,0 +1,116 @@
+{
+  "name": "@nan0web/ai",
+  "version": "3.0.0",
+  "description": "Unified AI Kernel for NaN0Web ecosystem - LLM provider abstraction",
+  "type": "module",
+  "bin": {
+    "nan0ai": "bin/nan0ai.js"
+  },
+  "main": "src/index.js",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./app": {
+      "types": "./types/domain/AiAppModel.d.ts",
+      "default": "./src/domain/AiAppModel.js"
+    },
+    "./ui/cli": {
+      "types": "./types/domain/AiAppModel.d.ts",
+      "default": "./src/domain/AiAppModel.js"
+    }
+  },
+  "files": [
+    "package.json",
+    "LICENSE",
+    "README.md",
+    "bin/**/*.js",
+    "src/**/*.js",
+    "types/**/*.d.ts",
+    "!src/**/*.test.js",
+    "!src/**/*.story.js",
+    "!src/**/*.spec.js",
+    "!src/test/**",
+    "!src/README.md.js"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "prebuild": "rm -rf types",
+    "build": "tsc",
+    "test": "node --test --test-timeout=30000 'src/**/*.test.js'",
+    "test:docs": "node --test src/README.md.js",
+    "test:stories": "node --test 'src/**/*.story.js'",
+    "test:all": "npm run test && npm run test:stories && npm run test:docs && npm run build && npm run lint && npm run knip",
+    "release:spec": "node --test 'releases/**/*.spec.js'",
+    "index": "node bin/index-workspace.js",
+    "query": "node bin/search-workspace.js",
+    "search": "node bin/search-workspace.js",
+    "mcp:install": "node bin/mcp-install.js",
+    "nan0ai": "node bin/nan0ai.js",
+    "docs:dev": "nan0web dev",
+    "docs:build": "nan0web build",
+    "knip": "knip --production",
+    "lint": "prettier --check \"src/**/*.js\"",
+    "precommit": "npm test",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "chat",
+    "cerebras",
+    "openai",
+    "huggingface",
+    "openrouter"
+  ],
+  "author": "nan0web",
+  "license": "ISC",
+  "dependencies": {
+    "@ai-sdk/cerebras": "^1.0.39",
+    "@ai-sdk/google": "^3.0.52",
+    "@ai-sdk/groq": "^3.0.31",
+    "@ai-sdk/huggingface": "^1.0.37",
+    "@ai-sdk/openai": "^2.0.98",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "@openrouter/ai-sdk-provider": "^1.5.4",
+    "ai": "^5.0.150",
+    "hnswlib-node": "^3.0.0"
+  },
+  "nan0web": {
+    "workflowDir": "docs/{locale}/workflows",
+    "workflows": [
+      "anti-haste-protocol.md",
+      "architechnomag.md",
+      "cross-platform-engineering.md",
+      "docs-site.md",
+      "docs-stories.md",
+      "provendocs.md",
+      "seed-analysis.md",
+      "thinkers.md"
+    ]
+  },
+  "devDependencies": {
+    "@nan0web/test": "workspace:*",
+    "knip": "^5.86.0"
+  },
+  "knip": {
+    "ignoreDependencies": [
+      "@nan0web/ui",
+      "@modelcontextprotocol/sdk",
+      "@nan0web/db-fs"
+    ],
+    "ignore": [
+      "bin/*.js",
+      "releases/**/*.js",
+      "src/domain/AiAppModel.js",
+      "src/domain/IndexWorkspaceApp.js",
+      "src/README.md.js",
+      "types/**/*.ts"
+    ]
+  }
+}

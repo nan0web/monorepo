@@ -1,0 +1,7 @@
+.datasets/
+/chat/
+coverage/
+dist/
+node_modules/
+me.md
+reports/

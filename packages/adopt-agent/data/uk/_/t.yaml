@@ -1,0 +1,10 @@
+0HCnAI: Без-Галюцинаційний Колективний і Штучний Інтелект
+Welcome to {name}. What would you like to know?: Вітаю у {name}. Що ви хотіли б дізнатись?
+Type your "voice" query or "exit": Введіть ваш "голосовий" запит, або напишіть "exit"
+exit: exit
+Goodbye, Sovereign Master.: До побачення, Суверенний Майстре.
+I found a document matching {doc}. Here is the summary: {brief}: Я знайшла документ, що відповідає {doc}. Ось його короткий зміст: {brief}
+I searched our content database, but could not find a match. How else can I assist?: Я перевірила базу даних контенту, але не знайшла збігів. Чим ще я можу допомогти?
+Documents: Документи
+YAML Data: YAML Дані
+Theme: Тема

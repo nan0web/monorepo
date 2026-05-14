@@ -1,0 +1,111 @@
+{
+  "name": "@nan0web/ui-react-bootstrap",
+  "version": "3.0.0",
+  "type": "module",
+  "description": "Bootstrap integration for @nan0web/ui-react – declarative UI with React Bootstrap components and themes.",
+  "main": "./src/index.jsx",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./src/index.jsx"
+    },
+    "./testing": "./src/testing/index.js",
+    "./play/*": "./play/*.jsx",
+    "./play/Playground.jsx": "./play/Playground.jsx",
+    "./play/components/OlmuiInspector": "./play/components/OlmuiInspector.jsx",
+    "./play/components/OlmuiInspector.jsx": "./play/components/OlmuiInspector.jsx"
+  },
+  "files": [
+    "src/",
+    "!src/**/*.test.js",
+    "!src/**/*.test.jsx",
+    "!src/README.md.jsx",
+    "types/",
+    "!types/**/*.test.d.ts",
+    "!types/README.md.d.ts",
+    "!types/apps",
+    "docs/",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "vite",
+    "test": "npm run test:js && npm run test:jsx",
+    "test:js": "node --test \"src/**/*.test.js\"",
+    "test:jsx": "vitest run",
+    "test:docs": "vitest run src/README.md.jsx",
+    "test:status": "nan0test status --hide-name",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" \"src/**/*.test.js\"",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "release:spec": "vitest run releases/**/*.{spec,test}.jsx releases/**/*.{spec,test}.js",
+    "test:e2e": "npx playwright test",
+    "play": "vite --port 4247",
+    "precommit": "npm test",
+    "knip": "knip --production",
+    "test:all": "npm test && npm run build && npm run test:e2e && npm run knip",
+    "prepublishOnly": "npm test && npm run build",
+    "release": "npm run build && npm run test:all && npm publish"
+  },
+  "peerDependencies": {
+    "@nan0web/core": "workspace:*",
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "@nan0web/ui-react": "workspace:*",
+    "@react-input/core": "^2.0.2",
+    "bootstrap": "^5.0.0",
+    "react": "^19.0.0",
+    "react-bootstrap": "^2.0.0",
+    "react-router-dom": "^7.9.0"
+  },
+  "devDependencies": {
+    "@nan0web/core": "workspace:*",
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@nan0web/ui-react": "workspace:*",
+    "@playwright/test": "^1.50.1",
+    "@react-input/core": "^2.0.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^1.6.1",
+    "bootstrap": "^5.3.8",
+    "knip": "^5.85.0",
+    "react-bootstrap": "^2.10.10",
+    "sass": "^1.93.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@nan0web/icons": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "@nan0web/ui-react": "workspace:*",
+    "@react-input/mask": "^2.0.4",
+    "react-router": "^7.12.0",
+    "react-router-dom": "^7.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nan0web/ui-react-bootstrap.git"
+  },
+  "keywords": [
+    "ui",
+    "react",
+    "bootstrap",
+    "declarative",
+    "theme",
+    "scss",
+    "yaml"
+  ],
+  "author": "YaRaSLove <support@yaro.page>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nan0web/ui-react-bootstrap/issues"
+  },
+  "homepage": "https://github.com/nan0web/ui-react-bootstrap#readme"
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@nan0web/store",
+  "version": "3.0.0",
+  "description": "Global App Store & Registry for NaN0Web ecosystem",
+  "type": "module",
+  "bin": {
+    "nan0store": "bin/nan0store.js"
+  },
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./builder": "./src/domain/StoreBuilderApp.js"
+  },
+  "files": [
+    "package.json",
+    "LICENSE",
+    "README.md",
+    "bin/**/*.js",
+    "src/**/*.js",
+    "types/**/*.d.ts",
+    "!src/**/*.test.js",
+    "!src/**/*.spec.js"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test 'src/**/*.test.js'",
+    "build": "tsc",
+    "store:build": "node bin/nan0store.js build",
+    "lint": "prettier --check \"src/**/*.js\"",
+    "knip": "knip --production"
+  },
+  "author": "nan0web",
+  "license": "ISC",
+  "dependencies": {
+    "@nan0web/types": "workspace:*",
+    "@nan0web/i18n": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*"
+  },
+  "devDependencies": {
+    "@nan0web/test": "workspace:*",
+    "knip": "^5.86.0"
+  }
+}

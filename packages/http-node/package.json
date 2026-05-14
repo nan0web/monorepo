@@ -1,0 +1,78 @@
+{
+  "name": "@nan0web/http-node",
+  "version": "3.0.0",
+  "description": "Node.js HTTP client and server built on native modules with minimal dependencies.",
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
+  "type": "module",
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/README.md.js",
+    "types/**/*.d.ts"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./client": {
+      "import": "./src/client/index.js",
+      "types": "./types/client/index.d.ts"
+    },
+    "./messages": {
+      "import": "./src/messages/index.js",
+      "types": "./types/messages/index.d.ts"
+    },
+    "./middlewares": {
+      "import": "./src/middlewares/index.js",
+      "types": "./types/middlewares/index.d.ts"
+    },
+    "./server": {
+      "import": "./src/server/index.js",
+      "types": "./types/server/index.d.ts"
+    },
+    "./test": {
+      "import": "./src/test/index.js",
+      "types": "./types/test/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test \"src/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "test:all": "npm run test && npm run test:docs && npm run knip",
+    "knip": "knip",
+    "lint": "tsc --noEmit",
+    "play": "node play/main.js",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "release": "nan0release publish",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules"
+  },
+  "keywords": [
+    "nano",
+    "nanoweb",
+    "nanoweb-http-node",
+    "http"
+  ],
+  "author": "ЯRаСлав YaRaSlove <support@yaro.page>",
+  "license": "ISC",
+  "devDependencies": {
+    "@nan0web/http": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "husky": "^9.1.7",
+    "knip": "^5.86.0"
+  },
+  "peerDependencies": {
+    "@nan0web/http": "workspace:*"
+  },
+  "dependencies": {
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/log": "workspace:*"
+  }
+}

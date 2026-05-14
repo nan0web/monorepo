@@ -1,0 +1,99 @@
+{
+  "name": "@nan0web/ui-cli",
+  "version": "3.0.0",
+  "description": "NaN•Web UI CLI. Command line interface for One application logic (algorithm) and many UI.",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "type": "module",
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/**/README.md.js",
+    "types/**/*.d.ts",
+    "!types/**/README.md.d.ts",
+    "bin/**/*.js"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./test": {
+      "import": "./src/ui/test/index.js",
+      "types": "./types/ui/test/index.d.ts"
+    },
+    "./domain": {
+      "import": "./src/domain/index.js",
+      "types": "./types/domain/index.d.ts"
+    },
+    "./app": {
+      "import": "./src/domain/App.js"
+    },
+    "./cli": "./src/domain/App.js",
+    "./ui/cli": "./src/domain/App.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:docs": "node bin/build-docs.mjs",
+    "test": "node --test --test-timeout=10000 \"src/**/*.test.js\"",
+    "test:nan0test": "node --test --test-timeout=10000 \"src/**/*.test.js\" | nan0test parse --fail",
+    "test:coverage": "node --experimental-test-coverage --test-timeout=10000 --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:docs": "node --test --test-timeout=10000 src/README.md.js",
+    "test:release": "node --test --test-timeout=10000 \"releases/**/*.spec.js\" \"releases/**/*.test.js\"",
+    "test:status": "nan0test status --hide-name --debug",
+    "test:play": "UI_SNAPSHOT=1 node --test --test-concurrency=1 --test-timeout=15000 play/main.test.js",
+    "test:i18n": "node ../i18n/bin/i18n.js audit",
+    "test:all": "npm run test && npm run test:docs && npm run test:play && (npm run test:i18n || echo \"⚠️  I18n Audit Skipped due to noise\") && npm run build && npm run knip",
+    "test:all1": "npm run test && npm run test:docs && npm run test:status && npm run test:play && npm run build",
+    "knip": "knip --production",
+    "play": "node bin/nan0cli.js --data play/data",
+    "play:v1": "node play/main.js",
+    "play:v2": "node play/main.js --demo=v2",
+    "play:mask": "node play/main.js --demo=mask",
+    "play:all": "node play/main.js",
+    "play:sortable": "node play/main.js --demo=sortable",
+    "precommit": "npm run format && npm test && npm run test:i18n",
+    "prepush": "npm run test:all",
+    "release": "nan0release publish",
+    "format": "prettier --write \"src/**/*.js\"",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules"
+  },
+  "keywords": [
+    "ui",
+    "cli",
+    "input",
+    "adapter"
+  ],
+  "author": "ЯRаСлав (YaRaSLove) <support@yaro.page>",
+  "license": "ISC",
+  "bin": {
+    "nan0cli": "bin/nan0cli.js",
+    "nan0cli2": "bin/cli.js",
+    "nan0gallery": "bin/gallery.js"
+  },
+  "devDependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/i18n": "workspace:*",
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@types/node": "^24.12.0",
+    "knip": "^5.86.0",
+    "prettier": "^3.8.1"
+  },
+  "dependencies": {
+    "@nan0web/event": "workspace:*",
+    "@nan0web/icons": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "prompts": "^2.4.2"
+  },
+  "peerDependencies": {
+    "@nan0web/core": "workspace:*",
+    "@nan0web/db": "workspace:*",
+    "@nan0web/ui": "workspace:*"
+  }
+}

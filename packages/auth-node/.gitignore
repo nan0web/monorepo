@@ -1,0 +1,12 @@
+chat/
+legacy/
+node_modules/
+test-auth-data/
+me.md
+play-data/
+auth-data/
+test-play-data/
+
+# Test artifacts
+.datasets/
+.cache/

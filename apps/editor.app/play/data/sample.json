@@ -1,0 +1,9 @@
+{
+	"title": "Архітектура Редактора",
+	"description": "Цей документ описує принципи роботи рекурсивного редактора на базі Lit.",
+	"operators": ["Inheritance", "Reference", "Clear"],
+	"metadata": {
+		"version": "1.1.0",
+		"author": "ЯRаСлав"
+	}
+}

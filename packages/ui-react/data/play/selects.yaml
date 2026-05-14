@@ -1,0 +1,30 @@
+$content:
+  - h1: Select Component
+  - p: Select components allow users to choose from a list of options.
+  - h2: Basic Select (with Tooltip)
+  - Select: true
+    $title: Choose your favorite option
+    $options:
+      - value: option1
+        label: Option 1
+      - value: option2
+        label: Option 2
+      - value: option3
+        label: Option 3
+  - h2: Dynamic Select (Object Options)
+  - Select: true
+    $options:
+      - value: ruby
+        label: Ruby ❤️
+      - value: js
+        label: JavaScript 🚀
+      - value: python
+        label: Python 🐍
+  - h2: Simple Select (Strings)
+  - Select: true
+    $options:
+      - Apple
+      - Banana
+      - Cherry
+  - a: ← All Components
+    $href: /play/index.html

@@ -1,6 +1,6 @@
-import { suite, it, beforeEach, afterEach } from 'node:test'
+import { suite, it, beforeEach, afterEach, before, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { existsSync, writeFileSync, unlinkSync, mkdirSync, rmdirSync } from 'node:fs'
+import { existsSync, writeFileSync, unlinkSync, mkdirSync, rmSync } from 'node:fs'
 import path from 'node:path'
 import { loadJSON, saveJSON, toJSON, fromJSON } from './json.js'
 import TestDir from '../test.js'
@@ -15,14 +15,17 @@ suite('JSON Tests', () => {
 	const tmpJSON = path.join(tmpDir, 'test.json')
 	const brokenJSON = path.join(tmpDir, 'broken.json')
 
-	beforeEach(() => {
-		mkdirSync(tmpDir, { recursive: true })
+	before(() => {
+		testDir.erase()
+	})
+
+	after(() => {
+		if (existsSync(tmpDir)) rmSync(tmpDir, { recursive: true, force: true })
 	})
 
 	afterEach(() => {
 		if (existsSync(tmpJSON)) unlinkSync(tmpJSON)
 		if (existsSync(brokenJSON)) unlinkSync(brokenJSON)
-		if (existsSync(tmpDir)) rmdirSync(tmpDir)
 	})
 
 	it('should parse valid JSON correctly using fromJSON', () => {

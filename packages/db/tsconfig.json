@@ -2,7 +2,9 @@
 	"compilerOptions": {
 		"target": "esnext",
 		"module": "esnext",
-		"lib": ["esnext"],
+		"lib": [
+			"esnext"
+		],
 		"declaration": true,
 		"declarationMap": false,
 		"emitDeclarationOnly": true,
@@ -18,6 +20,13 @@
 		"allowJs": true,
 		"checkJs": true
 	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "src/**/*.test.js", "src/docs/**/*"]
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"**/*.test.js",
+		"**/*.story.js",
+		"src/test"
+	]
 }

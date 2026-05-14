@@ -1,0 +1,27 @@
+{
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"entry": [
+		"src/index.js",
+		"bin/inspect.js",
+		"src/docs/README.md.js",
+		"src/domain/ProjectModel.js",
+		"src/domain/app/js/*.js",
+		"src/domain/app/python/*.js"
+	],
+	"ignore": [
+		"releases/**/*.js",
+		"releases/**/*.spec.js",
+		"releases/**/*.test.js",
+		"scratch/**/*.js",
+		"types/**",
+		"src/domain/app/.madge-worker-*.js",
+		"src/domain/app/.madge-worker-*.mjs",
+		"src/domain/app/Discovery.js"
+	],
+	"ignoreDependencies": [
+		"@nan0web/types",
+		"@nan0web/ui",
+		"@nan0web/protocol",
+		"@nan0web/icons"
+	]
+}

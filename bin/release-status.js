@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { execSync } from 'node:child_process'
 import process from 'node:process'
-import { Command, CommandMessage, CommandOption } from '@nan0web/co'
+import { Command, CommandMessage, CommandOption } from '@nan0web/types'
 import { FilterString } from '@nan0web/types'
 import Logger from '@nan0web/log'
 import DB from '@nan0web/db-fs'

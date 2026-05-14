@@ -1,0 +1,22 @@
+system:
+  name: "@nan0web/editor.app"
+  version: "0.1.0"
+  dsn: "fs:./data"
+  root: "./"
+
+apps:
+  editor:
+    package: "@nan0web/editor.app"
+    mount: "/editor"
+    handles: [".md", ".yaml", ".nan0"]
+  presentation:
+    package: "@nan0web/editor.app"
+    mount: "/"
+    handles: ["PresentationModel", "Document"]
+    config:
+      path: "presentation"
+
+paths:
+  data: "./data"
+  docs: "./docs"
+  public: "./public"

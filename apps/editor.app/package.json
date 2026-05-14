@@ -1,0 +1,51 @@
+{
+  "name": "@nan0web/editor.app",
+  "version": "3.0.0",
+  "description": "Editor Application hosting UI adapters and complex logic",
+  "license": "ISC",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nan0web/nan.web.git",
+    "directory": "apps/editor.app"
+  },
+  "bugs": {
+    "url": "https://github.com/nan0web/nan.web/issues"
+  },
+  "homepage": "https://nan0web.app",
+  "keywords": [
+    "nan0web",
+    "editor",
+    "polymorphic",
+    "ui-cli",
+    "lit"
+  ],
+  "bin": {
+    "nan0-editor": "./src/ui/cli/main.js"
+  },
+  "scripts": {
+    "play": "vite",
+    "build": "vite build",
+    "docs": "node --test src/docs/README.md.js",
+    "test": "node --test src/domain/*.test.js",
+    "test:e2e": "playwright test",
+    "test:report": "playwright show-report",
+    "test:all": "npm run docs && npm test",
+    "gallery": "node scripts/gen-gallery.js"
+  },
+  "dependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/editor": "workspace:*",
+    "@nan0web/ui-lit": "workspace:*",
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@playwright/test": "^1.58.2",
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^6.4.1"
+  }
+}

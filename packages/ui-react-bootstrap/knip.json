@@ -1,0 +1,15 @@
+{
+	"ignore": [
+		"play/**",
+		"types/**",
+		"scss/**",
+		"vitest.setup.js",
+		"src/**/*.test.jsx",
+		"src/**/*.test.js",
+		"src/specs/**",
+		"src/theme/**",
+		"**/*.scss"
+	],
+	"ignoreDependencies": ["@nan0web/icons", "@nan0web/ui", "@nan0web/ui-react", "react-router", "prop-types"],
+	"ignoreExportsUsedInFile": true
+}

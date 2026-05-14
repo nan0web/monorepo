@@ -1,0 +1,219 @@
+title: Bootstrap Playground
+$lang: uk
+$layout: Default
+nav:
+  items:
+    - title: Home
+      href: /
+    - title: Components
+      href: #components
+      items:
+        - title: Button
+          href: #buttons
+        - title: Card
+          href: #cards
+$content:
+  - Header.Header: true
+  - Promo:
+      children:
+        - title: Welcome to Nan0web
+          text: The most powerful declarative UI system.
+          image: https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop
+          href: #learn
+          btnText: Discover More
+  - h1: Playground
+  - hr: true
+  - h2: Typography
+  - Typography:
+      variant: body
+      children: 'Typography component with different variants:'
+  - Typography:
+      variant: h1
+      children: Heading 1
+  - Typography:
+      variant: h2
+      children: Heading 2
+  - Typography:
+      variant: h3
+      children: Heading 3
+  - Typography:
+      variant: body
+      children: Body text
+  - Typography:
+      variant: small
+      children: Small text
+  - Typography:
+      variant: caption
+      children: Caption text
+  - hr: true
+  - h2: Buttons
+  - Typography:
+      variant: body
+      children: 'Button component with different variants, sizes, and outline styles:'
+  - Button: Primary
+    $variant: primary
+    $size: md
+  - Button: Primary Outline
+    $variant: primary
+    $size: md
+    $outline: true
+  - Button: Secondary
+    $variant: secondary
+    $size: sm
+  - Button: Secondary Outline Large
+    $variant: secondary
+    $size: lg
+    $outline: true
+  - Button: Success
+    $variant: success
+    $size: lg
+  - Button: Danger Disabled
+    $variant: danger
+    $size: md
+    $disabled: true
+  - Button: Warning Outline
+    $variant: warning
+    $size: sm
+    $outline: true
+  - Button: Info
+    $variant: info
+    $size: md
+  - Button: Light
+    $variant: light
+    $size: lg
+  - Button: Dark Outline
+    $variant: dark
+    $size: sm
+    $outline: true
+  - hr: true
+  - h2: Inputs
+  - Typography:
+      variant: body
+      children: 'Input component with different types:'
+  - Input:
+      type: text
+      placeholder: Text input
+  - Input:
+      type: password
+      placeholder: Password input
+  - Input:
+      type: email
+      placeholder: Email input
+  - Input:
+      type: number
+      placeholder: Number input
+  - Input:
+      type: textarea
+      placeholder: Textarea
+      as: textarea
+  - hr: true
+  - h2: Cards
+  - Typography:
+      variant: body
+      children: 'Card component with nested content:'
+  - Card:
+      children:
+        - Typography:
+            variant: h3
+            children: Card Title
+        - Typography:
+            variant: body
+            children: >
+              This is a sample card body with some text and a button inside.
+        - Button: Card Button
+          $variant: primary
+  - Card:
+      children:
+        - Typography:
+            variant: body
+            children: 'Another card with input:'
+        - Input:
+            type: text
+            placeholder: Input inside card
+  - hr: true
+  - h2: Modals
+  - Typography:
+      variant: body
+      children: 'Modal component example (click button to open):'
+  - Button: Open Modal
+    $variant: primary
+    $onClick: openModal
+  - Modal:
+      $isOpen: isModalOpen
+      $onClose: setIsModalOpen(false)
+      children:
+        - Typography:
+            variant: h3
+            children: Modal Title
+        - Typography:
+            variant: body
+            children: >
+              This is the modal body. It can contain any components like buttons or inputs.
+        - Button: Close Modal
+          $variant: secondary
+          $onClick: setIsModalOpen(false)
+        - Button: Action Button
+          $variant: primary
+  - hr: true
+  - Typography:
+      variant: body
+      children: >
+        This playground demonstrates declarative rendering of UI components using YAML structures from data/index.yaml,
+        transformed to JSON at build time. Edit the YAML and run `pnpm build-data` to update examples, similar to Bootstrap docs.
+  - hr: true
+  - h2: General Components
+  - Heading:
+      title: Page Heading Example
+      description: This is a subtitle for the heading component
+  - hr: true
+  - h2: Contact Elements
+  - Typography:
+      variant: body
+      children: 'Telephone, Email, and Address components:'
+  - Telephone:
+      no: '+1 (555) 123-4567'
+  - Email:
+      email: 'contact@example.com'
+  - Address:
+      address: '123 Main Street, Kyiv, Ukraine'
+  - hr: true
+  - h2: Icons
+  - Icon:
+      name: 'mobile'
+      size: 32
+  - Icon:
+      name: 'mail'
+      size: 32
+  - Icon:
+      name: 'pin'
+      size: 32
+  - hr: true
+  - h2: Loading Indicator
+  - Loading:
+      text: 'Please wait...'
+  - hr: true
+  - h2: Accordion
+  - Accordion:
+      items:
+        - title: 'First Section'
+          content: 'This is the content of the first accordion item.'
+        - title: 'Second Section'
+          content: 'This is the content of the second accordion item.'
+  - hr: true
+  - h2: Blog
+  - Blog:
+      posts:
+        - title: 'First Blog Post'
+          excerpt: 'This is a short excerpt from the blog post.'
+          href: '#post1'
+        - title: 'Second Blog Post'
+          excerpt: 'Another interesting blog post excerpt.'
+          href: '#post2'
+  - hr: true
+  - h2: Contacts
+  - Contacts:
+      contact:
+        tel: '+380 44 123 4567'
+        email: 'info@industrialbank.ua'
+        address: 'вул. Хрещатик 1, Київ, Україна'
+  - Footer.Footer: true

@@ -1,0 +1,22 @@
+$content:
+  - h1: Card Component
+  - p: Card components provide a container for related content with consistent
+      styling.
+  - h2: Basic Card
+  - Card:
+      - h3: Card title
+      - p: Card content goes here.
+  - h2: Card with Image
+  - Card:
+      - img: true
+        $src: /play/sample-image.png
+        $alt: Sample image
+        $style:
+          width: 100%
+          maxHeight: 300px
+          height: auto
+          objectFit: contain
+          borderRadius: 8px 8px 0 0
+      - p: Card with an image.
+  - a: ← All Components
+    $href: /play/index.html

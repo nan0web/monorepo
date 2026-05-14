@@ -1,0 +1,4 @@
+{
+	"entry": ["src/index.js"],
+	"ignore": ["play/**", "src/README.md.js", "types/**"]
+}

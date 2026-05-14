@@ -3,12 +3,13 @@ import assert from 'node:assert/strict'
 import FS from './index.js'
 import { NoConsole } from '@nan0web/log'
 import { DocsParser, DatasetParser } from '@nan0web/test'
+import os from 'node:os'
 import { rmSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { resolve, join } from 'node:path'
 
 class DBFS extends FS {
 	constructor(input) {
-		super({ ...input, cwd: resolve(process.cwd(), '__test_fs__') })
+		super({ ...input, cwd: join(os.tmpdir(), 'nan0web-db-fs-readme') })
 	}
 }
 
@@ -21,6 +22,11 @@ const fs = new DBFS({ root: '.' })
 before(async () => {
 	const doc = await rootFs.loadDocument('package.json', {})
 	pkg = doc || {}
+	const testDir = fs.absolute()
+	rmSync(testDir, { recursive: true, force: true })
+})
+
+after(() => {
 	const testDir = fs.absolute()
 	rmSync(testDir, { recursive: true, force: true })
 })

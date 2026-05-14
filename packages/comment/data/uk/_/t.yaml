@@ -1,0 +1,65 @@
+# @nan0web/comment — Ukrainian translations
+# Auto-extracted from CommentModel.js static UI, help, abort, mode.options
+
+# ─── Field Help ───
+targetRef_help: CSS-селектор або ID елемента для коментування
+text_help: Текст коментаря (підтримує markdown)
+author_help: Ім'я або ідентифікатор автора
+url_help: URL-адреса сторінки, на якій залишено коментар
+timestamp_help: Час створення (ISO 8601)
+viewport_help: Розмір екрану на момент коментування
+mode_help: Режим активації оверлею коментарів
+
+# ─── Mode Options ───
+mode_off: Вимкнено
+mode_url: URL-параметр
+mode_hotkey: Гаряча клавіша (Alt/Option)
+mode_toggle: Перемикач навігації
+
+# ─── Labels ───
+label_title: Коментар
+label_activate: Увімкнути режим коментування
+label_deactivate: Вимкнути режим коментування
+label_spotlight: Spotlight активний — наведіть для підсвічування, клікніть для коментаря
+label_select_element: Клікніть на елемент, щоб додати коментар
+label_form_title: Новий коментар
+label_badge: 💬
+label_badge_count: "{count} коментарів"
+label_saved: Коментар збережено
+label_deleted: Коментар видалено
+label_no_comments: Коментарів ще немає
+label_read_comment: "{author}: {text}"
+label_timestamp: "Створено: {time}"
+
+# ─── Dashboard ───
+label_dashboard: Панель коментарів
+label_export: Експорт JSON
+label_import: Імпорт JSON
+label_clear: Очистити всі коментарі
+label_exported: "Експортовано {count} коментарів"
+label_imported: "Імпортовано {count} коментарів"
+label_cleared: Усі коментарі очищено
+
+# ─── Errors ───
+error_text_required: Текст коментаря не може бути порожнім
+error_no_target: Не обрано жодного елемента
+error_save_failed: "Не вдалося зберегти коментар: {message}"
+error_import_invalid: Невірний формат файлу імпорту
+error_export_empty: Немає коментарів для експорту
+
+# ─── Progress ───
+progress_init: Ініціалізація оверлею коментарів...
+progress_saving: Збереження коментаря...
+progress_loading: Завантаження коментарів...
+progress_exporting: Експорт коментарів...
+progress_importing: Імпорт коментарів...
+progress_clearing: Очищення всіх коментарів...
+
+# ─── Icons ───
+icon_submit: ✓
+icon_cancel: ✕
+icon_close: Закрити
+
+# ─── Abort ───
+abort_user_cancelled: Коментар скасовано користувачем
+abort_escape_pressed: Закрито через Escape

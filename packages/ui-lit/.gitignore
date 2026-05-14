@@ -1,0 +1,11 @@
+# Build artifacts
+dist/
+.cache/
+
+# Node
+node_modules/
+
+# AI / LLiMo artifacts
+chat/
+me.md
+.datasets/

@@ -1,0 +1,24 @@
+{
+  "name": "@nan0web/catalog",
+  "version": "3.0.0",
+  "description": "Universal catalog engine for NaN0Web — filtering, search, and data thinkers",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./react": "./src/ui-react/index.js"
+  },
+  "scripts": {
+    "test": "node --test src/**/*.test.js"
+  },
+  "dependencies": {
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/db-fs": "workspace:*"
+  },
+  "devDependencies": {
+    "react": "^19.2.4"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "type": "module"
+}

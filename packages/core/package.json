@@ -1,0 +1,63 @@
+{
+  "name": "@nan0web/core",
+  "version": "3.0.0",
+  "description": "Core application framework for nan0web with database handling, internationalization, and interface connectivity",
+  "type": "module",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/README.md.js",
+    "types/**/*.d.ts"
+  ],
+  "scripts": {
+    "build": "rm -rf types && tsc",
+    "clean": "rm -rf .cache/ && rm -rf dist/ && rm -rf types/",
+    "clean:modules": "rm -rf node_modules",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "prepublishOnly": "npm test && npm run build",
+    "play": "node play/main.js",
+    "release": "nan0release publish",
+    "knip": "knip --production",
+    "test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status --hide-name",
+    "test:all": "npm run test && npm run test:docs && npm run build && npm run knip"
+  },
+  "keywords": [
+    "nan0",
+    "data",
+    "types",
+    "utilities",
+    "object",
+    "array",
+    "validation",
+    "format",
+    "parser"
+  ],
+  "author": "ЯRаСлав YaRaSLove <support@yaro.page>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "husky": "^9.1.7",
+    "knip": "^5.86.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/i18n": "workspace:*",
+    "@nan0web/types": "workspace:*"
+  }
+}

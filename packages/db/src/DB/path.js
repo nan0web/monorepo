@@ -239,8 +239,8 @@ export function extname(uri) {
  * @returns {string} Relative path
  */
 export function relative(from, to) {
-	// Pure relative inputs – the test expects `to` unchanged.
-	if (!from.startsWith('/')) {
+	// If target or base is already relative, return target as is.
+	if (!from.startsWith('/') || !to.startsWith('/')) {
 		return to
 	}
 

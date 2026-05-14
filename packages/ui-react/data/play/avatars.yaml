@@ -1,0 +1,59 @@
+$content:
+  - h1: Avatar Component
+  - p: Avatars display user images with consistent styling and sizing.
+  - h2: Basic Usage
+  - p: Default avatar — requires src and alt.
+  - Avatar: []
+    $src: /pic.webp
+    $alt: User Picture
+  - h2: Avatar Sizes
+  - p: Size is not yet implemented via prop, but can be extended in theme.
+  - Avatar: []
+    $src: /pic.webp
+    $alt: Small
+    $style:
+      width: 2rem
+      height: 2rem
+  - Avatar: []
+    $src: /pic.webp
+    $alt: Large
+    $style:
+      width: 4rem
+      height: 4rem
+  - h2: With Fallback Text
+  - p: 'Future: support fallback initials when no image.'
+  - div: AB
+    $style:
+      width: 2.5rem
+      height: 2.5rem
+      borderRadius: 9999px
+      background: '#ddd'
+      display: flex
+      alignItems: center
+      justifyContent: center
+  - h2: Grouped Avatars
+  - p: Overlap multiple avatars for group displays.
+  - div:
+      - Avatar: []
+        $src: /pic.webp
+        $alt: User 1
+        $style:
+          position: relative
+          zIndex: 3
+      - Avatar: []
+        $src: /pic.webp
+        $alt: User 2
+        $style:
+          position: relative
+          zIndex: 2
+          marginLeft: -1rem
+      - Avatar: []
+        $src: /pic.webp
+        $alt: User 3
+        $style:
+          position: relative
+          zIndex: 1
+          marginLeft: -1rem
+  - h2: Back to Playground
+  - a: ← All Components
+    $href: /play/index.html

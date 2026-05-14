@@ -1,0 +1,37 @@
+# @nan0web/catalog-watch — Українські переклади
+# Джерело: CatalogIndexModel.UI + CatalogWatcherModel.UI
+
+CatalogIndexModel:
+  progress_scanning: "Сканування каталогу..."
+  progress_hashing: "Хешування вмісту (SHA-256)..."
+  progress_writing: "Запис індексного файлу..."
+  log_generated: "Індекс згенеровано"
+  log_empty: "Каталог порожній, пропускаємо"
+  error_no_catalog: "Назва каталогу обовʼязкова"
+  error_no_root: "Кореневий каталог обовʼязковий"
+  label_version: "в{version}"
+  label_items: "{count} елементів"
+  label_hash: "хеш: {hash}"
+
+CatalogWatcherModel:
+  label_watching: "Спостереження"
+  label_updated: "Каталог оновлено!"
+  label_unchanged: "Без змін"
+  label_checking: "Перевірка оновлень..."
+  label_error: "Помилка перевірки"
+  label_interval: "Перевіряти кожні {interval} с"
+  label_lastCheck: "Остання перевірка: {time}"
+  label_items: "{count} елементів"
+  label_version: "в{version}"
+  label_download: "Завантажити зараз?"
+  label_downloaded: "Каталог успішно завантажено"
+  label_skipped: "Оновлення пропущено користувачем"
+  label_next_check: "Наступна перевірка через {seconds} с"
+  error_no_url: "URL спостерігача обовʼязковий"
+  error_fetch: "Помилка завантаження індексу: {message}"
+  error_parse: "Помилка розбору індексу: {message}"
+  progress_init: "Ініціалізація спостерігача..."
+  progress_checking: "Перевірка {url}..."
+  abort:
+    user_cancelled: "Спостереження скасовано користувачем"
+    timeout: "Час спостереження вичерпано"

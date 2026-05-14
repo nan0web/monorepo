@@ -1,0 +1,5 @@
+{
+	"name": "Yaroslav",
+	"role": "Lead Architect",
+	"location": { "$ref": "data/locations/kyiv" }
+}

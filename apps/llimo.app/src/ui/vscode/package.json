@@ -1,0 +1,47 @@
+{
+  "name": "llimo-vscode",
+  "displayName": "LLiMo Voice Orchestrator",
+  "description": "Універсальний Runner (webview контейнер) для OLMUI екосистеми",
+  "version": "3.0.0",
+  "publisher": "nan0web",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "main": "./extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "llimo.startRunner",
+        "title": "LLiMo: Відкрити Voice Runner",
+        "category": "LLiMo"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "llimo-explorer",
+          "title": "LLiMo Runner",
+          "icon": "$(robot)"
+        }
+      ]
+    },
+    "views": {
+      "llimo-explorer": [
+        {
+          "type": "webview",
+          "id": "llimo-runner-view",
+          "name": "Voice Orchestrator"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "package": "vsce package",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0"
+  }
+}

@@ -1,0 +1,22 @@
+node_modules
+/dist/
+/.cache/
+/.vscode/
+/.datasets/
+
+
+# Chat
+/chat/
+agent.md
+me.md
+
+.env
+
+test-step*.txt
+prompt.md
+
+# Private agent under LICENSE
+.agent/
+.llimo-gallery.md
+.llimo-workflow.log
+.llimo-error.log

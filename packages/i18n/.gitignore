@@ -1,0 +1,12 @@
+/coverage/
+/node_modules/
+/.datasets/
+/reports/
+# Chat
+/chat/
+/llm/
+/me.md
+.vscode/
+
+# Private agent under LICENSE
+.agent/

@@ -1,0 +1,91 @@
+{
+  "name": "@nan0web/ui-react",
+  "version": "3.0.0",
+  "description": "React UI components for nan0web with SSG and SSR support",
+  "main": "./src/index.jsx",
+  "types": "./types/index.d.ts",
+  "type": "module",
+  "bin": {
+    "nan0play": "./bin/nan0play.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./src/index.jsx"
+    },
+    "./vite": {
+      "types": "./types/vite/index.d.ts",
+      "default": "./src/vite/index.js"
+    },
+    "./testing": "./src/testing/index.js"
+  },
+  "scripts": {
+    "build": "rm -rf types && tsc -p tsconfig.json && vite build",
+    "dev": "vite",
+    "play": "node scripts/play.js 4246 .port",
+    "preview": "vite preview",
+    "docs:dev": "npx nan0web serve --dsn docs/ --port 4247",
+    "docs:build": "npx nan0web build --dsn docs/",
+    "i18n": "i18n audit && i18n sync",
+    "inspect:playground": "node scripts/inspect-playground.js",
+    "test": "npm run test:js && npm run test:jsx",
+    "test:js": "node --test --test-timeout=6333 --test-reporter=tap \"src/**/*.test.js\"",
+    "test:docs": "vitest run src/README.md.jsx",
+    "test:jsx": "vitest run",
+    "test:debug": "vitest --inspect --no-file-parallelism",
+    "test:all": "npm run test && npm run test:docs",
+    "lint": "eslint src/**",
+    "check": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "ssg",
+    "ssr",
+    "nan0web"
+  ],
+  "author": "nan0web",
+  "license": "ISC",
+  "dependencies": {
+    "@nan0web/auth-core": "workspace:*",
+    "@nan0web/core": "workspace:*",
+    "@nan0web/db": "workspace:*",
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "marked": "^15.0.0",
+    "prop-types": "^15.8.1",
+    "react-icons": "^5.4.0"
+  },
+  "devDependencies": {
+    "@nan0web/auth-core": "workspace:*",
+    "@nan0web/comment": "workspace:*",
+    "@nan0web/core": "workspace:*",
+    "@nan0web/db": "workspace:*",
+    "@nan0web/db-browser": "workspace:*",
+    "@nan0web/i18n": "workspace:*",
+    "@nan0web/icons": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "@nan0web/nan0web.app": "workspace:*",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.16.0",
+    "eslint-plugin-react": "^7.37.2",
+    "js-yaml": "^4.1.1",
+    "jsdom": "^25.0.1",
+    "lit": "^3.3.2",
+    "playwright": "^1.49.1",
+    "sass": "^1.83.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.1.1",
+    "vitest": "^4.1.6"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}

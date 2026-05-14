@@ -1,0 +1,13 @@
+{
+	"$schema": "https://unpkg.com/knip@latest/schema.json",
+	"entry": [
+		"src/index.js",
+		"src/core/index.js",
+		"src/react/index.jsx",
+		"src/lit/index.js",
+		"src/cli/index.js"
+	],
+	"project": ["src/**/*.js", "src/**/*.jsx"],
+	"ignore": ["types/**", "src/**/*.test.js", "src/**/*.test.jsx", "src/README.md.js"],
+	"ignoreDependencies": ["husky"]
+}

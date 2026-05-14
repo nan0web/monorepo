@@ -1,0 +1,7 @@
+{
+	"borderRadius": "lg",
+	"boxShadow": "md",
+	"padding": "lg",
+	"backgroundColor": "background",
+	"borderColor": "muted"
+}

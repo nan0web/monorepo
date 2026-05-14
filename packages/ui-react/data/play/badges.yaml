@@ -1,0 +1,24 @@
+$content:
+  - h1: Badge Component
+  - p: Badges are used to highlight small pieces of information like status, tags,
+      or notifications.
+  - h2: Primary Badge
+  - Badge: Primary
+    $variant: primary
+  - h2: Secondary Badge
+  - Badge: Secondary
+    $variant: secondary
+  - h2: Success Badge
+  - Badge: Success
+    $variant: success
+  - h2: Warning Badge
+  - Badge: Warning
+    $variant: warning
+  - h2: Danger Badge
+  - Badge: Danger
+    $variant: danger
+  - h2: Info Badge
+  - Badge: Info
+    $variant: info
+  - a: ← All Components
+    $href: /play/index.html

@@ -1,0 +1,68 @@
+{
+  "name": "@nan0web/markdown",
+  "version": "3.0.0",
+  "description": "Markdown parser for nan0web",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "type": "module",
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/**/*.story.js",
+    "!src/docs/",
+    "dist/types/**/*.d.ts"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./*": "./src/*",
+    "./inspect": {
+      "import": "./src/inspect/index.js",
+      "types": "./dist/types/inspect/index.d.ts"
+    },
+    "./types/*": "./dist/types/*"
+  },
+  "scripts": {
+    "prebuild": "rm -rf types/",
+    "build": "tsc",
+    "clean": "rm -rf .cache/ dist/",
+    "clean:modules": "rm -rf node_modules",
+    "test": "node --test --test-timeout=9999 \"src/**/*.test.js\"",
+    "test:docs": "node --test --test-timeout=3333 'src/docs/**/*.md.js'",
+    "translate:docs": "nan0ai subagent 'Translate all documentation paragraph-by-paragraph using boundary format'",
+    "test:release": "node --test \"releases/**/*.spec.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status",
+    "test:all": "npm run test && npm run build && npm run test:docs && npm run knip && npm run audit",
+    "release": "nan0release publish",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "knip": "knip --production",
+    "audit": "pnpm audit",
+    "audit:docs": "nan0inspect provendocs",
+    "docs:dev": "nan0web serve --dsn docs/ --port 8080",
+    "docs:build": "nan0web build --dsn docs/",
+    "play": "node play/main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@nan0web/inspect": "workspace:*",
+    "@nan0web/log": "workspace:*",
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "@types/node": "^25.6.0",
+    "husky": "^9.1.7",
+    "knip": "^6.5.0"
+  },
+  "peerDependencies": {
+    "@nan0web/types": "workspace:*"
+  }
+}

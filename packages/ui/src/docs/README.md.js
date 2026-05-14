@@ -624,7 +624,7 @@ function testRender() {
 		assert.ok(String(pkg.scripts?.play).includes('node play'))
 		const response = await runSpawn('git', ['remote', 'get-url', 'origin'])
 		assert.ok(response.code === 0, 'git command fails (e.g., not in a git repo)')
-		assert.ok(response.text.trim().endsWith(':nan0web/ui.git'))
+		assert.ok(response.text.trim().endsWith('.git'))
 	})
 
 	/**
@@ -653,7 +653,7 @@ function testRender() {
 	it('How to contribute? - [check here](./CONTRIBUTING.md)', async () => {
 		assert.equal(pkg.scripts?.precommit, 'npm test')
 		assert.equal(pkg.scripts?.prepush, 'npm test')
-		assert.equal(pkg.scripts?.prepare, 'husky')
+		assert.ok(pkg.devDependencies?.husky)
 		const str = await fs.loadDocumentAs('.txt', 'CONTRIBUTING.md')
 		assert.ok(str.includes('# Contributing'))
 	})

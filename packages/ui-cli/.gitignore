@@ -1,0 +1,30 @@
+# System files
+.DS_Store
+/.datasets/
+.cli-sandbox*
+
+# Coverage
+coverage/
+
+# Node modules
+node_modules/
+
+# Current chat
+/chat/
+/nan0web/
+/me.md
+
+# Cursor
+.cursorrules
+
+# VSCode
+.vscode/
+
+# Snapshots (rendered into index.md galleries)
+# *.snap
+
+# Temporary
+/apps/
+
+# Private agent under LICENSE
+.agent/

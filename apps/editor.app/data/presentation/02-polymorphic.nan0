@@ -1,0 +1,15 @@
+title: "One Logic — Many UI"
+description: "Run everywhere: CLI, Web, and Native."
+icon: "layers"
+order: 2
+metrics:
+  platforms: 3
+  logic_reuse: "100%"
+content: |
+  # Polymorphic UI
+  The core `EditorModel` is completely isolated from the presentation layer. 
+  
+  This allows us to run the SAME business logic in:
+  - **Terminal (CLI)** for power users and CI pipelines.
+  - **Browser (Web)** for collaboration and visual editing.
+  - **Native Apps** for mobile and offline access.

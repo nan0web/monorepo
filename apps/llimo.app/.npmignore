@@ -1,0 +1,14 @@
+chat/
+.datasets/
+*.test.js
+**/*.test.js
+play/
+releases/
+system.md
+test-generation/
+tmp/
+.agent/
+.vscode/
+docs/
+src/test/
+src/README.md.js

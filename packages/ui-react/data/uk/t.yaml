@@ -1,0 +1,37 @@
+# Global translations for @nan0web/ui-react — UK
+feedback:
+  title: Зворотний зв'язок
+  field:
+    name: Ваше повне ім'я
+    contacts: Контактна інформація
+    position: Ваша роль
+    bank_employee: Деталі співробітника банку
+    date: Дата інциденту
+    message: Додаткова інформація
+    agreement_text: "Я даю згоду на зберігання, обробку та використання моїх персональних даних відповідно до закону"
+  position:
+    bank_employee: Співробітник банку
+    bank_client: Клієнт банку
+    business_partner: Бізнес-партнер
+    investor: Інвестор
+    other_interested_party: Інша зацікавлена сторона
+  action:
+    submit: Відправити дані
+    submitting: Надсилаю...
+    send_another: Надіслати ще раз
+  error:
+    full_name_short: Будь ласка, вкажіть повне ім'я (мінімум 3 символи)
+    contacts_missing: Будь ласка, вкажіть контактні дані
+    position_missing: Оберіть один варіант
+    employee_missing: Вкажіть деталі про співробітника
+    date_missing: Оберіть дату події
+    message_short: Додайте опис (мінімум 10 символів)
+    agreement_required: Необхідна згода на обробку даних
+    submission_failed: Помилка при відправці. Спробуйте пізніше.
+  success:
+    title: Дякуємо!
+    message: Ваше повідомлення успішно надіслано. Ми розглянемо його найближчим часом.
+
+news:
+  action:
+    read_more: Читати далі

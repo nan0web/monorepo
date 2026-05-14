@@ -1,0 +1,276 @@
+{
+	"$content": [
+		{
+			"h1": "Playground"
+		},
+		{
+			"hr": true
+		},
+		{
+			"Typography": {
+				"variant": "body",
+				"children": "Welcome to the @nan0web/ui-react-bootstrap Playground. Below are examples of all components with various usages."
+			}
+		},
+		{
+			"hr": true
+		},
+		{
+			"h2": "Typography"
+		},
+		{
+			"Typography": {
+				"variant": "body",
+				"children": "Typography component with different variants:"
+			}
+		},
+		{
+			"Typography": {
+				"variant": "h1",
+				"children": "Heading 1"
+			}
+		},
+		{
+			"Typography": {
+				"variant": "h2",
+				"children": "Heading 2"
+			}
+		},
+		{
+			"Typography": {
+				"variant": "h3",
+				"children": "Heading 3"
+			}
+		},
+		{
+			"Typography": {
+				"variant": "body",
+				"children": "Body text"
+			}
+		},
+		{
+			"Typography": {
+				"variant": "small",
+				"children": "Small text"
+			}
+		},
+		{
+			"Typography": {
+				"variant": "caption",
+				"children": "Caption text"
+			}
+		},
+		{
+			"hr": true
+		},
+		{
+			"h2": "Buttons"
+		},
+		{
+			"Typography": {
+				"variant": "body",
+				"children": "Button component with different variants, sizes, and outline styles:"
+			}
+		},
+		{
+			"Button": "Primary",
+			"$variant": "primary",
+			"$size": "md"
+		},
+		{
+			"Button": "Primary Outline",
+			"$variant": "primary",
+			"$size": "md",
+			"$outline": true
+		},
+		{
+			"Button": "Secondary",
+			"$variant": "secondary",
+			"$size": "sm"
+		},
+		{
+			"Button": "Secondary Outline Large",
+			"$variant": "secondary",
+			"$size": "lg",
+			"$outline": true
+		},
+		{
+			"Button": "Success",
+			"$variant": "success",
+			"$size": "lg"
+		},
+		{
+			"Button": "Danger Disabled",
+			"$variant": "danger",
+			"$size": "md",
+			"$disabled": true
+		},
+		{
+			"Button": "Warning Outline",
+			"$variant": "warning",
+			"$size": "sm",
+			"$outline": true
+		},
+		{
+			"Button": "Info",
+			"$variant": "info",
+			"$size": "md"
+		},
+		{
+			"Button": "Light",
+			"$variant": "light",
+			"$size": "lg"
+		},
+		{
+			"Button": "Dark Outline",
+			"$variant": "dark",
+			"$size": "sm",
+			"$outline": true
+		},
+		{
+			"hr": true
+		},
+		{
+			"h2": "Inputs"
+		},
+		{
+			"Typography": {
+				"variant": "body",
+				"children": "Input component with different types:"
+			}
+		},
+		{
+			"Input": {
+				"type": "text",
+				"placeholder": "Text input"
+			}
+		},
+		{
+			"Input": {
+				"type": "password",
+				"placeholder": "Password input"
+			}
+		},
+		{
+			"Input": {
+				"type": "email",
+				"placeholder": "Email input"
+			}
+		},
+		{
+			"Input": {
+				"type": "number",
+				"placeholder": "Number input"
+			}
+		},
+		{
+			"Input": {
+				"type": "textarea",
+				"placeholder": "Textarea",
+				"as": "textarea"
+			}
+		},
+		{
+			"hr": true
+		},
+		{
+			"h2": "Cards"
+		},
+		{
+			"Typography": {
+				"variant": "body",
+				"children": "Card component with nested content:"
+			}
+		},
+		{
+			"Card": {
+				"children": [
+					{
+						"Typography": {
+							"variant": "h3",
+							"children": "Card Title"
+						}
+					},
+					{
+						"Typography": {
+							"variant": "body",
+							"children": "This is a sample card body with some text and a button inside."
+						}
+					},
+					{
+						"Button": "Card Button",
+						"$variant": "primary"
+					}
+				]
+			}
+		},
+		{
+			"Card": {
+				"children": [
+					{
+						"Typography": {
+							"variant": "body",
+							"children": "Another card with input:"
+						}
+					},
+					{
+						"Input": {
+							"type": "text",
+							"placeholder": "Input inside card"
+						}
+					}
+				]
+			}
+		},
+		{
+			"hr": true
+		},
+		{
+			"h2": "Modals"
+		},
+		{
+			"Typography": {
+				"variant": "body",
+				"children": "Modal component example (shown open with sample content):"
+			}
+		},
+		{
+			"Modal": {
+				"isOpen": true,
+				"onClose": "function() { /* close logic */ }",
+				"children": [
+					{
+						"Typography": {
+							"variant": "h3",
+							"children": "Modal Title"
+						}
+					},
+					{
+						"Typography": {
+							"variant": "body",
+							"children": "This is the modal body. It can contain any components like buttons or inputs."
+						}
+					},
+					{
+						"Button": "Close Modal",
+						"$variant": "secondary",
+						"onClick": "function() { /* close logic */ }"
+					},
+					{
+						"Button": "Action Button",
+						"$variant": "primary"
+					}
+				]
+			}
+		},
+		{
+			"hr": true
+		},
+		{
+			"Typography": {
+				"variant": "body",
+				"children": "This playground demonstrates declarative rendering of UI components using JSON structures. Experiment by editing public/index.json!"
+			}
+		}
+	]
+}
