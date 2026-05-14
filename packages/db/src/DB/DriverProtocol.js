@@ -1,0 +1,259 @@
+import Directory from '../Directory.js'
+import DocumentStat from '../DocumentStat.js'
+import AuthContext from './AuthContext.js'
+import { extname } from './path.js'
+
+/**
+ * @typedef {Object} DriverConfig
+ * @property {string} [cwd="."] - Current working directory (base for absolute paths)
+ * @property {string} [root="."] - Root path for URI resolution
+ * @property {typeof Directory} [Directory=Directory] - Directory class with data functionality
+ * @property {DBDriverProtocol} [driver] - Next driver if current fails, undefined by default
+ */
+
+/**
+ * Base protocol for database drivers.
+ * Defines the interface for storage backends (e.g., FS, HTTP, DB engines).
+ * Optional: Implement ensureAuthorized for access control support.
+ * Subclasses should override methods for specific behavior.
+ *
+ * @class
+ */
+export default class DBDriverProtocol {
+	static Formats = {
+		loaders: [
+			(str, ext) => ('.json'.includes(ext) ? JSON.parse(str) : false),
+			// (str, ext) => [".yaml", ".yml", ".nano"].includes(ext) ? YAML.parse(str) : false,
+			(str) => str, // raw fallback
+		],
+		savers: [
+			(doc, ext) => ('.json'.includes(ext) ? JSON.stringify(doc) : false),
+			(doc) => String(doc),
+			// (doc, ext) => [".yaml", ".yml", ".nano"].includes(ext) ? YAML.stringify(doc) : false,
+		],
+	}
+	/** @type {string} */
+	cwd = '.'
+	/** @type {string} */
+	root = '.'
+	/** @type {typeof Directory} */
+	Directory = Directory
+	/** @type {DBDriverProtocol | undefined} */
+	driver
+	/**
+	 * @param {DriverConfig} config
+	 */
+	constructor(config = {}) {
+		const { cwd = this.cwd, root = this.root, Directory = this.Directory, driver } = config
+		this.cwd = String(cwd)
+		this.root = String(root)
+		this.Directory = Directory
+		this.driver = driver ? driver : undefined
+	}
+	/**
+	 * Connects to the physical environment
+	 * Initializes the driver (e.g., open connection, mount filesystem).
+	 * @param {object} [opts] - Connection options
+	 * @returns {Promise<boolean | void>} - TRUE on success, FALSE on failure, undefined if not realized.
+	 */
+	async connect(opts) {
+		if (this.driver) {
+			return await this.driver.connect(opts)
+		}
+	}
+
+	/**
+	 * Disconnects from the physical environment
+	 * Cleans up resources (e.g., close connections).
+	 * @returns {Promise<boolean | void>} - TRUE on success, FALSE on failure, undefined if not realized.
+	 */
+	async disconnect() {
+		if (this.driver) {
+			return await this.driver.disconnect()
+		}
+	}
+
+	/**
+	 * Checks access to URI
+	 * Validates permissions before operations.
+	 * @param {string} absoluteURI
+	 * @param {'r'|'w'|'d'} level
+	 * @param {AuthContext} [context=new AuthContext()]
+	 * @returns {Promise<boolean | void>} - TRUE if allowed, FALSE if denied, undefined if not realized.
+	 */
+	async access(absoluteURI, level, context = new AuthContext()) {
+		return undefined
+	}
+
+	/**
+	 * Loads a document
+	 * Reads content from storage.
+	 * @param {string} absoluteURI
+	 * @param {any} [defaultValue]
+	 * @returns {Promise<any>} - any on success, undefined on failure or if not realized.
+	 */
+	async read(absoluteURI, defaultValue) {
+		if (this.driver) {
+			return await this.driver.read(absoluteURI, defaultValue)
+		}
+		return undefined
+	}
+
+	/**
+	 * Creates a read stream for a document.
+	 * @param {string} absoluteURI
+	 * @returns {Promise<any | void>} - Stream on success, undefined on failure
+	 */
+	async stream(absoluteURI) {
+		if (this.driver && typeof this.driver.stream === 'function') {
+			const _stream = await this.driver.stream(absoluteURI)
+			if (_stream) {
+				return this.parseStream(_stream, absoluteURI)
+			}
+		}
+		return undefined
+	}
+
+	/**
+	 * Formats a raw stream into a line-by-line stream based on extension.
+	 * @param {any} _stream - Raw stream
+	 * @param {string} absoluteURI - Document URI 
+	 * @returns {any} Formatted stream
+	 */
+	parseStream(_stream, absoluteURI) {
+		const ext = extname(absoluteURI)
+		if (ext === '.jsonl') {
+			return (async function* () {
+				let buffer = ''
+				let remainder = ''
+				for await (const chunk of _stream) {
+					remainder += chunk.toString('utf-8')
+					const lines = remainder.split(/\r?\n/)
+					remainder = lines.pop() ?? ''
+					for (const line of lines) {
+						buffer += (buffer ? '\n' : '') + line
+						if (!buffer.trim()) {
+							buffer = ''
+							continue
+						}
+						try {
+							JSON.parse(buffer)
+							yield buffer
+							buffer = ''
+						} catch (e) {
+							// line is part of a multiline string, wait for more
+						}
+					}
+				}
+				if (remainder) {
+					buffer += (buffer ? '\n' : '') + remainder
+				}
+				if (buffer.trim()) {
+					try {
+						JSON.parse(buffer)
+						yield buffer
+					} catch(e) {
+						yield buffer // flush whatever is left
+					}
+				}
+			})()
+		} else if (ext === '.csv' || ext === '.csv0') {
+			return (async function* () {
+				let remainder = ''
+				for await (const chunk of _stream) {
+					remainder += chunk.toString('utf-8')
+					const lines = remainder.split(/\r?\n/)
+					remainder = lines.pop() ?? ''
+					for (const line of lines) {
+						if (line) yield line
+					}
+				}
+				if (remainder) {
+					yield remainder
+				}
+			})()
+		}
+		return _stream
+	}
+
+	/**
+	 * Saves a document
+	 * Writes content to storage.
+	 * @param {string} absoluteURI
+	 * @param {any} document
+	 * @returns {Promise<boolean | void>} - TRUE on success, FALSE on failure, undefined if not realized.
+	 */
+	async write(absoluteURI, document) {
+		if (this.driver) {
+			return await this.driver.write(absoluteURI, document)
+		}
+	}
+
+	/**
+	 * Appends a chunk to existing document or creates a new one with a chunk.
+	 * Supports streaming writes.
+	 * @param {string} absoluteURI
+	 * @param {string} chunk
+	 * @returns {Promise<boolean | void>} - TRUE on success, FALSE on failure, undefined if not realized.
+	 */
+	async append(absoluteURI, chunk) {
+		if (this.driver) {
+			return await this.driver.append(absoluteURI, chunk)
+		}
+	}
+
+	/**
+	 * Gets statistics for a document
+	 * Returns metadata like size, mtime, type.
+	 * @param {string} absoluteURI
+	 * @returns {Promise<DocumentStat | void>} - Document stats on success or failure, undefined if not realized.
+	 */
+	async stat(absoluteURI) {
+		if (this.driver) {
+			return await this.driver.stat(absoluteURI)
+		}
+	}
+
+	/**
+	 * Moves (renames) document.
+	 * @param {string} absoluteFrom
+	 * @param {string} absoluteTo
+	 * @returns {Promise<boolean | void>} - TRUE on success, FALSE on failure, undefined if not realized.
+	 */
+	async move(absoluteFrom, absoluteTo) {
+		if (this.driver) {
+			return await this.driver.move(absoluteFrom, absoluteTo)
+		}
+	}
+
+	/**
+	 * Deletes the document.
+	 * @param {string} absoluteURI - Resource URI
+	 * @returns {Promise<boolean | void>} - TRUE on success, FALSE on failure, undefined if not realized.
+	 */
+	async delete(absoluteURI) {
+		if (this.driver) {
+			return await this.driver.delete(absoluteURI)
+		}
+	}
+
+	/**
+	 * Lists directory contents if ends with / its directory, otherwise file.
+	 * @example
+	 * await driver.listDir("/etc/") // ← ["apache2/", "hosts", "passwd"]
+	 * @param {string} absoluteURI - Directory URI
+	 * @returns {Promise<string[]>}
+	 */
+	async listDir(absoluteURI) {
+		return []
+	}
+
+	/**
+	 * @param {any} input
+	 * @returns {DBDriverProtocol}
+	 */
+	static from(input) {
+		if (input && (input instanceof DBDriverProtocol || typeof input.read === 'function')) return input
+		return new DBDriverProtocol(input)
+	}
+}

@@ -1,0 +1,71 @@
+{
+  "name": "@nan0web/db",
+  "version": "3.0.0",
+  "description": "Every data becomes a database. Agnostic document database and data manipulation utilities.",
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
+  "type": "module",
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/docs/",
+    "types/**/*.d.ts"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf types",
+    "build": "tsc",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
+    "test1": "node --test \"src/**/*.test.js\" | nan0test parse --fail",
+    "test:docs": "node --test 'src/docs/**/*.md.js'",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "release:verify": "node --test \"src/test/releases/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status --hide-name",
+    "test:all": "npm run test && npm run test:docs && npm run build && npm run knip && npm run audit",
+    "knip": "knip --production",
+    "audit": "pnpm audit --prod || true",
+    "release": "nan0release publish",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "play": "node play/main.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./path": {
+      "import": "./src/DB/path.js",
+      "types": "./types/DB/path.d.ts"
+    }
+  },
+  "keywords": [
+    "data",
+    "flatten",
+    "unflatten",
+    "merge",
+    "object",
+    "utility"
+  ],
+  "author": "YaRaSLove (ЯRаСлав) <support@yaro.page>",
+  "license": "ISC",
+  "devDependencies": {
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "husky": "^9.1.7",
+    "knip": "^5.86.0"
+  },
+  "peerDependencies": {
+    "@nan0web/types": "workspace:*"
+  },
+  "dependencies": {
+    "@nan0web/log": "workspace:*"
+  }
+}

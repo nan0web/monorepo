@@ -1,0 +1,127 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [1.5.4] - 2026-05-01
+
+### Fixed
+
+- **Internal Referencing**: Updated `Data.js` to use `this` instead of `Data` for static methods, improving class extensibility and strictness.
+- **Path Imports**: Fixed relative path imports in the v1.5.3 release regression test suite.
+
+## [1.5.1] - 2026-04-26
+
+### Added
+
+- **Global Store Support**: Enhanced VFS routing to support mounting global configuration directories (e.g., `~/.nan0web/store`).
+- **OLMUI Integration**: Standardized `loadDocumentAs` to support binary and text data separation for raw piping.
+
+### Fixed
+
+- **VFS Consistency**: Покращено стабільність роботи `DBFS` при глибоких вкладеннях монтувань.
+- **Architectural Fix**: Improved `listDir` to correctly re-prefix paths when routing through mounts. This ensures that `DocumentEntry` objects returned from a mounted database have paths that are resolvable by the parent database (Total Logic Isolation).
+
+## [1.5.0] - 2026-04-19
+
+### Added
+
+- **Global Store Support**: Enhanced VFS routing to support mounting global configuration directories (e.g., `~/.nan0web/store`).
+- **OLMUI Integration**: Standardized `loadDocumentAs` to support binary and text data separation for raw piping.
+- **Streaming Formats**: Extracted and stabilized chunk fragmentation buffering to `DBDriverProtocol`. Added native robust support for `.csv0`, `.csv`, and `.jsonl` streaming formats, resolving trailing lines seamlessly.
+
+### Fixed
+
+- **VFS Consistency**: Покращено стабільність роботи `DBFS` при глибоких вкладеннях монтувань.
+- **Architectural Fix**: Improved `listDir` to correctly re-prefix paths when routing through mounts. This ensures that `DocumentEntry` objects returned from a mounted database have paths that are resolvable by the parent database (Total Logic Isolation).
+- **Type Contracts**: Addressed missing mapped array transforms for `listDir`, ensuring compliance with `DocumentEntry[]` typization expectations.
+
+### Changed
+
+- **Documentation**: Decoupled `DB` documentation generation sequence from the `DBFS` package. Stream examples now showcase native Driver architecture using isolated `MockDriver` to prevent cyclic reasoning and caching issues in the monorepo test suite.
+
+## [1.4.8] - 2026-04-10
+
+### Added
+
+- **Domain Types & Indexes**: Added `src/domain/index.js` to explicitly export `DBConfig` and `RevisionInfo`. Exported `DBProtocolName` JSDoc typedef from core entry point.
+
+### Changed
+
+- **Typization & Base**: Switched `Model` inheritance from `@nan0web/core` to the specialized `@nan0web/types` package for `DBConfig` and `RevisionInfo`. Refined JSDoc model schema definitions in both classes.
+
+## [1.4.7] - 2026-04-09
+
+### Added
+
+- **Recursive File Browsing**: implemented `DB.prototype.browse()` utility for `ls -r` style recursive directory iteration.
+
+### Fixed
+
+- **Directory Read Prevention**: `loadDocument` now strictly checks `stats.isFile` before attempting to read, safely falling back to extension resolution when paths clash with directories.
+- **Hydration Contracts Preserved**: Fixed metadata injection (`isFile: true`) in `DB.set()` to maintain compatibility with `v1.3.1` model hydration regressions.
+
+### Changed
+
+- **Dependencies**: synchronized all internal `@nan0web` package dependencies to use the `workspace:*` protocol.
+
+## [1.4.6] - 2026-04-09
+
+### Added
+
+- **Domain Models Integration**: Added robust support for DB DSN configuration detection and dynamic `RevisionInfo` tracking.
+
+## [1.4.5] - 2026-04-03
+
+### Fixed
+
+- **Root mount matching**: fixed `_findMount` to correctly handle empty path prefix (`''`) for relative paths, enabling transparent routing for root-mounted database instances.
+
+## [1.4.4] - 2026-04-03
+
+### Added
+
+- **.nan0 extension support**: officially registered `.nan0` as a valid data extension in `DB.DATA_EXTNAMES` and `Directory.DATA_EXTNAMES`.
+
+### Fixed
+
+- **Cross-driver references**: resolved circular references and deep inheritance across mounted and attached instances. Enhanced `fetch()` with `visited` tracking to prevent infinite loops.
+
+## [1.3.0] - 2026-02-25
+
+### Added
+
+- **Batch operations**: `getAll(uris[])` for parallel reads, `setAll(entries[])` for batch writes — both return `Map<string, any>`.
+- **Schema validation**: `validate(uri, data?)` checks data against Model-as-Schema static fields with `default` descriptors. Returns `{ valid, errors[] }`.
+- **Watcher support**: `watch(uri, cb)` / `unwatch(uri)` with prefix matching. Returns unsubscribe function. Fires on `set()`, `saveDocument()`, `dropDocument()`.
+- **Cache metrics**: `emit('cache', { hit, uri })` on every `get()` call for telemetry integration.
+- **Streaming fetch**: `fetchStream(uri)` returns `ReadableStream`. Base implementation wraps `fetch()` into a single-chunk stream; FS/network drivers can override for true chunked streaming.
+- **Change events**: `emit('change', { uri, type, data })` on `set()` (`type: 'set'`), `saveDocument()` (`type: 'save'`), `dropDocument()` (`type: 'drop'`).
+- **VFS mount routing**: `mount(prefix, db)` / `unmount(prefix)` with longest-prefix matching. All core operations (`get`, `set`, `stat`, `fetch`, `saveDocument`, `dropDocument`) are transparently routed through mounted DBs.
+- **Fallback chain**: `attach()` refactored — `fetch()` tries attached `dbs[]` on primary miss.
+- **Model hydration**: `model(prefix, ModelClass)` for URI-prefix-based Model registration. `fetch()` auto-hydrates via `Model.from(data)` or `new Model(data)`.
+- **`DB.isDB()` static**: duck-typing check for cross-package `instanceof` safety.
+- **`on(event, cb)` / `emit(event, data)`**: lightweight event system with `'fallback'` transparency.
+- **Knip integration**: `knip.json` config + `"knip": "knip --production"` script added to `test:all` pipeline.
+- **`$clear` array merge directive**: `Data.merge()` supports `[{ $clear: true }, ...items]` to replace inherited arrays instead of appending.
+
+### Changed
+
+- **Inheritance refactor**: inline inheritance loop extracted to `getInheritance(uri)` method for clarity and reuse.
+- **`MountableDB.js` removed**: mount logic is now native to base `DB` class.
+- **DriverProtocol tests**: expanded from flat assertions to structured `describe` blocks — 26 tests covering all protocol methods + delegation.
+- **Types cleanup**: `| undefined` annotations refined to proper optional params across `DB.d.ts`, `Data.d.ts`, `DriverProtocol.d.ts`, `path.d.ts`, `DirectoryIndex.d.ts`.
+- **Test suite**: expanded to **449 tests** (from 401), all passing. New test files: `DB.batch.test.js`, `DB.watch.test.js`.
+
+## [1.2.2] - 2026-02-13
+
+### Fixed
+
+- **Dependencies**: Added missing `@nan0web/log` dependency to `package.json` to resolve runtime errors in consuming packages.
+- **Refactoring**: internal utility functions migrated to `@nan0web/types` (clone, merge, oneOf) for better type safety and consistency.
+- **Logging**: Integrated `@nan0web/log` for standardized logging.
+- **Code Style**: Enforced project-wide formatting standards (Tabs, No Semicolons) across all source files.
+
+### Changed
+
+- Updated `devDependencies` to use caret (`^`) versioning for better compatibility.
+- Improved explicit typing in JSDoc signatures.

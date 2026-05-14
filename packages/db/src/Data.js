@@ -1,0 +1,476 @@
+/**
+ * Data manipulation utilities for flattening/unflattening objects and deep merging.
+ * Every data is stored somewhere, so manipulating with paths and parent items also provided.
+ * Supports reference handling for $ref keys in flat structures.
+ * Used internally by DB for inheritance, globals, and reference resolution.
+ *
+ * Key features:
+ * - Path-based find with array index support (e.g., 'arr/[0]/key')
+ * - Deep merge that replaces arrays and merges objects
+ * - Flatten/unflatten with custom dividers and array wrappers
+ * - Parent path extraction for hierarchical data
+ *
+ * Usage:
+ * ```js
+ * const flat = Data.flatten({ a: { b: 1 } }); // { 'a/b': 1 }
+ * const nested = Data.unflatten(flat); // { a: { b: 1 } }
+ * const merged = Data.merge({ a: 1 }, { b: 2 }); // { a: 1, b: 2 }
+ * ```
+ *
+ * Configuration:
+ * - `Data.OBJECT_DIVIDER = '/'` - Key path separator
+ * - `Data.ARRAY_WRAPPER = '[]'` - Array index wrapper
+ *
+ * @class
+ */
+class Data {
+	/** @type {string} */
+	static OBJECT_DIVIDER = '/'
+	/** @type {string} */
+	static ARRAY_WRAPPER = '[]'
+	/** @type {number} */
+	static MAX_DEEP_UNFLATTEN = 99
+	/** @type {string} */
+	static REFERENCE_KEY = '$ref'
+	/** @type {string} Unicode FRACTION SLASH used as escape for literal dividers in keys */
+	static ESCAPED_DIVIDER = '\u2215'
+
+	/**
+	 * Resets the array wrapper to default value.
+	 * @static
+	 */
+	static resetArrayWrapper() {
+		this.ARRAY_WRAPPER = '[]'
+	}
+
+	/**
+	 * Resets the object divider to default value.
+	 * @static
+	 */
+	static resetObjectDivider() {
+		this.OBJECT_DIVIDER = '/'
+	}
+
+	/**
+	 * Sets a custom array wrapper for flattening/unflattening.
+	 * @static
+	 * @param {string} wrapper - The new array wrapper.
+	 */
+	static setArrayWrapper(wrapper) {
+		this.ARRAY_WRAPPER = wrapper
+	}
+
+	/**
+	 * Sets a custom object divider for flattening/unflattening.
+	 * @static
+	 * @param {string} divider - The new object divider.
+	 */
+	static setObjectDivider(divider) {
+		this.OBJECT_DIVIDER = divider
+	}
+
+	/**
+	 * Flattens a nested object into a single-level object with path-like keys.
+	 * Preserves empty objects/arrays as-is.
+	 * @static
+	 * @param {Object} obj - The object to flatten.
+	 * @param {string} [parent=''] - Parent key prefix (used recursively).
+	 * @param {Object} [res={}] - Result object (used recursively).
+	 * @returns {Object} Flattened object with path keys.
+	 */
+	static flatten(obj, parent = '', res = {}, visited = new Set()) {
+		if (obj && typeof obj === 'object' && null !== obj) {
+			if (visited.has(obj)) return res
+			visited.add(obj)
+		}
+		for (let key in obj) {
+			if (Object.hasOwn(obj, key)) {
+				const rawKey = Array.isArray(obj)
+					? `${this.ARRAY_WRAPPER[0]}${key}${this.ARRAY_WRAPPER[1]}`
+					: key
+				// Escape literal dividers inside key names so they survive split()
+				const corrKey = this.escapeKey(rawKey)
+				const propName = parent ? `${parent}${this.OBJECT_DIVIDER}${corrKey}` : corrKey
+				if (typeof obj[key] === 'object' && null !== obj[key]) {
+					// Check if it's an empty object or array
+					if (
+						(Array.isArray(obj[key]) && obj[key].length === 0) ||
+						(!Array.isArray(obj[key]) && Object.keys(obj[key]).length === 0)
+					) {
+						res[propName] = obj[key]
+					} else {
+						this.flatten(obj[key], propName, res, visited)
+					}
+				} else {
+					res[propName] = obj[key]
+				}
+			}
+		}
+		return res
+	}
+
+	/**
+	 * Finds a value in an object by path.
+	 * Supports array indices via wrapper (e.g., '[0]').
+	 * Returns undefined if path not found or intermediate value is null/undefined.
+	 * @static
+	 * @param {string|string[]} path - The path to search (as string or array).
+	 * @param {Object} obj - The object to search in.
+	 * @returns {*} The found value or undefined.
+	 */
+	static find(path, obj) {
+		const arrPath = Array.isArray(path) ? path : this._splitAndUnescape(path)
+		let acc = obj
+		let i = 0
+		for (let key of arrPath) {
+			++i
+			if (acc === undefined || acc === null) return undefined
+			if (typeof key?.match === 'function') {
+				const arrayMatch = key.match(
+					new RegExp(`^\\${this.ARRAY_WRAPPER[0] || ''}(\\d+)\\${this.ARRAY_WRAPPER[1] || ''}$`),
+				)
+				if (arrayMatch) {
+					key = String(parseInt(arrayMatch[1], 10))
+				}
+			}
+			if (typeof acc !== 'object' || !Object.hasOwn(acc, key)) {
+				return undefined
+			}
+			const next = acc[key]
+			if ('object' === typeof next && null !== next) {
+				acc = next
+			} else {
+				return i < arrPath.length ? undefined : next
+			}
+		}
+		return acc
+	}
+
+	/**
+	 * Finds a value in an object by path, optionally skipping scalar values.
+	 * Backtracks to find nearest non-scalar parent if skipScalar=true.
+	 * @static
+	 * @param {string[]} path - The path to search.
+	 * @param {Object} obj - The object to search in.
+	 * @param {boolean} [skipScalar=false] - Whether to skip scalar values.
+	 * @returns {{value: any, path: string[]}} Object with found value and path.
+	 */
+	static findValue(path, obj, skipScalar = false) {
+		let value
+		let parentPath = path.slice()
+		let i = 0
+		do {
+			value = this.find(parentPath, obj)
+			if (skipScalar && !['object', 'function'].includes(typeof value)) {
+				value = undefined
+				parentPath = []
+				break
+			}
+			if (undefined === value) {
+				// @todo cover with a test.
+				parentPath.pop()
+			}
+		} while (undefined === value && parentPath.length && ++i < this.MAX_DEEP_UNFLATTEN)
+		return { value, path: parentPath }
+	}
+
+	/**
+	 * Unflattens an object with path-like keys into a nested structure.
+	 * Handles array indices and ensures objects are created before assignment.
+	 * Sorts keys for deterministic rebuilding.
+	 * @static
+	 * @param {Object} data - The flattened object to unflatten.
+	 * @returns {Object} The unflattened nested object.
+	 */
+	static unflatten(data) {
+		const result = {}
+		const noRegExp = new RegExp(
+			`^\\${this.ARRAY_WRAPPER[0] || ''}(\\d+)\\${this.ARRAY_WRAPPER[1] || ''}$`,
+		)
+
+		// Sort keys to ensure we create objects before assigning properties to them
+		const sortedKeys = Object.keys(data).sort()
+
+		for (let flatKey of sortedKeys) {
+			const keys = this._splitAndUnescape(flatKey)
+			/** @type {string[]} */
+			const path = []
+			for (let i = 0; i < keys.length - 1; i++) {
+				let curr = keys[i]
+				const next = keys[i + 1] || null
+				const parent = this.find(path, result) || result
+				const match = curr.match(noRegExp)
+				if (match) {
+					curr = String(parseInt(match[1], 10))
+				}
+				if (null !== next && next.match && next.match(noRegExp)) {
+					if (!Array.isArray(parent[curr])) parent[curr] = []
+				} else if ('object' === typeof parent && null !== parent) {
+					if (null === parent[curr] || 'object' !== typeof parent[curr]) parent[curr] = {}
+				}
+				// @todo cover with a test
+				else if (parent !== result) {
+					throw new TypeError(`Element is not an object in ${path.join(this.OBJECT_DIVIDER)}`)
+				}
+				path.push(curr)
+			}
+			const { value } = this.findValue(path, result)
+
+			const key = this.unescapeKey(String(keys.pop() ?? ''))
+			if (Array.isArray(value)) {
+				const match = key.match(noRegExp)
+				if (match) {
+					const curr = parseInt(match[1], 10)
+					// @todo cover with a test
+					value[curr] = data[flatKey]
+				} else {
+					value[key] = data[flatKey]
+				}
+			} else if (null !== value && 'object' === typeof value) {
+				// @todo cover with a test
+				value[key] = data[flatKey]
+			} else {
+				// @todo cover with a test
+				const parentPath = path.slice(0, -1)
+				const { value: v, path: p } = this.findValue(parentPath, result, true)
+				if ('object' === typeof v) {
+					const pathKey = flatKey.slice(p.join(this.OBJECT_DIVIDER).length + 1)
+					const parentValue = this.find(p, result)
+					// Check if parentValue is actually an object before trying to set property
+					if (typeof parentValue === 'object' && parentValue !== null) {
+						parentValue[pathKey] = data[flatKey]
+					} else {
+						throw new TypeError(
+							`Cannot set property '${pathKey}' on non-object value '${parentValue}' at path '${p.join(this.OBJECT_DIVIDER)}'`,
+						)
+					}
+				} else {
+					const parentValue = this.find(path, result)
+					// @todo cover with a test
+					if (typeof parentValue === 'object' && parentValue !== null) {
+						parentValue[key] = data[flatKey]
+					} else {
+						result[flatKey] = data[flatKey]
+					}
+				}
+			}
+		}
+		return result
+	}
+
+	/**
+	 * Deep merges two objects, creating a new object.
+	 * Arrays are replaced rather than merged.
+	 * Preserves original objects without mutation.
+	 * @static
+	 * @param {Object} target - The target object to merge into.
+	 * @param {Object} source - The source object to merge from.
+	 * @returns {Object} The merged object.
+	 */
+	static merge(target, source, visited = new Map()) {
+		if (source === null || typeof source !== 'object') return source
+		if (visited.has(source)) return visited.get(source)
+
+		// Arrays are replaced, not merged
+		if (Array.isArray(source)) {
+			if (
+				source.length > 0 &&
+				typeof source[0] === 'object' &&
+				source[0] !== null &&
+				source[0].$clear
+			) {
+				return source.filter((v) => !(v !== null && typeof v === 'object' && v.$clear))
+			}
+			return [...source]
+		}
+
+		// Merging object into target. Ensure result is an object.
+		const result =
+			target !== null && typeof target === 'object' && !Array.isArray(target) ? { ...target } : {}
+		visited.set(source, result)
+
+		for (const key in source) {
+			if (!Object.hasOwn(source, key)) continue
+			result[key] = this.merge(result[key], source[key], visited)
+		}
+		return result
+	}
+
+	/**
+	 * Merges two flat [path, value] arrays into one flat array.
+	 * Handles $ref objects by expanding their properties into the path.
+	 * Later entries override earlier ones.
+	 *
+	 * @static
+	 * @param {Array<Array<string, any>>} target - Base flat data entries.
+	 * @param {Array<Array<string, any>>} source - Override flat data entries.
+	 * @param {{ referenceKey?: string }} options - Merge options.
+	 * @returns {Array<Array<string, any>>} Merged flat entries.
+	 */
+	static mergeFlat(target, source, { referenceKey = this.REFERENCE_KEY } = {}) {
+		const map = new Map()
+
+		/**
+		 * Add an entry to the map.
+		 * @param {Array<string, any>} entry - Tuple of key and value.
+		 * @param {boolean} overwrite - Whether to overwrite existing keys.
+		 */
+		const add = (entry, overwrite) => {
+			const [rawKey, rawVal] = entry
+
+			// Handle references $ref – merge object into parent path.
+			if (referenceKey && rawKey.endsWith(this.OBJECT_DIVIDER + referenceKey)) {
+				const baseKey = rawKey.slice(0, -referenceKey.length - this.OBJECT_DIVIDER.length)
+				if (rawVal && typeof rawVal === 'object' && !Array.isArray(rawVal)) {
+					// @ts-ignore
+					for (const prop in rawVal) {
+						if (Object.hasOwn(rawVal, prop)) {
+							const fullKey = `${baseKey}${this.OBJECT_DIVIDER}${prop}`
+							if (overwrite || !map.has(fullKey)) {
+								map.set(fullKey, rawVal[prop])
+							}
+						}
+					}
+				}
+				// Do not add the $ref entry itself to the map
+				return
+			}
+
+			if (rawVal && typeof rawVal === 'object' && !Array.isArray(rawVal)) {
+				let baseKey = rawKey
+				// @ts-ignore
+				for (const prop in rawVal) {
+					if (Object.hasOwn(rawVal, prop)) {
+						const fullKey = `${baseKey}${this.OBJECT_DIVIDER}${prop}`
+						if (overwrite || !map.has(fullKey)) {
+							map.set(fullKey, rawVal[prop])
+						}
+					}
+				}
+			} else {
+				if (overwrite || !map.has(rawKey)) {
+					map.set(rawKey, rawVal)
+				}
+			}
+		}
+
+		// Base data first.
+		for (const entry of target) {
+			add(entry, false)
+		}
+		// Override data second.
+		for (const entry of source) {
+			add(entry, true)
+		}
+
+		// Return as array of [key, value] tuples.
+		return Array.from(map.entries()).sort((a, b) => String(a[0]).localeCompare(b[0]))
+	}
+
+	/**
+	 * Gets the parent key of a flattened key path.
+	 * Removes the last segment after OBJECT_DIVIDER.
+	 * @static
+	 * @param {string} key - The key path.
+	 * @returns {string} The parent key path.
+	 */
+	static getParentKey(key) {
+		const arr = key.split(this.OBJECT_DIVIDER)
+		arr.pop()
+		return arr.join(this.OBJECT_DIVIDER)
+	}
+
+	/**
+	 * Gets flat sibling entries of a specific key.
+	 * Filters flat entries at the same level (excluding self).
+	 * @static
+	 * @param {Array<Array<string, any>>|Object} flat - Flattened data.
+	 * @param {string} key - The target key to find siblings for.
+	 * @param {string} [parentKey] - Optional parent key to avoid recomputation.
+	 * @returns {Array<Array<string, any>>} Flat sibling entries.
+	 */
+	static flatSiblings(flat, key, parentKey = this.getParentKey(key)) {
+		if (!Array.isArray(flat)) flat = Object.entries(flat)
+		const path = '' === parentKey ? '' : parentKey + this.OBJECT_DIVIDER
+		const level = key.split(this.OBJECT_DIVIDER).length
+		return flat.filter(
+			([k]) => k.startsWith(path) && k !== key && k.split(this.OBJECT_DIVIDER).length >= level,
+		)
+	}
+
+	/**
+	 * Gets all parent paths of a given path.
+	 * Includes root if not avoided; appends suffix to each.
+	 * @static
+	 * @param {string} path - The path to get parents of.
+	 * @param {string} [suffix=""] - Suffix to append to each parent path.
+	 * @param {boolean} [avoidRoot=false] - Whether to exclude the root path.
+	 * @returns {string[]} Array of parent paths.
+	 */
+	static getPathParents(path, suffix = '', avoidRoot = false) {
+		const segments = path.split('/').filter(Boolean)
+		if (segments.length === 0) {
+			return [suffix]
+		}
+
+		const result = segments.slice(0, -1).map(
+			/**
+			 * @param {*} _
+			 * @param {number} index
+			 * @returns {string}
+			 */
+			(_, index) => segments.slice(0, index + 1).join('/') + suffix,
+		)
+
+		if (avoidRoot) {
+			return result
+		} else {
+			return [suffix, ...result]
+		}
+	}
+
+	/**
+	 * Escapes literal OBJECT_DIVIDER characters in a key.
+	 * Replaces occurrences of the divider with ESCAPED_DIVIDER
+	 * so the key survives split(OBJECT_DIVIDER) during unflatten.
+	 * @static
+	 * @param {string} key - The raw object key
+	 * @returns {string} The escaped key
+	 */
+	static escapeKey(key) {
+		if (!key.includes(this.OBJECT_DIVIDER)) return key
+		return key.replaceAll(this.OBJECT_DIVIDER, this.ESCAPED_DIVIDER)
+	}
+
+	/**
+	 * Restores escaped dividers back to the original OBJECT_DIVIDER character.
+	 * @static
+	 * @param {string} key - An escaped key segment
+	 * @returns {string} The unescaped original key
+	 */
+	static unescapeKey(key) {
+		if (!key.includes(this.ESCAPED_DIVIDER)) return key
+		return key.replaceAll(this.ESCAPED_DIVIDER, this.OBJECT_DIVIDER)
+	}
+
+	/**
+	 * Splits a flat key path by OBJECT_DIVIDER and unescapes each segment.
+	 * This ensures that keys which originally contained the divider character
+	 * are restored to their original form after splitting.
+	 * @static
+	 * @param {string} flatKey - The flat key path (e.g. "menu/File ∕ Open")
+	 * @returns {string[]} Array of unescaped segments
+	 */
+	static _splitAndUnescape(flatKey) {
+		return flatKey.split(this.OBJECT_DIVIDER).map((s) => this.unescapeKey(s))
+	}
+}
+
+export const flatten = Data.flatten.bind(Data)
+export const unflatten = Data.unflatten.bind(Data)
+export const merge = Data.merge.bind(Data)
+export const find = Data.find.bind(Data)
+export const mergeFlat = Data.mergeFlat.bind(Data)
+export const flatSiblings = Data.flatSiblings.bind(Data)
+
+export default Data
