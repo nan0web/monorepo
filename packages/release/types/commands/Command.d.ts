@@ -1,5 +1,10 @@
 /** @typedef {import("@nan0web/test/types/exec/runSpawn").SpawnResult} SpawnResult */
+export class CommandBody {
+    static fs: {};
+    static logger: {};
+}
 export default class Command extends UiMessage {
+    static Body: typeof CommandBody;
     /**
      * @param {Partial<UiMessage> & {  }} [input={}]
      */
@@ -8,7 +13,7 @@ export default class Command extends UiMessage {
     fs: DBFS;
     /** @type {Logger} */
     logger: Logger;
-    get Body(): new () => {};
+    get Body(): typeof CommandBody;
     /**
      * Run the command.
      * @param {string} cmd

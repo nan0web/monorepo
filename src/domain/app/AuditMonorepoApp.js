@@ -17,7 +17,10 @@ import { createT } from '@nan0web/i18n'
  * @property {Record<string, TaskSummary>} files
  * @property {boolean} isCommercial
  * @property {string} license
- * @property {import('@nan0web/inspect').ArchitectureAuditor} [archScore]
+ * @property {string} [goal]
+ * @property {string} [version]
+ * @property {any[]} [langs]
+ * @property {any} [archScore]
  */
 
 export default class AuditMonorepoApp extends ModelAsApp {
@@ -85,6 +88,7 @@ export default class AuditMonorepoApp extends ModelAsApp {
 					const content = await db.loadDocument(`@app/${pkgPath}/${target}`)
 					if (content) {
 						files[target] = this.parseTasks(content)
+						if (!goal) goal = this.extractGoal(content)
 					}
 				}
 
@@ -96,7 +100,7 @@ export default class AuditMonorepoApp extends ModelAsApp {
 					type,
 					path: pkgPath,
 					files,
-					goal,
+					goal: goal || '',
 					langs,
 					version,
 					license: pkgJson?.license || 'ISC',
@@ -117,29 +121,48 @@ export default class AuditMonorepoApp extends ModelAsApp {
 	}
 
 	/**
-	 * @param {string} content
+	 * @param {any} content
 	 * @returns {string|null}
 	 */
 	extractGoal(content) {
 		if (!content) return null
 		const text = typeof content === 'string' ? content : content.raw || content.content || ''
-		if (!text) return null
+		if (!text || typeof text !== 'string') return null
 
 		const lines = text
 			.split('\n')
 			.map((l) => l.trim())
 			.filter(Boolean)
-		// Skip title (# ...) and find first paragraph
-		const goalLine = lines.find(
-			(l) => !l.startsWith('#') && !l.startsWith('>') && !l.startsWith('-'),
+		// Skip title (# ...), list items (-) and images/links (!) if they are at the start
+		let goalLine = lines.find(
+			(l) => !l.startsWith('#') && !l.startsWith('-') && !l.startsWith('!'),
 		)
+
+		if (!goalLine) return null
+
+		// Clean up markdown blockquotes or simple formatting
+		goalLine = goalLine.replace(/^>[ \t]*/, '').trim()
+
+		// Skip link-only lines (like [Українською]...)
+		if (goalLine.startsWith('[') && goalLine.includes('](')) {
+			goalLine = lines.find(
+				(l) =>
+					!l.startsWith('#') &&
+					!l.startsWith('-') &&
+					!l.startsWith('!') &&
+					!(l.startsWith('[') && l.includes('](')),
+			)
+			if (!goalLine) return null
+			goalLine = goalLine.replace(/^>[ \t]*/, '').trim()
+		}
+
 		return goalLine ? goalLine.split('.')[0] + '.' : null // First sentence
 	}
 
 	/**
 	 * Extracts task statistics from markdown content.
-	 * @param {string} content
-	 * @returns {TaskSummary}
+	 * @param {ModuleAuditResult[]} scanned
+	 * @returns {string}
 	 */
 	generateReport(scanned) {
 		const { t } = this._
@@ -153,6 +176,7 @@ export default class AuditMonorepoApp extends ModelAsApp {
 		doc.write('')
 
 		// 1. Group by Maturity
+		/** @type {Record<string, ModuleAuditResult[]>} */
 		const categories = {
 			'🚀 CORE (v3.0+)': [],
 			'🏗️ LAB (In Dev)': [],
@@ -162,7 +186,7 @@ export default class AuditMonorepoApp extends ModelAsApp {
 		for (const item of scanned) {
 			const version = item.version || '0.0.0'
 			const hasProject = !!item.files['project.md']
-			const hasTasks = item.files['next.md']?.total > 0 || item.files['project.md']?.total > 0
+			const hasTasks = (item.files['next.md']?.total || 0) > 0 || (item.files['project.md']?.total || 0) > 0
 
 			if (version.startsWith('3.')) {
 				categories['🚀 CORE (v3.0+)'].push(item)
@@ -206,7 +230,7 @@ export default class AuditMonorepoApp extends ModelAsApp {
 				const tasksLabel = total > 0 ? `${completed}/${total}` : '-'
 				const typeLabel = item.type === 'apps' ? '📱' : '📦'
 				const langsLabel =
-					item.langs?.length > 0
+					item.langs && item.langs.length > 0
 						? item.langs.map((l) => (typeof l === 'string' ? l : l.locale).toUpperCase()).join(', ')
 						: '-'
 
@@ -260,7 +284,7 @@ export default class AuditMonorepoApp extends ModelAsApp {
 
 	/**
 	 * @param {string} pkgPath
-	 * @returns {Promise<import('@nan0web/inspect/src/domain/ArchitectureAuditor').Score|null>}
+	 * @returns {Promise<any|null>}
 	 */
 	async runArchAudit(pkgPath) {
 		try {

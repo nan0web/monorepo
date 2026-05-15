@@ -123,12 +123,15 @@ describe('Story 3: AppLogger File Rotation', () => {
 
 		// Wait for streams to flush
 		await new Promise(resolve => {
+			const s1 = logger._accessStream
+			const s2 = logger._errorStream
 			let closed = 0
-			const done = () => { if (++closed === 2) resolve() }
-			if (logger._accessStream) logger._accessStream.on('finish', done)
-			if (logger._errorStream) logger._errorStream.on('finish', done)
+			const total = (s1 ? 1 : 0) + (s2 ? 1 : 0)
+			if (total === 0) return resolve()
+			const done = () => { if (++closed === total) resolve() }
+			if (s1) s1.on('finish', done)
+			if (s2) s2.on('finish', done)
 			logger.close()
-			if (!logger._accessStream && !logger._errorStream) resolve()
 		})
 
 		// Give OS time to sync

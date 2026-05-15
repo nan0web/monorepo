@@ -1,6 +1,6 @@
 # Architecture Healing Report
 
-> **Audit Date**: 5/13/2026, 4:50:51 PM
+> **Audit Date**: 5/15/2026, 2:29:18 PM
 > **Health Score**: 29%
 
 The following architectural issues were detected in @[@app/packages/auth-browser].
@@ -26,6 +26,7 @@ The following architectural issues were detected in @[@app/packages/auth-browser
   - **Suggested Fix**: `npm install -D knip`
 - [ ] [hygiene] scripts.play: `Missing required script: play`
   - **Suggested Fix**: `"play": "nan0cli --data play"`
+- [ ] [hygiene] scripts.test:release: `Missing required script: test:release`
 - [ ] [hygiene] scripts.release:spec: `Missing required script: release:spec`
 - [ ] [hygiene] devDependencies.c8: `Missing devDependency: c8 (required for npm run test:coverage)`
   - **Suggested Fix**: `npm install -D c8`
@@ -45,7 +46,6 @@ The following architectural issues were detected in @[@app/packages/auth-browser
 
 ### JsVerificationAuditor
 - [ ] [verification] play/: `No play/ directory found — playground is mandatory for every package`
-- [ ] [verification] src/README.md.js: `README.md.js (ProvenDoc) not found`
 
 
 ## Recommended Subagents

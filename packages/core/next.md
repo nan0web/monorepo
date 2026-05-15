@@ -1,6 +1,6 @@
 # Architecture Healing Report
 
-> **Audit Date**: 5/13/2026, 4:50:51 PM
+> **Audit Date**: 5/15/2026, 2:34:10 PM
 > **Health Score**: 38%
 
 The following architectural issues were detected in @[@app/packages/core].
@@ -28,6 +28,8 @@ The following architectural issues were detected in @[@app/packages/core].
 ---
 
 ### JsDomainAuditor
+- [ ] [domain] @app/packages/core/src/Protocol/CommandProtocol.js: `Class field outside constructor in @app/packages/core/src/Protocol/CommandProtocol.js (line 24)`
+- [ ] [domain] @app/packages/core/src/Protocol/ExecutableCommand.js: `Class field outside constructor in @app/packages/core/src/Protocol/ExecutableCommand.js (line 10)`
 - [ ] [domain] @app/packages/core/src/ProjectModel.js: `Model class outside src/domain/ in @app/packages/core/src/ProjectModel.js`
 
 ---

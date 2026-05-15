@@ -10,3 +10,6 @@ export { EventContext }
 export default function event() {
 	return createMemoryAdapter()
 }
+
+/** @typedef {import("./types/index.js").EventBus} EventBus */
+/** @typedef {import("./types/index.js").EventListener} EventListener */

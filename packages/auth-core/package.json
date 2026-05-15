@@ -22,7 +22,8 @@
     "test:all": "npm run test && npm run test:docs && npm run build && npm run knip && npm run audit",
     "check": "npm run test:all",
     "knip": "knip --production",
-    "audit": "pnpm audit --prod || true"
+    "audit": "pnpm audit --prod || true",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "ЯRаСлав YaRaSlove <support@yaro.page>",

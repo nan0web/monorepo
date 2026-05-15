@@ -1,9 +1,11 @@
 ---
 metadata:
-  description: ""
-  tags: []
-  status: planned
+  description: "🦅 UI-CLI (User Interface Command Line) - Канонічна реалізація термінальних інтерфейсів для екосистеми nan•web."
+  tags: [ui, cli, terminal, interaction, framework]
+  status: active
   locale: uk
+  i18n:
+    en: docs/en/project.md
 sections:
   - title: "History"
     content: []

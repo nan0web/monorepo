@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/index.js",
+    "bin/nan0release.js",
+    "src/README.md.js"
+  ],
+  "project": ["src/**/*.js", "bin/*.js"],
+  "ignoreDependencies": [
+    "@nan0web/log",
+    "@nan0web/ui",
+    "@nan0web/ui-cli",
+    "@nan0web/logos",
+    "@nan0web/markdown",
+    "@nan0web/db",
+    "@nan0web/db-fs",
+    "@nan0web/types",
+    "@nan0web/co",
+    "@nan0web/changelog"
+  ]
+}

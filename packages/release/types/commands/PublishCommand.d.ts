@@ -10,7 +10,7 @@ export default class PublishCommand extends Command {
     body: PublishBody;
 }
 import Command from './Command.js';
-declare class PublishBody {
+declare class PublishBody extends CommandBody {
     static major: {
         help: string;
         defaultValue: boolean;
@@ -35,4 +35,5 @@ declare class PublishBody {
     /** @type {boolean} */
     patch: boolean;
 }
+import { CommandBody } from './Command.js';
 export {};

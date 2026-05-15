@@ -1,7 +1,7 @@
 import { ModelAsApp, result, show, progress } from '@nan0web/ui'
 
 export default class BumpMonorepoApp extends ModelAsApp {
-	static help = 'Bumps version of all packages in the monorepo to a specific version.'
+	static help = { help: 'Bumps version of all packages in the monorepo to a specific version.', default: false }
 
 	static version = {
 		positional: true,
@@ -26,6 +26,7 @@ export default class BumpMonorepoApp extends ModelAsApp {
 		versionUpdated: '{name}@{old} -> {new}',
 		versionUpdatedDry: '[DRY RUN] Would bump {name}@{old} -> {new}',
 		wouldNotBump: '{name} is already at {version}',
+		noDB: 'No DB found',
 	}
 
 	/**
@@ -47,10 +48,14 @@ export default class BumpMonorepoApp extends ModelAsApp {
 		if (this.help) return yield* super.run()
 
 		const { t, db } = this._
+		if (!db) {
+			yield show(t(BumpMonorepoApp.UI.noDB), 'error')
+			return result({ status: 'cancelled', reason: 'No DB found' })
+		}
 		yield show(t(BumpMonorepoApp.UI.newVersionIn, { version: this.version, dir: db.location('') }))
 		const ignore = ['node_modules', '.*']
 		const packages = []
-		
+
 		yield progress(t(BumpMonorepoApp.UI.searchingPackages))
 		let i = 0
 		for await (const file of db.browse('@app/packages', { ignore })) {
@@ -67,9 +72,12 @@ export default class BumpMonorepoApp extends ModelAsApp {
 		}
 
 		// Include root package.json
-		const rootPkgStat = await db.stat('@app/package.json')
-		if (rootPkgStat.exists) {
-			packages.push({ path: '@app/package.json', name: 'package.json' })
+		const rootPkgStat = await db.statDocument('@app/package.json')
+		if (rootPkgStat && rootPkgStat.exists) {
+			const rootPkg = await db.loadDocument('@app/package.json')
+			if (rootPkg && rootPkg.version !== this.version) {
+				packages.push({ path: '@app/package.json', name: 'package.json' })
+			}
 		}
 
 		yield progress(t(BumpMonorepoApp.UI.updatingVersions))
@@ -85,7 +93,7 @@ export default class BumpMonorepoApp extends ModelAsApp {
 						name: pkg.name || file.path,
 						version: this.version,
 					}),
-					'info'
+					'info',
 				)
 				continue
 			}

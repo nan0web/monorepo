@@ -57,7 +57,8 @@
     "test:coverage:collect": "nan0test coverage",
     "test:status": "nan0test status",
     "test:all": "npm run test && npm run test:docs && npm run build",
-    "play": "node play/main.js"
+    "play": "node play/main.js",
+    "prepare": "husky"
   },
   "keywords": [
     "nan0web",

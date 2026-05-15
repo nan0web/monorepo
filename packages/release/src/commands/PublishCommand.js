@@ -11,9 +11,9 @@
 
 import { Message, OutputMessage } from '@nan0web/co'
 
-import Command from './Command.js'
+import Command, { CommandBody } from './Command.js'
 
-class PublishBody {
+class PublishBody extends CommandBody {
 	static major = { help: 'Bump major version', defaultValue: false }
 	static minor = { help: 'Bump minor version', defaultValue: false }
 	static patch = { help: 'Bump patch version', defaultValue: false }
@@ -26,6 +26,7 @@ class PublishBody {
 	patch = false
 
 	constructor({ major = false, minor = false, patch = false } = {}) {
+		super()
 		this.major = Boolean(major)
 		this.minor = Boolean(minor)
 		this.patch = Boolean(patch)

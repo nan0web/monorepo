@@ -6,7 +6,13 @@ import { UiMessage } from '@nan0web/ui'
 
 /** @typedef {import("@nan0web/test/types/exec/runSpawn").SpawnResult} SpawnResult */
 
+export class CommandBody {
+	static fs = {}
+	static logger = {}
+}
+
 export default class Command extends UiMessage {
+	static Body = CommandBody
 	/** @type {DBFS} */
 	fs
 	/** @type {Logger} */

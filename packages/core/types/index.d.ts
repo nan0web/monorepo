@@ -1,4 +1,5 @@
-export { ExecutableCommand } from "@nan0web/protocol";
+export { ExecutableCommand } from "./Protocol/index.js";
+export { StackDetector } from "./Protocol/StackDetector.js";
 export { ModelError } from "@nan0web/types";
 export { Model } from "./Model.js";
 export { ProjectModel } from "./ProjectModel.js";

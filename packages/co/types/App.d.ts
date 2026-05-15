@@ -47,16 +47,16 @@ export default class App {
      * Subscribe to an event.
      *
      * @param {string} event
-     * @param {import("@nan0web/event/types/types").EventListener} fn
+     * @param {import("@nan0web/event").EventListener} fn
      */
-    on(event: string, fn: import("@nan0web/event/types/types").EventListener): void;
+    on(event: string, fn: import("@nan0web/event").EventListener): void;
     /**
      * Unsubscribe from an event.
      *
      * @param {string} event
-     * @param {import("@nan0web/event/types/types").EventListener} fn
+     * @param {import("@nan0web/event").EventListener} fn
      */
-    off(event: string, fn: import("@nan0web/event/types/types").EventListener): void;
+    off(event: string, fn: import("@nan0web/event").EventListener): void;
     #private;
 }
 export type AppConfig = {

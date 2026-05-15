@@ -18,7 +18,11 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true
+		"checkJs": true,
+		"baseUrl": ".",
+		"paths": {
+			"@nan0web/*": ["packages/*/src"]
+		}
 	},
 	"include": [
 		"src/**/*"

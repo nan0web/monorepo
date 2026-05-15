@@ -23,7 +23,8 @@
     "test:status": "nan0test status",
     "precommit": "npm test",
     "prepush": "npm test",
-    "play": "node play/main.js"
+    "play": "node play/main.js",
+    "prepare": "husky"
   },
   "keywords": [
     "ui",

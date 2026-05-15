@@ -10,7 +10,7 @@ export default class CloseCommand extends Command {
     run(): AsyncGenerator<OutputMessage, void, unknown>;
 }
 import Command from './Command.js';
-declare class CloseBody {
+declare class CloseBody extends CommandBody {
     static version: {
         help: string;
         defaultValue: string;
@@ -22,4 +22,5 @@ declare class CloseBody {
     version: string;
 }
 import { OutputMessage } from '@nan0web/co';
+import { CommandBody } from './Command.js';
 export {};

@@ -2,7 +2,7 @@
 import FS from '@nan0web/db-fs'
 import Logger from '@nan0web/log'
 
-import { getProvenDocs, getTranslateDocs } from './llm/templates.js'
+// Legacy LLM imports removed
 
 /**
  * Read package.json via a DB‑like instance and return all @nan0web/ deps.
@@ -37,7 +37,7 @@ export async function checkDocs({ fs, pkgDb, name, stepsMd, onChunk = () => {} }
 	if (!src) {
 		const path = `chat/steps/${name}/provendocs.md`
 		onChunk(`No README.md.js => ${fs.absolute(path)}\n`, true)
-		await fs.saveDocument(path, transform(getProvenDocs()))
+		// await fs.saveDocument(path, transform(getProvenDocs()))
 		await fs.writeDocument(stepsMd, 'provendocs.md\n')
 	}
 	const md = await pkgDb.loadDocument('README.md')
@@ -63,7 +63,7 @@ export async function checkDocs({ fs, pkgDb, name, stepsMd, onChunk = () => {} }
 	if (!uk) {
 		const path = `chat/steps/${name}/translatedocs.md`
 		onChunk(`No docs/uk/README.md => ${fs.absolute(path)}\n`, true)
-		await fs.saveDocument(path, transform(getTranslateDocs()))
+		// await fs.saveDocument(path, transform(getTranslateDocs()))
 		await fs.writeDocument(stepsMd, 'translatedocs.md\n')
 	}
 }

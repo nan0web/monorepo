@@ -1,4 +1,4 @@
-import { ModelAsApp, result } from "@nan0web/ui"
+import { ModelAsApp, result, show } from "@nan0web/ui"
 
 /**
  * @todo
@@ -52,10 +52,7 @@ export class InitCommand extends ModelAsApp {
 			'utf8',
 		)
 
-		yield new OutputMessage({
-			content: [`✅ Initialized release ${v} in ${dir}`],
-			type: OutputMessage.TYPES.SUCCESS,
-		})
+		yield show(`✅ Initialized release ${v} in ${dir}`, 'success')
 
 		return result({})
 	}

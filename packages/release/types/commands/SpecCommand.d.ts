@@ -10,7 +10,7 @@ export default class SpecCommand extends Command {
     run(): AsyncGenerator<OutputMessage, void, unknown>;
 }
 import Command from './Command.js';
-declare class SpecBody {
+declare class SpecBody extends CommandBody {
     static version: {
         help: string;
         defaultValue: string;
@@ -22,4 +22,5 @@ declare class SpecBody {
     version: string;
 }
 import { OutputMessage } from '@nan0web/co';
+import { CommandBody } from './Command.js';
 export {};

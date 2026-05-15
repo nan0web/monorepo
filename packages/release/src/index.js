@@ -16,3 +16,5 @@ export {
 	TaskTestSuite,
 	ChangelogTaskManager
 }
+
+export { App, InitCommand } from './domain/App.js'

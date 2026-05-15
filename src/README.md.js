@@ -64,57 +64,50 @@ async function testRender() {
 	 * @docs
 	 * ## 🤖 AI-Powered Development (MCP)
 	 *
-	 * NaN•Web is designed to be developed alongside AI agents. To give your agent full context:
+	 * NaN•Web is designed to be developed alongside AI agents. To give your agent full context, follow these steps:
+	 *
+	 * ### 1. Configure EMBEDDER_URL
+	 * Specify the address of your local embedding server (LM Studio or Ollama).
+	 *
+	 * **For Linux / macOS (zsh, bash):**
+	 * ```bash
+	 * export EMBEDDER_URL="http://localhost:1234/v1"
+	 * ```
+	 * **For Windows (Command Prompt):**
+	 * ```cmd
+	 * set EMBEDDER_URL=http://localhost:1234/v1
+	 * ```
+	 * **For Windows (PowerShell):**
+	 * ```powershell
+	 * $env:EMBEDDER_URL = "http://localhost:1234/v1"
+	 * ```
+	 *
+	 * ### 2. Index the Workspace (docs, source, data)
+	 * Index all packages and the global documentation to build the knowledge base:
+	 * ```bash
+	 * pnpm run ai:index
+	 * ```
+	 *
+	 * ### 3. Index Agent configurations
+	 * Generate the agent registry for specialized tasks:
+	 * ```bash
+	 * pnpm run ai:index --agents
+	 * ```
+	 *
+	 * ### 4. Setup MCP Server
+	 * Register the `@nan0web/ai` server in your AI client (e.g. Claude Desktop or Antigravity):
+	 * ```bash
+	 * pnpm run ai:setup
+	 * ```
 	 */
-	it('1. Configure EMBEDDER_URL', () => {
-		/**
-		 * Specify the address of your local embedding server (LM Studio or Ollama).
-		 *
-		 * **For Linux / macOS (zsh, bash):**
-		 * ```bash
-		 * export EMBEDDER_URL="http://localhost:1234/v1"
-		 * ```
-		 * **For Windows (Command Prompt):**
-		 * ```cmd
-		 * set EMBEDDER_URL=http://localhost:1234/v1
-		 * ```
-		 * **For Windows (PowerShell):**
-		 * ```powershell
-		 * $env:EMBEDDER_URL = "http://localhost:1234/v1"
-		 * ```
-		 */
-		assert.ok(pkg.scripts['ai:index'])
-	})
-
-	/**
-	 * @docs
-	 */
-	it('2. Index the workspace', () => {
-		/**
-		 * ```bash
-		 * pnpm run ai:index
-		 * ```
-		 * This generates a `nan0web_agents.index.nan0` vector index for RAG.
-		 */
+	it('Verify AI scripts', () => {
 		assert.ok(pkg.scripts['ai:index'], 'ai:index script should exist')
-	})
-
-	/**
-	 * @docs
-	 */
-	it('3. Setup MCP Server', () => {
-		/**
-		 * ```bash
-		 * pnpm run ai:setup
-		 * ```
-		 * This registers the `@nan0web/ai` MCP server in your local AI client.
-		 */
 		assert.ok(pkg.scripts['ai:setup'], 'ai:setup script should exist')
 	})
 
 	/**
 	 * @docs
-	 * ### 4. Global AI Access (nan0ai)
+	 * ### 5. Global AI Access (nan0ai)
 	 *
 	 * You can install the assistant globally to access NaN•Web knowledge from anywhere in your system:
 	 *
@@ -156,8 +149,7 @@ async function testRender() {
 	 * ## License
 	 */
 	it('How to license? See the [ISC LICENSE](./LICENSE) file.', async () => {
-		const text = await fs.loadDocument('LICENSE')
-		assert.ok(String(text?.content || text || '').includes('ISC'))
+		assert.ok(String((await fs.loadDocument('LICENSE')) || '').includes('ISC'))
 	})
 }
 

@@ -35,6 +35,7 @@
     "play": "node play/main.js",
     "precommit": "npm test",
     "prepush": "npm test",
+    "prepare": "husky",
     "release": "nan0release publish",
     "clean": "rm -rf .cache/ && rm -rf dist/",
     "clean:modules": "rm -rf node_modules"

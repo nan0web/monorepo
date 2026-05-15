@@ -22,7 +22,7 @@ export default class App {
 	static InputMessage = InputMessage
 	static OutputMessage = OutputMessage
 
-	/** @type {import("@nan0web/event/types/types").EventBus} */
+	/** @type {import("@nan0web/event").EventBus} */
 	#bus
 	/** @type {DB} */
 	#db
@@ -84,7 +84,7 @@ export default class App {
 	 * Subscribe to an event.
 	 *
 	 * @param {string} event
-	 * @param {import("@nan0web/event/types/types").EventListener} fn
+	 * @param {import("@nan0web/event").EventListener} fn
 	 */
 	on(event, fn) {
 		this.#bus.on(event, fn)
@@ -94,7 +94,7 @@ export default class App {
 	 * Unsubscribe from an event.
 	 *
 	 * @param {string} event
-	 * @param {import("@nan0web/event/types/types").EventListener} fn
+	 * @param {import("@nan0web/event").EventListener} fn
 	 */
 	off(event, fn) {
 		this.#bus.off(event, fn)

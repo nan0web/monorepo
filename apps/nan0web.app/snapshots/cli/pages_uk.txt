@@ -10,20 +10,31 @@ Routes: 7
 ┌─ App.Docs.Title (/en/docs)
 │  Layout: Doc
 │    Documentation
-│  Welcome to the NaN0Web Runner documentation. This engine is built on the **OLMUI Triad** principle:
+│  Welcome to the NaN0Web Runner documentation. This engine is built on the OLMUI Triad principle:
+│    One Logic: The core state machine and business rules are shared.
+│    Many UI: Different adapters (CLI, Web, Chat) render the same data.
 │  Getting Started
 │  To run your own app through the runner:
 │  nan0web run --dsn data/
 │  Data Structure
 │  Each app consists of:
+│    _ / t.nan0 — Translations.
+│    _ / nav.nan0 — Navigation tree.
+│    index.nan0 — Main entry point.
 └─ Blocks: 1
 
 ┌─ App.Menu.Architecture (/en/docs/architecture)
 │  Layout: Doc
 │    Architecture
-│  The **NaN0Web Engine** is a sovereign runtime that turns data structures into interactive interfaces.
+│  The NaN0Web Engine is a sovereign runtime that turns data structures into interactive interfaces.
 │  Core Concepts
+│    Model-as-Schema: The source of truth for all forms and data models.
+│    Intent Delegation: The runner can delegate intents to sub-apps.
+│    WebSocket Bridge: Real-time state synchronization across all connected UIs.
 │  Sequence
+│    Runner.run() -> discovers apps.
+│    IntentResolver -> delegates user action.
+│    UI Adapters -> render the view.
 └─ Blocks: 1
 
 ┌─ 'NaN•Web Runner' (/uk)
@@ -34,20 +45,31 @@ Routes: 7
 ┌─ App.Docs.Title (/uk/docs)
 │  Layout: Doc
 │    Документація
-│  Ласкаво просимо до документації NaN0Web Раннера. Цей рушій побудований на принципі **OLMUI Triad**:
+│  Ласкаво просимо до документації NaN0Web Раннера. Цей рушій побудований на принципі OLMUI Triad:
+│    Одна Логіка: Спільний стан та бізнес-правила.
+│    Багато UI: Різні адаптери (CLI, Web, Chat) рендерять ті самі дані.
 │  Початок роботи
 │  Щоб запустити свій додаток через раннер:
 │  nan0web run --dsn data/
 │  Структура даних
 │  Кожен додаток складається з:
+│    _ / t.nan0 — Переклади.
+│    _ / nav.nan0 — Дерево навігації.
+│    index.nan0 — Головна точка входу.
 └─ Blocks: 1
 
 ┌─ App.Menu.Architecture (/uk/docs/architecture)
 │  Layout: Doc
 │    Архітектура
-│  **NaN0Web Engine** — це суверенне середовище виконання, яке перетворює структури даних на інтерактивні інтерфейси.
+│  NaN0Web Engine — це суверенне середовище виконання, яке перетворює структури даних на інтерактивні інтерфейси.
 │  Основні концепції
+│    Model-as-Schema: Єдине джерело правди для всіх форм та моделей даних.
+│    Intent Delegation: Раннер може делегувати інтенцій під-додаткам.
+│    WebSocket Bridge: Синхронізація стану в реальному часі між усіма підключеними UI.
 │  Послідовність
+│    Runner.run() -> знаходить додатки.
+│    IntentResolver -> делегує дії користувача.
+│    UI Adapters -> рендерять вигляд.
 └─ Blocks: 1
 
 ┌─ App.Welcome (/)

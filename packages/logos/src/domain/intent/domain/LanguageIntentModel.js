@@ -58,7 +58,7 @@ export class LanguageIntentModel {
 	/**
 	 * @param {Object} input
 	 */
-	constructor(input) {
+	constructor(input = {}) {
 		const {
 			lang = LanguageIntentModel.lang.defaultValue,
 			inputFile = LanguageIntentModel.inputFile.defaultValue,

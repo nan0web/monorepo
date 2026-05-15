@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert'
 import path from 'node:path'
-import { validateProjectMD } from '../bin/project-validator.js'
+import { validateProjectMD } from '../../bin/project-validator.js'
 
 test('Architecture: packages/ui-cli/project.md validation', async () => {
 	const projectPath = path.resolve(process.cwd(), 'packages/ui-cli/project.md')

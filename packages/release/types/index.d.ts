@@ -8,3 +8,4 @@ import { ReleaseManager } from './architecture/ProjectManagementAsCode.js';
 import { TaskTestSuite } from './architecture/ProjectManagementAsCode.js';
 import { ChangelogTaskManager } from './architecture/ProjectManagementAsCode.js';
 export { Release, ReleaseDocument, Person, Scanner, MarkdownToTest, ProjectManagement, ReleaseManager, TaskTestSuite, ChangelogTaskManager };
+export { App, InitCommand } from "./domain/App.js";

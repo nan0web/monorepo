@@ -13,7 +13,7 @@ export default class DepsCommand extends Command {
     run(msg?: DepsCommand): AsyncGenerator<OutputMessage>;
 }
 import Command from './Command.js';
-declare class DepsBody {
+declare class DepsBody extends CommandBody {
     static fix: {
         help: string;
         defaultValue: boolean;
@@ -29,4 +29,5 @@ declare class DepsBody {
     latest: boolean;
 }
 import { OutputMessage } from '@nan0web/co';
+import { CommandBody } from './Command.js';
 export {};

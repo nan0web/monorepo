@@ -504,7 +504,7 @@ function testRender() {
 		assert.ok(String(pkg.scripts?.play))
 		const response = await runSpawn('git', ['remote', 'get-url', 'origin'])
 		assert.ok(response.code === 0, 'git command fails (e.g., not in a git repo)')
-		assert.ok(response.text.trim().endsWith(':nan0web/xml.git'))
+		assert.ok(response.text.trim().includes('github-nan0web:nan0web/'))
 	})
 
 	/**

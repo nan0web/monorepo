@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert'
-import SyncDocsApp from '../src/domain/app/SyncDocsApp.js'
+import SyncDocsApp from '../domain/app/SyncDocsApp.js'
 import DB from '@nan0web/db'
 
 describe('SyncDocsScenario', () => {

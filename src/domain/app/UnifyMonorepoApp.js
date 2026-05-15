@@ -1,7 +1,7 @@
 import { ModelAsApp, result, show, progress } from '@nan0web/ui'
 
 export default class UnifyMonorepoApp extends ModelAsApp {
-	static help = 'Recursively removes all nested .git folders in the monorepo.'
+	static help = { help: 'Unify monorepo structure by removing redundant .git directories.', default: false }
 
 	static dryRun = {
 		alias: 'n',
@@ -36,26 +36,28 @@ export default class UnifyMonorepoApp extends ModelAsApp {
 		if (this.help) return yield* super.run()
 
 		const { t, db } = this._
+		if (!db) return result({ status: 'cancelled', reason: 'No DB found' })
+		const _db = db
 		const dirs = ['@app/packages', '@app/apps']
 		let removedCount = 0
 
 		for (const dirUri of dirs) {
 			yield progress(t(UnifyMonorepoApp.UI.scanning, { dir: dirUri }))
 
-			for await (const entry of db.readDir(dirUri, { depth: 1, includeDirs: true })) {
+			for await (const entry of _db.readDir(dirUri, { depth: 1, includeDirs: true })) {
 				if (!entry.isDirectory) continue
 
 				const gitUri = `${entry.path}/.git`
-				const gitStat = await db.stat(gitUri)
+				const gitStat = await _db.stat(gitUri)
 
-				if (gitStat.exists) {
+				if (gitStat && gitStat.exists) {
 					if (this.dryRun) {
-						yield show(t(UnifyMonorepoApp.UI.removingGitDry, { path: gitUri }))
+						yield show(t(UnifyMonorepoApp.UI.cleaningDry, { dir: gitUri }))
 						removedCount++
 					} else {
-						yield show(t(UnifyMonorepoApp.UI.removingGit, { path: gitUri }))
+						yield progress(t(UnifyMonorepoApp.UI.cleaning, { dir: gitUri }))
 						try {
-							await db.dropDocument(gitUri, { recursive: true })
+							await _db.dropDocument(gitUri, { recursive: true })
 							removedCount++
 						} catch (/** @type {any} */ err) {
 							yield show(

@@ -11,9 +11,9 @@
 
 import { Message, OutputMessage } from '@nan0web/co'
 
-import Command from './Command.js'
+import Command, { CommandBody } from './Command.js'
 
-class DepsBody {
+class DepsBody extends CommandBody {
 	/** @type {boolean} */
 	fix = false
 	static fix = {
@@ -27,6 +27,7 @@ class DepsBody {
 		defaultValue: false,
 	}
 	constructor(input = {}) {
+		super()
 		const { fix = this.fix, latest = this.latest } = Message.parseBody(input, DepsBody)
 		this.fix = Boolean(fix)
 		this.latest = Boolean(latest)

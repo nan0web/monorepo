@@ -26,6 +26,7 @@
     "release": "node ./bin/nan0release.js publish",
     "precommit": "npm test",
     "prepush": "npm test",
+    "prepare": "husky",
     "playground": "node playground/main.js"
   },
   "dependencies": {
@@ -38,8 +39,7 @@
     "@nan0web/types": "workspace:*",
     "@nan0web/ui": "workspace:*",
     "@nan0web/ui-cli": "workspace:*",
-    "@nan0web/logos": "workspace:*",
-    "supports-color": "^10.2.2"
+    "@nan0web/logos": "workspace:*"
   },
   "devDependencies": {
     "@nan0web/test": "workspace:*",

@@ -34,11 +34,13 @@ export default class SyncDocsApp extends ModelAsApp {
 	}
 
 	async *run() {
-		const { db, t } = this._
+		const { t, db } = this._
+		if (!db) return result({ status: 'cancelled', reason: 'No DB found' })
+		const _db = db
 
 		// 1. Load Heritage via Platform DB (using loadDocument for extension fallback)
-		let heritage = await db.loadDocument(`${this.path}/index`)
-		if (!heritage) heritage = await db.loadDocument(`${this.path}/_`)
+		let heritage = await _db.loadDocument(`${this.path}/index`)
+		if (!heritage) heritage = await _db.loadDocument(`${this.path}/_`)
 
 		if (!heritage) {
 			yield show(t(SyncDocsApp.UI.error), 'error')
@@ -51,11 +53,12 @@ export default class SyncDocsApp extends ModelAsApp {
 		const flatVars = Data.flatten(vars)
 
 		// 2. Discover files via Platform DB browse (restricted to path)
+		/** @type {any[]} */
 		const files = []
 		try {
-			const browseGenerator = await db.browse(this.path, {
-				recursive: true,
-				exclude: ['node_modules', '.git', 'dist', '_*'],
+			const browseGenerator = await _db.browse(this.path, {
+				depth: 10,
+				ignore: ['.*', 'node_modules', 'dist'],
 			})
 
 			for await (const file of browseGenerator) {
@@ -69,10 +72,10 @@ export default class SyncDocsApp extends ModelAsApp {
 
 		// 3. Document Interpolation
 		for (const file of files) {
-			const uri = file.uri || file.path
+			const uri = file.path
 			if (!uri) continue
 
-			const doc = await db.loadDocument(uri)
+			const doc = await _db.loadDocument(uri)
 			if (!doc || !doc.content) continue
 
 			let content = doc.content
@@ -86,8 +89,8 @@ export default class SyncDocsApp extends ModelAsApp {
 
 			if (content !== original) {
 				doc.content = content
-				await db.saveDocument(uri, doc)
-				yield progress(t(SyncDocsApp.UI.syncing, { file: file.path || uri }))
+				await _db.saveDocument(uri, doc)
+				yield progress(t(SyncDocsApp.UI.syncing, { file: uri }))
 				count++
 			}
 		}

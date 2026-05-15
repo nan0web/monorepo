@@ -58,6 +58,7 @@
   "dependencies": {
     "@nan0web/db": "workspace:*",
     "@nan0web/i18n": "workspace:*",
+    "@nan0web/co": "workspace:*",
     "@nan0web/types": "workspace:*"
   }
 }

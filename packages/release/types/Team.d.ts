@@ -22,6 +22,6 @@ declare class Person {
     /** @type {HumanContact[]} */
     contacts: HumanContact[];
 }
-import { HumanName } from '@nan0web/verse';
-import { HumanGender } from '@nan0web/verse';
-import { HumanContact } from '@nan0web/verse';
+import { HumanName } from '@nan0web/logos';
+import { HumanGender } from '@nan0web/logos';
+import { HumanContact } from '@nan0web/logos';

@@ -12,5 +12,5 @@ export default class Event {
     emitter: import("./types/index.js").EventBus;
     on(event: any, fn: any): void;
     off(event: any, fn: any): void;
-    emit(event: any, data: any): Promise<import("./types/EventContext.js").default<any>>;
+    emit(event: any, data: any): Promise<import("./index.js").EventContext<any>>;
 }

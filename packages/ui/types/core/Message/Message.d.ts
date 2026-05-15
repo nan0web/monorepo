@@ -14,6 +14,8 @@
  *
  * @class UiMessage
  * @extends Message
+ * @property {Record<string, any>} head - Message head.
+ * @property {boolean} isValid - True if message is valid.
  *
  * @example
  * class UserLoginMessage extends UiMessage {

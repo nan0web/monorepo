@@ -294,12 +294,12 @@ describe('AppRunner', () => {
 		const result = await runner.renderPage('/md')
 		assert.ok(result.page !== null)
 		assert.equal(result.blocks.length, 3, 'should split into 3 blocks')
-		assert.equal(result.blocks[0]['ui-html'], '<h1>Hello</h1>\n\n\n', 'first block should be HTML header')
+		assert.equal(result.blocks[0]['ui-html'], '<h1>Hello</h1>', 'first block should be HTML header')
 		assert.equal(result.blocks[1]['nan0-sandbox'], true, 'second block should be nan0-sandbox')
 		assert.equal(result.blocks[1].src, 'auth.app')
 		assert.equal(result.blocks[1].url, 'signup')
 		assert.equal(result.blocks[1].ui, 'cli')
-		assert.equal(result.blocks[2]['ui-html'], '\n\n\n<p>This is Markdown</p>', 'third block should be paragraph')
+		assert.equal(result.blocks[2]['ui-html'], '<p>This is Markdown</p>', 'third block should be paragraph')
 	})
 
 	it('renders markdown with frontmatter stripping', async () => {

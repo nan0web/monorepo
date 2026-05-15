@@ -27,6 +27,10 @@
  * a generic {@link parseBody} helper.
  *
  * @class Message
+ * @property {Record<string, any>} head - Message head.
+ * @property {any} body - Message body.
+ * @property {Date} time - Creation timestamp.
+ * @property {boolean} isValid - True if message is valid.
  */
 export default class Message {
     /**

@@ -12,6 +12,6 @@ export class ReleaseAuditor extends Model {
     };
     constructor(data?: {}, options?: {});
     /** @type {string} */ dir: string;
-    run(): AsyncGenerator<import("@nan0web/ui/types/core/Intent").ProgressIntent, import("@nan0web/ui/types/core/Intent").ResultIntent, unknown>;
+    run(): AsyncGenerator<import("packages/ui/types/core/Intent").ProgressIntent, import("packages/ui/types/core/Intent").ResultIntent, unknown>;
 }
 import { Model } from '@nan0web/types';

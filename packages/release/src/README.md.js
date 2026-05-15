@@ -404,7 +404,7 @@ Release milestone includes UI polish and core API stabilization.
 		assert.ok(pkg.scripts?.playground)
 		const response = await runSpawn('git', ['remote', 'get-url', 'origin'])
 		assert.ok(response.code === 0)
-		assert.ok(response.text.trim().endsWith(':nan0web/release.git'))
+		assert.ok(response.text.trim().endsWith('nan0web/monorepo.git') || response.text.trim().endsWith('nan0web/release.git'))
 	})
 
 	/**

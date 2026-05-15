@@ -1,12 +1,13 @@
 import { OutputMessage } from '@nan0web/co'
-import Command from './Command.js'
+import Command, { CommandBody } from './Command.js'
 import process from 'node:process'
 
-class InitBody {
+class InitBody extends CommandBody {
 	static version = { help: 'Release version', defaultValue: '' }
 	/** @type {string} */
 	version = ''
 	constructor({ version = '' } = {}) {
+		super()
 		this.version = String(version)
 	}
 }

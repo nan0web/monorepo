@@ -1,6 +1,6 @@
 # Architecture Healing Report
 
-> **Audit Date**: 5/13/2026, 4:50:51 PM
+> **Audit Date**: 5/15/2026, 2:28:47 PM
 > **Health Score**: 43%
 
 The following architectural issues were detected in @[@app/packages/auth].
@@ -25,18 +25,8 @@ The following architectural issues were detected in @[@app/packages/auth].
 ---
 
 ### JsHygieneAuditor
-- [ ] [hygiene] scripts.test:all: `Missing required script: test:all`
-  - **Suggested Fix**: `"test:all": "npm run build && npm run test && npm run knip"`
-- [ ] [hygiene] scripts.build: `Missing required script: build`
-  - **Suggested Fix**: `"build": "tsc"`
 - [ ] [hygiene] devDependencies.typescript: `Missing devDependency: typescript (required for npm run build)`
   - **Suggested Fix**: `npm install -D typescript`
-- [ ] [hygiene] scripts.knip: `Missing required script: knip`
-  - **Suggested Fix**: `"knip": "knip"`
-- [ ] [hygiene] devDependencies.knip: `Missing devDependency: knip (required for npm run knip)`
-  - **Suggested Fix**: `npm install -D knip`
-- [ ] [hygiene] scripts.test:docs: `Missing required script: test:docs`
-  - **Suggested Fix**: `"test:docs": "node --test --test-timeout=3333 'src/docs/**/*.md.js' 'src/README.md.js'"`
 - [ ] [hygiene] scripts.test:release: `Missing required script: test:release`
 - [ ] [hygiene] scripts.release:spec: `Missing required script: release:spec`
 - [ ] [hygiene] scripts.test:coverage: `Missing required script: test:coverage`

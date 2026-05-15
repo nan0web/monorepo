@@ -20,6 +20,9 @@
     "./parsers": {
       "import": "./src/Parser/index.js",
       "types": "./types/Parser/index.d.ts"
+    },
+    "./types/exec/runSpawn": {
+      "types": "./types/exec/runSpawn.d.ts"
     }
   },
   "scripts": {

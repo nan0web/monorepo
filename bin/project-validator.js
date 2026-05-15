@@ -11,7 +11,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import Logger from '@nan0web/log'
-import { ProjectModel } from '@nan0web/types'
+import { ProjectModel } from '@nan0web/core'
 
 const logger = new Logger()
 
@@ -186,7 +186,7 @@ function parseProjectMarkdown(fileContent) {
 		stats.progress = Math.round((stats.completedTasks / stats.totalTasks) * 100)
 	}
 
-	const model = new ProjectModel({ metadata, sections, stats })
+	const model = new ProjectModel({ ...metadata, sections, stats })
 
 	// Validations mapping to Sages rules
 	if (!model.description)
@@ -300,8 +300,20 @@ async function processProject(filePath) {
 	}
 }
 
+/**
+ * Validation wrapper for external tests.
+ * @param {string} filePath 
+ * @returns {Promise<string[]>} List of error messages
+ */
+export async function validateProjectMD(filePath) {
+	const res = await processProject(filePath)
+	return res.errors.map(e => e.message)
+}
+
+import { fileURLToPath } from 'node:url'
+
 // CLI Mode
-if (process.argv[1] === path.resolve(process.argv[1])) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
 	const filePath = process.argv[2]
 	if (!filePath) {
 		console.error('Usage: node bin/project-validator.js <path-to-project.md>')

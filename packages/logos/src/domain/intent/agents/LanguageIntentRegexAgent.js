@@ -33,7 +33,7 @@ export class LanguageIntentRegexAgent {
 			const butMatch = intention.match(BUT_REGEX)
 			if (butMatch) {
 				// Strip everything before BUT
-				intention = intention.slice(butMatch.index + butMatch[0].length).trim()
+				intention = intention.slice((butMatch.index ?? 0) + butMatch[0].length).trim()
 				isClean = false
 				reasons.push("Знайдено ментальний вірус (виправдання або маскування через 'але')")
 			}

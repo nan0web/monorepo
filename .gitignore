@@ -34,6 +34,10 @@ nan0web.json
 /play/
 .agent/
 
+# Logs
+logs/
+*.log
+
 # Artifacts and Media
 **/screenshots/
 **/playwright-report/

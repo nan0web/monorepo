@@ -71,6 +71,9 @@ importers:
       '@nan0web/i18n':
         specifier: workspace:*
         version: link:packages/i18n
+      '@nan0web/inspect':
+        specifier: workspace:*
+        version: link:packages/inspect
       '@nan0web/llimo.app':
         specifier: workspace:*
         version: link:apps/llimo.app
@@ -1357,6 +1360,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@nan0web/co':
+        specifier: workspace:*
+        version: link:../co
       '@nan0web/db':
         specifier: workspace:*
         version: link:../db
@@ -1886,9 +1892,6 @@ importers:
       '@nan0web/ui-cli':
         specifier: workspace:*
         version: link:../ui-cli
-      supports-color:
-        specifier: ^10.2.2
-        version: 10.2.2
     devDependencies:
       '@nan0web/test':
         specifier: workspace:*
@@ -7469,10 +7472,6 @@ packages:
     resolution: {integrity: sha512-DhuTmvZWux4H1UOnWMB3sk0sbaCVOoQZjv8u1rDoTV0HTdGem9hkAZtl4JZy8P2z4Bg0nT+YMeOFyVr4zcG5Tw==}
     engines: {node: '>=16 || 14 >=14.17'}
     hasBin: true
-
-  supports-color@10.2.2:
-    resolution: {integrity: sha512-SS+jx45GF1QjgEXQx4NJZV9ImqmO2NPz5FNsIHrsDjh2YsHnawpan7SNQ1o8NuhrbHZy9AZhIoCUiCeaW/C80g==}
-    engines: {node: '>=18'}
 
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
@@ -13559,8 +13558,6 @@ snapshots:
       pirates: 4.0.7
       tinyglobby: 0.2.16
       ts-interface-checker: 0.1.13
-
-  supports-color@10.2.2: {}
 
   supports-color@7.2.0:
     dependencies:

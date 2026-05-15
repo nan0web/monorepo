@@ -35,41 +35,45 @@ pnpm test
 
 ## 🤖 AI-Powered Development (MCP)
 
-NaN•Web is designed to be developed alongside AI agents. To give your agent full context:
+NaN•Web is designed to be developed alongside AI agents. To give your agent full context, follow these steps:
 
-1. Configure EMBEDDER_URL
-```js
-/**
-	 * Specify the address of your local embedding server (LM Studio or Ollama).
-	
-	 * **For Linux / macOS (zsh, bash):**
-	 * ```bash
-	 * export EMBEDDER_URL="http://localhost:1234/v1"
-	 * ```
-	 * **For Windows (Command Prompt):**
-	 * ```cmd
-	 * set EMBEDDER_URL=http://localhost:1234/v1
-	 * ```
-	 * **For Windows (PowerShell):**
-	 * ```powershell
-	 * $env:EMBEDDER_URL = "http://localhost:1234/v1"
-	 * ```
- */
+### 1. Configure EMBEDDER_URL
+Specify the address of your local embedding server (LM Studio or Ollama).
+
+**For Linux / macOS (zsh, bash):**
+```bash
+export EMBEDDER_URL="http://localhost:1234/v1"
+```
+**For Windows (Command Prompt):**
+```cmd
+set EMBEDDER_URL=http://localhost:1234/v1
+```
+**For Windows (PowerShell):**
+```powershell
+$env:EMBEDDER_URL = "http://localhost:1234/v1"
 ```
 
-2. Index the workspace
+### 2. Index the Workspace (docs, source, data)
+Index all packages and the global documentation to build the knowledge base:
 ```bash
 pnpm run ai:index
 ```
-This generates a `nan0web_agents.index.nan0` vector index for RAG.
 
-3. Setup MCP Server
+### 3. Index Agent configurations
+Generate the agent registry for specialized tasks:
+```bash
+pnpm run ai:index --agents
+```
+
+### 4. Setup MCP Server
+Register the `@nan0web/ai` server in your AI client (e.g. Claude Desktop or Antigravity):
 ```bash
 pnpm run ai:setup
 ```
-This registers the `@nan0web/ai` MCP server in your local AI client.
 
-### 4. Global AI Access (nan0ai)
+Verify AI scripts
+
+### 5. Global AI Access (nan0ai)
 
 You can install the assistant globally to access NaN•Web knowledge from anywhere in your system:
 
@@ -100,6 +104,3 @@ How to contribute? [check here](./CONTRIBUTING.md)
 ## License
 
 How to license? See the [ISC LICENSE](./LICENSE) file.
-```js
-const text = await fs.loadDocument('LICENSE')
-```
