@@ -1,8 +1,10 @@
 /dist/
-/packages/
-/apps/
+**/dist/
+# /packages/
+/apps/3rdparty/
 /finetune/
 /node_modules/
+**/node_modules/
 /.datasets/
 **/.datasets/
 /.packages/
@@ -31,3 +33,16 @@ nan0web.json
 /scratch/
 /play/
 .agent/
+
+# Artifacts and Media
+**/screenshots/
+**/playwright-report/
+**/test-results/
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.mp4
+**/*.webm
+# WebP is allowed for lightweight documentation
+!**/*.webp
