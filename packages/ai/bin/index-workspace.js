@@ -11,10 +11,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 let root = process.cwd()
-while (root.length > 2 && !fs.existsSync(path.join(root, 'nan0web_store.csv'))) {
-	root = path.dirname(root)
+while (root && root !== '/') {
+	if (fs.existsSync(path.join(root, 'pnpm-workspace.yaml'))) break
+	const parent = path.dirname(root)
+	if (parent === root) break
+	root = parent
 }
-console.log('Indexer Workspace Root detected (via registry):', root)
+console.log('Indexer Workspace Root detected (via pnpm-workspace.yaml):', root)
 
 bootstrapApp(IndexWorkspaceApp, {
 	workspaceRoot: root,

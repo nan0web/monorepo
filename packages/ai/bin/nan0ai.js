@@ -18,17 +18,17 @@ let root = process.cwd()
 let found = false
 
 // 1. Try to find local workspace marker (monorepo root)
-while (root.length > 2) {
-	const marker = path.join(root, 'pnpm-workspace.yaml')
+while (root && root !== '/') {
 	if (
-		fs.existsSync(path.join(root, 'nan0web_store.csv')) ||
-		fs.existsSync(marker) ||
+		fs.existsSync(path.join(root, 'pnpm-workspace.yaml')) ||
 		fs.existsSync(path.join(root, 'lerna.json'))
 	) {
 		found = true
 		break
 	}
-	root = path.dirname(root)
+	const parent = path.dirname(root)
+	if (parent === root) break
+	root = parent
 }
 if (found) console.log(`nan0ai: Found workspace root at ${root}`)
 else console.log(`nan0ai: Workspace root not found, using ${root}`)
@@ -46,7 +46,7 @@ if (!found && fs.existsSync(CONTEXT_PATH)) {
 }
 
 if (!found) {
-	console.error('❌ Error: No NaN•Web workspace found (nan0web_store.csv missing).')
+	console.error('❌ Error: No NaN•Web workspace found (pnpm-workspace.yaml missing).')
 	console.error('Please run "nan0ai" inside your monorepo first to register it.')
 	process.exit(1)
 }
