@@ -1,0 +1,6 @@
+torch
+transformers
+tokenizers
+sentencepiece
+protobuf
+git+https://github.com/ggml-org/llama.cpp.git#subdirectory=gguf-py

@@ -41,7 +41,7 @@
 		"@nan0web/db": "workspace:*",
 		"@nan0web/db-fs": "workspace:*",
 		"@nan0web/i18n": "workspace:*",
-		"@nan0web/llimo": "workspace:*",
+		"@nan0web/llimo.app": "workspace:*",
 		"@nan0web/log": "workspace:*",
 		"@nan0web/markdown": "workspace:*",
 		"@nan0web/test": "workspace:*",
