@@ -2,7 +2,8 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { IndexWorkspaceApp } from './IndexWorkspaceApp.js'
 import { MarkdownIndexer } from './MarkdownIndexer.js'
-import { DBFS, DocumentEntry, DocumentStat } from '@nan0web/db-fs'
+import { VectorDB } from './VectorDB.js'
+import DB from '@nan0web/db'
 
 class MockEmbedder {
 	async embed(text) {
@@ -19,10 +20,28 @@ describe('IndexWorkspaceApp Story Test: MemoryDB & Fallback Scenarios', () => {
 		const originalGetWorkspaceRoot = MarkdownIndexer.prototype.getWorkspaceRoot
 		MarkdownIndexer.prototype.getWorkspaceRoot = () => '/'
 
-		// 1. Create in-memory mock file system (MemoryDB)
-		const mockFs = new DBFS({
+		// Prevent VectorDB from hitting the physical disk during in-memory tests
+		const originalSave = VectorDB.prototype.save
+		const originalLoad = VectorDB.prototype.load
+		VectorDB.prototype.save = async () => {}
+		VectorDB.prototype.load = async () => true
+
+		// 1. Create a pure in-memory DB (MemoryDB) with predefined directory structure
+		const mockFs = new DB({
 			predefined: [
-				// Projects
+				// Explicit directory markers so MemoryDB builds directory metadata automatically
+				['packages/', {}],
+				['packages/pkg-a/', {}],
+				['packages/pkg-a/docs/', {}],
+				['packages/pkg-a/docs/en/', {}],
+				['packages/pkg-b/', {}],
+				['apps/', {}],
+				['apps/app-c/', {}],
+				['apps/app-c/docs/', {}],
+				['apps/app-c/docs/en/', {}],
+				['store/', {}],
+
+				// File entries
 				['packages/pkg-a/package.json', JSON.stringify({ name: '@nan0web/pkg-a' })],
 				['packages/pkg-a/docs/en/project.md', '# Project A documentation\nThis is a mock project.'],
 				['packages/pkg-b/package.json', JSON.stringify({ name: '@nan0web/pkg-b' })],
@@ -36,77 +55,35 @@ describe('IndexWorkspaceApp Story Test: MemoryDB & Fallback Scenarios', () => {
 		})
 		await mockFs.connect()
 
-		// Mock listDir to simulate directory structures fully in-memory
-		mockFs.listDir = async (uri) => {
-			const dir = uri.replace(/^\//, '').replace(/\/$/, '')
-			if (dir === '') {
-				return [
-					new DocumentEntry({ name: 'packages', path: 'packages', stat: new DocumentStat({ isDirectory: true }) }),
-					new DocumentEntry({ name: 'apps', path: 'apps', stat: new DocumentStat({ isDirectory: true }) }),
-					new DocumentEntry({ name: 'store', path: 'store', stat: new DocumentStat({ isDirectory: true }) })
-				]
-			}
-			if (dir === 'packages') {
-				return [
-					new DocumentEntry({ name: 'pkg-a', path: 'packages/pkg-a', stat: new DocumentStat({ isDirectory: true }) }),
-					new DocumentEntry({ name: 'pkg-b', path: 'packages/pkg-b', stat: new DocumentStat({ isDirectory: true }) })
-				]
-			}
-			if (dir === 'apps') {
-				return [
-					new DocumentEntry({ name: 'app-c', path: 'apps/app-c', stat: new DocumentStat({ isDirectory: true }) })
-				]
-			}
-			if (dir === 'packages/pkg-a') {
-				return [
-					new DocumentEntry({ name: 'package.json', path: 'packages/pkg-a/package.json', stat: new DocumentStat({ isFile: true }) }),
-					new DocumentEntry({ name: 'docs', path: 'packages/pkg-a/docs', stat: new DocumentStat({ isDirectory: true }) })
-				]
-			}
-			if (dir === 'packages/pkg-a/docs') {
-				return [
-					new DocumentEntry({ name: 'en', path: 'packages/pkg-a/docs/en', stat: new DocumentStat({ isDirectory: true }) })
-				]
-			}
-			if (dir === 'packages/pkg-a/docs/en') {
-				return [
-					new DocumentEntry({ name: 'project.md', path: 'packages/pkg-a/docs/en/project.md', stat: new DocumentStat({ isFile: true }) })
-				]
-			}
-			if (dir === 'packages/pkg-b') {
-				return [
-					new DocumentEntry({ name: 'package.json', path: 'packages/pkg-b/package.json', stat: new DocumentStat({ isFile: true }) }),
-					new DocumentEntry({ name: 'nan0web.nan0', path: 'packages/pkg-b/nan0web.nan0', stat: new DocumentStat({ isFile: true }) })
-				]
-			}
-			if (dir === 'apps/app-c') {
-				return [
-					new DocumentEntry({ name: 'package.json', path: 'apps/app-c/package.json', stat: new DocumentStat({ isFile: true }) }),
-					new DocumentEntry({ name: 'docs', path: 'apps/app-c/docs', stat: new DocumentStat({ isDirectory: true }) })
-				]
-			}
-			if (dir === 'apps/app-c/docs') {
-				return [
-					new DocumentEntry({ name: 'en', path: 'apps/app-c/docs/en', stat: new DocumentStat({ isDirectory: true }) })
-				]
-			}
-			if (dir === 'apps/app-c/docs/en') {
-				return [
-					new DocumentEntry({ name: 'project.md', path: 'apps/app-c/docs/en/project.md', stat: new DocumentStat({ isFile: true }) })
-				]
-			}
-			return []
-		}
-
 		const workspaceRoot = '/'
+
+		// Extract storeDb and decorate it with a simple CSV parser since base DB has no built-in CSV parser
+		const storeDb = mockFs.extract('store')
+		storeDb.loadDocumentAs = async (ext, uri, defaultValue) => {
+			const raw = storeDb.data.get(uri) ?? defaultValue
+			if (typeof raw === 'string' && ext === '.csv') {
+				const lines = raw.trim().split('\n')
+				if (lines.length <= 1) return []
+				const headers = lines[0].split(',')
+				return lines.slice(1).map(line => {
+					const values = line.split(',')
+					const obj = {}
+					headers.forEach((h, i) => {
+						obj[h.trim()] = values[i]?.trim()
+					})
+					return obj
+				})
+			}
+			return raw
+		}
 
 		// Instantiate app with silent: false to capture show and success events
 		const app = new IndexWorkspaceApp(
 			{ silent: false, concurrency: 1, scopes: ['docs'] },
 			{
 				db: mockFs.extract('packages/ai/data'), // Local app db mock
-				storeDb: mockFs.extract('store'),      // Store db mock
-				workspaceDb: mockFs,                    // Workspace DBFS mock
+				storeDb,                                // Decorated store db mock
+				workspaceDb: mockFs,                    // Workspace DB mock
 				workspaceRoot
 			}
 		)
@@ -115,7 +92,6 @@ describe('IndexWorkspaceApp Story Test: MemoryDB & Fallback Scenarios', () => {
 		app.getWorkspaceRoot = () => '/'
 
 		// Let's test the _getProjectsToIndex fallback logic first
-		const storeDb = mockFs.extract('store')
 		const discoveredFallback = await app._getProjectsToIndex(storeDb, workspaceRoot)
 
 		assert.ok(discoveredFallback.length > 0, 'Should fall back to scanning workspace directories')
@@ -145,7 +121,7 @@ describe('IndexWorkspaceApp Story Test: MemoryDB & Fallback Scenarios', () => {
 		// 3. Test loaded store mode
 		await storeDb.saveDocument('nan0web_store.csv', 'name,path\npkg-a,/packages/pkg-a\n')
 		const discoveredLoaded = await app._getProjectsToIndex(storeDb, workspaceRoot)
-		assert.strictEqual(discoveredLoaded.length, 1, 'Should load exactly 1 project from store')
+		assert.strictEqual(discoveredLoaded.length, 1, `Should load exactly 1 project from store, got: ${JSON.stringify(discoveredLoaded)}`)
 		assert.strictEqual(discoveredLoaded[0].name, 'pkg-a')
 
 		// 4. Test indexAgents
@@ -165,8 +141,10 @@ describe('IndexWorkspaceApp Story Test: MemoryDB & Fallback Scenarios', () => {
 		const indexExists = await localDb.statDocument('nan0web_agents.index.nan0')
 		assert.ok(indexExists.exists, 'nan0web_agents.index.nan0 should be successfully saved to app database')
 
-		// Restore original prototype method
+		// Restore original methods
 		MarkdownIndexer.prototype.getWorkspaceRoot = originalGetWorkspaceRoot
+		VectorDB.prototype.save = originalSave
+		VectorDB.prototype.load = originalLoad
 		await mockFs.disconnect()
 	})
 })
