@@ -178,11 +178,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			if (parent === current) break
 			current = parent
 		}
-		const db = this._.db || new DBFS({ root: workspaceRoot })
-
-		const storeDir = path.join(os.homedir(), '.nan0web/store')
-		// We isolate storeDb as a separate DBFS instance to prevent "Mount registry is sealed" error
-		// that occurs when attempting to mount 'store' to a sealed primary database.
+		const workspaceDb = new DBFS({ root: workspaceRoot })
 		const storeDb = /** @type {any} */ (this._).storeDb || new DBFS({ root: storeDir })
 
 		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot)
@@ -195,7 +191,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		if (!this.silent)
 			yield show(t(IndexWorkspaceApp.UI.info, { projects: projects.length }), 'info')
 
-		const nameToDir = this.project?.startsWith('@') ? await loadNameToDir(db) : undefined
+		const nameToDir = this.project?.startsWith('@') ? await loadNameToDir(workspaceDb) : undefined
 
 		const embedderUrl =
 			/** @type {any} */ (this._).embedderUrl ||
@@ -226,7 +222,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 							ignore:
 								!proj.dir || proj.dir === '.' ? [...this.ignore, 'apps', 'packages'] : this.ignore,
 						}),
-						/** @type {any} */ ({ db: storeDb, workspaceDb: db, workspaceRoot }),
+						/** @type {any} */ ({ db: storeDb, workspaceDb, workspaceRoot }),
 					)
 					try {
 						for await (const it of indexer.indexAll(embedder, { force: this.force })) {
@@ -279,9 +275,9 @@ export class IndexWorkspaceApp extends ModelAsApp {
 							ignore:
 								!proj.dir || proj.dir === '.' ? [...this.ignore, 'apps', 'packages'] : this.ignore,
 						}),
-						/** @type {any} */ ({ db: storeDb, workspaceDb: db, workspaceRoot }),
+						/** @type {any} */ ({ db: storeDb, workspaceDb, workspaceRoot }),
 					)
-
+ 
 					for await (const it of indexer.indexAll(embedder, { force: this.force })) {
 						it.project = it.project || proj.name
 						yield* this._handleEvent(it, { show, progress, t })
@@ -382,6 +378,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		}
 
 		const db = this._.db
+		const workspaceDb = new DBFS({ root: workspaceRoot })
 
 		const storeDb = /** @type {any} */ (this._).storeDb || new DBFS({ root: storeDir })
 
@@ -399,8 +396,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 		for (const proj of projects) {
 			const configPath = path.join(proj.dir, 'nan0web.nan0')
-			const _db = /** @type {any} */ (db)
-			const content = await _db.loadDocumentAs('.txt', '/' + configPath, null).catch(() => null)
+			const content = await workspaceDb.loadDocumentAs('.txt', '/' + configPath, null).catch(() => null)
 
 			if (content) {
 				const lines = content.split('\n')
