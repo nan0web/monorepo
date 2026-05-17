@@ -288,6 +288,10 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			}
 		}
 
+		if (process.stdout && process.stdout.isTTY) {
+			yield progress('', 100, { id: 'Mass_Index', stop: 'success' })
+		}
+
 		if (!this.silent) yield show(t(IndexWorkspaceApp.UI.done), 'success')
 	}
 	/**
@@ -312,57 +316,42 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				t(UI.scanning, { project: it.project, files: it.files }),
 				(it.current / it.total) * 100,
 				{
-					id: `Index_Scan_${it.project}`,
+					id: 'Mass_Index',
 					width: 30,
 				},
 			)
-		if (it.type === 'cacheCheckStart') {
-			yield progress('', 100, { id: `Index_Scan_${it.project}`, stop: 'success' })
-			yield progress(t(UI.verifyingCache), 0, { id: `Index_Cache_${it.project}`, width: 30 })
-		}
 		if (it.type === 'cacheCheckProgress')
 			yield progress(
 				t(UI.verifyingCacheProject, { project: it.project }),
 				(it.current / it.total) * 100,
 				{
-					id: `Index_Cache_${it.project}`,
+					id: 'Mass_Index',
 					width: 30,
 				},
 			)
 		if (it.type === 'calc') {
-			yield progress('', 100, { id: `Index_Cache_${it.project}`, stop: 'success' })
-			for (const p of it.projects)
-				yield progress(
-					t(UI.generatingVectors),
-					0,
-					/** @type {any} */ ({
-						id: `Index_${p}`,
-						title: `[${p}]`,
-						forceOneLine: true,
-						width: 30,
-					}),
-				)
+			yield progress(
+				t(UI.generatingVectors),
+				0,
+				{
+					id: 'Mass_Index',
+					width: 30,
+				},
+			)
 		}
 		if (it.type === 'tick')
-			yield progress(`${it.project} ${it.file}`, it.current, {
-				id: `Index_${it.project}`,
-				total: it.total,
-				forceOneLine: true,
-				width: 30,
-			})
+			yield progress(
+				`${it.project} ${it.file}`,
+				(it.current / it.total) * 100,
+				{
+					id: 'Mass_Index',
+					width: 30,
+				},
+			)
 		if (it.type === 'projectCached') {
-			if (process.stdout && process.stdout.isTTY) {
-				yield progress('', 100, { id: `Index_Scan_${it.name}`, stop: 'success' })
-				yield progress('', 100, { id: `Index_Cache_${it.name}`, stop: 'success' })
-			}
 			if (!this.silent) yield show(t(UI.projectCached, { name: it.name, dir: it.dir }), 'info')
 		}
 		if (it.type === 'projectIndexed') {
-			if (process.stdout && process.stdout.isTTY) {
-				yield progress('', 100, { id: `Index_Scan_${it.name}`, stop: 'success' })
-				yield progress('', 100, { id: `Index_Cache_${it.name}`, stop: 'success' })
-				yield progress('', 100, { id: `Index_${it.name}`, stop: 'success' })
-			}
 			if (!this.silent) yield show(t(UI.projectIndexed, { name: it.name, files: it.files, dir: it.dir }), 'success')
 		}
 	}
