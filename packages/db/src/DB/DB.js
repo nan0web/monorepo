@@ -1033,29 +1033,44 @@ export default class DB {
 			)
 		}
 		for (const key of Array.from(this.meta.keys())) {
-			let dir
-			if (key.endsWith('/')) {
-				dir = ((this.dirname(key) || '.') + '/').replace(/\/+/g, '/')
-			} else {
-				const arr = key.split('/')
-				arr.pop()
-				dir = arr.join('/')
-				if (!dir) dir = '.'
-				dir += '/'
-			}
 			const stat = this.meta.get(key)
 			if (!stat) continue
-			if (!this.meta.has(dir)) {
-				if (this.isRoot(dir)) dir = '.'
-				this.meta.set(
-					dir,
-					new DocumentStat({ isDirectory: true, mtimeMs: stat.mtimeMs, size: stat.size }),
-				)
+
+			const parts = key.split('/').filter(Boolean)
+			if (!key.endsWith('/')) {
+				parts.pop()
+			}
+
+			let current = ''
+			if (parts.length === 0) {
+				if (!this.meta.has('.')) {
+					this.meta.set(
+						'.',
+						new DocumentStat({ isDirectory: true, mtimeMs: stat.mtimeMs, size: stat.size }),
+					)
+				} else {
+					const dirStat = this.meta.get('.')
+					if (dirStat) {
+						dirStat.size += stat.size
+						if (stat.mtimeMs > dirStat.mtimeMs) dirStat.mtimeMs = stat.mtimeMs
+					}
+				}
 			} else {
-				const dirStat = this.meta.get(dir)
-				if (dirStat) {
-					dirStat.size += stat.size
-					if (stat.mtimeMs > dirStat.mtimeMs) dirStat.mtimeMs = stat.mtimeMs
+				for (const part of parts) {
+					current += part + '/'
+					if (this.isRoot(current) || current === './') continue
+					if (!this.meta.has(current)) {
+						this.meta.set(
+							current,
+							new DocumentStat({ isDirectory: true, mtimeMs: stat.mtimeMs, size: stat.size }),
+						)
+					} else {
+						const dirStat = this.meta.get(current)
+						if (dirStat) {
+							dirStat.size += stat.size
+							if (stat.mtimeMs > dirStat.mtimeMs) dirStat.mtimeMs = stat.mtimeMs
+						}
+					}
 				}
 			}
 		}

@@ -14,150 +14,159 @@ class MockEmbedder {
 	}
 }
 
-// Automatically builds virtual directory metadata from file paths
-function buildVirtualDirectories(predefined) {
-	const dirs = new Set()
-	for (const [key] of predefined) {
-		const parts = key.split('/')
-		parts.pop() // remove filename
-		let current = ''
-		for (const part of parts) {
-			current += part + '/'
-			dirs.add(current)
+// Clean MemoryDB subclass to natively support CSV, JSON and nano files without ad-hoc method mocking
+class MemoryDB extends DB {
+	async loadDocumentAs(ext, uri, defaultValue) {
+		const normUri = this.normalize(uri)
+		const raw = this.data.get(normUri) ?? defaultValue
+		if (typeof raw === 'string' && ext === '.csv') {
+			const lines = raw.trim().split('\n')
+			if (lines.length <= 1) return []
+			const headers = lines[0].split(',')
+			return lines.slice(1).map((line) => {
+				const values = line.split(',')
+				const obj = {}
+				headers.forEach((h, i) => {
+					obj[h.trim()] = values[i]?.trim()
+				})
+				return obj
+			})
 		}
-	}
-	for (const dir of dirs) {
-		if (!predefined.some(([k]) => k === dir)) {
-			predefined.push([dir, {}])
+		if (ext === '.txt' && typeof raw === 'object' && raw !== null) {
+			if (raw.agents) {
+				const lines = []
+				for (const agent of raw.agents) {
+					lines.push(`- id: "${agent.id}"`)
+					if (agent.description) {
+						lines.push(`  description: "${agent.description}"`)
+					}
+					if (agent.workflows) {
+						lines.push('  workflows:')
+						for (const w of agent.workflows) {
+							lines.push(`    - "${w}"`)
+						}
+					}
+					if (agent.inspectors) {
+						lines.push('  inspectors:')
+						for (const i of agent.inspectors) {
+							lines.push(`    - "${i}"`)
+						}
+					}
+				}
+				return lines.join('\n')
+			}
+			return JSON.stringify(raw)
 		}
+		if (ext === '.json' && typeof raw === 'string') {
+			try {
+				return JSON.parse(raw)
+			} catch (e) {
+				return defaultValue
+			}
+		}
+		return super.loadDocumentAs(ext, uri, defaultValue)
 	}
 }
 
-describe('IndexWorkspaceApp Story Test: MemoryDB & Fallback Scenarios', () => {
-	it('should successfully discover and index projects using fallback and loaded store modes', async () => {
-		// Mock MarkdownIndexer.prototype.getWorkspaceRoot to return '/'
+describe('IndexWorkspaceApp Story Test Suite', () => {
+	const workspaceRoot = '/'
+
+	it('should fall back to scanning workspace directories when the store is empty', async () => {
+		const predefined = [
+			['packages/pkg-a/package.json', { name: '@nan0web/pkg-a' }],
+			['packages/pkg-a/docs/en/project.md', '# Project A documentation\nThis is a mock project.'],
+			['packages/pkg-b/package.json', { name: '@nan0web/pkg-b' }],
+			['apps/app-c/package.json', { name: '@nan0web/app-c' }],
+			['apps/app-c/docs/en/project.md', '# App C documentation\nThis is a mock app.'],
+			['store/nan0web_store.csv', []],
+			['store/nan0web_store.local.csv', []],
+		]
+		const mockFs = new MemoryDB({ predefined })
+		await mockFs.connect()
+
+		const storeDb = mockFs.extract('store')
+		const app = new IndexWorkspaceApp(
+			{ silent: true, scopes: ['docs'] },
+			{
+				db: mockFs.extract('packages/ai/data'),
+				storeDb,
+				workspaceDb: mockFs,
+				workspaceRoot,
+			},
+		)
+		app.getWorkspaceRoot = () => '/'
+
+		const discovered = await app._getProjectsToIndex(storeDb, workspaceRoot)
+		assert.strictEqual(discovered.length, 3, 'Should discover exactly 3 projects')
+		const names = discovered.map((p) => p.name)
+		assert.ok(names.includes('pkg-a'), 'Should discover pkg-a')
+		assert.ok(names.includes('pkg-b'), 'Should discover pkg-b')
+		assert.ok(names.includes('app-c'), 'Should discover app-c')
+
+		await mockFs.disconnect()
+	})
+
+	it('should load projects directly from global store when entries are present', async () => {
+		const predefined = [
+			['packages/pkg-a/package.json', { name: '@nan0web/pkg-a' }],
+			['packages/pkg-b/package.json', { name: '@nan0web/pkg-b' }],
+			['store/nan0web_store.csv', [{ name: 'pkg-a', path: '/packages/pkg-a' }]],
+			['store/nan0web_store.local.csv', []],
+		]
+		const mockFs = new MemoryDB({ predefined })
+		await mockFs.connect()
+
+		const storeDb = mockFs.extract('store')
+		const app = new IndexWorkspaceApp(
+			{ silent: true, scopes: ['docs'] },
+			{
+				db: mockFs.extract('packages/ai/data'),
+				storeDb,
+				workspaceDb: mockFs,
+				workspaceRoot,
+			},
+		)
+		app.getWorkspaceRoot = () => '/'
+
+		const discovered = await app._getProjectsToIndex(storeDb, workspaceRoot)
+		assert.strictEqual(discovered.length, 1, 'Should load exactly 1 project from store')
+		assert.strictEqual(discovered[0].name, 'pkg-a', 'Should be pkg-a')
+		assert.strictEqual(discovered[0].dir, 'packages/pkg-a', 'Should resolve directory relative to root')
+
+		await mockFs.disconnect()
+	})
+
+	it('should successfully perform full document indexing', async () => {
 		const originalGetWorkspaceRoot = MarkdownIndexer.prototype.getWorkspaceRoot
 		MarkdownIndexer.prototype.getWorkspaceRoot = () => '/'
 
-		// Prevent VectorDB from hitting the physical disk during in-memory tests
 		const originalSave = VectorDB.prototype.save
 		const originalLoad = VectorDB.prototype.load
 		VectorDB.prototype.save = async () => {}
 		VectorDB.prototype.load = async () => true
 
-		// 1. Define the files as pure JS objects exactly in the format the USER specified
 		const predefined = [
 			['packages/pkg-a/package.json', { name: '@nan0web/pkg-a' }],
 			['packages/pkg-a/docs/en/project.md', '# Project A documentation\nThis is a mock project.'],
-			['packages/pkg-b/package.json', { name: '@nan0web/pkg-b' }],
-			[
-				'packages/pkg-b/nan0web.nan0',
-				{
-					agents: [
-						{ id: 'test-agent', description: 'Test agent config', workflows: ['workflow-a'] },
-					],
-				},
-			],
-			['apps/app-c/package.json', { name: '@nan0web/app-c' }],
-			['apps/app-c/docs/en/project.md', '# App C documentation\nThis is a mock app.'],
-			// Empty store at first to trigger fallback logic
 			['store/nan0web_store.csv', []],
 			['store/nan0web_store.local.csv', []],
 		]
-
-		// Automatically construct virtual parent directories for MemoryDB
-		buildVirtualDirectories(predefined)
-
-		const mockFs = new DB({ predefined })
+		const mockFs = new MemoryDB({ predefined })
 		await mockFs.connect()
 
-		// Decorate mockFs to serialize JS objects on the fly when read as files
-		mockFs.loadDocumentAs = async (ext, uri, defaultValue) => {
-			const raw = mockFs.data.get(uri) ?? defaultValue
-			if (ext === '.txt' && typeof raw === 'object' && raw !== null) {
-				if (raw.agents) {
-					const lines = []
-					for (const agent of raw.agents) {
-						lines.push(`- id: "${agent.id}"`)
-						if (agent.description) {
-							lines.push(`  description: "${agent.description}"`)
-						}
-						if (agent.workflows) {
-							lines.push('  workflows:')
-							for (const w of agent.workflows) {
-								lines.push(`    - "${w}"`)
-							}
-						}
-						if (agent.inspectors) {
-							lines.push('  inspectors:')
-							for (const i of agent.inspectors) {
-								lines.push(`    - "${i}"`)
-							}
-						}
-					}
-					return lines.join('\n')
-				}
-				return JSON.stringify(raw)
-			}
-			if (ext === '.json' && typeof raw === 'string') {
-				try {
-					return JSON.parse(raw)
-				} catch (e) {
-					return defaultValue
-				}
-			}
-			return raw
-		}
-
-		const workspaceRoot = '/'
-
-		// Extract storeDb and decorate it with a simple CSV parser since base DB has no built-in CSV parser
 		const storeDb = mockFs.extract('store')
-		storeDb.loadDocumentAs = async (ext, uri, defaultValue) => {
-			const raw = storeDb.data.get(uri) ?? defaultValue
-			if (typeof raw === 'string' && ext === '.csv') {
-				const lines = raw.trim().split('\n')
-				if (lines.length <= 1) return []
-				const headers = lines[0].split(',')
-				return lines.slice(1).map((line) => {
-					const values = line.split(',')
-					const obj = {}
-					headers.forEach((h, i) => {
-						obj[h.trim()] = values[i]?.trim()
-					})
-					return obj
-				})
-			}
-			return raw
-		}
-
-		// Instantiate app with silent: false to capture show and success events
 		const app = new IndexWorkspaceApp(
-			{ silent: false, concurrency: 1, scopes: ['docs'] },
+			{ silent: false, scopes: ['docs'] },
 			{
-				db: mockFs.extract('packages/ai/data'), // Local app db mock
-				storeDb,                                // Decorated store db mock
-				workspaceDb: mockFs,                    // Workspace DB mock
+				db: mockFs.extract('packages/ai/data'),
+				storeDb,
+				workspaceDb: mockFs,
 				workspaceRoot,
 			},
 		)
-
-		// Overwrite workspaceRoot resolution to return '/' for test
 		app.getWorkspaceRoot = () => '/'
 
-		// Let's test the _getProjectsToIndex fallback logic first
-		const discoveredFallback = await app._getProjectsToIndex(storeDb, workspaceRoot)
-
-		assert.ok(discoveredFallback.length > 0, 'Should fall back to scanning workspace directories')
-		const names = discoveredFallback.map((p) => p.name)
-		assert.ok(names.includes('pkg-a'), 'Should discover pkg-a')
-		assert.ok(names.includes('pkg-b'), 'Should discover pkg-b')
-		assert.ok(names.includes('app-c'), 'Should discover app-c')
-
-		// 2. Mock Embedder and run full index with fallback (empty store)
 		const mockEmbedder = new MockEmbedder()
-
-		// Run indexFull generator
 		const events = []
 		for await (const ev of app.indexFull({
 			show: (msg, type) => ({ type, message: msg }),
@@ -170,21 +179,44 @@ describe('IndexWorkspaceApp Story Test: MemoryDB & Fallback Scenarios', () => {
 			events.push(ev)
 		}
 
-		// Verify success events
 		const successEvents = events.filter((e) => e.type === 'success')
 		assert.ok(successEvents.length > 0, 'Indexing should complete successfully')
 
-		// 3. Test loaded store mode
-		await storeDb.saveDocument('nan0web_store.csv', 'name,path\npkg-a,/packages/pkg-a\n')
-		const discoveredLoaded = await app._getProjectsToIndex(storeDb, workspaceRoot)
-		assert.strictEqual(
-			discoveredLoaded.length,
-			1,
-			`Should load exactly 1 project from store, got: ${JSON.stringify(discoveredLoaded)}`,
-		)
-		assert.strictEqual(discoveredLoaded[0].name, 'pkg-a')
+		MarkdownIndexer.prototype.getWorkspaceRoot = originalGetWorkspaceRoot
+		VectorDB.prototype.save = originalSave
+		VectorDB.prototype.load = originalLoad
+		await mockFs.disconnect()
+	})
 
-		// 4. Test indexAgents
+	it('should successfully scan packages and build agents index', async () => {
+		const predefined = [
+			['packages/pkg-a/package.json', { name: '@nan0web/pkg-a' }],
+			[
+				'packages/pkg-a/nan0web.nan0',
+				{
+					agents: [
+						{ id: 'test-agent', description: 'Test agent config', workflows: ['workflow-a'] },
+					],
+				},
+			],
+			['store/nan0web_store.csv', [{ name: 'pkg-a', path: '/packages/pkg-a' }]],
+			['store/nan0web_store.local.csv', []],
+		]
+		const mockFs = new MemoryDB({ predefined })
+		await mockFs.connect()
+
+		const storeDb = mockFs.extract('store')
+		const app = new IndexWorkspaceApp(
+			{ silent: false },
+			{
+				db: mockFs.extract('packages/ai/data'),
+				storeDb,
+				workspaceDb: mockFs,
+				workspaceRoot,
+			},
+		)
+		app.getWorkspaceRoot = () => '/'
+
 		const agentEvents = []
 		for await (const ev of app.indexAgents({
 			show: (msg, type) => ({ type, message: msg }),
@@ -196,18 +228,9 @@ describe('IndexWorkspaceApp Story Test: MemoryDB & Fallback Scenarios', () => {
 		const agentSuccess = agentEvents.filter((e) => e.type === 'success')
 		assert.ok(agentSuccess.length > 0, 'Agent indexing should complete successfully')
 
-		// Check that nan0web_agents.index.nan0 is created in app local db
-		const localDb = app._.db
-		const indexExists = await localDb.statDocument('nan0web_agents.index.nan0')
-		assert.ok(
-			indexExists.exists,
-			'nan0web_agents.index.nan0 should be successfully saved to app database',
-		)
+		const indexExists = await app._.db.statDocument('nan0web_agents.index.nan0')
+		assert.ok(indexExists.exists, 'nan0web_agents.index.nan0 should exist')
 
-		// Restore original methods
-		MarkdownIndexer.prototype.getWorkspaceRoot = originalGetWorkspaceRoot
-		VectorDB.prototype.save = originalSave
-		VectorDB.prototype.load = originalLoad
 		await mockFs.disconnect()
 	})
 })
