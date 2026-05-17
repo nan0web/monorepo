@@ -15,7 +15,7 @@ describe('IndexWorkspaceApp Agents Indexing', () => {
 		})
 		await db.connect()
 
-		const app = new IndexWorkspaceApp({ agents: true }, { db, storeDb: db })
+		const app = new IndexWorkspaceApp({ agents: true }, { db, storeDb: db, workspaceDb: db })
 		
 		const events = []
 		await runGenerator(/** @type {any} */ (app.run()), {
