@@ -91,7 +91,7 @@ class IndexState {
 		const agg = this.getAggregate(projectName, details.dir || '')
 		
 		if (terminalType === 'missing') {
-			agg.missingScopes.push(scopeName)
+			// Do not record missing scopes in non-test environment to keep logs extremely clean
 		} else if (terminalType === 'cached') {
 			agg.cachedScopes.push(scopeName)
 		} else if (terminalType === 'indexed') {
@@ -106,16 +106,16 @@ class IndexState {
 		if (comp === this.totalScopesForProject) {
 			if (!this.silent) {
 				if (agg.missingScopes.length > 0) {
-					yield show(`✗ [${projectName}] No files found for scope: ${agg.missingScopes.join(', ')}`, 'error')
+					yield show(`[${projectName}] No files found: ${agg.missingScopes.join(', ')}`, 'error')
 				}
 				if (agg.cachedScopes.length > 0) {
-					yield show(`· Project ${projectName} skipped (cache matched) in ${agg.projectDir}: ${agg.cachedScopes.join(', ')}`, 'info')
+					yield show(`Project ${projectName} skipped (cache matched) in ${agg.projectDir}: ${agg.cachedScopes.join(', ')}`, 'info')
 				}
 				if (agg.indexedScopes.length > 0) {
-					yield show(`✓ Project ${projectName} indexed in ${agg.projectDir}: ${agg.indexedScopes.join(', ')}`, 'success')
+					yield show(`Project ${projectName} indexed in ${agg.projectDir}: ${agg.indexedScopes.join(', ')}`, 'success')
 				}
 				for (const err of agg.otherErrors) {
-					yield show(`✗ [${projectName}] Error: ${t(err)}`, 'error')
+					yield show(`[${projectName}] Error: ${t(err)}`, 'error')
 				}
 			}
 		}
@@ -442,11 +442,13 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			return
 		}
 
+		const percent = Math.round((state.processedScopes / state.totalScopes) * 100)
+
 		// Other progress events
 		if (it.type === 'scanProgress') {
 			yield progress(
 				t(UI.scanning, { project: it.project, files: it.files }),
-				(state.processedScopes / state.totalScopes) * 100,
+				percent,
 				{
 					id: 'Mass_Index',
 					width: 30,
@@ -456,7 +458,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		if (it.type === 'cacheCheckProgress') {
 			yield progress(
 				t(UI.verifyingCacheProject, { project: it.project }),
-				(state.processedScopes / state.totalScopes) * 100,
+				percent,
 				{
 					id: 'Mass_Index',
 					width: 30,
@@ -466,7 +468,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		if (it.type === 'calc') {
 			yield progress(
 				t(UI.generatingVectors),
-				(state.processedScopes / state.totalScopes) * 100,
+				percent,
 				{
 					id: 'Mass_Index',
 					width: 30,
@@ -476,7 +478,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		if (it.type === 'tick') {
 			yield progress(
 				`Generating vectors [${it.project}]: ${it.file}`,
-				(state.processedScopes / state.totalScopes) * 100,
+				percent,
 				{
 					id: 'Mass_Index',
 					width: 30,
