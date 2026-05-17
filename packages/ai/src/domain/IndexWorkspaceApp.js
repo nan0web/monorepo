@@ -185,7 +185,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		// that occurs when attempting to mount 'store' to a sealed primary database.
 		const storeDb = /** @type {any} */ (this._).storeDb || new DBFS({ root: storeDir })
 
-		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot, db)
+		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot)
 
 		if (projects.length === 0) {
 			if (!this.silent) yield show(t(IndexWorkspaceApp.UI.noProjects, { dir: storeDir }), 'error')
@@ -385,7 +385,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 		const storeDb = /** @type {any} */ (this._).storeDb || new DBFS({ root: storeDir })
 
-		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot, db)
+		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot)
 
 		if (projects.length === 0) {
 			if (!this.silent) yield show(`No projects found in global store at ${storeDir}.`, 'error')
@@ -465,14 +465,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			)
 	}
 
-	/**
-	 * Extracts the common logic for getting projects from the store, with a fallback to local scan.
-	 * @param {import('@nan0web/db-fs').DBFS} storeDb
-	 * @param {string} workspaceRoot
-	 * @param {import('@nan0web/db-fs').DBFS} db
-	 * @returns {Promise<Array<{name: string, dir: string}>>}
-	 */
-	async _getProjectsToIndex(storeDb, workspaceRoot, db) {
+	async _getProjectsToIndex(storeDb, workspaceRoot) {
 		const projects = []
 		const stores = ['nan0web_store.csv', 'nan0web_store.local.csv']
 
@@ -491,16 +484,17 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			}
 		}
 
-		// Fallback: if no projects found in global store, use NanoWeb's idiomatic db.browse
-		if (projects.length === 0 && db) {
+		// Fallback: if no projects found in global store, use idiomatic DBFS on workspaceRoot
+		if (projects.length === 0 && workspaceRoot) {
 			try {
-				const aliases = ['@pkg', '@app']
-				for (const alias of aliases) {
-					for await (const entry of db.browse(alias, { depth: 0, includeDirs: true })) {
+				const { DBFS } = await import('@nan0web/db-fs')
+				const workspaceDb = new DBFS({ root: workspaceRoot })
+				
+				const targets = ['packages', 'apps']
+				for (const target of targets) {
+					for await (const entry of workspaceDb.browse(target, { depth: 0, includeDirs: true })) {
 						if (!entry.stat.isDirectory || entry.name.startsWith('.') || entry.name.startsWith('_') || entry.name === 'node_modules' || entry.name === 'dist') continue
-						// Resolve dir relative to workspace root (e.g., packages/ui)
-						const subDir = alias === '@pkg' ? 'packages' : 'apps'
-						projects.push({ name: entry.name, dir: `${subDir}/${entry.name}` })
+						projects.push({ name: entry.name, dir: `${target}/${entry.name}` })
 					}
 				}
 			} catch (e) {
