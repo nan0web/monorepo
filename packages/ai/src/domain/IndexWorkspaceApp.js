@@ -181,33 +181,11 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		const db = this._.db || new DBFS({ root: workspaceRoot })
 
 		const storeDir = path.join(os.homedir(), '.nan0web/store')
-		/**
-		 * @todo Make directory scanning agnostic.
-		 * It might be a git project, so git clone into temporary directory is possible to scan.
-		 * 1. git clone {project} ~/.nan0web/store/git/{project}
-		 * 2. mount DBFS to ~/.nan0web/store/git/{project}
-		 * 3. index the project
-		 */
 		// We isolate storeDb as a separate DBFS instance to prevent "Mount registry is sealed" error
 		// that occurs when attempting to mount 'store' to a sealed primary database.
 		const storeDb = /** @type {any} */ (this._).storeDb || new DBFS({ root: storeDir })
 
-		const projects = []
-		const stores = ['nan0web_store.csv', 'nan0web_store.local.csv']
-
-		for (const s of stores) {
-			const rows = await storeDb.loadDocumentAs('.csv', s, null).catch(() => null)
-			if (Array.isArray(rows)) {
-				for (const row of rows) {
-					if (!row.path) continue
-					let dir = row.path
-					if (dir.startsWith(workspaceRoot)) {
-						dir = dir.slice(workspaceRoot.length).replace(/^[\\/]+/, '')
-					}
-					projects.push({ name: row.name, dir })
-				}
-			}
-		}
+		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot, db)
 
 		if (projects.length === 0) {
 			if (!this.silent) yield show(t(IndexWorkspaceApp.UI.noProjects, { dir: storeDir }), 'error')
@@ -405,25 +383,9 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 		const db = this._.db
 
-		const storeDir = path.join(os.homedir(), '.nan0web/store')
 		const storeDb = /** @type {any} */ (this._).storeDb || new DBFS({ root: storeDir })
 
-		const projects = []
-		const stores = ['nan0web_store.csv', 'nan0web_store.local.csv']
-
-		for (const s of stores) {
-			const rows = await storeDb.loadDocumentAs('.csv', s, null).catch(() => null)
-			if (Array.isArray(rows)) {
-				for (const row of rows) {
-					let dir = row.path
-					if (!dir) continue
-					if (dir.startsWith(workspaceRoot)) {
-						dir = dir.slice(workspaceRoot.length).replace(/^[\\/]+/, '')
-					}
-					projects.push({ name: row.name, dir })
-				}
-			}
-		}
+		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot, db)
 
 		if (projects.length === 0) {
 			if (!this.silent) yield show(`No projects found in global store at ${storeDir}.`, 'error')
@@ -501,5 +463,51 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				}),
 				'success',
 			)
+	}
+
+	/**
+	 * Extracts the common logic for getting projects from the store, with a fallback to local scan.
+	 * @param {import('@nan0web/db-fs').DBFS} storeDb
+	 * @param {string} workspaceRoot
+	 * @param {import('@nan0web/db-fs').DBFS} db
+	 * @returns {Promise<Array<{name: string, dir: string}>>}
+	 */
+	async _getProjectsToIndex(storeDb, workspaceRoot, db) {
+		const projects = []
+		const stores = ['nan0web_store.csv', 'nan0web_store.local.csv']
+
+		// Try loading from global store
+		for (const s of stores) {
+			const rows = await storeDb.loadDocumentAs('.csv', s, null).catch(() => null)
+			if (Array.isArray(rows)) {
+				for (const row of rows) {
+					if (!row.path) continue
+					let dir = row.path
+					if (dir.startsWith(workspaceRoot)) {
+						dir = dir.slice(workspaceRoot.length).replace(/^[\\/]+/, '')
+					}
+					projects.push({ name: row.name, dir })
+				}
+			}
+		}
+
+		// Fallback: if no projects found in global store, use NanoWeb's idiomatic db.browse
+		if (projects.length === 0 && db) {
+			try {
+				const aliases = ['@pkg', '@app']
+				for (const alias of aliases) {
+					for await (const entry of db.browse(alias, { depth: 0, includeDirs: true })) {
+						if (!entry.stat.isDirectory || entry.name.startsWith('.') || entry.name.startsWith('_') || entry.name === 'node_modules' || entry.name === 'dist') continue
+						// Resolve dir relative to workspace root (e.g., packages/ui)
+						const subDir = alias === '@pkg' ? 'packages' : 'apps'
+						projects.push({ name: entry.name, dir: `${subDir}/${entry.name}` })
+					}
+				}
+			} catch (e) {
+				// Silent catch, fallback might fail if directories don't exist
+			}
+		}
+
+		return projects
 	}
 }
