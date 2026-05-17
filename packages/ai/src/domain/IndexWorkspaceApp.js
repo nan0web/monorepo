@@ -10,6 +10,8 @@ import { matchProject, loadNameToDir } from './projectFilter.js'
  */
 import { DBFS } from '@nan0web/db-fs'
 
+const storeDir = path.join(os.homedir(), '.nan0web/store')
+
 /**
  * CLI Application Model for Workspace Indexing.
  */
