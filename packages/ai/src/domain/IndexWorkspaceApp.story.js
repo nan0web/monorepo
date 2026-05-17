@@ -14,50 +14,6 @@ class MockEmbedder {
 	}
 }
 
-// Generic recursive YAML serializer to dynamically format JS objects for .txt reads
-function toYAML(obj, indent = '') {
-	if (typeof obj !== 'object' || obj === null) return String(obj)
-	if (Array.isArray(obj)) {
-		return obj
-			.map((item) => {
-				if (typeof item === 'object' && item !== null) {
-					const entries = Object.entries(item)
-					if (entries.length === 0) return `${indent}- {}`
-					const [firstKey, firstVal] = entries[0]
-					const rest = entries.slice(1)
-					const head = `${indent}- ${firstKey}: ${
-						typeof firstVal === 'object' ? '\n' + toYAML(firstVal, indent + '  ') : String(firstVal)
-					}`
-					if (rest.length === 0) return head
-					const restObj = Object.fromEntries(rest)
-					return head + '\n' + toYAML(restObj, indent + '  ')
-				}
-				return `${indent}- ${String(item)}`
-			})
-			.join('\n')
-	}
-	return Object.entries(obj)
-		.map(([k, v]) => {
-			if (typeof v === 'object' && v !== null) {
-				return `${indent}${k}:\n${toYAML(v, indent + '  ')}`
-			}
-			return `${indent}${k}: ${String(v)}`
-		})
-		.join('\n')
-}
-
-// Clean MemoryDB subclass to natively support clean predefined format without ad-hoc method mocking
-class MemoryDB extends DB {
-	async loadDocumentAs(ext, uri, defaultValue) {
-		const normUri = this.normalize(uri)
-		const raw = this.data.get(normUri) ?? defaultValue
-		if (ext === '.txt' && typeof raw === 'object' && raw !== null) {
-			return toYAML(raw)
-		}
-		return super.loadDocumentAs(ext, uri, defaultValue)
-	}
-}
-
 describe('IndexWorkspaceApp Story Test Suite', () => {
 	const workspaceRoot = '/'
 
@@ -71,7 +27,7 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 			['store/nan0web_store.csv', []],
 			['store/nan0web_store.local.csv', []],
 		]
-		const mockFs = new MemoryDB({ predefined })
+		const mockFs = new DB({ predefined })
 		await mockFs.connect()
 
 		const storeDb = mockFs.extract('store')
@@ -103,7 +59,7 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 			['store/nan0web_store.csv', [{ name: 'pkg-a', path: '/packages/pkg-a' }]],
 			['store/nan0web_store.local.csv', []],
 		]
-		const mockFs = new MemoryDB({ predefined })
+		const mockFs = new DB({ predefined })
 		await mockFs.connect()
 
 		const storeDb = mockFs.extract('store')
@@ -141,7 +97,7 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 			['store/nan0web_store.csv', []],
 			['store/nan0web_store.local.csv', []],
 		]
-		const mockFs = new MemoryDB({ predefined })
+		const mockFs = new DB({ predefined })
 		await mockFs.connect()
 
 		const storeDb = mockFs.extract('store')
@@ -183,16 +139,12 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 			['packages/pkg-a/package.json', { name: '@nan0web/pkg-a' }],
 			[
 				'packages/pkg-a/nan0web.nan0',
-				{
-					agents: [
-						{ id: 'test-agent', description: 'Test agent config', workflows: ['workflow-a'] },
-					],
-				},
+				'agents:\n  - id: "test-agent"\n    description: "Test agent config"\n    workflows:\n      - "workflow-a"',
 			],
 			['store/nan0web_store.csv', [{ name: 'pkg-a', path: '/packages/pkg-a' }]],
 			['store/nan0web_store.local.csv', []],
 		]
-		const mockFs = new MemoryDB({ predefined })
+		const mockFs = new DB({ predefined })
 		await mockFs.connect()
 
 		const storeDb = mockFs.extract('store')
