@@ -14,55 +14,45 @@ class MockEmbedder {
 	}
 }
 
-// Clean MemoryDB subclass to natively support CSV, JSON and nano files without ad-hoc method mocking
+// Generic recursive YAML serializer to dynamically format JS objects for .txt reads
+function toYAML(obj, indent = '') {
+	if (typeof obj !== 'object' || obj === null) return String(obj)
+	if (Array.isArray(obj)) {
+		return obj
+			.map((item) => {
+				if (typeof item === 'object' && item !== null) {
+					const entries = Object.entries(item)
+					if (entries.length === 0) return `${indent}- {}`
+					const [firstKey, firstVal] = entries[0]
+					const rest = entries.slice(1)
+					const head = `${indent}- ${firstKey}: ${
+						typeof firstVal === 'object' ? '\n' + toYAML(firstVal, indent + '  ') : String(firstVal)
+					}`
+					if (rest.length === 0) return head
+					const restObj = Object.fromEntries(rest)
+					return head + '\n' + toYAML(restObj, indent + '  ')
+				}
+				return `${indent}- ${String(item)}`
+			})
+			.join('\n')
+	}
+	return Object.entries(obj)
+		.map(([k, v]) => {
+			if (typeof v === 'object' && v !== null) {
+				return `${indent}${k}:\n${toYAML(v, indent + '  ')}`
+			}
+			return `${indent}${k}: ${String(v)}`
+		})
+		.join('\n')
+}
+
+// Clean MemoryDB subclass to natively support clean predefined format without ad-hoc method mocking
 class MemoryDB extends DB {
 	async loadDocumentAs(ext, uri, defaultValue) {
 		const normUri = this.normalize(uri)
 		const raw = this.data.get(normUri) ?? defaultValue
-		if (typeof raw === 'string' && ext === '.csv') {
-			const lines = raw.trim().split('\n')
-			if (lines.length <= 1) return []
-			const headers = lines[0].split(',')
-			return lines.slice(1).map((line) => {
-				const values = line.split(',')
-				const obj = {}
-				headers.forEach((h, i) => {
-					obj[h.trim()] = values[i]?.trim()
-				})
-				return obj
-			})
-		}
 		if (ext === '.txt' && typeof raw === 'object' && raw !== null) {
-			if (raw.agents) {
-				const lines = []
-				for (const agent of raw.agents) {
-					lines.push(`- id: "${agent.id}"`)
-					if (agent.description) {
-						lines.push(`  description: "${agent.description}"`)
-					}
-					if (agent.workflows) {
-						lines.push('  workflows:')
-						for (const w of agent.workflows) {
-							lines.push(`    - "${w}"`)
-						}
-					}
-					if (agent.inspectors) {
-						lines.push('  inspectors:')
-						for (const i of agent.inspectors) {
-							lines.push(`    - "${i}"`)
-						}
-					}
-				}
-				return lines.join('\n')
-			}
-			return JSON.stringify(raw)
-		}
-		if (ext === '.json' && typeof raw === 'string') {
-			try {
-				return JSON.parse(raw)
-			} catch (e) {
-				return defaultValue
-			}
+			return toYAML(raw)
 		}
 		return super.loadDocumentAs(ext, uri, defaultValue)
 	}
