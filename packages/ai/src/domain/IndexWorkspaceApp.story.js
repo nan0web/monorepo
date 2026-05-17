@@ -139,7 +139,11 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 			['packages/pkg-a/package.json', { name: '@nan0web/pkg-a' }],
 			[
 				'packages/pkg-a/nan0web.nan0',
-				'agents:\n  - id: "test-agent"\n    description: "Test agent config"\n    workflows:\n      - "workflow-a"',
+				{
+					agents: [
+						{ id: 'test-agent', description: 'Test agent config', workflows: ['workflow-a'] },
+					],
+				},
 			],
 			['store/nan0web_store.csv', [{ name: 'pkg-a', path: '/packages/pkg-a' }]],
 			['store/nan0web_store.local.csv', []],

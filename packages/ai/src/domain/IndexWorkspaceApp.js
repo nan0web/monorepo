@@ -180,7 +180,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			if (parent === current) break
 			current = parent
 		}
-		const workspaceDb = new DBFS({ root: workspaceRoot })
+		const workspaceDb = /** @type {any} */ (this._).workspaceDb || new DBFS({ root: workspaceRoot })
 		const storeDb = /** @type {any} */ (this._).storeDb || new DBFS({ root: storeDir })
 
 		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot)
@@ -380,7 +380,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		}
 
 		const db = this._.db
-		const workspaceDb = new DBFS({ root: workspaceRoot })
+		const workspaceDb = /** @type {any} */ (this._).workspaceDb || new DBFS({ root: workspaceRoot })
 
 		const storeDb = /** @type {any} */ (this._).storeDb || new DBFS({ root: storeDir })
 
@@ -398,43 +398,20 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 		for (const proj of projects) {
 			const configPath = path.join(proj.dir, 'nan0web.nan0')
-			const content = await workspaceDb.loadDocumentAs('.txt', '/' + configPath, null).catch(() => null)
+			let config = await workspaceDb.loadDocument('/' + configPath, null).catch(() => null)
+			if (typeof config === 'string') {
+				config = parseNAN0(config)
+			}
 
-			if (content) {
-				const lines = content.split('\n')
-				let currentAgent = null
-				let inWorkflows = false
-				let inInspectors = false
-
-				for (const line of lines) {
-					if (line.trim().startsWith('- id:')) {
-						currentAgent = /** @type {any} */ ({
-							id: line.split(':')[1].replace(/['"]/g, '').trim(),
-							package: proj.name,
-							workflows: [],
-							inspectors: [],
-						})
-						allAgents.push(currentAgent)
-						inWorkflows = false
-						inInspectors = false
-					} else if (currentAgent) {
-						if (line.trim().startsWith('description:')) {
-							currentAgent.description = line
-								.substring(line.indexOf(':') + 1)
-								.replace(/['"]/g, '')
-								.trim()
-						} else if (line.trim().startsWith('workflows:')) {
-							inWorkflows = true
-							inInspectors = false
-						} else if (line.trim().startsWith('inspectors:')) {
-							inInspectors = true
-							inWorkflows = false
-						} else if (line.trim().startsWith('-') && inWorkflows) {
-							currentAgent.workflows.push(line.replace('-', '').replace(/['"]/g, '').trim())
-						} else if (line.trim().startsWith('-') && inInspectors) {
-							currentAgent.inspectors.push(line.replace('-', '').replace(/['"]/g, '').trim())
-						}
-					}
+			if (config && Array.isArray(config.agents)) {
+				for (const agent of config.agents) {
+					allAgents.push({
+						id: agent.id,
+						package: proj.name,
+						description: agent.description || '',
+						workflows: agent.workflows || [],
+						inspectors: agent.inspectors || [],
+					})
 				}
 			}
 			scanned++
@@ -486,7 +463,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		if (projects.length === 0 && workspaceRoot) {
 			try {
 				const { DBFS } = await import('@nan0web/db-fs')
-				const workspaceDb = new DBFS({ root: workspaceRoot })
+				const workspaceDb = /** @type {any} */ (this._).workspaceDb || new DBFS({ root: workspaceRoot })
 				
 				const targets = ['packages', 'apps']
 				for (const target of targets) {
@@ -502,4 +479,51 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 		return projects
 	}
+}
+
+/**
+ * Parses raw YAML/nan0 string into structured object for agents config.
+ * @param {string} content
+ * @returns {any}
+ */
+function parseNAN0(content) {
+	if (!content) return null
+	const lines = content.split('\n')
+	const agents = []
+	let currentAgent = null
+	let inWorkflows = false
+	let inInspectors = false
+
+	for (const line of lines) {
+		const trimmed = line.trim()
+		if (trimmed.startsWith('- id:')) {
+			currentAgent = {
+				id: trimmed.split(':')[1].replace(/['"]/g, '').trim(),
+				description: '',
+				workflows: [],
+				inspectors: [],
+			}
+			agents.push(currentAgent)
+			inWorkflows = false
+			inInspectors = false
+		} else if (currentAgent) {
+			if (trimmed.startsWith('description:')) {
+				currentAgent.description = trimmed
+					.substring(trimmed.indexOf(':') + 1)
+					.replace(/['"]/g, '')
+					.trim()
+			} else if (trimmed.startsWith('workflows:')) {
+				inWorkflows = true
+				inInspectors = false
+			} else if (trimmed.startsWith('inspectors:')) {
+				inInspectors = true
+				inWorkflows = false
+			} else if (trimmed.startsWith('-') && inWorkflows) {
+				currentAgent.workflows.push(trimmed.replace('-', '').replace(/['"]/g, '').trim())
+			} else if (trimmed.startsWith('-') && inInspectors) {
+				currentAgent.inspectors.push(trimmed.replace('-', '').replace(/['"]/g, '').trim())
+			}
+		}
+	}
+	return { agents }
 }
