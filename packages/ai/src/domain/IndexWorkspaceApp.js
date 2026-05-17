@@ -350,10 +350,21 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				forceOneLine: true,
 				width: 30,
 			})
-		if (!this.silent && it.type === 'projectCached')
-			yield show(t(UI.projectCached, { name: it.name, dir: it.dir }), 'info')
-		if (!this.silent && it.type === 'projectIndexed')
-			yield show(t(UI.projectIndexed, { name: it.name, files: it.files, dir: it.dir }), 'success')
+		if (it.type === 'projectCached') {
+			if (process.stdout && process.stdout.isTTY) {
+				yield progress('', 100, { id: `Index_Scan_${it.name}`, stop: 'success' })
+				yield progress('', 100, { id: `Index_Cache_${it.name}`, stop: 'success' })
+			}
+			if (!this.silent) yield show(t(UI.projectCached, { name: it.name, dir: it.dir }), 'info')
+		}
+		if (it.type === 'projectIndexed') {
+			if (process.stdout && process.stdout.isTTY) {
+				yield progress('', 100, { id: `Index_Scan_${it.name}`, stop: 'success' })
+				yield progress('', 100, { id: `Index_Cache_${it.name}`, stop: 'success' })
+				yield progress('', 100, { id: `Index_${it.name}`, stop: 'success' })
+			}
+			if (!this.silent) yield show(t(UI.projectIndexed, { name: it.name, files: it.files, dir: it.dir }), 'success')
+		}
 	}
 
 	/**
