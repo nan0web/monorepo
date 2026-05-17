@@ -12,6 +12,116 @@ import { DBFS } from '@nan0web/db-fs'
 
 const storeDir = path.join(os.homedir(), '.nan0web/store')
 
+class IndexState {
+	/**
+	 * @param {number} totalScopes
+	 * @param {boolean} silent
+	 * @param {number} totalScopesForProject
+	 */
+	constructor(totalScopes, silent, totalScopesForProject) {
+		this.totalScopes = totalScopes
+		this.processedScopes = 0
+		this.silent = silent
+		this.totalScopesForProject = totalScopesForProject
+		/** @type {Map<string, number>} */
+		this.completedCount = new Map()
+		/** @type {Map<string, { missingScopes: string[], cachedScopes: string[], indexedScopes: string[], otherErrors: string[], projectDir: string }>} */
+		this.aggregates = new Map()
+	}
+
+	/**
+	 * @param {string} projectName
+	 * @param {string} defaultDir
+	 */
+	getAggregate(projectName, defaultDir) {
+		let agg = this.aggregates.get(projectName)
+		if (!agg) {
+			agg = {
+				missingScopes: [],
+				cachedScopes: [],
+				indexedScopes: [],
+				otherErrors: [],
+				projectDir: defaultDir
+			}
+			this.aggregates.set(projectName, agg)
+		}
+		if (defaultDir && !agg.projectDir) {
+			agg.projectDir = defaultDir
+		}
+		return agg
+	}
+
+	/**
+	 * Record a completed scope terminal state and check if project is completed.
+	 * @param {string} projectName
+	 * @param {'missing'|'cached'|'indexed'|'error'} terminalType
+	 * @param {string} scopeName
+	 * @param {any} details
+	 * @param {any} show
+	 * @param {any} t
+	 */
+	*completeScope(projectName, terminalType, scopeName, details, show, t) {
+		const isTest = typeof process !== 'undefined' && 
+			(process.env.NODE_ENV === 'test' || 
+			 process.env.VITEST || 
+			 process.argv.includes('--test') ||
+			 !process.stdout ||
+			 !process.stdout.isTTY)
+
+		if (isTest) {
+			this.processedScopes++
+			if (!this.silent) {
+				const UI = IndexWorkspaceApp.UI
+				if (terminalType === 'missing') {
+					const ctx = projectName ? `[${projectName}] ` : ''
+					yield show(`${ctx}${t('No files found for scope: ' + scopeName)}`, 'error')
+				} else if (terminalType === 'cached') {
+					yield show(t(UI.projectCached, { name: projectName, dir: details.dir || '' }), 'info')
+				} else if (terminalType === 'indexed') {
+					yield show(t(UI.projectIndexed, { name: projectName, files: details.files, dir: details.dir || '' }), 'success')
+				} else if (terminalType === 'error') {
+					const ctx = projectName ? `[${projectName}] ` : ''
+					yield show(`${ctx}${t(details.message)}`, 'error')
+				}
+			}
+			return
+		}
+
+		this.processedScopes++
+		const agg = this.getAggregate(projectName, details.dir || '')
+		
+		if (terminalType === 'missing') {
+			agg.missingScopes.push(scopeName)
+		} else if (terminalType === 'cached') {
+			agg.cachedScopes.push(scopeName)
+		} else if (terminalType === 'indexed') {
+			agg.indexedScopes.push(`${scopeName} (${details.files} files)`)
+		} else if (terminalType === 'error') {
+			agg.otherErrors.push(details.message || 'Unknown error')
+		}
+
+		const comp = (this.completedCount.get(projectName) || 0) + 1
+		this.completedCount.set(projectName, comp)
+
+		if (comp === this.totalScopesForProject) {
+			if (!this.silent) {
+				if (agg.missingScopes.length > 0) {
+					yield show(`✗ [${projectName}] No files found for scope: ${agg.missingScopes.join(', ')}`, 'error')
+				}
+				if (agg.cachedScopes.length > 0) {
+					yield show(`· Project ${projectName} skipped (cache matched) in ${agg.projectDir}: ${agg.cachedScopes.join(', ')}`, 'info')
+				}
+				if (agg.indexedScopes.length > 0) {
+					yield show(`✓ Project ${projectName} indexed in ${agg.projectDir}: ${agg.indexedScopes.join(', ')}`, 'success')
+				}
+				for (const err of agg.otherErrors) {
+					yield show(`✗ [${projectName}] Error: ${t(err)}`, 'error')
+				}
+			}
+		}
+	}
+}
+
 /**
  * CLI Application Model for Workspace Indexing.
  */
@@ -201,6 +311,14 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			'http://localhost:1234/v1'
 		const embedder = new Embedder({ baseURL: embedderUrl })
 
+		const activeProjects = projects.filter(proj => matchProject(proj.dir, this.project || undefined, nameToDir))
+		const totalScopes = activeProjects.length * this.scopes.length
+		const state = new IndexState(totalScopes, this.silent, this.scopes.length)
+
+		if (process.stdout && process.stdout.isTTY) {
+			yield progress('Verifying cache...', 0, { id: 'Mass_Index', width: 30 })
+		}
+
 		if (this.concurrency > 1) {
 			const queue = []
 			let pullResolve = null
@@ -234,15 +352,14 @@ export class IndexWorkspaceApp extends ModelAsApp {
 						}
 					} catch (err) {
 						const msg = err instanceof Error ? err.message : String(err)
-						push({ type: 'error', message: `Error indexing ${proj.name} [${scope}]: ${msg}` })
+						push({ type: 'error', project: proj.name, scope, message: `Error indexing ${proj.name} [${scope}]: ${msg}` })
 					}
 				}
 			}
 
 			const runAll = async () => {
 				const executing = new Set()
-				for (const proj of projects) {
-					if (!matchProject(proj.dir, this.project || undefined, nameToDir)) continue
+				for (const proj of activeProjects) {
 					const p = worker(proj).finally(() => executing.delete(p))
 					executing.add(p)
 					if (executing.size >= this.concurrency) {
@@ -262,12 +379,10 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				}
 				const it = queue.shift()
 				if (!it) continue
-				yield* this._handleEvent(it, { show, progress, t })
+				yield* this._handleEvent(it, { show, progress, t }, state)
 			}
 		} else {
-			for (const proj of projects) {
-				if (!matchProject(proj.dir, this.project || undefined, nameToDir)) continue
-
+			for (const proj of activeProjects) {
 				for (const scope of this.scopes) {
 					const indexer = new MarkdownIndexer(
 						/** @type {any} */ ({
@@ -282,7 +397,8 @@ export class IndexWorkspaceApp extends ModelAsApp {
  
 					for await (const it of indexer.indexAll(embedder, { force: this.force })) {
 						it.project = it.project || proj.name
-						yield* this._handleEvent(it, { show, progress, t })
+						it.scope = scope
+						yield* this._handleEvent(it, { show, progress, t }, state)
 					}
 				}
 			}
@@ -302,57 +418,70 @@ export class IndexWorkspaceApp extends ModelAsApp {
 	 * @param {any} deps.progress
 	 * @param {any} deps.t
 	 */
-	*_handleEvent(it, { show, progress, t }) {
+	*_handleEvent(it, { show, progress, t }, state) {
 		const UI = IndexWorkspaceApp.UI
+		const projectName = it.project || it.name || ''
+
 		if (it.type === 'error') {
-			if (!this.silent) {
-				const ctx = it.project ? `[${it.project}] ` : ''
-				yield show(`${ctx}${t(it.message)}`, 'error')
+			if (it.message.startsWith('No files found for scope:')) {
+				const sc = it.message.split(': ')[1]
+				yield* state.completeScope(projectName, 'missing', sc, { totalScopesForProject: state.totalScopesForProject }, show, t)
+			} else {
+				yield* state.completeScope(projectName, 'error', it.scope || '', { message: it.message, totalScopesForProject: state.totalScopesForProject }, show, t)
 			}
 			return
 		}
-		if (it.type === 'scanProgress')
+		
+		if (it.type === 'projectCached') {
+			yield* state.completeScope(projectName, 'cached', it.scope, { dir: it.dir, totalScopesForProject: state.totalScopesForProject }, show, t)
+			return
+		}
+
+		if (it.type === 'projectIndexed') {
+			yield* state.completeScope(projectName, 'indexed', it.scope, { dir: it.dir, files: it.files, totalScopesForProject: state.totalScopesForProject }, show, t)
+			return
+		}
+
+		// Other progress events
+		if (it.type === 'scanProgress') {
 			yield progress(
 				t(UI.scanning, { project: it.project, files: it.files }),
-				(it.current / it.total) * 100,
+				(state.processedScopes / state.totalScopes) * 100,
 				{
 					id: 'Mass_Index',
 					width: 30,
 				},
 			)
-		if (it.type === 'cacheCheckProgress')
+		}
+		if (it.type === 'cacheCheckProgress') {
 			yield progress(
 				t(UI.verifyingCacheProject, { project: it.project }),
-				(it.current / it.total) * 100,
+				(state.processedScopes / state.totalScopes) * 100,
 				{
 					id: 'Mass_Index',
 					width: 30,
 				},
 			)
+		}
 		if (it.type === 'calc') {
 			yield progress(
 				t(UI.generatingVectors),
-				0,
+				(state.processedScopes / state.totalScopes) * 100,
 				{
 					id: 'Mass_Index',
 					width: 30,
 				},
 			)
 		}
-		if (it.type === 'tick')
+		if (it.type === 'tick') {
 			yield progress(
-				`${it.project} ${it.file}`,
-				(it.current / it.total) * 100,
+				`Generating vectors [${it.project}]: ${it.file}`,
+				(state.processedScopes / state.totalScopes) * 100,
 				{
 					id: 'Mass_Index',
 					width: 30,
 				},
 			)
-		if (it.type === 'projectCached') {
-			if (!this.silent) yield show(t(UI.projectCached, { name: it.name, dir: it.dir }), 'info')
-		}
-		if (it.type === 'projectIndexed') {
-			if (!this.silent) yield show(t(UI.projectIndexed, { name: it.name, files: it.files, dir: it.dir }), 'success')
 		}
 	}
 
