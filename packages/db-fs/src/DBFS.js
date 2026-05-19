@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import DB, { DocumentStat, DocumentEntry } from '@nan0web/db'
 import FS from './FSAdapter.js'
 import FSDriver from './FSDriver.js'
@@ -133,14 +134,26 @@ class DBFS extends DB {
 	 */
 	location(...args) {
 		const uri = this.resolveAlias(args[0])
+		const isWindows = this.FS.sep === '\\'
 
-		if (
-			uri?.startsWith('/Users/') ||
-			uri?.startsWith('/home/') ||
-			uri?.startsWith('/tmp/') ||
-			uri?.startsWith('/var/') ||
-			(this.FS.sep === '\\' && uri?.includes(':'))
-		) {
+		const isPhysical = (p) => {
+			if (typeof p !== 'string') return false
+			if (isWindows && p.includes(':')) return true
+			if (p.startsWith('/')) {
+				const resolvedCwd = this.cwd ? this.FS.resolve(this.cwd) : ''
+				if (resolvedCwd && p.startsWith(resolvedCwd)) return true
+
+				const firstSegment = p.split('/').filter(Boolean)[0]
+				if (firstSegment) {
+					try {
+						if (fs.existsSync('/' + firstSegment)) return true
+					} catch (e) {}
+				}
+			}
+			return false
+		}
+
+		if (isPhysical(uri)) {
 			return uri
 		}
 
@@ -148,16 +161,9 @@ class DBFS extends DB {
 
 		const parts = [this.cwd, this.root, rel].map((p, i) => {
 			if (typeof p !== 'string') return p
-			// If it starts with / but is not a real host root, and it is NOT the cwd segment,
+			// If it starts with / but is not a real host root boundary, and it is NOT the cwd segment,
 			// make it relative to allow FS.resolve to join it with preceding segments.
-			if (
-				i > 0 &&
-				p.startsWith('/') &&
-				!p.startsWith('/Users/') &&
-				!p.startsWith('/home/') &&
-				!p.startsWith('/tmp/') &&
-				!p.startsWith('/var/')
-			) {
+			if (i > 0 && p.startsWith('/') && !isPhysical(p)) {
 				return p.slice(1)
 			}
 			return p
@@ -496,18 +502,19 @@ class DBFS extends DB {
 	 * @returns {string} Relative URI
 	 */
 	relative(from, to) {
-		// If both paths are absolute filesystem paths, compute relative path
-		if (from.startsWith('/') && to?.startsWith('/')) {
-			if (!to.endsWith('/')) to += '/'
-			return from.startsWith(to) ? from.substring(to.length) : from
-		}
+		const absFrom = from.startsWith('/') || (this.FS.sep === '\\' && from.includes(':'))
+			? from
+			: this.FS.resolve(this.root, from)
 
-		// Default to root if to is not provided
 		if (to === undefined) {
-			return this.FS.relative(this.root, from)
+			return this.FS.relative(this.root, absFrom)
 		}
 
-		return to
+		const absTo = to.startsWith('/') || (this.FS.sep === '\\' && to.includes(':'))
+			? to
+			: this.FS.resolve(this.root, to)
+
+		return this.FS.relative(absTo, absFrom)
 	}
 
 	/**

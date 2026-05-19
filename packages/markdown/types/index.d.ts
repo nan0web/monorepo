@@ -23,5 +23,4 @@ import MDTableCell from './MDTableCell.js';
 import MDTaskList from './MDTaskList.js';
 import MDSpace from './MDSpace.js';
 import InterceptorInput from './InterceptorInput.js';
-import { ProvenDocsAuditor } from './inspect/index.js';
-export { Markdown, MDElement, MDParagraph, MDHeading, MDHeading1, MDHeading2, MDHeading3, MDHeading4, MDHeading5, MDHeading6, MDList, MDListItem, MDCodeBlock, MDCodeInline, MDLink, MDImage, MDBlockquote, MDHorizontalRule, MDTable, MDTableRow, MDTableCell, MDTaskList, MDSpace, InterceptorInput, ProvenDocsAuditor };
+export { Markdown, MDElement, MDParagraph, MDHeading, MDHeading1, MDHeading2, MDHeading3, MDHeading4, MDHeading5, MDHeading6, MDList, MDListItem, MDCodeBlock, MDCodeInline, MDLink, MDImage, MDBlockquote, MDHorizontalRule, MDTable, MDTableRow, MDTableCell, MDTaskList, MDSpace, InterceptorInput };

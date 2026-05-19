@@ -22,7 +22,6 @@ import MDTableCell from './MDTableCell.js'
 import MDTaskList from './MDTaskList.js'
 import MDSpace from './MDSpace.js'
 import InterceptorInput from './InterceptorInput.js'
-import { ProvenDocsAuditor } from './inspect/index.js'
 
 export {
 	Markdown,
@@ -49,7 +48,6 @@ export {
 	MDTaskList,
 	MDSpace,
 	InterceptorInput,
-	ProvenDocsAuditor,
 }
 
 export default Markdown

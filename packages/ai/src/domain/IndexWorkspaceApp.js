@@ -562,7 +562,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		}
 
 		// Calculate percentage: support explicit current/total in it, with fallback to state scopes
-		const percent = it.total
+		const percent = (it.total && typeof it.current === 'number')
 			? Math.round((it.current / it.total) * 100)
 			: Math.round(((state ? state.processedScopes : 0) / (state ? state.totalScopes : 1)) * 100)
 
@@ -727,6 +727,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 					}
 				}
 			} catch (e) {
+				console.error('Workspace fallback scan failed:', e)
 				// Silent catch, fallback might fail if directories don't exist
 			}
 		}
