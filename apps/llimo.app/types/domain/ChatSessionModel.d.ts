@@ -66,7 +66,7 @@ export class ChatSessionModel extends Model {
     /**
      * Main execution loop for the Chat session
      */
-    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").AskIntent | import("@nan0web/ui/src/core/Intent.js").ProgressIntent | import("@nan0web/ui/src/core/Intent.js").ShowIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
+    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ShowIntent | import("@nan0web/ui/src/core/Intent.js").AskIntent | import("@nan0web/ui/src/core/Intent.js").ProgressIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
 }
 /**
  * Contract for the injected AI Engine

@@ -85,7 +85,7 @@ export async function checkDocs({ fs, pkgDb, name, stepsMd, onChunk = () => {} }
 
 /**
  * @param {checkAllDocsOptions} param0
- * @returns {Promise<{ incorrect: string[], deps: Record<string, string[] >}>}
+ * @returns {Promise<{ incorrect: { name: string, missing: string[] }[], deps: Record<string, string[] >}>}
  */
 export async function checkAllDocs({ fs, pkgs, logger, chunks, onChunk }) {
 	/** @type {Record<string, string[]>} */

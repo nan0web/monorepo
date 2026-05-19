@@ -19,6 +19,7 @@ import { Message } from '@nan0web/co'
  * @extends Message
  * @property {Record<string, any>} head - Message head.
  * @property {boolean} isValid - True if message is valid.
+ * @property {Date} time - Creation timestamp.
  *
  * @example
  * class UserLoginMessage extends UiMessage {

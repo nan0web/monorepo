@@ -22,7 +22,7 @@ export type HTTPIncomingMessageOptions = {
     /**
      * - Request headers
      */
-    headers?: [string, string][] | Record<string, string> | undefined;
+    headers?: Record<string, string> | [string, string][] | undefined;
     /**
      * - Request body (optional)
      */

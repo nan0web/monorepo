@@ -26,10 +26,13 @@ export function checkDocs({ fs, pkgDb, name, stepsMd, onChunk }: checkDocsOption
  */
 /**
  * @param {checkAllDocsOptions} param0
- * @returns {Promise<{ incorrect: string[], deps: Record<string, string[] >}>}
+ * @returns {Promise<{ incorrect: { name: string, missing: string[] }[], deps: Record<string, string[] >}>}
  */
 export function checkAllDocs({ fs, pkgs, logger, chunks, onChunk }: checkAllDocsOptions): Promise<{
-    incorrect: string[];
+    incorrect: {
+        name: string;
+        missing: string[];
+    }[];
     deps: Record<string, string[]>;
 }>;
 export type checkDocsOptions = {
