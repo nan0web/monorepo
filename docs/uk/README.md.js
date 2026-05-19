@@ -79,6 +79,8 @@ async function testRender() {
 	 * ```bash
 	 * pnpm add -g @nan0web/ai
 	 * ```
+	 * > 💡 **Примітка:** Якщо під час запуску виникає помилка завантаження нативних біндінгів (`Could not locate the bindings file` для `hnswlib-node`), виконайте: `pnpm rebuild -g hnswlib-node`
+	 *
 	 * Тепер команда `nan0ai` доступна всюди. Спробуйте:
 	 * ```bash
 	 * nan0ai search "Як створити новий компонент?"
@@ -96,6 +98,18 @@ async function testRender() {
 	 * - **@nan0web/ui** — Ядро UI та адаптери для Lit/React.
 	 * - **@nan0web/db-fs** — Високопродуктивна документо-орієнтована БД для файлової системи.
 	 * - **@nan0web/ai** — «Мозок» екосистеми, що відповідає за RAG та MCP пошук.
+	 *
+	 * ---
+	 *
+	 * ## 📖 Архітектурний Глосарій
+	 *
+	 * Для підтримки найвищої якості коду та безперешкодної ко-креації з ШІ-агентами, NaN•Web впроваджує чотири фундаментальні архітектурні стовпи:
+	 *
+	 * - **TLI (Total Logic Isolation)** — [Читати концепт](terms/TLI.md)
+	 * - **OLMUI (One Logic — Many UI)** — [Читати концепт](terms/OLMUI.md)
+	 * - **Model-as-Schema** — [Читати концепт](terms/Model-as-Schema.md)
+	 * - **NaN•Format** — [Читати концепт](terms/NaN0-Format.md)
+	 * - **ProvenDoc** — [Читати концепт](terms/ProvenDoc.md)
 	 *
 	 * ---
 	 * > Ця документація синхронізується автоматично через Sovereign Inheritance (ProvenDoc).

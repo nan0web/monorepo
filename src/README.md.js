@@ -114,6 +114,8 @@ async function testRender() {
 	 * ```bash
 	 * pnpm add -g @nan0web/ai
 	 * ```
+	 * > 💡 **Note:** If you run into a native bindings error (`Could not locate the bindings file` for `hnswlib-node`), run: `pnpm rebuild -g hnswlib-node`
+	 *
 	 * Now the `nan0ai` command is available everywhere. Try:
 	 * ```bash
 	 * nan0ai search "How to create a new component?"

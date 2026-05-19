@@ -4,6 +4,7 @@
 	"description": "Monorepo for @nan0web packages and applications",
 	"main": "index.js",
 	"type": "module",
+	"private": true,
 	"scripts": {
 		"prebuild": "rm -rf types/",
 		"build": "tsc",

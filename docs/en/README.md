@@ -10,6 +10,7 @@ NaN•Web follows the **One Logic, Many UI (OLMUI)** principle. Business logic i
 - [AI Knowledge Base Setup](./SETUP_KNOWLEDGE_BASE.md) — **CRITICAL**: How to give your AI agent project context.
 - [Package Status](../../STATUS.md) — Current health of every module.
 
+
 ## 🚀 Quick Start
 
 ### 1. Environment Preparation
@@ -26,7 +27,8 @@ pnpm is the required manager
 
 To enable "Sovereign Development" with AI agents, you need to provide them with a Knowledge Base.
 
-1. **Configure EMBEDDER_URL**:
+1.- **Configure EMBEDDER_URL**:
+
    Specify the address of your local embedding server (LM Studio or Ollama).
 
    **For Linux / macOS (zsh, bash):**
@@ -42,12 +44,14 @@ To enable "Sovereign Development" with AI agents, you need to provide them with 
    $env:EMBEDDER_URL = "http://localhost:1234/v1"
    ```
 
-2. **Index the workspace**:
+1.- **Index the workspace**:
+
    ```bash
    pnpm run ai:index
    ```
 
-3. **Setup MCP Server**:
+1.- **Setup MCP Server**:
+
    ```bash
    pnpm run ai:setup
    ```
@@ -59,7 +63,10 @@ You can install the assistant globally to access NaN•Web knowledge from anywhe
 ```bash
 pnpm add -g @nan0web/ai
 ```
+> 💡 **Note:** If you run into a native bindings error (`Could not locate the bindings file` for `hnswlib-node`), run: `pnpm rebuild -g hnswlib-node`
+
 Now the `nan0ai` command is available everywhere. Try:
+
 ```bash
 nan0ai search "How to create a new component?"
 ```
@@ -72,7 +79,10 @@ AI scripts are available
 - **@nan0web/db-fs** — High-performance document database for the filesystem.
 - **@nan0web/ai** — The brain of the ecosystem, handling RAG and MCP search.
 
+
 ---
 > This documentation is synchronized automatically via Sovereign Inheritance (ProvenDoc).
 
 Package exports are valid
+
+
