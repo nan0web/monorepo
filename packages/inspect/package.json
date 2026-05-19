@@ -1,6 +1,6 @@
 {
 	"name": "@nan0web/inspect",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"description": "Engineering inspection and quality control for the NaN0Web ecosystem.",
 	"type": "module",
 	"main": "src/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/test",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "A test package with simple utilities for testing in node.js runtime",
   "main": "src/index.js",
   "type": "module",
@@ -42,7 +42,8 @@
     "play": "node play/main.js",
     "release": "nan0release publish",
     "precommit": "npm test",
-    "prepush": "npm test"},
+    "prepush": "npm test"
+  },
   "keywords": [
     "fetch",
     "mock",

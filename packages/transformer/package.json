@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/transformer",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Basic and agnostic transformer.",
   "main": "src/index.js",
   "types": "types/index.d.ts",

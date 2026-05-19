@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/comment",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Universal comment & feedback overlay for QA auditing and page annotation. Activate via URL param, hotkey, or nav toggle.",
   "type": "module",
   "main": "src/index.js",

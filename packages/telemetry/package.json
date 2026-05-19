@@ -1,6 +1,6 @@
 {
 	"name": "@nan0web/telemetry",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"description": "Observability layer for nan0web ecosystem. Collects, aggregates, and reports metrics from @nan0web/db.",
 	"main": "./src/index.js",
 	"types": "./types/index.d.ts",

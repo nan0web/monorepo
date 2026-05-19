@@ -1,6 +1,6 @@
 {
 	"name": "@nan0web/sync",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"description": "High-performance site synchronization engine with remote manifests and atomic locks.",
 	"type": "module",
 	"bin": {

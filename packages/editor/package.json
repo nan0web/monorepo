@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/editor",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Pure logic Core for nan0web editors with optional UI adapters",
   "type": "module",
   "main": "src/core/index.js",

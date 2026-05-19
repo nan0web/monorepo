@@ -1,6 +1,6 @@
 {
 	"name": "@nan0web/monorepo",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"description": "Monorepo for @nan0web packages and applications",
 	"main": "index.js",
 	"type": "module",

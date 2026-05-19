@@ -1,6 +1,6 @@
 {
 	"name": "@nan0web/icons",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"description": "Framework-agnostic SVG icons from react-icons sets — zero React dependency",
 	"type": "module",
 	"main": "src/index.js",
