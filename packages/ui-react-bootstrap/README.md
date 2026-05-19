@@ -33,6 +33,7 @@ Should have correct package name
 Hierarchical data visualization styled with Bootstrap ListGroup.
 
 Should render Bootstrap TreeView
+
 ```js
 const data = [{ name: 'Root', type: 'dir', children: [{ name: 'Child', type: 'file' }] }]
 render(
@@ -46,6 +47,7 @@ render(
 Searchable dropdown using Bootstrap Form controls.
 
 Should render Bootstrap Autocomplete
+
 ```js
 const options = ['Red', 'Green', 'Blue']
 render(
@@ -80,6 +82,7 @@ Universal visual inspector for real-time CSS Custom Property editing.
 Wraps any component and generates a control panel based on a **StylesClass** schema (Model as Schema pattern).
 
 **Features:**
+
 - Auto-detects control types: `SizeControl`, `SelectControl`, `ColorAlphaPicker`, `SpacingControl`, `ShadowControl`, `BorderControl`
 - Simultaneous Light/Dark theme CSS generation via `<style>` block
 - Dark-only CSS variables (no duplicates in `[data-bs-theme="dark"]`)
@@ -87,6 +90,7 @@ Wraps any component and generates a control panel based on a **StylesClass** sch
 - Inline Reset confirmation (no native dialogs)
 - Export modal: copy CSS Variables or JSON state to clipboard
 - `onUpdate` callback prop for external state integration
+
 
 ```jsx
 import { OlmuiInspector } from './play/components/OlmuiInspector'
@@ -225,3 +229,5 @@ Universal search widget with modal overlay and real-time results.
 Specialized rendering blocks for catalog items, product pages, and structured content display.
 
 Should have HeaderStyles schema
+
+

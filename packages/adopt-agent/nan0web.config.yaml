@@ -1,8 +1,0 @@
-# 🤖 adopt-agent Configuration
-# Цей файл керує ідентичністю та поведінкою агента.
-# Додавайте сюди налаштування, щоб контролювати його параметри.
-
-name: adopt-agent
-description: Агент створений на базі 0HCnAI Blueprint.
-version: 0.1.0
-strictness: zero-hallucination

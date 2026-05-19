@@ -5,14 +5,6 @@ export default RRS;
  */
 export type RRSCriteria = {
     /**
-     * - Weight for presence of git repository
-     */
-    git: number;
-    /**
-     * - Weight for presence of SYSTEM.md
-     */
-    systemMd: number;
-    /**
      * - Weight for passing test suite
      */
     testPass: number;
@@ -38,14 +30,6 @@ export type RRSOptionalCriteria = {
      * - Weight for playground or interactive examples
      */
     playground: number;
-    /**
-     * - Score based on test coverage percentage (0–100)
-     */
-    testCoverage: number;
-    /**
-     * - Weight for release documentation (e.g., RELEASE.md)
-     */
-    releaseMd: number;
     /**
      * - Weight for presence of README.md
      */
@@ -86,6 +70,7 @@ declare class RRS {
      * @param {Partial<RRSOptionalCriteria>} [input.optional] - Override optional criteria
      * @param {string} [input.npmInfo] - NPM info (version)
      * @param {string[]} [input.docs] - Available documentation.
+     * @param {number} [input.testDuration] - Test duration in milliseconds
      * @param {number} [input.max] - Custom maximum score
      */
     constructor(input?: {
@@ -93,6 +78,7 @@ declare class RRS {
         optional?: Partial<RRSOptionalCriteria> | undefined;
         npmInfo?: string | undefined;
         docs?: string[] | undefined;
+        testDuration?: number | undefined;
         max?: number | undefined;
     });
     /**
@@ -115,6 +101,11 @@ declare class RRS {
      * @type {string[]}
      */
     docs: string[];
+    /**
+     * Test duration in milliseconds
+     * @type {number}
+     */
+    testDuration: number;
     /**
      * Maximum possible score (sum of required + optional weights).
      * Default: (500 required + 124 optional).
@@ -140,11 +131,6 @@ declare class RRS {
      * @returns {string}
      */
     icon(format?: string): string;
-    /**
-     * @param {string} [format="`"]
-     * @returns {string}
-     */
-    coverage(format?: string): string;
 }
 /**
  * Release Readiness Score (RRS) calculator.
@@ -155,8 +141,6 @@ declare class RRS {
  * Each criterion contributes significantly to the total score.
  *
  * @typedef {Object} RRSCriteria
- * @property {number} git - Weight for presence of git repository
- * @property {number} systemMd - Weight for presence of SYSTEM.md
  * @property {number} testPass - Weight for passing test suite
  * @property {number} buildPass - Weight for successful build
  * @property {number} tsconfig - Weight for presence of tsconfig.json
@@ -168,8 +152,6 @@ declare class RRS {
  * @typedef {Object} RRSOptionalCriteria
  * @property {number} readmeTest - Weight for presence of src/README.md.js
  * @property {number} playground - Weight for playground or interactive examples
- * @property {number} testCoverage - Score based on test coverage percentage (0–100)
- * @property {number} releaseMd - Weight for release documentation (e.g., RELEASE.md)
  * @property {number} readmeMd - Weight for presence of README.md
  * @property {number} npmPublished - Weight if package is published to npm
  * @property {number} contributingAndLicense - Weight if CONTRIBUTING.md and LICENSE exist
@@ -193,16 +175,6 @@ declare class RRSRequired {
      * @param {Partial<RRSCriteria>} [input] - Optional override values
      */
     constructor(input?: Partial<RRSCriteria>);
-    /**
-     * Score contribution if git repository exists.
-     * @type {number}
-     */
-    git: number;
-    /**
-     * Score contribution if SYSTEM.md exists (documentation of architecture).
-     * @type {number}
-     */
-    systemMd: number;
     /**
      * Score contribution if test suite passes.
      * @type {number}
@@ -253,16 +225,6 @@ declare class RRSOptional {
      * @type {number}
      */
     playground: number;
-    /**
-     * Additional score based on test coverage (0–100).
-     * @type {number}
-     */
-    testCoverage: number;
-    /**
-     * Score if release documentation (e.g., RELEASE.md) exists.
-     * @type {number}
-     */
-    releaseMd: number;
     /**
      * Score if README.md exists (basic project description).
      * @type {number}

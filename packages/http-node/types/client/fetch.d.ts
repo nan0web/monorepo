@@ -1,4 +1,3 @@
-/// <reference types="node" />
 export default fetch;
 export type FetchOptions = {
     /**

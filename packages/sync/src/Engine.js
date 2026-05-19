@@ -49,7 +49,8 @@ export class SyncEngine {
 						)
 						await this.adapter.uploadFile(tmpLock, lockPath)
 						fs.unlinkSync(tmpLock)
-					} catch (e) {
+					} catch (err) {
+						const e = /** @type {any} */ (err)
 						yield {
 							phase: 'warn',
 							message: `Could not acquire lock or already locked: ${e.message}`,
@@ -148,7 +149,8 @@ export class SyncEngine {
 				await this.adapter.uploadFile(tmpNewManifest, remoteManifestPath)
 				fs.unlinkSync(tmpNewManifest)
 			}
-		} catch (error) {
+		} catch (err) {
+			const error = /** @type {any} */ (err)
 			yield { phase: 'error', message: `Sync failed: ${error.message}`, error }
 		} finally {
 			// --- Unlock & Disconnect ---

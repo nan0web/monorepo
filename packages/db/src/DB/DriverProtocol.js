@@ -2,6 +2,7 @@ import Directory from '../Directory.js'
 import DocumentStat from '../DocumentStat.js'
 import AuthContext from './AuthContext.js'
 import { extname } from './path.js'
+import FormatRegistry from '../FormatRegistry.js'
 
 /**
  * @typedef {Object} DriverConfig
@@ -9,6 +10,8 @@ import { extname } from './path.js'
  * @property {string} [root="."] - Root path for URI resolution
  * @property {typeof Directory} [Directory=Directory] - Directory class with data functionality
  * @property {DBDriverProtocol} [driver] - Next driver if current fails, undefined by default
+ * @property {FormatRegistry} [registry] - Format registry instance
+ * @property {Array<{ext: string, load: (str: string, ext: string) => any, save: (doc: any, ext: string) => string}>} [formats] - Custom format registrations
  */
 
 /**
@@ -21,16 +24,24 @@ import { extname } from './path.js'
  */
 export default class DBDriverProtocol {
 	static Formats = {
-		loaders: [
-			(str, ext) => ('.json'.includes(ext) ? JSON.parse(str) : false),
-			// (str, ext) => [".yaml", ".yml", ".nano"].includes(ext) ? YAML.parse(str) : false,
-			(str) => str, // raw fallback
-		],
-		savers: [
-			(doc, ext) => ('.json'.includes(ext) ? JSON.stringify(doc) : false),
-			(doc) => String(doc),
-			// (doc, ext) => [".yaml", ".yml", ".nano"].includes(ext) ? YAML.stringify(doc) : false,
-		],
+		get loaders() {
+			return [
+				(str, ext) => ('.json'.includes(ext) ? JSON.parse(str) : false),
+				(str) => str,
+			]
+		},
+		get savers() {
+			return [
+				(doc, ext) => ('.json'.includes(ext) ? JSON.stringify(doc) : false),
+				(doc) => String(doc),
+			]
+		},
+		load(str, ext) {
+			return FormatRegistry.default.resolveLoader(ext)(str, ext)
+		},
+		save(doc, ext) {
+			return FormatRegistry.default.resolveSaver(ext)(doc, ext)
+		}
 	}
 	/** @type {string} */
 	cwd = '.'
@@ -40,15 +51,23 @@ export default class DBDriverProtocol {
 	Directory = Directory
 	/** @type {DBDriverProtocol | undefined} */
 	driver
+	/** @type {FormatRegistry} */
+	registry
 	/**
 	 * @param {DriverConfig} config
 	 */
 	constructor(config = {}) {
-		const { cwd = this.cwd, root = this.root, Directory = this.Directory, driver } = config
+		const { cwd = this.cwd, root = this.root, Directory = this.Directory, driver, formats, registry } = config
 		this.cwd = String(cwd)
 		this.root = String(root)
 		this.Directory = Directory
 		this.driver = driver ? driver : undefined
+		this.registry = registry || FormatRegistry.default
+		if (Array.isArray(formats)) {
+			for (const f of formats) {
+				this.registry.register(f.ext, f.load, f.save)
+			}
+		}
 	}
 	/**
 	 * Connects to the physical environment

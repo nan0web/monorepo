@@ -30,16 +30,16 @@ describe('NaN0WebConfig', () => {
 
 	it('apps — масив підключених додатків', () => {
 		const config = new NaN0WebConfig({
-			appName: 'industrialbank',
+			appName: 'bank',
 			locale: 'uk',
 			apps: [
-				{ name: 'deposits', src: '@industrialbank/deposits' },
-				{ name: 'credits', src: '@industrialbank/credits', locale: 'en' },
+				{ name: 'deposits', src: '@bank/deposits' },
+				{ name: 'credits', src: '@bank/credits', locale: 'en' },
 			],
 		})
 		assert.equal(config.apps.length, 2)
 		assert.equal(config.apps[0].name, 'deposits')
-		assert.equal(config.apps[0].src, '@industrialbank/deposits')
+		assert.equal(config.apps[0].src, '@bank/deposits')
 		assert.equal(config.apps[1].locale, 'en')
 	})
 
@@ -47,7 +47,7 @@ describe('NaN0WebConfig', () => {
 		const config = new NaN0WebConfig({
 			dsn: 'data/',
 			locale: 'uk',
-			apps: [{ name: 'deposits', src: '@industrialbank/deposits' }],
+			apps: [{ name: 'deposits', src: '@bank/deposits' }],
 		})
 		const app = config.apps[0]
 		// Порожні поля — runner підставить від батька

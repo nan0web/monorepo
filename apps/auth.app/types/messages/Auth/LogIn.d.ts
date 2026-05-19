@@ -45,4 +45,4 @@ export default class LogIn extends Message {
     get passwordLabel(): string;
     get errors(): string[];
 }
-import Message from '@nan0web/types';
+import Message from '@nan0web/co';

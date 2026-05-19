@@ -109,12 +109,12 @@ function testRender() {
 	 */
 	it('How to parse Markdown text into elements?', () => {
 		//import { Markdown } from "@nan0web/markdown"
-		
+
 		// 1. Direct parsing via constructor
 		const mdFast = new Markdown('# Fast Parse')
 		console.info(mdFast.document.children.length) // ← 1 (heading)
 		assert.equal(console.output()[0][1], 1)
-		
+
 		// 2. Parsing via method
 		const md = new Markdown()
 		const elements = md.parse('# Hello World\n\nThis is a paragraph.')
@@ -319,7 +319,10 @@ function testRender() {
 		assert.ok(String(pkg.scripts?.play))
 		const response = await runSpawn('git', ['remote', 'get-url', 'origin'])
 		assert.ok(response.code === 0, 'git command fails (e.g., not in a git repo)')
-		assert.ok(response.text.trim().endsWith(':nan0web/markdown.git'))
+		assert.ok(
+			response.text.trim().endsWith(':nan0web/markdown.git') ||
+				response.text.trim().endsWith(':nan0web/monorepo.git'),
+		)
 	})
 
 	/**
@@ -329,7 +332,6 @@ function testRender() {
 	it('How to contribute? - [check here](./CONTRIBUTING.md)', async () => {
 		assert.equal(pkg.scripts?.precommit, 'npm test')
 		assert.equal(pkg.scripts?.prepush, 'npm test')
-		assert.equal(pkg.scripts?.prepare, 'husky')
 
 		// Create CONTRIBUTING.md if it doesn't exist
 		try {
@@ -366,17 +368,17 @@ describe('Rendering README.md', async () => {
 		// 1. Root README.md (with link to UK version)
 		const rootLangLink = '> 🇺🇦 [Читати українською](./docs/uk/README.md)\n\n'
 		await fs.saveDocument('README.md', rootLangLink + text)
-		
+
 		// 2. Clone for docs-site engine in docs/ (main English version)
 		const docsLangLink = '> 🇺🇦 [Читати українською](../uk/README.md)\n\n'
 		await fs.saveDocument('docs/README.md', docsLangLink + text)
-		
+
 		// 3. Clone for docs-site engine in docs/en/ (for explicit language selection)
 		await fs.saveDocument('docs/en/README.md', docsLangLink + text)
 
 		const dataset = DatasetParser.parse(text, pkg.name)
 		await fs.saveDocument('.datasets/README.dataset.jsonl', dataset)
-		
+
 		const saved = await fs.loadDocument('README.md')
 		assert.ok(String(saved.content || saved).includes('## License'))
 	})

@@ -9,6 +9,7 @@ import { tokens } from '../tokens.js'
 export default createTheme({
 	atoms: {
 		Button: {
+			fontFamily: tokens.font.family,
 			color: tokens.color.text,
 			background: tokens.color.primary,
 			shadow: tokens.shadow.sm,
@@ -20,14 +21,14 @@ export default createTheme({
 			paddingX: tokens.space.lg,
 			paddingY: tokens.space.md,
 			solid: {
-				primary: { background: '#0d6efd', color: '#ffffff' },
-				secondary: { background: '#6c757d', color: '#ffffff' },
-				success: { background: '#198754', color: '#ffffff' },
-				warning: { background: '#ffc107', color: '#000000' },
-				danger: { background: '#dc3545', color: '#ffffff' },
-				info: { background: '#0dcaf0', color: '#000000' },
-				light: { background: '#aaaaaa', color: '#000000' },
-				dark: { background: '#212529', color: '#ffffff' },
+				primary: { background: '#0d6efd', color: '#ffffff', border: '#0d6efd' },
+				secondary: { background: '#6c757d', color: '#ffffff', border: '#6c757d' },
+				success: { background: '#198754', color: '#ffffff', border: '#198754' },
+				warning: { background: '#ffc107', color: '#000000', border: '#ffc107' },
+				danger: { background: '#dc3545', color: '#ffffff', border: '#dc3545' },
+				info: { background: '#0dcaf0', color: '#000000', border: '#0dcaf0' },
+				light: { background: '#aaaaaa', color: '#000000', border: '#aaaaaa' },
+				dark: { background: '#212529', color: '#ffffff', border: '#212529' },
 				link: { background: 'transparent', color: '#6ea8fe', border: 'transparent' },
 			},
 			outline: {

@@ -7,13 +7,13 @@ export default class Router {
     middlewares: Array<Function>;
     /** @type {Object.<string, Array<{pattern: {regex: RegExp, params: Object}, handler: Function}>>} */
     routes: {
-        [x: string]: Array<{
+        [x: string]: {
             pattern: {
                 regex: RegExp;
                 params: any;
             };
             handler: Function;
-        }>;
+        }[];
     };
     /**
      * Add GET route
@@ -70,7 +70,7 @@ export default class Router {
      * @param {string} path
      * @param {MiddlewareFn} handler
      */
-    addRoute(method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS', path: string, handler: MiddlewareFn): void;
+    addRoute(method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD" | "OPTIONS", path: string, handler: MiddlewareFn): void;
     /**
      * Add middleware function that runs before all routes
      * @param {MiddlewareFn} middleware

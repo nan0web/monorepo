@@ -1,4 +1,4 @@
-import { OutputMessage } from '@nan0web/types'
+import { OutputMessage } from '@nan0web/co'
 import { UiForm as UIForm } from '@nan0web/ui'
 import { CLI, CLiInputAdapter as CLIInputAdapter } from '@nan0web/ui-cli'
 import AuthApp from '../AuthApp.js'
@@ -62,8 +62,8 @@ export default class AuthCLI {
 			})
 
 			const formSpec = UIForm.from({
-				title: this.adapter.t(MessageClass.help || MessageClass.name),
-				id: `form-${MessageClass.name}`,
+				title: this.adapter.t(MessageClass.help || MessageClass.alias || MessageClass.name),
+				id: `form-${MessageClass.alias || MessageClass.name}`,
 				fields,
 				state: {},
 				validateValue: (name, value) => {
@@ -85,7 +85,7 @@ export default class AuthCLI {
 			const response = await this.adapter.requestForm(formSpec, { silent: false })
 			const body = response.form?.state || response
 
-			const action = MessageClass.name
+			const action = MessageClass.alias || MessageClass.name
 			const msg = MessageClass.from({ body, action })
 			if (action && !msg.action) {
 				msg.action = action

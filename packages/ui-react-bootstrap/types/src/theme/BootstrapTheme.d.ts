@@ -1,2 +1,2 @@
-declare const _default: any;
+declare const _default: import("../../../ui/types/Theme/Theme").ThemeConfig;
 export default _default;

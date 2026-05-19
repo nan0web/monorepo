@@ -1,3 +1,5 @@
+import { Model } from '@nan0web/types'
+
 /**
  * Contact handling class
  * Parses and formats contact information with specific URI schemes.
@@ -7,8 +9,21 @@
  * console.log(email.toString()) // "mailto:test@example.com"
  *
  * @class Contact
+ * @extends Model
  */
-export default class Contact {
+export default class Contact extends Model {
+	static type = {
+		help: 'Contact type/URI scheme',
+		default: 'address:',
+		type: 'string',
+	}
+
+	static value = {
+		help: 'Contact value',
+		default: '',
+		type: 'string',
+	}
+
 	/** @type {string} */
 	static ADDRESS = 'address:'
 	/** @type {string} */
@@ -38,22 +53,16 @@ export default class Contact {
 	/** @type {string} */
 	static URL = '//'
 
-	/** @type {string} */
-	type
-	/** @type {string} */
-	value
-
 	/**
 	 * Create a Contact instance.
 	 *
-	 * @param {object} [input={}]
-	 * @param {string} [input.type=Contact.ADDRESS] - One of the static URI prefixes.
-	 * @param {string} [input.value=""] - The raw value without the prefix.
+	 * @param {object} [data={}]
+	 * @param {object} [options={}]
 	 */
-	constructor(input = {}) {
-		const { type = Contact.ADDRESS, value = '' } = input
-		this.type = String(type)
-		this.value = String(value)
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		/** @type {string} Contact type/URI scheme */ this.type
+		/** @type {string} Contact value */ this.value
 	}
 
 	/**
@@ -81,7 +90,8 @@ export default class Contact {
 		if ('number' === typeof input) {
 			type = String(type)
 		}
-		type = Object.values(Contact).find((str) => input.startsWith(str)) ?? ''
+		type =
+			Object.values(Contact).find((str) => typeof str === 'string' && input.startsWith(str)) ?? ''
 		if (type) {
 			value = input.slice((type ?? '').length)
 		} else {

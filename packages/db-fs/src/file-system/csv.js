@@ -33,6 +33,10 @@ async function loadCSVAsync(filePath, delimiter = ',', quote = '"', softError = 
 
 /**
  * Common logic to parse CSV string into objects.
+ * @param {string} content
+ * @param {string} [delimiter]
+ * @param {string} [quote]
+ * @returns {any[]}
  */
 function parseToObjects(content, delimiter = ',', quote = '"') {
 	const all = parseCSV(content, delimiter, quote)
@@ -115,6 +119,11 @@ async function saveCSVAsync(filePath, data, delimiter = ',', quote = '"', eol = 
 
 /**
  * Internal logic for CSV stringification.
+ * @param {any} data
+ * @param {string} [delimiter]
+ * @param {string} [quote]
+ * @param {string} [eol]
+ * @returns {string}
  */
 function stringifyCSV(data, delimiter = ',', quote = '"', eol = '\n') {
 	const escapeCell = (cell) => {
@@ -134,4 +143,4 @@ function stringifyCSV(data, delimiter = ',', quote = '"', eol = '\n') {
 	return csv.join(eol)
 }
 
-export { loadCSV, saveCSV, parseCSV, loadCSVAsync, saveCSVAsync }
+export { loadCSV, saveCSV, parseCSV, loadCSVAsync, saveCSVAsync, parseToObjects, stringifyCSV }

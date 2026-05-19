@@ -125,8 +125,9 @@ describe('Rendering README.md', async () => {
 	await fs.saveDocument('.datasets/README.dataset.jsonl', dataset)
 
 	it(`Document is rendered in README.md [${format(Buffer.byteLength(text))} bytes]`, async () => {
-		const text = await fs.loadDocument('README.md')
-		assert.ok(text.includes('# @nan0web/finance'))
-		assert.ok(text.includes('## Formatting Utilities'))
+		const doc = await fs.loadDocument('README.md')
+		const textContent = String(doc)
+		assert.ok(textContent.includes('# @nan0web/finance'))
+		assert.ok(textContent.includes('## Formatting Utilities'))
 	})
 })

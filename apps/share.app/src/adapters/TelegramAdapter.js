@@ -1,5 +1,5 @@
-import { SocialAdapter } from '../core/SocialAdapter.js'
-import { SocialAdapterConfig, createLimits } from '../core/Models.js'
+import { SocialAdapter } from '../domain/SocialAdapter.js'
+import { SocialAdapterConfig, createLimits } from '../domain/Models.js'
 
 // ─── TelegramAdapterConfig ───────────────────────────────────
 
@@ -31,7 +31,7 @@ export class TelegramAdapterConfig extends SocialAdapterConfig {
 	disableNotification
 
 	/**
-	 * @param {{ botToken: string, chatId: string, parseMode?: 'HTML'|'MarkdownV2', disableNotification?: boolean } & Partial<import('../core/Models.js').SocialAdapterConfig>} raw
+	 * @param {{ botToken: string, chatId: string, parseMode?: 'HTML'|'MarkdownV2', disableNotification?: boolean } & Partial<import('../domain/Models.js').SocialAdapterConfig>} raw
 	 */
 	constructor(raw = {}) {
 		super(raw)
@@ -107,7 +107,7 @@ export class TelegramAdapter extends SocialAdapter {
 	}
 
 	/**
-	 * @param {import('../core/Models.js').SocialAdapterContent} content
+	 * @param {import('../domain/Models.js').SocialAdapterContent} content
 	 * @returns {Promise<import('../core/Models.js').SocialAdapterPublishResult>}
 	 */
 	async publish(content) {
@@ -169,7 +169,7 @@ export class TelegramAdapter extends SocialAdapter {
 	}
 
 	/**
-	 * @param {import('../core/Models.js').SocialAdapterTarget} target
+	 * @param {import('../domain/Models.js').SocialAdapterTarget} target
 	 * @param {string} text
 	 * @returns {Promise<{ id: string }>}
 	 */
@@ -186,7 +186,7 @@ export class TelegramAdapter extends SocialAdapter {
 
 	/**
 	 * @param {string} postId
-	 * @param {import('../core/Models.js').SocialAdapterContent} content
+	 * @param {import('../domain/Models.js').SocialAdapterContent} content
 	 * @returns {Promise<import('../core/Models.js').SocialAdapterPublishResult>}
 	 */
 	async update(postId, content) {

@@ -4,11 +4,9 @@ import FS from '@nan0web/db-fs'
 import { NoConsole } from '@nan0web/log'
 import { DatasetParser, DocsParser, runSpawn } from '@nan0web/test'
 import {
-	Frame,
 	Model,
 	Models,
 	OutputMessage,
-	View,
 	FormInput,
 	UiMessage,
 	UiForm,
@@ -18,7 +16,6 @@ import {
 	result,
 	render,
 } from '../index.js'
-import { Welcome } from '../Component/index.js'
 
 const fs = new FS()
 let pkg
@@ -58,8 +55,6 @@ function testRender() {
 	 * - Forms with validation
 	 * - Progress tracking
 	 * - Component rendering
-	 * - View management with Frame rendering
-	 * - App structure with core and user apps
 	 *
 	 * Built to work in sync or async, terminal-based or web-based apps,
 	 * focusing on type safety, minimalism, and pure JavaScript design.
@@ -71,8 +66,6 @@ function testRender() {
 	 *   - [Intent-Based Communication (OLMUI)](#intent-based-communication-olmui)
 	 *   - [Model-as-Schema](#model-as-schema)
 	 *   - [Forms](#forms)
-	 *   - [View & Frames](#view--frames)
-	 *   - [Application & CoreApp](#application--coreapp)
 	 * - [Testing (TDD+)](#testing-tdd)
 	 *   - [Scenario Testing (v1.12+)](#scenario-testing-v112)
 	 *   - [Story Testing (.nan0)](#story-testing-nan0-spec-files)
@@ -191,89 +184,7 @@ function testRender() {
 		assert.equal(console.output()[1][1], 'Invalid email format')
 	})
 
-	/**
-	 * @docs
-	 * ### Components
-	 *
-	 * Components render data as frame-ready output.
-	 *
-	 * - `Welcome` – greets user by name
-	 * - `Process` – shows progress bar and time
-	 */
-	it('How to render the Welcome component?', () => {
-		//import { Welcome } from '@nan0web/ui'
 
-		const frame = Welcome({ user: { name: 'Alice' } })
-		const firstLine = frame[0].join('')
-		console.info(firstLine) // ← Welcome Alice!
-		assert.equal(console.output()[0][1], 'Welcome Alice!')
-	})
-
-	/**
-	 * @docs
-	 * ### View Manager
-	 *
-	 * `View` combines components and renders frames.
-	 *
-	 * Every view has:
-	 *
-	 * - Locale – formatted text, numbers, currency
-	 * - StdIn / StdOut – input/output streams
-	 * - Frame – output buffer with visual properties
-	 */
-	it('How to render frame with View?', () => {
-		//import { View } from '@nan0web/ui'
-
-		const view = new View()
-		view.render(1)(['Hello, world'])
-		console.info(String(view.frame)) // ← "\rHello, world"
-		assert.ok(String(view.frame).includes('Hello, world'))
-	})
-
-	/**
-	 * @docs
-	 * ### Frame Rendering
-	 *
-	 * `Frame` manages visual rendering with width and height limits.
-	 * Useful for fixed-size terminals or UI blocks.
-	 *
-	 * Render methods:
-	 *
-	 * - `APPEND` – adds content after previous frame
-	 * - `REPLACE` – erases and replaces full frame area
-	 * - `VISIBLE` – renders only visible part of frame
-	 */
-	it('How to create a Frame with fixed size?', () => {
-		//import { Frame } from '@nan0web/ui'
-
-		const frame = new Frame({
-			value: [['Frame content']],
-			width: 20,
-			height: 5,
-			renderMethod: Frame.RenderMethod.APPEND,
-		})
-
-		const rendered = frame.render()
-		console.info(rendered.includes('Frame content')) // ← true
-		assert.ok(rendered.includes('Frame content'))
-	})
-	it('How to create a Frame with different render methods?', () => {
-		//import { Frame } from '@nan0web/ui'
-
-		const frame = new Frame({
-			value: [['Frame content']],
-			width: 20,
-			height: 5,
-		})
-
-		frame.renderMethod = Frame.RenderMethod.REPLACE
-		const renderedReplace = frame.render()
-		assert.ok(renderedReplace.includes('Frame content'))
-
-		frame.renderMethod = Frame.RenderMethod.VISIBLE
-		const renderedVisible = frame.render()
-		assert.ok(renderedVisible.includes('Frame content'))
-	})
 
 	/**
 	 * @docs
@@ -511,22 +422,7 @@ function testRender() {
 		assert.equal(typeof SpecRunner.executeFile, 'function')
 	})
 
-	/**
-	 * @docs
-	 * All components, adapters, and models are designed to be testable
-	 * with minimal setup.
-	 */
-	it('How to test visual UI components with assertions?', () => {
-		//import { Welcome } from '@nan0web/ui'
 
-		const output = Welcome({ user: { name: 'Test' } })
-		console.info(output) // ← Welcome Test!
-		assert.deepStrictEqual(console.output()[0][1], [
-			['Welcome', ' ', 'Test', '!'],
-			['What can we do today great?'],
-			[''],
-		])
-	})
 
 	/**
 	 * @docs
@@ -638,8 +534,6 @@ function testRender() {
 	 * - [Forms](./src/core/Form/)
 	 * - [Stream](./src/core/Stream.js)
 	 * - [Components](./src/Component/)
-	 * - [View](./src/View/)
-	 * - [App](./src/App/)
 	 * - [Models](./src/Model/)
 	 *
 	 * ## Project Architecture & Specs

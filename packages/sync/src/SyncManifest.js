@@ -25,7 +25,7 @@ export class SyncManifest {
 				// Node <v20.1: entry might have `path` or `parentPath` instead of prepending relative automatically in some versions.
 				// Readdir recursively from Node v20 withFileTypes returns parent path in entry.path (or entry.parentPath)
 				// We construct the relative path manually since DBFS.FS can vary.
-				const parentPath = entry.parentPath || entry.path
+				const parentPath = /** @type {any} */ (entry).parentPath || /** @type {any} */ (entry).path
 				// The absolute path of the file
 				const fileAbs = this.dbfs.FS.resolve(parentPath, entry.name)
 
@@ -51,6 +51,7 @@ export class SyncManifest {
 	}
 
 	diff(oldIndex, newIndex) {
+		/** @type {{ upload: string[], delete: string[] }} */
 		const diff = { upload: [], delete: [] }
 
 		for (const [file, hash] of Object.entries(newIndex)) {

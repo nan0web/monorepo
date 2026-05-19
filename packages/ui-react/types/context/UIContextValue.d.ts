@@ -44,13 +44,17 @@ declare class UIContextValue {
      * @param {boolean} [input.debug] - Show debug logs
      */
     constructor(input?: {
-        theme?: import("@nan0web/ui/types/theme/Theme").ThemeConfig | undefined;
+        theme?: {
+            atoms: typeof import("../../../ui/types/Theme/atoms");
+            molecules: typeof import("../../../ui/types/Theme/molecules");
+            organisms: typeof import("../../../ui/types/Theme/organisms");
+        } | undefined;
         lang?: string | undefined;
         db?: DB | undefined;
         reducedMotion?: boolean | undefined;
         data?: object;
         setTheme?: Function | undefined;
-        t?: import("@nan0web/types/types/utils/TFunction").TFunction | undefined;
+        t?: import("../../../types/types/utils/TFunction").TFunction | undefined;
         renderFn?: Function | undefined;
         console?: Console | undefined;
         components?: Map<string, Loadable<import("react").ComponentType<{}>>> | undefined;
@@ -60,7 +64,11 @@ declare class UIContextValue {
         document?: any;
         debug?: boolean | undefined;
     });
-    theme: import("@nan0web/ui/types/theme/Theme").ThemeConfig;
+    theme: {
+        atoms: typeof import("../../../ui/types/Theme/atoms");
+        molecules: typeof import("../../../ui/types/Theme/molecules");
+        organisms: typeof import("../../../ui/types/Theme/organisms");
+    };
     lang: string;
     db: DB;
     debug: boolean;

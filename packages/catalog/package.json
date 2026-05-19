@@ -8,17 +8,39 @@
     "./react": "./src/ui-react/index.js"
   },
   "scripts": {
-    "test": "node --test src/**/*.test.js"
+    "test": "node --test src/**/*.test.js",
+    "build": "tsc",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "play": "node play/main.js",
+    "release": "nan0release publish",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status --hide-name",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nan0web/db-browser": "workspace:*",
     "@nan0web/db-fs": "workspace:*"
   },
   "devDependencies": {
-    "react": "^19.2.4"
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "husky": "^9.1.7",
+    "react": "^19.2.6"
   },
   "peerDependencies": {
     "react": "^18.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "files": [
+    "src/",
+    "types/",
+    "package.json",
+    "README.md"
+  ]
 }

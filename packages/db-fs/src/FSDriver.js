@@ -1,15 +1,101 @@
 // Base protocol import (must be available)
 import { constants, createReadStream } from 'node:fs'
-import { AuthContext, DBDriverProtocol, DocumentStat } from '@nan0web/db'
+import { AuthContext, DBDriverProtocol, DocumentStat, FormatRegistry } from '@nan0web/db'
 import { mkdir, unlink, stat, appendFile, readdir, access } from 'node:fs/promises'
 import { dirname, extname, resolve } from 'node:path'
 import { load, save } from './file-system/index.js'
+import YAML from 'yaml'
+import { NaN0 } from '@nan0web/types'
+import Markdown from '@nan0web/markdown'
+
+import { parseToObjects, stringifyCSV } from './file-system/csv.js'
+
 
 /**
  * File System Driver for Node.js environments.
  * Provides persistent storage using fs/promises with automatic format handling.
  */
 export default class FSDriver extends DBDriverProtocol {
+	constructor(config = {}) {
+		const registry = config.registry || new FormatRegistry()
+		super({ ...config, registry })
+
+		// Register default formats for db-fs
+		this.registry.register('.jsonl',
+			(str) => str.split('\n').filter(Boolean).map(x => JSON.parse(x)),
+			(arr) => arr.map(x => JSON.stringify(x)).join('\n') + '\n'
+		)
+
+		this.registry.register('.txt',
+			(str) => str,
+			(doc) => String(doc)
+		)
+
+		this.registry.register('.md',
+			(str) => new Markdown(str),
+			(doc) => {
+				if (doc instanceof Markdown) return String(doc)
+				return String(new Markdown(doc))
+			}
+		)
+
+		const yamlLoader = (str) => YAML.parse(str)
+		const yamlSaver = (doc) => YAML.stringify(doc)
+		this.registry.register('.yaml', yamlLoader, yamlSaver)
+		this.registry.register('.yml', yamlLoader, yamlSaver)
+
+		const nan0Loader = (str) => NaN0.parse(str)
+		const nan0Saver = (doc) => NaN0.stringify(doc)
+		this.registry.register('.nan0', nan0Loader, nan0Saver)
+		this.registry.register('.nan', nan0Loader, nan0Saver)
+		this.registry.register('.nano', nan0Loader, nan0Saver)
+
+		const csvLoader = (str, ext) => {
+			const delim = ext === '.tsv' ? '\t' : ','
+			return parseToObjects(str, delim)
+		}
+		const csvSaver = (arr, ext) => {
+			const delim = ext === '.tsv' ? '\t' : ','
+			return stringifyCSV(arr, delim)
+		}
+
+		const csv0Loader = (str, ext) => {
+			const delim = ext === '.tsv' || ext === '.tsv0' ? '\t' : ','
+			const trimmed = str.trimStart()
+			let metadata = {}
+			let csvContent = str
+			if (trimmed.startsWith('---')) {
+				const afterFirst = trimmed.indexOf('\n') + 1
+				const closingIndex = trimmed.indexOf('\n---', afterFirst)
+				if (closingIndex >= 0) {
+					const block = trimmed.slice(afterFirst, closingIndex)
+					csvContent = trimmed.slice(closingIndex + 4).replace(/^\n+/, '')
+					try {
+						metadata = NaN0.parse(block) || {}
+					} catch (e) {}
+				}
+			}
+			const arr = /** @type {any} */ (parseToObjects(csvContent, delim))
+			arr.vars = metadata
+			return arr
+		}
+		const csv0Saver = (arr, ext) => {
+			const delim = ext === '.tsv' || ext === '.tsv0' ? '\t' : ','
+			const csvStr = stringifyCSV(arr, delim)
+			const vars = /** @type {any} */ (arr).vars
+			if (vars && Object.keys(vars).length > 0) {
+				const block = NaN0.stringify(vars)
+				return ['---', block, '---', '', csvStr].join('\n')
+			}
+			return csvStr
+		}
+
+		this.registry.register('.csv', csvLoader, csvSaver)
+		this.registry.register('.tsv', csvLoader, csvSaver)
+		this.registry.register('.csv0', csv0Loader, csv0Saver)
+		this.registry.register('.tsv0', csv0Loader, csv0Saver)
+	}
+
 	/**
 	 * Connects to the file system.
 	 * @returns {Promise<void>}
@@ -65,11 +151,17 @@ export default class FSDriver extends DBDriverProtocol {
 	async read(absoluteURI, defaultValue = undefined) {
 		try {
 			const ext = extname(absoluteURI)
-			return load(absoluteURI, { format: ext, softError: true }) || defaultValue
+			const loader = this.registry.resolveLoader(ext)
+			const fs = await import('node:fs/promises')
+			const raw = await fs.readFile(absoluteURI, 'utf8')
+			return loader(raw, ext)
 		} catch (error) {
+			const err = /** @type {any} */ (error)
+			if (err.code === 'ENOENT') return defaultValue
 			if (this.driver) {
 				return await this.driver.read(absoluteURI, defaultValue)
 			}
+			throw error
 		}
 	}
 
@@ -163,7 +255,11 @@ export default class FSDriver extends DBDriverProtocol {
 	async write(absoluteURI, document) {
 		try {
 			await this.ensureDir(dirname(absoluteURI))
-			save(absoluteURI, document)
+			const ext = extname(absoluteURI)
+			const saver = this.registry.resolveSaver(ext)
+			const raw = saver(document, ext)
+			const fs = await import('node:fs/promises')
+			await fs.writeFile(absoluteURI, raw, 'utf8')
 			return true
 		} catch (/** @type {any} */ err) {
 			if (this.driver) {

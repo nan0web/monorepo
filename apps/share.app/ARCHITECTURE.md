@@ -37,7 +37,7 @@ Adapters are modular plugins. Rather than creating a standalone `share` vendor a
 - Core App: `@nan0web/share.app` (located in `apps/@/nan0web/share.app`)
 - Core Adapters: `@nan0web/share-telegram`, `@nan0web/share-x`, `@nan0web/share-linkedin`, etc.
 
-**Other vendors or third parties** can create their own adapters (e.g., `@industrialbank/share-internal-api`) which the user can simply `npm install` and register in the UI or CLI.
+**Other vendors or third parties** can create their own adapters (e.g., `@bank/share-internal-api`) which the user can simply `npm install` and register in the UI or CLI.
 
 ---
 

@@ -10,15 +10,16 @@ export default class ParseCommand extends CLI {
      * --skip
      * --todo
      * --format {md|txt}
-     * @param {ParseMessage} msg
+     * @param {any} [msg]
      * @returns {AsyncGenerator<OutputMessage>}
      */
-    run(msg: ParseMessage): AsyncGenerator<OutputMessage>;
+    run(msg?: any): AsyncGenerator<OutputMessage>;
     readInput(): Promise<any>;
     toMarkdown(output: any): string;
     toHTML(output: any): string;
 }
 import { CLI } from '@nan0web/ui-cli';
+import { OutputMessage } from '@nan0web/co';
 /**
  * @extends {Message}
  */
@@ -33,7 +34,6 @@ declare class ParseMessage extends Message {
     /** @type {ParseBody} */
     body: ParseBody;
 }
-import { OutputMessage } from '@nan0web/co';
 import { Message } from '@nan0web/co';
 declare class ParseBody {
     static help: {

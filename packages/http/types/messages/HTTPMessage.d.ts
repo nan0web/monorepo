@@ -20,7 +20,7 @@ declare class HTTPMessage {
         url?: string | undefined;
         headers?: import("./HTTPHeaders.js").HTTPHeadersInput;
         body?: string | undefined;
-    } | undefined);
+    });
     /** @type {string} */
     url: string;
     /** @type {HTTPHeaders} */

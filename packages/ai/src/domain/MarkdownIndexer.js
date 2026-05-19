@@ -1,10 +1,12 @@
 import crypto from 'node:crypto'
-import fs from 'node:fs'
-import path from 'node:path'
 import { matchProject, loadNameToDir } from './projectFilter.js'
 
-import { Model } from '@nan0web/types'
-import { show, result, progress } from '@nan0web/ui'
+import { Model, ModelError } from '@nan0web/types'
+import { show, result, progress, log } from '@nan0web/ui'
+import { DBFS } from '@nan0web/db-fs'
+import { VectorDB } from './VectorDB.js'
+import { IndexCacheModel } from './IndexCacheModel.js'
+import { Embedder } from './Embedder.js'
 
 /** @typedef {'data' | 'docs' | 'source'} IndexerScope */
 
@@ -18,6 +20,10 @@ export class MarkdownIndexer extends Model {
 
 	static UI = {
 		scanning: 'Scanning projects',
+		errorDbMissing: 'Database instance (db) is missing in indexer context.',
+		errorIndexing: 'Error indexing {project}: {message}',
+		errorLoadIndex: 'Failed to load index {path}: {message}',
+		errorSearchIndex: 'Failed to search index {project}: {message}',
 	}
 
 	/**
@@ -55,6 +61,13 @@ export class MarkdownIndexer extends Model {
 		const results = []
 		const db = /** @type {any} */ (this._).workspaceDb || /** @type {any} */ (this._).db
 
+		if (!db) {
+			const t = this._.t || ((k) => k)
+			throw new ModelError({
+				message: t(MarkdownIndexer.UI.errorDbMissing),
+			})
+		}
+
 		const defaultIgnore = [
 			'node_modules',
 			'dist',
@@ -74,76 +87,37 @@ export class MarkdownIndexer extends Model {
 		]
 		const userIgnore = Array.isArray(this.ignore) ? this.ignore : []
 
-		if (db) {
-			const entries = await db.listDir(dir).catch(() => [])
-			for (const entry of entries) {
-				const name = entry.name
-				const fullPath = entry.path
-				const relToProject = path.relative(baseDir, fullPath)
+		const entries = await db.listDir(dir).catch(() => [])
+		for (const entry of entries) {
+			const name = entry.name
+			const fullPath = entry.path
+			const relToProject =
+				typeof db.relative === 'function'
+					? db.relative(fullPath, baseDir)
+					: new DBFS({ root: process.cwd() }).relative(fullPath, baseDir)
 
-				if (entry.isDirectory) {
-					if (name.startsWith('.') || defaultIgnore.includes(name) || userIgnore.includes(name))
-						continue
-					const nested = await this.scanRecursive(fullPath, baseDir)
-					results.push(...nested)
-				} else {
-					const isDocs = /\.(md|txt)$/.test(name)
-					const isSource = /\.(ts|tsx|js|jsx|py)$/.test(name)
-					const isData = /\.(yaml|yml|json|nan0|md|txt|csv)$/.test(name)
+			if (entry.isDirectory) {
+				if (name.startsWith('.') || defaultIgnore.includes(name) || userIgnore.includes(name))
+					continue
+				const nested = await this.scanRecursive(fullPath, baseDir)
+				results.push(...nested)
+			} else {
+				const isDocs = /\.(md|txt)$/.test(name)
+				const isSource = /\.(ts|tsx|js|jsx|py)$/.test(name)
+				const isData = /\.(yaml|yml|json|nan0|md|txt|csv)$/.test(name)
 
-					const parts = relToProject.split(path.sep)
-					const inDocsFolder = parts.includes('docs')
-					const inTypesFolder = parts.includes('src') || parts.includes('types')
-					const inDataFolder = parts.includes('data')
+				const parts = relToProject.split('/')
+				const inDocsFolder = parts.includes('docs')
+				const inTypesFolder = parts.includes('src') || parts.includes('types')
+				const inDataFolder = parts.includes('data')
 
-					if (this.scope === 'docs' && (isDocs || isData) && inDocsFolder) {
-						results.push(fullPath)
-					} else if (this.scope === 'source' && isSource && inTypesFolder) {
-						results.push(fullPath)
-					} else if (this.scope === 'data' && isData && inDataFolder) {
-						results.push(fullPath)
-					}
+				if (this.scope === 'docs' && (isDocs || isData) && inDocsFolder) {
+					results.push(fullPath)
+				} else if (this.scope === 'source' && isSource && inTypesFolder) {
+					results.push(fullPath)
+				} else if (this.scope === 'data' && isData && inDataFolder) {
+					results.push(fullPath)
 				}
-			}
-			return results
-		}
-
-		// Fallback to node:fs
-		if (!fs.existsSync(dir)) return results
-		const entries = fs.readdirSync(dir)
-
-		for (const name of entries) {
-			const fullPath = path.join(dir, name)
-			const relToProject = path.relative(baseDir, fullPath)
-
-			try {
-				const stat = fs.statSync(fullPath)
-				if (stat.isDirectory()) {
-					if (name.startsWith('.') || defaultIgnore.includes(name) || userIgnore.includes(name))
-						continue
-
-					const nested = await this.scanRecursive(fullPath, baseDir)
-					results.push(...nested)
-				} else {
-					const isDocs = /\.(md|txt)$/.test(name)
-					const isSource = /\.(ts|tsx|js|jsx|py)$/.test(name)
-					const isData = /\.(yaml|yml|json|nan0|md|txt|csv)$/.test(name)
-
-					const parts = relToProject.split(path.sep)
-					const inDocsFolder = parts.includes('docs')
-					const inTypesFolder = parts.includes('src') || parts.includes('types')
-					const inDataFolder = parts.includes('data')
-
-					if (this.scope === 'docs' && (isDocs || isData) && inDocsFolder) {
-						results.push(fullPath)
-					} else if (this.scope === 'source' && isSource && inTypesFolder) {
-						results.push(fullPath)
-					} else if (this.scope === 'data' && isData && inDataFolder) {
-						results.push(fullPath)
-					}
-				}
-			} catch (e) {
-				// Silent skip for access issues
 			}
 		}
 		return results
@@ -214,15 +188,18 @@ export class MarkdownIndexer extends Model {
 		return chunks
 	}
 
-	getWorkspaceRoot() {
-		let root = path.resolve(/** @type {any} */ (this._).workspaceRoot || process.cwd())
+	async getWorkspaceRoot() {
+		const pathDb = new DBFS({ root: process.cwd() })
+		let root = pathDb.resolveSync(/** @type {any} */ (this._).workspaceRoot || process.cwd())
 		while (root && root !== '/') {
-			if (fs.existsSync(path.join(root, 'pnpm-workspace.yaml'))) return root
-			const parent = path.dirname(root)
+			const tempDb = new DBFS({ cwd: root, root: '' })
+			const stat = await tempDb.statDocument('pnpm-workspace.yaml')
+			if (stat.exists) return root
+			const parent = pathDb.dirname(root)
 			if (parent === root) break
 			root = parent
 		}
-		return path.resolve(/** @type {any} */ (this._).workspaceRoot || process.cwd())
+		return pathDb.resolveSync(/** @type {any} */ (this._).workspaceRoot || process.cwd())
 	}
 
 	getDatasetDir() {
@@ -234,13 +211,9 @@ export class MarkdownIndexer extends Model {
 	 * @param {import('./Embedder.js').Embedder} embedder
 	 */
 	async *indexAll(embedder, opts = { force: false }) {
-		const { DBFS } = await import('@nan0web/db-fs')
-		const root = this.getWorkspaceRoot()
+		const root = await this.getWorkspaceRoot()
 		const workspaceDb = /** @type {any} */ (this._).workspaceDb || new DBFS({ root })
 		const dsFolder = this.getDatasetDir()
-
-		const { VectorDB } = await import('./VectorDB.js')
-		const { IndexCacheModel } = await import('./IndexCacheModel.js')
 
 		const VECTOR_CACHE_PATH = `${dsFolder}/vectors.csv`
 
@@ -277,7 +250,7 @@ export class MarkdownIndexer extends Model {
 		// Scanning projects for files recursively
 		let scanned = 0
 		for (const proj of projects) {
-			const absDir = path.join(root, proj.dir)
+			const absDir = workspaceDb.resolveSync(root, proj.dir)
 			proj.files = await this.scanRecursive(absDir, absDir)
 			scanned++
 			yield progress(proj.name, scanned, projects.length)
@@ -443,7 +416,15 @@ export class MarkdownIndexer extends Model {
 						files: proj.files.length,
 					})
 				} catch (err) {
-					console.error(`Error indexing ${proj.name}:`, err)
+					const t = this._.t || ((k) => k)
+					pushEvent({
+						type: 'log',
+						level: 'error',
+						message: t(MarkdownIndexer.UI.errorIndexing, {
+							project: proj.name,
+							message: err instanceof Error ? err.message : String(err),
+						}),
+					})
 				} finally {
 					activeWorkers--
 					if (notify) {
@@ -456,7 +437,12 @@ export class MarkdownIndexer extends Model {
 
 		while (activeWorkers > 0 || queue.length > 0) {
 			if (queue.length > 0) {
-				yield queue.shift()
+				const ev = queue.shift()
+				if (ev.type === 'log') {
+					yield log(ev.level, ev.message)
+				} else {
+					yield ev
+				}
 			} else {
 				await new Promise((r) => {
 					notify = r
@@ -481,15 +467,10 @@ export class MarkdownIndexer extends Model {
 	 * @param {number} [opts.maxDistance=0.18]
 	 * @param {string} [opts.project]
 	 */
-	async search(query, opts = {}) {
-		const { DBFS } = await import('@nan0web/db-fs')
-		const root = this.getWorkspaceRoot()
+	async *search(query, opts = {}) {
+		const root = await this.getWorkspaceRoot()
 		const workspaceDb = /** @type {any} */ (this._).workspaceDb || new DBFS({ root })
 		const dsFolder = this.getDatasetDir()
-		const { VectorDB } = await import('./VectorDB.js')
-		const { Embedder } = await import('./Embedder.js')
-		const { matchProject, loadNameToDir } = await import('./projectFilter.js')
-
 		const files = await workspaceDb.listDir(dsFolder).catch(() => [])
 		const indexFiles = files.filter(
 			(f) => f.name.startsWith(this.scope + '-') && f.name.endsWith('-index.bin'),
@@ -523,17 +504,53 @@ export class MarkdownIndexer extends Model {
 			if (!matchProject(projectId, opts.project || undefined, nameToDir)) continue
 
 			const vdb = new VectorDB({}, { db: workspaceDb })
-			const loaded = await vdb.load(f.path, { metaOnly: opts.strict }).catch((e) => {
-				console.error(`MarkdownIndexer: Failed to load index ${f.path}:`, e.message)
-				return false
-			})
+			let loaded = false
+			try {
+				loaded = await vdb.load(f.path, { metaOnly: opts.strict })
+			} catch (e) {
+				const t = this._.t || ((k) => k)
+				yield log(
+					'error',
+					t(MarkdownIndexer.UI.errorLoadIndex, { path: f.path, message: e.message }),
+				)
+				continue
+			}
 			if (!loaded) continue
 
 			let results = []
 			if (opts.strict) {
 				results = Array.from(vdb._metadata.values()).map((meta) => ({ ...meta, distance: 0 }))
 			} else {
-				results = vdb.search(/** @type {number[]} */ (queryVector), opts.limit || 10)
+				try {
+					results = vdb.search(/** @type {number[]} */ (queryVector), opts.limit || 10)
+				} catch (e) {
+					const t =
+						this._.t ||
+						((k, p) => {
+							if (!p) return k
+							let out = k
+							for (const [key, val] of Object.entries(p)) {
+								const cleanKey = key.startsWith('$') ? key.slice(1) : key
+								out = out.replace(new RegExp(`{${cleanKey}}`, 'g'), String(val))
+							}
+							return out
+						})
+					let errMsg = e.message
+					if (e.name === 'ModelError' && e.fields) {
+						const meta = Object.fromEntries(
+							Object.entries(e.fields).filter(([key]) => key.startsWith('$')),
+						)
+						const vectorKey = e.fields.vector || ''
+						if (vectorKey) {
+							errMsg = t(vectorKey, meta)
+						}
+					}
+					yield log(
+						'error',
+						t(MarkdownIndexer.UI.errorSearchIndex, { project: f.name, message: errMsg }),
+					)
+					continue
+				}
 			}
 
 			if (!opts.strict && opts.maxDistance !== undefined) {
@@ -552,6 +569,9 @@ export class MarkdownIndexer extends Model {
 		}
 
 		// Sort by score (ascending for distance)
-		return allResults.sort((a, b) => a.score - b.score).slice(0, opts.limit || 10)
+		const sorted = allResults.sort((a, b) => a.score - b.score).slice(0, opts.limit || 10)
+		for (const r of sorted) {
+			yield { type: 'result', data: r }
+		}
 	}
 }

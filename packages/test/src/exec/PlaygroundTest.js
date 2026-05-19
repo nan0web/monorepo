@@ -7,7 +7,6 @@
  * - Normalize function now properly trims leading whitespace from each line.
  */
 
-/* eslint-disable no-use-before-define */
 import { spawn } from 'node:child_process'
 import event, { EventContext } from '@nan0web/event'
 

@@ -5,9 +5,9 @@ import { show, ask, progress, result } from '@nan0web/ui'
 /**
  * Contract for the injected AI Engine
  * @typedef {Object} AIEngineContract
- * @property {import('../llm/ModelInfo').default | null} selectedModel The currently selected AI model
- * @property {function(string): import('../llm/ModelInfo').default | undefined} getModel Get a model by ID
- * @property {function(string): import('../llm/ModelInfo').default | undefined} findModel Find a model by partial ID
+ * @property {import('../llm/ModelInfo.js').ModelInfo | null} selectedModel The currently selected AI model
+ * @property {function(string): import('../llm/ModelInfo.js').ModelInfo | undefined} getModel Get a model by ID
+ * @property {function(string): import('../llm/ModelInfo.js').ModelInfo | undefined} findModel Find a model by partial ID
  * @property {function(string, any[], any=): import('ai').StreamTextResult<any>} streamText Stream text from AI
  */
 

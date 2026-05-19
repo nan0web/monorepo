@@ -23,19 +23,23 @@ where lightweight, proven, reusable utilities are essential.
 - [Playground](#playground)
 - [Java•Script](#javascript)
 
+
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/types
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/types
 ```
 
 How to install with yarn?
+
 ```bash
 yarn add @nan0web/types
 ```
@@ -43,10 +47,12 @@ yarn add @nan0web/types
 ## Core Concepts
 
 This package is designed with minimalism and precision:
+
 - ✅ Fully typed with **JSDoc** and `.d.ts` files
 - 🔁 Supports both sync and async operations
 - 🧠 Built for cognitive clarity: each function has a clear purpose
 - 🌱 No external dependencies
+
 
 ### `Model` (Data-Driven Domain Model)
 
@@ -55,6 +61,7 @@ applies default values, resolves aliases, and provides built-in validation
 based on static class metadata.
 
 How to use Model for domain logic?
+
 ```js
 import { Model } from "@nan0web/types"
 class User extends Model {
@@ -74,6 +81,7 @@ console.info(user.age) // ← 25
 Checks if any of the arguments match a string or regex pattern.
 
 - **Parameters**
+
   - `test` (string|RegExp) – Pattern to match against.
   - `options` (object, optional) – Matching settings.
     - `caseInsensitive` (boolean) – Default `false`.
@@ -81,6 +89,7 @@ Checks if any of the arguments match a string or regex pattern.
     - `method` ("some"|"every") – Whether check one or all args. Default `"some"`.
 
 How to use `match(regex)`?
+
 ```js
 import { match } from "@nan0web/types"
 const fn = match(/^hello$/)
@@ -93,6 +102,7 @@ Validates a value (or array of values) against a list of allowed values
 or custom validator functions.
 
 How to validate with Enum?
+
 ```js
 import { Enum } from "@nan0web/types"
 const color = Enum('red', 'green', 'blue')
@@ -103,6 +113,7 @@ console.info(color('yellow')) // ← throws a TypeError → Enumeration must hav
 Returns a value if it exists in the list, otherwise returns undefined.
 
 How to use oneOf?
+
 ```js
 import { oneOf } from "@nan0web/types"
 const fn = oneOf('a', 'b', 'c')
@@ -113,6 +124,7 @@ console.info(fn('z')) // ← undefined
 Applies `fn` only if the value is not `undefined`, otherwise returns `undefined`.
 
 How to use undefinedOr(fn)?
+
 ```js
 import { undefinedOr } from "@nan0web/types"
 const fn = undefinedOr((x) => x * 2)
@@ -123,6 +135,7 @@ console.info(fn(undefined)) // ← undefined
 Applies `fn` only if the value is not `undefined`, otherwise returns `null`.
 
 How to use nullOr(fn)?
+
 ```js
 import { nullOr } from "@nan0web/types"
 const fn = nullOr((x) => x + 1)
@@ -133,6 +146,7 @@ console.info(fn(undefined)) // ← null
 Applies `Fn` to each element of an array.
 
 How to map array with arrayOf(fn)?
+
 ```js
 import { arrayOf } from "@nan0web/types"
 const fn = arrayOf((x) => x.toUpperCase())
@@ -142,6 +156,7 @@ console.info(fn(['a', 'b'])) // ← [ 'A', 'B' ]
 Checks if value is instance of the given type (or primitive).
 
 How to check type with typeOf(String)?
+
 ```js
 import { typeOf } from "@nan0web/types"
 const fn = typeOf(String)
@@ -152,6 +167,7 @@ console.info(fn(123)) // ← false
 Attempts to return the constructor for a given value.
 
 How to get constructor with functionOf?
+
 ```js
 import { functionOf } from "@nan0web/types"
 console.info(functionOf('hello')) // ← [Function: String]
@@ -165,6 +181,7 @@ input data accordingly. This is useful for maintaining backward
 compatibility or mapping short names to descriptive property names.
 
 How to resolve aliases from static metadata?
+
 ```js
 import { resolveAliases } from "@nan0web/types"
 class Config {
@@ -180,6 +197,7 @@ This ensures your instance always has a valid initial state based on
 the class schema.
 
 How to apply defaults from static metadata?
+
 ```js
 import { resolveDefaults } from "@nan0web/types"
 class Config {
@@ -196,6 +214,7 @@ Performs batch validation of an object against static metadata rules defined
 in a class. If any validation fails, it throws a `ModelError`.
 
 How to validate model via resolveValidation?
+
 ```js
 import { resolveValidation, ModelError } from "@nan0web/types"
 class User {
@@ -222,6 +241,7 @@ A structured error class for validation failures. It holds a map of fields
 that failed validation and their respective error messages.
 
 How to use ModelError for structured errors?
+
 ```js
 import { ModelError } from "@nan0web/types"
 const error = new ModelError({
@@ -234,6 +254,7 @@ console.info(error.fields.email) // ← "Invalid format"
 Checks if any of provided values are considered empty.
 
 How to check for empty values?
+
 ```js
 import { empty } from "@nan0web/types"
 console.info(empty(undefined)) // ← true
@@ -247,6 +268,7 @@ console.info(empty(0)) // ← false
 Compares pairs of arguments for strict equality (e.g., `equal(a, b, c, d)` → `a === b && c === d`).
 
 How to compare values strictly with equal()?
+
 ```js
 import { equal } from "@nan0web/types"
 console.info(equal('a', 'a', 'b', 'b')) // ← true
@@ -259,6 +281,7 @@ console.info(equal(1, '1')) // ← false
 Converts values into target type-friendly representations (e.g., `.toObject()` or `.toArray()`).
 
 How to convert using to(Object)?
+
 ```js
 import { to } from "@nan0web/types"
 class A {
@@ -273,6 +296,7 @@ A base class for creating hierarchical tree structures. It provides
 a level-tracking system and an `.add()` method for children.
 
 How to build a custom tree with ContainerObject?
+
 ```js
 import { ContainerObject } from "@nan0web/types"
 /** @typedef {import("@nan0web/types/types/Object/ContainerObject").ContainerObjectArgs} ContainerObjectArgs */
@@ -324,6 +348,7 @@ console.info(root)
 A base class whose `.toObject()` skips properties with empty values.
 
 How to use NonEmptyObject to filter empty values?
+
 ```js
 import { NonEmptyObject } from "@nan0web/types"
 class B extends NonEmptyObject {
@@ -339,6 +364,7 @@ A marker class used via `to(FullObject)` to collect all enumerable properties,
 including those from prototype chain (like getters).
 
 How to collect everything with to(FullObject)?
+
 ```js
 import { to, FullObject } from "@nan0web/types"
 class A {
@@ -357,6 +383,7 @@ console.info(obj) // ← { x: 9, y: 81 }
 A helper used via `to(UndefinedObject)` to keep `undefined` values in objects.
 
 How to keep `undefined` in objects via to(UndefinedObject)?
+
 ```js
 import { to, UndefinedObject } from "@nan0web/types"
 const data = { x: 9, y: undefined }
@@ -369,6 +396,7 @@ console.info(obj) // ← { x: 9, y: undefined }
 The conversion follows JavaScript truthiness rules.
 
 How to cast to Boolean with strict cast?
+
 ```js
 const fn = to('boolean')
 console.info(fn(1)) // ← true
@@ -385,6 +413,7 @@ console.info(fn(false)) // ← false
 Non‑numeric strings become `NaN`; `null`/`undefined` become `0`.
 
 How to cast to Number with strict cast?
+
 ```js
 const fn = to('number')
 console.info(fn('42')) // ← 42
@@ -396,6 +425,7 @@ console.info(fn(undefined)) // ← 0
 Deep clones objects, arrays, Maps, Sets, and custom classes.
 
 How to deeply clone objects?
+
 ```js
 import { clone } from "@nan0web/types"
 const original = { a: { b: [1, 2] } }
@@ -406,6 +436,7 @@ console.info(copy) // ← { a: { b: [ 1, 2 ] } }
 Deeply merges two plain objects or arrays, optionally preserving uniqueness.
 
 How to merge two objects?
+
 ```js
 import { merge } from "@nan0web/types"
 const a = { x: 1, nested: { a: 1 } }
@@ -425,6 +456,7 @@ recursive pluralization, and numeric shorthands.
 
 /**
 @docs
+
 ### Symmetrical i18n Validation
 
 This package establishes a pattern for **Symmetrical i18n Validation**.
@@ -436,6 +468,7 @@ These errors are caught as `ModelError` and translated at any UI layer
 (CLI, Web, Mobile) using a local `TFunction` instance.
 
 How to use createT for translations?
+
 ```js
 import { createT } from "@nan0web/types"
 const t = createT(
@@ -457,6 +490,7 @@ console.info(t('I have {apples}', { apples: 5 })) // ← "У мене є 5 яб�
 Checks whether a function can be called with `new`.
 
 How to check if function is constructible?
+
 ```js
 import { isConstructible } from "@nan0web/types"
 console.info(isConstructible(class X { })) // ← true
@@ -468,6 +502,7 @@ console.info(isConstructible(() => { })) // ← false
 Basic indentation-based document parser: splits rows into `Node` hierarchy.
 
 How to parse indented string with Parser?
+
 ```js
 import { Parser } from "@nan0web/types"
 const parser = new Parser({ tab: '  ' })
@@ -485,6 +520,7 @@ Generic tree node that holds content and children.
 You can extend it into format-specific nodes (e.g., Markdown AST).
 
 How to build a tree with Node?
+
 ```js
 import { Node } from "@nan0web/types"
 const root = new Node({ content: 'root' })
@@ -506,13 +542,13 @@ files, test fixtures, and data exchange where minimal syntax noise is required.
 
 NaN0 closes the gap between the speed of native JSON and the readability of YAML/Markdown.
 
-| Format          | Source     | Size (rel.) | Parse Speed (vs JSON) | Use Case |
-|-----------------|------------|-------------|-----------------------|-------------|
-| **JSON**        | Native V8  | 100%        | **1.0x**              | Machine-to-machine |
-| **NaN0**        | Core JS    | 101.1%      | **5.3x - 5.5x**       | **Fastest human format** |
-| **MD+N0**       | Hybrid     | 100.3%      | **5.0x - 5.1x**       | Articles with metadata |
-| **YAML**        | `yaml` lib | 105.7%      | **55.7x**             | Industry standard |
-| **MD (YAML)***  | `yaml` lib | 103.6%      | **62.3x**             | Old-school MD |
+|
+|
+|
+|
+|
+|
+|
 
 > \* **Standard MD (YAML)** uses standard YAML frontmatter. By switching to **MD+NaN0**,
 > you get a **12x parsing speedup** for Markdown content.
@@ -522,8 +558,11 @@ NaN0 closes the gap between the speed of native JSON and the readability of YAML
 - **Top‑level** value may be an **object** or an **array**.
 - **Indentation** (two spaces) defines nesting – the same principle as in Python.
 - **Comments** start with `#` and may appear before any node (object key,
+
   array item, or empty container). Consecutive comment lines are merged.
+
 - **Empty containers**
+
   - `[]` → empty array
   - `{}` → empty object
   - If an empty container has a preceding comment, the comment is attached to the
@@ -531,8 +570,8 @@ NaN0 closes the gap between the speed of native JSON and the readability of YAML
 
 ### Primitive Types
 
-| Type      | Representation                               | Example                               |
-|----------|---------------------------------------------|---------------------------------------|
+|
+|
 | **String** | Plain text **unless** it contains whitespace,
 `:` or `#`, it must be quoted with double quotes. |
 `"escaped \" quote"` |
@@ -542,9 +581,11 @@ string (newlines are preserved). |
 | **Number** | Digits may contain underscores for readability.
 Both integers and floats are supported. |
 `160_000_500.345` |
-| **Boolean** | Literal `true` or `false`. |
+
+|
 `true` |
-| **Null** | Literal `null`. |
+
+|
 `null` |
 | **Date / DateTime** | ISO‑8601 without timezone (`YYYY‑MM‑DD`) or with time
 (`YYYY‑MM‑DDTHH:MM:SS`). |
@@ -556,7 +597,9 @@ Both integers and floats are supported. |
 - Keys are plain text (no quoting needed) and may contain spaces.
 - Nested objects are expressed by increasing indentation.
 
+
 How to store objects in NaN0 document into a typed class hierarchy?
+
 ```js
 class Address {
 	/** @type {string} */
@@ -610,12 +653,14 @@ console.info(pojo)
 The library exports two main helpers:
 
 - `NaN0.parse(text [, context])`
+
   - Returns a JavaScript value.
   - `context.comments` will contain extracted comments with their
     identifier (`.` for root object, `[0]` for top‑level array index, or the
     key name for objects).
 
 - `NaN0.stringify(value [, context])`
+
   - Produces a NaN0 string.
   - `context.comments` can be used to inject comments back.
 
@@ -633,6 +678,7 @@ For a complete reference see `src/NaN0.js` and the test suite
 `src/NaN0.test.js`.
 
 How to work with NaN0 format?
+
 ```js
 import NaN0 from '@nan0web/types'
 const example =
@@ -667,6 +713,7 @@ console.info(stringified)
 This package includes a built-in VS Code extension (`nan0-vscode`) that provides **syntax highlighting** and **formatting** for the NaN0 format.
 
 How to compile and use the VS Code extension?
+
 ```bash
 # 1. Go to the extension directory:
 cd src/ui/vscode
@@ -685,9 +732,11 @@ The extension strictly enforces the defined `NaN0.TAB` (2 spaces) formatting sta
 })
 /**
 @docs
+
 ## Playground
 
 How to run CLI sandbox?
+
 ```bash
 # To try out examples and play with the library:
 git clone https://github.com/nan0web/types.git
@@ -703,6 +752,7 @@ Uses `d.ts` to provide autocomplete hints.
 ## Contributing
 
 How to contribute? - [check here]($pkgURL/blob/main/CONTRIBUTING.md)
+
 ```js
 const text = await fs.loadDocument('CONTRIBUTING.md')
 const str = text?.content || String(text)
@@ -710,3 +760,5 @@ const str = text?.content || String(text)
 ## License
 
 How to license? - [ISC LICENSE]($pkgURL/blob/main/LICENSE) file.
+
+

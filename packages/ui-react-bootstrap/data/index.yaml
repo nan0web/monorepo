@@ -213,7 +213,7 @@ $content:
   - h2: Contacts
   - Contacts:
       contact:
-        tel: '+380 44 123 4567'
-        email: 'info@industrialbank.ua'
-        address: 'вул. Хрещатик 1, Київ, Україна'
+        tel: '+1 (555) 123-4567'
+        email: 'contact@example.com'
+        address: '123 Main Street, New York, USA'
   - Footer.Footer: true

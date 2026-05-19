@@ -24,21 +24,24 @@ export class AI {
     static Strategy: typeof AiStrategy;
     static UI: {
         errorModelNotFound: string;
+        errorDbMissing: string;
     };
     /**
      * @param {Object} input
      * @param {readonly[string, ModelInfo] | readonly [string, ModelInfo] | Map<string, ModelInfo>} [input.models=[]] List of available models
      * @param {ModelInfo} [input.selectedModel] Currently selected model
      * @param {AiStrategy} [input.strategy] Selection and fallback strategy
+     * @param {Object} [options]
      */
     constructor(input?: {
         models?: readonly [string, ModelInfo] | readonly [string, ModelInfo] | Map<string, ModelInfo>;
         selectedModel?: ModelInfo;
         strategy?: AiStrategy;
-    });
+    }, options?: any);
     /** @type {ModelInfo?} */
     selectedModel: ModelInfo | null;
     /** @type {AiStrategy} Active strategy */ strategy: AiStrategy;
+    _: any;
     /**
      * Flatten and normalize models to Map<string, ModelInfo[]>. Handles:
      * - Map: Pass-through.
@@ -167,6 +170,20 @@ export class AI {
      * @returns {ModelInfo | undefined}
      */
     ensureModel(model: ModelInfo, tokens: number, safeAnswerTokens?: number): ModelInfo | undefined;
+    /**
+     * Transcribes audio file to text using LOCAL whisper CLI.
+     * @param {string} audioPath - Path to audio file.
+     * @param {Object} [options={}]
+     * @param {string} [options.model='base'] - whisper model (tiny, base, small, medium, large)
+     * @param {string} [options.language='uk'] - ISO-639-1 language code.
+     * @param {string} [options.outputDir] - Optional directory for temp files.
+     * @returns {Promise<string>} Transcription text.
+     */
+    transcribe(audioPath: string, options?: {
+        model?: string;
+        language?: string;
+        outputDir?: string;
+    }): Promise<string>;
     #private;
 }
 export type AiStrategyFinance = "free" | "cheap" | "expensive";

@@ -8,8 +8,6 @@
  * Each criterion contributes significantly to the total score.
  *
  * @typedef {Object} RRSCriteria
- * @property {number} git - Weight for presence of git repository
- * @property {number} systemMd - Weight for presence of SYSTEM.md
  * @property {number} testPass - Weight for passing test suite
  * @property {number} buildPass - Weight for successful build
  * @property {number} tsconfig - Weight for presence of tsconfig.json
@@ -22,8 +20,6 @@
  * @typedef {Object} RRSOptionalCriteria
  * @property {number} readmeTest - Weight for presence of src/README.md.js
  * @property {number} playground - Weight for playground or interactive examples
- * @property {number} testCoverage - Score based on test coverage percentage (0–100)
- * @property {number} releaseMd - Weight for release documentation (e.g., RELEASE.md)
  * @property {number} readmeMd - Weight for presence of README.md
  * @property {number} npmPublished - Weight if package is published to npm
  * @property {number} contributingAndLicense - Weight if CONTRIBUTING.md and LICENSE exist
@@ -35,17 +31,6 @@
  * Values can be customized via constructor input.
  */
 class RRSRequired {
-	/**
-	 * Score contribution if git repository exists.
-	 * @type {number}
-	 */
-	git = 100
-	/**
-	 * Score contribution if SYSTEM.md exists (documentation of architecture).
-	 * @type {number}
-	 */
-	systemMd = 100
-
 	/**
 	 * Score contribution if test suite passes.
 	 * @type {number}
@@ -70,15 +55,11 @@ class RRSRequired {
 	 */
 	constructor(input = {}) {
 		const {
-			git = this.git,
-			systemMd = this.systemMd,
 			testPass = this.testPass,
 			buildPass = this.buildPass,
 			tsconfig = this.tsconfig,
 		} = input
 
-		this.git = Number(git)
-		this.systemMd = Number(systemMd)
 		this.testPass = Number(testPass)
 		this.buildPass = Number(buildPass)
 		this.tsconfig = Number(tsconfig)
@@ -90,8 +71,6 @@ class RRSRequired {
 	 * @returns {string}
 	 */
 	icon(name) {
-		if ('git' === name) return 'git'
-		if ('systemMd' === name) return '🤖'
 		if ('testPass' === name) return '✅'
 		if ('buildPass' === name) return '💿'
 		if ('tsconfig' === name) return 'ts'
@@ -127,17 +106,9 @@ class RRSOptional {
 	 */
 	playground = 10
 
-	/**
-	 * Additional score based on test coverage (0–100).
-	 * @type {number}
-	 */
-	testCoverage = 0
 
-	/**
-	 * Score if release documentation (e.g., RELEASE.md) exists.
-	 * @type {number}
-	 */
-	releaseMd = 1
+
+
 
 	/**
 	 * Score if README.md exists (basic project description).
@@ -170,8 +141,6 @@ class RRSOptional {
 		const {
 			readmeTest = this.readmeTest,
 			playground = this.playground,
-			testCoverage = this.testCoverage,
-			releaseMd = this.releaseMd,
 			readmeMd = this.readmeMd,
 			npmPublished = this.npmPublished,
 			contributingAndLicense = this.contributingAndLicense,
@@ -180,8 +149,6 @@ class RRSOptional {
 
 		this.readmeTest = Number(readmeTest)
 		this.playground = Number(playground)
-		this.testCoverage = Number(testCoverage)
-		this.releaseMd = Number(releaseMd)
 		this.readmeMd = Number(readmeMd)
 		this.npmPublished = Number(npmPublished)
 		this.contributingAndLicense = Number(contributingAndLicense)
@@ -204,8 +171,7 @@ class RRSOptional {
 	icon(name) {
 		if ('readmeTest' === name) return '🧪'
 		if ('playground' === name) return '🕹️'
-		if ('testCoverage' === name) return '⚙️'
-		if ('releaseMd' === name) return '📜'
+
 		if ('readmeMd' === name) return '📖'
 		if ('npmPublished' === name) return 'npm'
 		if ('contributingAndLicense' === name) return '🛜'
@@ -256,11 +222,17 @@ class RRS {
 	docs = []
 
 	/**
+	 * Test duration in milliseconds
+	 * @type {number}
+	 */
+	testDuration = 0
+
+	/**
 	 * Maximum possible score (sum of required + optional weights).
 	 * Default: (500 required + 124 optional).
 	 * @type {number}
 	 */
-	max = 624
+	max = 323
 
 	/**
 	 * Creates a new RRS instance with custom required, optional, and max values.
@@ -270,6 +242,7 @@ class RRS {
 	 * @param {Partial<RRSOptionalCriteria>} [input.optional] - Override optional criteria
 	 * @param {string} [input.npmInfo] - NPM info (version)
 	 * @param {string[]} [input.docs] - Available documentation.
+	 * @param {number} [input.testDuration] - Test duration in milliseconds
 	 * @param {number} [input.max] - Custom maximum score
 	 */
 	constructor(input = {}) {
@@ -277,7 +250,13 @@ class RRS {
 		this.optional = RRSOptional.from(input.optional)
 		this.npmInfo = String(input.npmInfo || '')
 		this.docs = Array.from(input.docs || []).map(String)
-		this.max = input.max !== undefined ? Number(input.max) : this.max
+		this.testDuration = input.testDuration !== undefined ? Number(input.testDuration) : 0
+
+		// Compute dynamic max score: sum of all required baselines (100 each) + optional baselines
+		const reqCount = Object.keys(this.required).length
+		const optBaseline = Object.entries(this.optional)
+			.reduce((a, [_, b]) => a + (typeof b === 'number' ? b : 0), 0)
+		this.max = input.max !== undefined ? Number(input.max) : (reqCount * 100 + optBaseline)
 	}
 
 	/**
@@ -330,25 +309,18 @@ class RRS {
 	icon(format = '`') {
 		let icon = '🔴'
 		const percentage = this.percentage
-		if (percentage > 80) {
-			icon = '🟢'
-			if (percentage < 90) icon = '🟡'
+		if (this.required.buildPass > 0 && this.required.testPass > 0) {
+			if (percentage >= 90) {
+				icon = '🟢'
+			} else if (percentage >= 66) {
+				icon = '🟡'
+			}
 		}
 
 		return icon + ' ' + format + percentage.toFixed(1) + '%' + format
 	}
 
-	/**
-	 * @param {string} [format="`"]
-	 * @returns {string}
-	 */
-	coverage(format = '`') {
-		if (0 === this.optional.testCoverage) return '-'
-		const c = Number(this.optional.testCoverage)
-		if (90 <= c) return '🟢 ' + format + Number(c).toFixed(1) + '%' + format
-		if (60 <= c) return '🟡 ' + format + Number(c).toFixed(1) + '%' + format
-		return '🔴 ' + format + Number(c).toFixed(1) + '%' + format
-	}
+
 
 	/**
 	 * Returns an RRS instance.

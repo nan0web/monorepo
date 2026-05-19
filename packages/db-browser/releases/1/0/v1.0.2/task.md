@@ -13,7 +13,7 @@ Apache повертає **403 Forbidden** коли URI збігається з �
 
 ## Джерело
 
-`REQUESTS.md#1` від `@industrialbank/bank` (Priority: Critical, 2026-02-20)
+`REQUESTS.md#1` від `@bank/bank` (Priority: Critical, 2026-02-20)
 
 ## Зміни
 

@@ -3,7 +3,6 @@ export default class TestPackage {
         name: string;
         status: string;
         docs: string;
-        coverage: string;
         features: string;
         npm: string;
     };
@@ -69,7 +68,6 @@ export default class TestPackage {
         name: string;
         status: string;
         docs: string;
-        coverage: string;
         features: string;
         npm: string;
     };
@@ -99,13 +97,15 @@ export default class TestPackage {
     get NPM_FILES(): string[];
     /**
      * @param {RRS} rrs
-     * @param {*} cache
+     * @param {any} [cache=false]
+     * @param {((line: string) => void) | null} [onOutput=null]
      * @returns {AsyncGenerator<{ name: string, value: any }>}
      */
-    run(rrs: RRS, cache?: any): AsyncGenerator<{
+    run(rrs: RRS, cache?: any, onOutput?: ((line: string) => void) | null): AsyncGenerator<{
         name: string;
         value: any;
     }>;
+    cachedHit: any;
     /**
      * Spawns a child process and returns a promise that resolves when the process closes.
      *

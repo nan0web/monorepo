@@ -15,7 +15,7 @@ export const Auth = {
 	async *askConsent(req) {
 		// Mock implementation for now
 		// In real life, this yields an AuthPrompt component
-		const { Prompt } = await import('../../ui/src/core/Flow.js')
+		const { Prompt } = await import('@nan0web/ui')
 
 		const confirmed = yield Prompt('Confirm', {
 			message: `${req.clientId} requests access to: ${req.scopes.join(', ')}`,

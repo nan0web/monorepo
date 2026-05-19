@@ -105,7 +105,7 @@
 
 ```javascript
 import { runFlow, Prompt, flow, Alert } from '@nan0web/ui/core'
-import Credits from '@industrialbank/credits'
+import Credits from '@bank/credits'
 import LLiMo from '@nan•web/llimo'
 
 /**

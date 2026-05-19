@@ -207,13 +207,22 @@ export class EditorModel extends ModelAsApp {
 	 */
 	async loadDocument(path) {
 		// 1. Fetch base document from main DB
-		const base = await this._.db.loadDocument(path).catch(() => ({}))
+		const base = (await this._.db.loadDocument(path).catch(() => ({}))) || {}
 
 		// 2. Search for uncommitted changes in Local Stage
 		const staged = await this.stageDb.loadDocument(`_staged/${path}`).catch(() => null)
 
 		// 3. If stage exists, merge (staged content has priority)
 		if (staged) {
+			if (staged && typeof staged === 'object' && staged.constructor && staged.constructor !== Object) {
+				if (staged.constructor.name === 'Markdown') {
+					return new staged.constructor({
+						document: staged.document || base.document,
+						vars: { ...(base.vars || {}), ...(staged.vars || {}) }
+					})
+				}
+				return new staged.constructor({ ...base, ...staged })
+			}
 			return { ...base, ...staged }
 		}
 

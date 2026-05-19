@@ -15,11 +15,13 @@ It works by extracting icon data at build time, allowing you to render icons as 
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/icons
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/icons
 ```
@@ -31,6 +33,7 @@ pnpm add @nan0web/icons
 Perfect for server-side rendering or template literals.
 
 How to render icon as SVG string?
+
 ```js
 import { toSvg } from '@nan0web/icons'
 import { BsBank2 } from '@nan0web/icons/bs'
@@ -44,6 +47,7 @@ console.info(svg.includes('class="text-primary"')) // true
 Create real SVG elements for direct DOM manipulation.
 
 How to render icon as DOM element?
+
 ```js
 import { toElement } from '@nan0web/icons'
 import { BsStar } from '@nan0web/icons/bs'
@@ -56,6 +60,7 @@ console.info(el.getAttribute('viewBox')) // 0 0 16 16
 You can mix icons from different sets in the same project.
 
 How to use multiple icon sets?
+
 ```js
 import { toSvg } from '@nan0web/icons'
 import { BsHeart } from '@nan0web/icons/bs'
@@ -68,6 +73,7 @@ console.info(svg.includes('height="32"')) // true
 Use icons in your CLI tools with terminal-friendly characters.
 
 How to use icons in CLI?
+
 ```js
 import { iconChar } from '@nan0web/icons/adapters/cli'
 import { BsBank2 } from '@nan0web/icons/bs'
@@ -82,3 +88,5 @@ How to participate? – [see CONTRIBUTING.md]($pkgURL/blob/main/CONTRIBUTING.md)
 ## License
 
 ISC LICENSE – [see full text]($pkgURL/blob/main/LICENSE)
+
+

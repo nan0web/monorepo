@@ -8,10 +8,11 @@ describe('SearchSourcesIntent Story (SpecRunner)', () => {
 	const workspaceRoot = '/mock/root'
 	
 	it('Scenario: Successful search yielding results', async () => {
-		mock.method(MarkdownIndexer.prototype, 'search', async () => {
-			return [
-				{ file: '/packages/test/README.md', content: 'hello world', score: 0.1 }
-			]
+		mock.method(MarkdownIndexer.prototype, 'search', async function* () {
+			yield {
+				type: 'result',
+				data: { file: '/packages/test/README.md', content: 'hello world', score: 0.1 }
+			}
 		})
 
 		const stream = [
@@ -27,7 +28,7 @@ describe('SearchSourcesIntent Story (SpecRunner)', () => {
 	})
 
 	it('Scenario: Search with no results', async () => {
-		mock.method(MarkdownIndexer.prototype, 'search', async () => [])
+		mock.method(MarkdownIndexer.prototype, 'search', async function* () {})
 
 		const stream = [
 			{ SearchSourcesIntent: { query: 'nothing' } },

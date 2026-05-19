@@ -16,7 +16,7 @@ export default class I18nDb {
      * @param {import("@nan0web/event/types").EventBus} [input.emitter]
      * @param {string} [input.dataDir="data"]
      * @param {string} [input.srcDir="src"]
-     * @param {string} [input.useKeyAsDefault=false]
+     * @param {boolean} [input.useKeyAsDefault=false]
      * @param {Record<string, Record<string, string>>|Array<{value?: string, label?: string, locale?: string, title?: string}>} [input.langs={}]
      * @param {Record<string, Function>|Function[]} [input.models={}] - Model-as-Schema classes for key extraction
      */
@@ -25,10 +25,10 @@ export default class I18nDb {
         locale?: string | undefined;
         tPath?: string | undefined;
         langsPath?: string | undefined;
-        emitter?: import("@nan0web/event/types").EventBus;
+        emitter?: import("@nan0web/event/types").EventBus | undefined;
         dataDir?: string | undefined;
         srcDir?: string | undefined;
-        useKeyAsDefault?: string | undefined;
+        useKeyAsDefault?: boolean | undefined;
         langs?: Record<string, Record<string, string>> | {
             value?: string;
             label?: string;

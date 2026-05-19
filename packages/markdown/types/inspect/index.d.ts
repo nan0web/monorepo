@@ -36,9 +36,5 @@ export class ProvenDocsAuditor extends AuditorModel {
     constructor(data?: Partial<ProvenDocsAuditor>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
     /** @type {number} */
     depth: number;
-    /**
-     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
-     */
-    run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
 }
 import { AuditorModel } from '@nan0web/inspect/domain/AuditorModel';

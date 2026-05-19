@@ -26,6 +26,7 @@ import StreamEntry from './StreamEntry.js'
 import Data from './Data.js'
 import DBConfig from './domain/DBConfig.js'
 import RevisionInfo from './domain/RevisionInfo.js'
+import FormatRegistry from './FormatRegistry.js'
 export {
 	Directory,
 	DirectoryIndex,
@@ -40,6 +41,7 @@ export {
 	AuthContext,
 	DBConfig,
 	RevisionInfo,
+	FormatRegistry,
 }
 export * from './DB/path.js'
 export default DB

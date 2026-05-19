@@ -35,6 +35,19 @@ async function showMenu() {
 }
 
 async function main() {
+	const arg = process.argv[2]
+	if (arg) {
+		if (arg === 'dbbrowser') {
+			await runDBBrowserDemo(console)
+			process.exit(0)
+		} else if (arg === 'exit') {
+			process.exit(0)
+		} else {
+			console.warn('Unknown demo type selected')
+			process.exit(1)
+		}
+	}
+
 	while (true) {
 		try {
 			const demoType = await chooseDemo()

@@ -43,6 +43,7 @@
     "package.json"
   ],
   "scripts": {
+    "prebuild": "rm -rf types/",
     "build": "tsc",
     "test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=src/**/*.js",

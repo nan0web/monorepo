@@ -18,7 +18,14 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true
+		"checkJs": true,
+		"paths": {
+			"@nan0web/*": [
+				"../*/types",
+				"../*/types/index.d.ts",
+				"../*/types/index.js"
+			]
+		}
 	},
 	"include": [
 		"src/**/*"

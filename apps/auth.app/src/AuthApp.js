@@ -1,4 +1,4 @@
-import { OutputMessage } from '@nan0web/types'
+import { OutputMessage } from '@nan0web/co'
 import { ModelError, Model } from '@nan0web/types'
 import { Membership } from '@nan0web/auth-core'
 import {

@@ -13,6 +13,7 @@
   },
   "scripts": {
     "test": "node --test \"src/**/*.test.js\"",
+    "prebuild": "rm -rf types",
     "build": "tsc",
     "knip": "knip"
   },

@@ -14,4 +14,7 @@ import Element from './Element.jsx';
 import Theme from './Theme.js';
 import { UIContext } from './context/UIContext.jsx';
 import useSortableList from './hooks/useSortableList.js';
-export { components, renderers, UIReact, UIRoot, apps, AppModule, useUI, UIProvider, UIContextValue, tokens, Element, Theme, UIContext, useSortableList };
+import useCompare from './hooks/useCompare.js';
+import useDocumentIndex from './hooks/useDocumentIndex.js';
+import useUrlFilter from './hooks/useUrlFilter.js';
+export { components, renderers, UIReact, UIRoot, apps, AppModule, useUI, UIProvider, UIContextValue, tokens, Element, Theme, UIContext, useSortableList, useCompare, useDocumentIndex, useUrlFilter };

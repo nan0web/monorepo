@@ -4,6 +4,10 @@
  */
 export class SyncWorkspaceApp extends ModelAsApp {
     static alias: string;
+    static locale: {
+        help: string;
+        default: string;
+    };
     static UI: {
         syncStarted: string;
         workflowsSynced: string;

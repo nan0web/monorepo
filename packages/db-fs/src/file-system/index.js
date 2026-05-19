@@ -85,7 +85,7 @@ async function loadAsync(file, opts = {}) {
  * Saves data to file based on extension.
  */
 function save(file, data, ...args) {
-	const ext = extname(file)
+	const ext = (typeof args[0] === 'string' && args[0].startsWith('.')) ? args[0] : extname(file)
 	if (['.yaml', '.yml'].includes(ext)) return saveYAML(file, data)
 	if (['.nan', '.nan0', '.nano'].includes(ext)) return saveNAN(file, data)
 	if (['.json'].includes(ext)) return saveJSON(file, data, args[0] ?? null, args[1] ?? 2)
@@ -109,7 +109,7 @@ function save(file, data, ...args) {
  * Saves data asynchronously to file based on extension.
  */
 async function saveAsync(file, data, ...args) {
-	const ext = extname(file)
+	const ext = (typeof args[0] === 'string' && args[0].startsWith('.')) ? args[0] : extname(file)
 	if (['.yaml', '.yml'].includes(ext)) return await saveYAMLAsync(file, data)
 	if (['.nan', '.nan0', '.nano'].includes(ext)) return await saveNANAsync(file, data)
 	if (['.json'].includes(ext)) return await saveJSONAsync(file, data, args[0] ?? null, args[1] ?? 2)

@@ -7,11 +7,13 @@
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/ai
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/ai
 ```
@@ -19,6 +21,7 @@ pnpm add @nan0web/ai
 ## Quick Start
 
 How to create an AI instance?
+
 ```js
 import { AI } from '@nan0web/ai'
 const ai = new AI()
@@ -46,15 +49,16 @@ How to use streamText API?
 
 ## Providers
 
-| Provider | ENV Key | Status |
-|----------|---------|--------|
-| Cerebras | `CEREBRAS_API_KEY` | ✅ |
-| OpenAI | `OPENAI_API_KEY` | ✅ |
-| OpenRouter | `OPENROUTER_API_KEY` | ✅ |
-| HuggingFace | `HF_TOKEN` | ✅ |
-| LlamaCpp | `LLAMA_CPP_URL` | ✅ |
+|
+|
+|
+|
+|
+|
+|
 
 How to get a provider?
+
 ```js
 import { AI } from '@nan0web/ai'
 const ai = new AI()
@@ -68,7 +72,9 @@ Smart model selection by 4 axes:
 - `volume` — `low` | `mid` | `high`
 - `level` — `simple` | `smart` | `expert`
 
+
 How to use AI Strategy for model selection?
+
 ```js
 import { AI } from '@nan0web/ai'
 const ai = new AI()
@@ -87,6 +93,7 @@ const found = ai.strategy.findModel(ai.getModelsMap(), 1000)
 ## Model Info
 
 How to create a ModelInfo instance?
+
 ```js
 import { ModelInfo } from '@nan0web/ai'
 const model = new ModelInfo({
@@ -101,6 +108,7 @@ const model = new ModelInfo({
 ## Usage Tracking
 
 How to track token usage?
+
 ```js
 import { Usage } from '@nan0web/ai'
 const usage = new Usage({
@@ -113,6 +121,7 @@ const usage = new Usage({
 Use `TestAI` for deterministic tests without real API calls:
 
 How to use TestAI for testing?
+
 ```js
 import { TestAI } from '@nan0web/ai/test'
 const ai = new TestAI()
@@ -124,6 +133,7 @@ High-level task orchestration via specialized agents.
 ### AgentOrchestrator
 
 How to use AgentOrchestrator?
+
 ```js
 import { AgentOrchestrator } from '@nan0web/ai'
 const orch = new AgentOrchestrator({
@@ -135,6 +145,7 @@ const orch = new AgentOrchestrator({
 Specialized agent for code refactoring with boundary-aware communication.
 
 How to use CnaiRefactorAgent?
+
 ```js
 import { CnaiRefactorAgent } from '@nan0web/ai'
 const agent = new CnaiRefactorAgent({
@@ -147,6 +158,7 @@ const agent = new CnaiRefactorAgent({
 Utility for parsing OLMUI boundary markers from multiline responses.
 
 How to parse boundaries?
+
 ```js
 import { parseBoundaries } from '@nan0web/ai'
 const raw = '---boundary:src/app.js---\nconsole.log(1)\n---boundary---'
@@ -157,6 +169,7 @@ const files = parseBoundaries(raw)
 Expose semantic search tools as a Model Context Protocol (MCP) server.
 
 How to install MCP server?
+
 ```js
 nan0ai mcp install
 ```
@@ -169,6 +182,7 @@ nan0ai mcp install
 Creates or updates the vector database cache using embeddings (e.g. OpenAI or Cerebras). By default, it indexes the `docs` scope (Markdown documentation).
 
 How to index documentation or source code?
+
 ```bash
 # Index documentation for all projects
 nan0ai index
@@ -185,6 +199,7 @@ To index private or 3rd-party repositories (like commercial apps) that are not t
 The indexer will automatically pick this up and index your private apps. You can safely add `.local.csv` to `.gitignore`.
 
 How to add private repositories to the search index?
+
 ```js
 /**
 	 * Format for `nan0web_store.local.csv`:
@@ -199,6 +214,7 @@ How to add private repositories to the search index?
 Search the vector database semantically.
 
 How to search the vector database?
+
 ```bash
 nan0ai search "how to setup auth"
 
@@ -230,3 +246,5 @@ How to participate? – [see CONTRIBUTING.md]($pkgURL/blob/main/CONTRIBUTING.md)
 ## License
 
 ISC LICENSE – [see full text]($pkgURL/blob/main/LICENSE)
+
+

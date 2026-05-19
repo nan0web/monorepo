@@ -12,6 +12,6 @@ export default function bruteForce(options?: {
     windowMs?: number | undefined;
     max?: number | undefined;
     handler?: ((req: IncomingMessage, res: ResponseMessage, next: Function) => void) | undefined;
-} | undefined): (req: IncomingMessage, res: ResponseMessage, next: Function) => Promise<void>;
-export type IncomingMessage = import('../messages/IncomingMessage.js').default;
-export type ResponseMessage = import('../messages/ResponseMessage.js').default;
+}): (req: IncomingMessage, res: ResponseMessage, next: Function) => Promise<void>;
+export type IncomingMessage = import("../messages/IncomingMessage.js").default;
+export type ResponseMessage = import("../messages/ResponseMessage.js").default;

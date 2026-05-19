@@ -29,18 +29,32 @@
     "build": "tsc",
     "store:build": "node bin/nan0store.js build",
     "lint": "prettier --check \"src/**/*.js\"",
-    "knip": "knip --production"
+    "knip": "knip --production",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "play": "node play/main.js",
+    "release": "nan0release publish",
+    "test:docs": "node --test src/README.md.js",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage:collect": "nan0test coverage",
+    "test:status": "nan0test status --hide-name",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "prepare": "husky"
   },
   "author": "nan0web",
   "license": "ISC",
   "dependencies": {
-    "@nan0web/types": "workspace:*",
     "@nan0web/i18n": "workspace:*",
+    "@nan0web/types": "workspace:*",
     "@nan0web/ui": "workspace:*",
     "@nan0web/ui-cli": "workspace:*"
   },
   "devDependencies": {
+    "@nan0web/release": "workspace:*",
     "@nan0web/test": "workspace:*",
-    "knip": "^5.86.0"
+    "husky": "^9.1.7",
+    "knip": "^5.88.1"
   }
 }

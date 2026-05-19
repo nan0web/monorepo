@@ -48,5 +48,15 @@ export default defineConfig({
 			process.env.BUILD_COMMAND = 'vite-build'
 			handler()
 		},
+		rollupOptions: {
+			external: [
+				'node:crypto',
+				'node:fs',
+				'node:fs/promises',
+				'node:path',
+				'node:os',
+				'node:child_process',
+			],
+		},
 	},
 })

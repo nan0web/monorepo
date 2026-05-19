@@ -33,6 +33,13 @@ export class AuthConfig extends Model {
         type: string;
         default: string;
     };
+    static verificationFlow: {
+        alias: string;
+        help: string;
+        type: string;
+        options: string[];
+        default: string;
+    };
     static defaultCommunityCoins: {
         alias: string;
         help: string;
@@ -48,6 +55,7 @@ export class AuthConfig extends Model {
     /** @type {boolean} */ allowPublicSignup: boolean;
     /** @type {boolean} */ clearTokensOnPasswordReset: boolean;
     /** @type {string} */ tokenExpiry: string;
+    /** @type {'email-only'|'admin-only'|'email+admin'} */ verificationFlow: "email-only" | "admin-only" | "email+admin";
     /** @type {number} */ defaultCommunityCoins: number;
 }
 import { Model } from '@nan0web/types';

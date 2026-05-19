@@ -1,0 +1,26 @@
+# npmignore template for @nan0web/share.app
+
+# Exclude local and developmental directories
+docs/
+play/
+releases/
+.datasets/
+types/
+dist/
+
+# Exclude test files
+src/test/
+src/README.md.js
+**/*.spec.js
+**/*.test.js
+**/*.story.js
+
+# Exclude tool configurations
+knip.json
+tsconfig.json
+.editorconfig
+
+# Exclude system files
+.DS_Store
+node_modules/
+pnpm-lock.yaml

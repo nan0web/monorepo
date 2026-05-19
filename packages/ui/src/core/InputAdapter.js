@@ -1,6 +1,5 @@
 import Event from '@nan0web/event/oop'
 import CancelError from './Error/CancelError.js'
-import UiMessage from './Message/Message.js'
 
 /**
  * @typedef {Object} AskOptions
@@ -32,7 +31,7 @@ export class InputAdapter extends Event {
 	 * @returns {void}
 	 */
 	start() {
-		this.emit('input', UiMessage.from({ body: 'Adapter started' }))
+		this.emit('input', { body: 'Adapter started' })
 	}
 
 	/**

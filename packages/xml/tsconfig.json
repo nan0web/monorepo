@@ -2,7 +2,9 @@
 	"compilerOptions": {
 		"target": "esnext",
 		"module": "esnext",
-		"lib": ["esnext"],
+		"lib": [
+			"esnext"
+		],
 		"declaration": true,
 		"declarationMap": false,
 		"emitDeclarationOnly": true,
@@ -16,8 +18,21 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true
+		"checkJs": true,
+		"baseUrl": ".",
+		"paths": {
+			"@nan0web/*": [
+				"../*/types",
+				"../*/types/index.d.ts",
+				"../*/types/index.js"
+			]
+		}
 	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "src/**/*.test.js"]
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"src/**/*.test.js"
+	]
 }

@@ -250,13 +250,13 @@ export async function bootstrapApp(AppModel, config = {}) {
 		config,
 	})
 
-	if (typeof db.seal !== 'function') {
+	if (typeof /** @type {any} */ (db).seal !== 'function') {
 		throw new TypeError(
 			'db.seal is not a function (Secure App Bootstrap requires a modern DB version)'
 		)
 	}
 
-	db.seal()
+	/** @type {any} */ (db).seal()
 	await db.connect()
 
 	// 4. I18n setup

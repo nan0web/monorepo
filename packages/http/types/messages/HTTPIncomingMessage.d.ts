@@ -51,7 +51,7 @@ declare class HTTPIncomingMessage extends HTTPMessage {
      * Creates a new HTTPIncomingMessage instance
      * @param {HTTPIncomingMessageOptions} [input={}] - HTTP incoming message options
      */
-    constructor(input?: HTTPIncomingMessageOptions | undefined);
+    constructor(input?: HTTPIncomingMessageOptions);
     /** @type {HTTPMethod} */
     method: HTTPMethod;
 }

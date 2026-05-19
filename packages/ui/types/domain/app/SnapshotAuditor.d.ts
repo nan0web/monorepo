@@ -55,11 +55,11 @@ export class SnapshotAuditor extends AuditorModel {
     static extractWords(obj: any, set: Set<string>): void;
     /**
      * Scans data directories to build a word set for each language.
-     * @param {import('@nan0web/db').DB} fsDb FileSystem DB.
+     * @param {any} fsDb FileSystem DB.
      * @param {string} data
      * @returns {Promise<Record<string, Set<string>>>}
      */
-    static buildDictionaries(fsDb: import("@nan0web/db").DB, data?: string): Promise<Record<string, Set<string>>>;
+    static buildDictionaries(fsDb: any, data?: string): Promise<Record<string, Set<string>>>;
     /**
      * Inspects a single snapshot text.
      * @param {string} content Content of the file.
@@ -69,7 +69,7 @@ export class SnapshotAuditor extends AuditorModel {
      * @param {Record<string, Set<string>>} [dictionaries=undefined] Loaded dictionaries for mutual exclusion check.
      * @returns {{ score: number, errors: string[] }}
      */
-    static inspectText(content: string, locale: string, filename: string, t: any, dictionaries?: Record<string, Set<string>>): {
+    static inspectText(content: string, locale: string, filename: string, t: import("@nan0web/i18n").TFunction, dictionaries?: Record<string, Set<string>>): {
         score: number;
         errors: string[];
     };
@@ -82,7 +82,7 @@ export class SnapshotAuditor extends AuditorModel {
     static checkNode(node: any, path: string, context: {
         locale: string;
         errors: string[];
-        t: any;
+        t: import("@nan0web/i18n").TFunction;
         dictionaries?: Record<string, Set<string>>;
     }): void;
     /**
@@ -94,7 +94,7 @@ export class SnapshotAuditor extends AuditorModel {
     static checkString(str: string, path: string, context: {
         locale: string;
         errors: string[];
-        t: any;
+        t: import("@nan0web/i18n").TFunction;
         dictionaries?: Record<string, Set<string>>;
     }): void;
     /**

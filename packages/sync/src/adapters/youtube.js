@@ -57,7 +57,7 @@ export class YouTubeAdapter extends DownloadIntent {
         if (code === 0) {
           this.status = 'completed';
           this.progress = 100;
-          resolve(true);
+          resolve();
         } else {
           this.status = 'error';
           reject(new Error(`yt-dlp процес завершився помилкою з кодом ${code}`));

@@ -1,4 +1,4 @@
-import { Model } from '@nan0web/core'
+import { Model } from '@nan0web/types'
 
 /**
  * PlaygroundModel (Golden Standard v2)

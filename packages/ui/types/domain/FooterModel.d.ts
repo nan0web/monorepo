@@ -38,7 +38,7 @@ export class FooterModel extends Model {
     static langs: {
         help: string;
         type: string;
-        hint: any;
+        hint: typeof Language;
         default: never[];
     };
     /**
@@ -60,3 +60,4 @@ export class FooterModel extends Model {
 }
 import { Model } from '@nan0web/types';
 import Navigation from './Navigation.js';
+import { Language } from '@nan0web/i18n';

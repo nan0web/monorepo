@@ -37,6 +37,7 @@
     "@nan0web/db": "workspace:*",
     "@nan0web/db-browser": "workspace:*",
     "@nan0web/editor": "workspace:*",
+    "@nan0web/event": "workspace:*",
     "@nan0web/ui-lit": "workspace:*",
     "lit": "^3.3.2"
   },

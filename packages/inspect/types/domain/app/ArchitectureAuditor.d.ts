@@ -32,12 +32,8 @@ export class ArchitectureAuditor extends AuditorModel {
     };
     static command: {
         help: string;
-        options: (typeof SnapshotAuditor | typeof PhaseAuditor | typeof CircularDependencyAuditor)[];
+        options: (typeof PhaseAuditor | typeof CircularDependencyAuditor | typeof SnapshotAuditor)[];
         default: null;
-    };
-    static timeout: {
-        help: string;
-        default: number;
     };
     /**
      * @param {string | typeof AuditorModel} key
@@ -55,6 +51,6 @@ export class ArchitectureAuditor extends AuditorModel {
     /** @type {number} Timeout for audit */ timeout: number;
 }
 import { AuditorModel } from '../AuditorModel.js';
-import { SnapshotAuditor } from '@nan0web/ui/inspect';
 import { PhaseAuditor } from './PhaseAuditor.js';
 import { CircularDependencyAuditor } from './CircularDependencyAuditor.js';
+import { SnapshotAuditor } from '@nan0web/ui/inspect';

@@ -29,6 +29,7 @@
     "test:all": "npm run test && npm run test:docs && npm run build && npm run knip",
     "release:spec": "node --test \"releases/**/*.spec.js\"",
     "release:verify": "node --test \"src/test/releases/**/*.test.js\"",
+    "prebuild": "rm -rf types/",
     "build": "tsc",
     "knip": "pnpm dlx knip --production",
     "audit": "pnpm audit --prod --audit-level=moderate || true",

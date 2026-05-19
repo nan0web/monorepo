@@ -8,7 +8,6 @@ import { CLI, CommandParser, pause } from '@nan0web/ui-cli'
 import { UiMessage } from '@nan0web/ui'
 import path from 'node:path'
 import { checkAllDocs } from '../src/docs.js'
-import { getProvenDocs, getPlayground, getSystem } from '../src/llm/templates.js'
 import { createOutputProgress } from '../src/cli.js'
 
 const logger = new Logger(Logger.detectLevel(process.argv))
@@ -41,8 +40,10 @@ class PackageStatusDB extends DB {
 	 */
 	getRSS(name) {
 		const cache = this.getCache(name)
+		const rrsInput = cache?.rrs ? { ...cache.rrs } : {}
+		delete rrsInput.max
 		/** @type {RRS} */
-		return RRS.from(cache?.rrs ?? {})
+		return RRS.from(rrsInput)
 	}
 
 	/**
@@ -56,14 +57,15 @@ class PackageStatusDB extends DB {
 		}
 		const [, { rrs, pkg }] = scores[0]
 		const table = [pkg.render(rrs, { head: true, body: false })]
-		scores.forEach(([, { rrs, pkg }]) => {
+		for (const [, { rrs, pkg }] of scores) {
 			const features = []
 			if (rrs.required.buildPass) features.push(`[🥒 d.ts](${pkg.baseURL}tree/main/types)`)
-			if (rrs.required.systemMd) features.push(`[📜 system.md](${pkg.baseURL}blob/main/system.md)`)
+			const hasSystemMd = await pkg.db.statDocument('system.md').then(() => true).catch(() => false)
+			if (hasSystemMd) features.push(`[📜 system.md](${pkg.baseURL}blob/main/system.md)`)
 			if (rrs.optional.playground)
 				features.push(`[🕹️ playground](${pkg.baseURL}blob/main/playground/main.js)`)
 			table.push(pkg.render(rrs, { head: false, features }))
-		})
+		}
 		const md = await this.loadDocumentAs('.txt', 'README.md', '')
 		if (md.includes('<!-- %PACKAGE_STATUS% -->')) {
 			await this.saveDocument(
@@ -81,8 +83,13 @@ class PackageStatusDB extends DB {
 	 */
 	async connect(onData) {
 		await super.connect()
-		const stream = this.findStream('packages/', {
-			filter: (entry) => !['/node_modules/', '/.git/'].some((s) => entry.path.includes(s)),
+		const stream = this.findStream('.', {
+			filter: (entry) => {
+				const path = entry.path || ''
+				const isIgnored = ['/node_modules/', '/.git/', '/.cache/', '/dist/', 'node_modules/', '.git/', '.cache/', 'dist/', '3rdparty'].some((s) => path === s || path.includes(s))
+				if (isIgnored) return false
+				return path.startsWith('packages') || path.startsWith('apps') || path.startsWith('./packages') || path.startsWith('./apps')
+			}
 		})
 
 		const start = Date.now()
@@ -112,7 +119,7 @@ class PackageStatusDB extends DB {
 		update({ file: { path: 'done' } }, true)
 
 		await this.#loadCache()
-		return this.extract('packages/')
+		return this
 	}
 
 	async #loadCache() {
@@ -227,16 +234,21 @@ class StatusCommand extends CLI {
 		this.packageDirs = new Map()
 		for (const [key] of db.meta) {
 			const norm = db.relative(db.root, key)
-			const [name, dir, file] = norm.split('/')
-			try {
-				if ('package.json' === dir && undefined === file && !ignore.includes(name)) {
-					const pkgConfig = await db.loadDocument(name + '/package.json', {})
-					const config = NaN0WebPackageConfig.from(pkgConfig)
-					this.packageDirs.set(name, config)
-					this.longest = Math.max(config.name.length, this.longest)
+			const parts = norm.split('/')
+			if (parts.length === 3) {
+				const [parent, name, dir] = parts
+				try {
+					if (('packages' === parent || 'apps' === parent) && 'package.json' === dir) {
+						if (!ignore.includes(name)) {
+							const pkgConfig = await db.loadDocument(parent + '/' + name + '/package.json', {})
+							const config = NaN0WebPackageConfig.from(pkgConfig)
+							this.packageDirs.set(parent + '/' + name, config)
+							this.longest = Math.max(config.name.length, this.longest)
+						}
+					}
+				} catch (err) {
+					errors.push(err)
 				}
-			} catch (err) {
-				errors.push(err)
 			}
 		}
 		return errors
@@ -257,20 +269,20 @@ class StatusCommand extends CLI {
 		const ws = await this.fs.loadDocument('pnpm-workspace.yaml', {})
 		const pkgs = new Set()
 		for (const [uri] of db.meta.entries()) {
-			const [name] = uri.split('/')
-			if (['_', '.'].some((s) => name.includes(s))) continue
-			pkgs.add(name)
+			const parts = uri.split('/')
+			if (parts.length >= 2 && ('packages' === parts[0] || 'apps' === parts[0])) {
+				pkgs.add(parts[0] + '/' + parts[1])
+			}
 		}
 		await pause(33)
 		clearInterval(connectInterval)
 		logger.cursorUp(connectOpts.printed || 0, true)
-		const wsPkgs = new Set(
-			ws.packages.filter((p) => p.startsWith('packages/')).map((p) => p.slice(9)),
-		)
-		logger.info(`Read ${format(db.meta.size)} items read from ${format(pkgs.size)} packages`)
+		logger.info(`Read ${format(db.meta.size)} items read from ${format(pkgs.size)} packages and apps`)
 
 		const errors = await this.findPackages(db, msg.body.ignore)
 		errors.forEach((e) => logger.warn(e.stack ?? e.message))
+
+		const wsPkgs = new Set(this.packageDirs.keys())
 
 		chunks = ['Checking docs …']
 		const onChunk = (msg, error) => {
@@ -289,11 +301,25 @@ class StatusCommand extends CLI {
 		await pause(33)
 		clearInterval(docsInterval)
 		logger.cursorUp(docsOpts.printed || 0, true)
-		if (docs.incorrect.length) {
-			logger.error(`  ${docs.incorrect.length} packages are preapared for LLiMo transformation`)
-			docs.incorrect.forEach((i) => logger.info(`  - ${i}`))
-		} else {
-			logger.info(`  all packages have required docs`)
+		const requiredIncorrect = docs.incorrect.filter(
+			(d) => d.missing.includes('README.md.js') || d.missing.includes('README.md')
+		)
+		const translationIncorrect = docs.incorrect.filter(
+			(d) => !d.missing.includes('README.md.js') && !d.missing.includes('README.md') && d.missing.includes('docs/uk/README.md')
+		)
+
+		if (requiredIncorrect.length) {
+			logger.warn(`  ${requiredIncorrect.length} packages/apps are missing required README.md or README.md.js:`)
+			requiredIncorrect.forEach(({ name, missing }) => {
+				const reqMissing = missing.filter((m) => m !== 'docs/uk/README.md')
+				logger.info(`  - ${name} (missing ${reqMissing.join(', ')})`)
+			})
+		}
+		if (translationIncorrect.length) {
+			logger.info(`  ${translationIncorrect.length} packages/apps lack Ukrainian translation (docs/uk/README.md)`)
+		}
+		if (docs.incorrect.length === 0) {
+			logger.info(`  all packages have required docs and translations`)
 		}
 
 		let i = 0
@@ -304,6 +330,10 @@ class StatusCommand extends CLI {
 				logger.error(err.stack ?? err.message)
 			}
 		}
+		logger.info('\nLegend:')
+		logger.info('  1. Build passes             2. Tests pass               3. tsconfig.json present')
+		logger.info('  4. LICENSE & CONTRIBUTING   5. Playground script        6. README.md present')
+		logger.info('  7. ProvenDoc (README.md.js)  8. Published on npm\n')
 		await this.fs.save()
 		if (msg.body.todo) {
 			this.renderTodo()
@@ -352,18 +382,47 @@ class StatusCommand extends CLI {
 		logger.info(no + message + Logger.RESET)
 		logger.info('') // status line
 
+		const startRun = Date.now()
+		const spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+		let spinnerIdx = 0
+		let currentCommand = ''
+		let lastOutputLine = ''
+		const onOutput = (line) => {
+			lastOutputLine = line.slice(0, (process.stdout.columns || 80) - 25)
+		}
+		const interval = setInterval(() => {
+			if (currentCommand) {
+				logger.cursorUp(1, true)
+				const frame = spinnerFrames[spinnerIdx++ % spinnerFrames.length]
+				const suffix = lastOutputLine ? ` > ${lastOutputLine}` : ''
+				logger.info(logger.cut(`${frame} ${currentCommand}${suffix}`))
+			}
+		}, 80)
+
 		try {
-			for await (const msg of pkg.run(rrs, cache)) {
+			for await (const msg of pkg.run(rrs, cache, onOutput)) {
 				message += msg.value
+				if (!msg.value) {
+					lastOutputLine = ''
+				}
+				currentCommand = msg.value ? '' : msg.name
 				logger.cursorUp(2, true)
 				logger.info(no + message)
-				logger.info(logger.cut(msg.name))
+				logger.info(logger.cut(currentCommand || 'done'))
 			}
 		} catch (err) {
 			errors.push(err)
+		} finally {
+			clearInterval(interval)
+		}
+		if (!pkg.cachedHit) {
+			rrs.testDuration = Date.now() - startRun
 		}
 
-		message += ' = ' + rrs.icon('') + '\n'
+		const timeStr = pkg.cachedHit
+			? (rrs.testDuration ? ` (${(rrs.testDuration / 1000).toFixed(1)}s cached)` : ' (cached)')
+			: (rrs.testDuration ? ` (${(rrs.testDuration / 1000).toFixed(1)}s)` : '')
+		message += ' = ' + rrs.icon('') + timeStr + '\n'
 		if (errors.length) {
 			errors.forEach((e) => logger.error(e.stack ?? e.message))
 		}
@@ -387,20 +446,6 @@ class StatusCommand extends CLI {
 		const pkgJson = await pkg.db.loadDocument('package.json')
 		if (!pkgJson) {
 			throw new Error('Missing package.json. Create it first.')
-		}
-		const cwd = pkg.db.absolute()
-		const gitStatus = await runSpawn('git', ['status', '--porcelain'], { cwd })
-		const ignore = ['package.json']
-		const pending = gitStatus.text
-			.split('\n')
-			.filter(Boolean)
-			.map((s) => s.slice(3))
-			.filter((s) => !ignore.includes(s))
-		if (0 !== gitStatus.code) {
-			throw new Error('Seems git is not initialized in the directory: ' + cwd)
-		}
-		if (pending.length > 0) {
-			throw new Error('Pending changes in git. Commit all changes before fix.')
 		}
 		const space = ' '.repeat(this.longest - pkg.name.length)
 		if (!pkgJson.scripts) {
@@ -432,57 +477,18 @@ class StatusCommand extends CLI {
 		const pkgChanged = JSON.stringify(prev) !== JSON.stringify(pkgJson)
 		if (pkgChanged) {
 			await pkg.db.saveDocument('package.json', pkgJson)
-			let content = ''
-			const onData = (chunk) => {
-				content += String(chunk)
-				const rows = content.split('\n').filter(Boolean)
-				logger.cursorUp(1, true)
-				const recent = rows.slice(-1)[0] ?? ''
-				logger.info(logger.cut(recent))
-			}
-			logger.info(`${pkg.name} / pnpm update\n`)
-			const npmUpdate = await runSpawn('pnpm', ['update'], { cwd, onData })
-			logger.cursorUp(1, true)
-			if (0 !== npmUpdate.code) {
-				throw new Error('Cannot update node_modules\n' + content)
-			}
-		}
-
-		const husky = pkg.db.loadDocument('.husky/pre-commit', '')
-		if ('' === husky) {
-			content = ''
-			logger.info(`${pkg.name} / pnpm prepare\n`)
-			const huskyInstall = runSpawn('pnpm', ['prepare'], { cwd, onData })
-			logger.cursorUp(1, true)
-			if (0 !== huskyInstall.code) {
-				throw new Error('Cannot update node_modules\n' + content)
-			}
+			logger.info(`${pkg.name} / package.json updated 💿\n`)
 		}
 
 		const dirName = path.basename(pkg.cwd)
-		const readmeTest = await pkg.db.loadDocument('src/README.md.js', '')
+		let readmeTest = await pkg.db.loadDocument('src/README.md.js', '')
 		if ('' === readmeTest) {
-			const content = getProvenDocs()
-				.replaceAll('$pkgDir', dirName)
-				.replaceAll('$pkgName', pkg.name)
-			await pkg.db.saveDocument('src/README.md.js', content)
+			readmeTest = await pkg.db.loadDocument('src/docs/README.md.js', '')
 		}
 
-		const playground = await pkg.db.loadDocument('playground/main.js', '')
-		if ('' === playground) {
-			const content = getPlayground().replaceAll('$pkgDir', dirName)
-			await pkg.db.saveDocument('playground/main.js', content)
-		}
 
-		const systemMd = await pkg.db.loadDocument('system.md', '')
-		if ('' === systemMd) {
-			const content = getSystem().replaceAll('$pkgName', pkg.name)
-			await pkg.db.saveDocument('system.md', content)
-		}
-
-		const tsConfigTemplate = await this.fs.loadDocumentAs('.txt', 'tsconfig.json')
-		const tsConfig = await pkg.db.loadDocumentAs('.txt', 'tsconfig.json')
-		if (tsConfigTemplate !== tsConfig) {
+		const tsConfig = await pkg.db.loadDocumentAs('.txt', 'tsconfig.json', '')
+		if ('' === tsConfig) {
 			const template = await this.fs.loadDocument('tsconfig.json')
 			await pkg.db.saveDocument('tsconfig.json', template)
 			logger.info(`${pkg.name} / tsconfig.json 💿\n`)
@@ -515,7 +521,8 @@ class StatusCommand extends CLI {
 
 const command = new StatusCommand()
 const parser = new CommandParser([StatusCommandMessage])
-const msg = parser.parse(process.argv.slice(2))
+const args = process.argv.slice(2)
+const msg = parser.parse(args.length ? args : ['--status'])
 logger.debug((msg.constructor?.name ?? '') + ': ' + JSON.stringify(msg))
 command
 	.run(msg)

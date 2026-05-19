@@ -295,12 +295,35 @@ function testRender() {
 
 	/**
 	 * @docs
-	 * ### Feedback & Progress
+	 * ### Feedback & Progress (OLMUI)
 	 *
-	 * #### Spinner
+	 * Following the **"One Logic, Many UI" (OLMUI)** philosophy, business logic should never directly import CLI-specific components. Instead, use the platform-agnostic `progress` helper yielded from your generator models.
+	 *
+	 * To enforce the **Strict Model-First i18n** architecture, the progress message parameter MUST be a reference to a static `UI` dictionary property of your model, rather than a hardcoded literal string.
+	 *
+	 * The `progress(message, value, optionsOrTotalOrId, id)` helper supports multiple syntax variations:
+	 *
+	 * #### 1. Short Positional Syntax (Determinate Progress)
+	 *
+	 * Pass the `message` (referencing model `UI`), `value`, `total` steps, and optional tracking `id` as direct positional parameters:
 	 */
 	it('How to use Spinner?', async () => {
-		//import { ask, Spinner } from '@nan0web/ui-cli'
+		//import { progress } from '@nan0web/ui'
+		//
+		// class SyncApp extends ModelAsApp {
+		//     static UI = {
+		//         syncing: 'Syncing files...',
+		//         done: 'Synchronization complete!'
+		//     }
+		//     async *run() {
+		//         // Start & Update (pos: message reference, value, total, id)
+		//         yield progress(SyncApp.UI.syncing, 50, 100, 'sync-loader')
+		//
+		//         // Complete (stop with success status)
+		//         yield progress(SyncApp.UI.done, 100, { id: 'sync-loader', stop: 'success' })
+		//     }
+		// }
+
 		const action = Promise.resolve('Done')
 		const result = await ask(Spinner({ UI: 'Loading...', action }))
 		assert.equal(result, 'Done')
@@ -308,10 +331,53 @@ function testRender() {
 
 	/**
 	 * @docs
-	 * #### Progress Bars
+	 * #### 2. Short Indeterminate Spinner
+	 *
+	 * Omit the `total` steps or pass `0` to render an indeterminate pulsing spinner (e.g. for unknown API delays), using the model's static `UI` reference:
+	 *
+	 * ```js
+	 * class FetchApp extends ModelAsApp {
+	 *     static UI = {
+	 *         loading: 'Connecting to API...',
+	 *         connected: 'Connected!'
+	 *     }
+	 *     async *run() {
+	 *         // Start spinner (pos: message, value, id)
+	 *         yield progress(FetchApp.UI.loading, 0, 'api-spinner')
+	 *
+	 *         // Stop spinner
+	 *         yield progress(FetchApp.UI.connected, 100, { id: 'api-spinner', stop: 'success' })
+	 *     }
+	 * }
+	 * ```
+	 *
+	 * #### 3. Options Object Syntax (Determinate / Customized)
+	 *
+	 * Pass an options object as the third argument to unlock fine-grained control:
 	 */
 	it('How to use ProgressBar?', async () => {
-		//import { ask, ProgressBar } from '@nan0web/ui-cli'
+		//import { progress } from '@nan0web/ui'
+		//
+		// class ExportApp extends ModelAsApp {
+		//     static UI = {
+		//         exporting: 'Exporting database...',
+		//         failed: 'Export failed!'
+		//     }
+		//     async *run() {
+		//         // Start & Customize (total, id, width, fps, format, forceOneLine)
+		//         yield progress(ExportApp.UI.exporting, 25, {
+		//             total: 100,
+		//             id: 'export-bar',
+		//             width: 20,            // character width of visual bar
+		//             fps: 15,             // limit updates rate for smooth terminal rendering
+		//             format: '{time} {bar} {percent} {title}'
+		//         })
+		//
+		//         // Stop with error status
+		//         yield progress(ExportApp.UI.failed, 25, { id: 'export-bar', stop: 'error' })
+		//     }
+		// }
+
 		const p = await ask(ProgressBar({ UI: 'Downloading...', total: 100 }))
 		p.update(100)
 		p.success('Done')

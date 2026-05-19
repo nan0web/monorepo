@@ -4,7 +4,7 @@
 
 > **Scope**: Headless Sortable List Component (OLMUI pattern)  
 > **Date**: 2026-02-16  
-> **Origin**: `@industrialbank/branches` — AI Chat model selector (v2.1.1)
+> **Origin**: `@bank/branches` — AI Chat model selector (v2.1.1)
 
 ## Mission
 

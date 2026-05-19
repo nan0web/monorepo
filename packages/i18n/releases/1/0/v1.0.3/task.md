@@ -7,8 +7,8 @@ causing `npx i18n generate` to fail with `ERR_MODULE_NOT_FOUND` in all consuming
 
 ## Source
 
-- `REQUESTS.md` — Request #1 from `@industrialbank/branches`
-- `REQUESTS.md` — Request #2 from `@industrialbank/credits`
+- `REQUESTS.md` — Request #1 from `@bank/branches`
+- `REQUESTS.md` — Request #2 from `@bank/credits`
 
 ## Changes
 

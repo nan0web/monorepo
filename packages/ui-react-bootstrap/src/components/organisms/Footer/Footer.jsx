@@ -225,22 +225,6 @@ const Footer = ({ nav, contact: propContact }) => {
 						))}
 					</Row>
 				</div>
-
-				{/* Bottom Section: Copyright & Legal */}
-				<div className="bottom-bar mt-4 py-4 border-top">
-					<Row className="align-items-center">
-						<Col md={12} className="text-center">
-							<div className="copy">
-								<p className="text-muted small mb-0">
-									&copy; {new Date().getFullYear()} Industrialbank.{' '}
-									{t('Універсальна ліцензія НБУ № 126 від 12 жовтня 2011 року')}.
-									<br />
-									{t('Всі права захищено.')}
-								</p>
-							</div>
-						</Col>
-					</Row>
-				</div>
 			</Container>
 		</footer>
 	)

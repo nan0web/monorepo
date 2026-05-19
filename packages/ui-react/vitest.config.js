@@ -6,5 +6,6 @@ export default defineConfig({
 		globals: true,
 		include: ['src/**/*.test.jsx', 'src/README.md.jsx'],
 		setupFiles: ['./vitest.setup.js'],
+		pool: 'vmThreads',
 	},
 })

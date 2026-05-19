@@ -33,7 +33,10 @@ export async function getDependencies(db) {
 export async function checkDocs({ fs, pkgDb, name, stepsMd, onChunk = () => {} }) {
 	/** @type {(str: string) => string} */
 	const transform = (str) => str.replaceAll('$pkgDir', name)
-	const src = await pkgDb.loadDocument('src/README.md.js')
+	let src = await pkgDb.loadDocument('src/README.md.js')
+	if (!src) {
+		src = await pkgDb.loadDocument('src/docs/README.md.js')
+	}
 	if (!src) {
 		const path = `chat/steps/${name}/provendocs.md`
 		onChunk(`No README.md.js => ${fs.absolute(path)}\n`, true)
@@ -47,11 +50,14 @@ export async function checkDocs({ fs, pkgDb, name, stepsMd, onChunk = () => {} }
 			onChunk(`No package.json\n`)
 			throw new Error(`Missing package.json in ${name} > ${pkgDb.absolute('package.json')}`)
 		}
-		if (!pkg.scripts?.['test:docs']) {
+		if (!pkg.scripts) {
+			pkg.scripts = {}
+		}
+		if (!pkg.scripts['test:docs']) {
 			pkg.scripts['test:docs'] = 'node --test --test-timeout=3333 src/README.md.js'
 			onChunk(`No test:docs in package.json => ${pkg.scripts['test:docs']}\n`, true)
 		}
-		if (!pkg.scripts?.['test:status']) {
+		if (!pkg.scripts['test:status']) {
 			pkg.scripts['test:status'] = 'nan0test status --hide-name'
 			onChunk(`No test:status in package.json => ${pkg.scripts['test:status']}\n`, true)
 		}
@@ -89,7 +95,7 @@ export async function checkAllDocs({ fs, pkgs, logger, chunks, onChunk }) {
 	for (const name of pkgs) {
 		chunks = [`${String(++idx).padStart(String(pkgs.length).length)}. ${name}`]
 
-		const pkgDb = fs.extract(`packages/${name}/`)
+		const pkgDb = fs.extract(name.includes('/') ? `${name}/` : `packages/${name}/`)
 		try {
 			const deps = await getDependencies(pkgDb)
 			depMap[name] = deps.map((d) => d.replace('@nan0web/', ''))
@@ -105,9 +111,15 @@ export async function checkAllDocs({ fs, pkgs, logger, chunks, onChunk }) {
 		await fs.saveDocument(stepsMd, '')
 		await checkDocs({ fs, pkgDb, name, stepsMd, onChunk })
 
-		const steps = await fs.loadDocument(stepsMd)
+		const stepsDoc = await fs.loadDocument(stepsMd, '')
+		const steps = stepsDoc ? String(stepsDoc) : ''
 		if (steps) {
-			incorrect.push(stepsMd)
+			const missing = []
+			if (steps.includes('provendocs.md')) missing.push('README.md.js')
+			if (steps.includes('% npm run test:docs')) missing.push('README.md')
+			if (steps.includes('translatedocs.md')) missing.push('docs/uk/README.md')
+			if (missing.length === 0) missing.push('documentation')
+			incorrect.push({ name, missing })
 		} else {
 			await fs.dropDocument(stepsMd)
 		}

@@ -9,7 +9,7 @@
 | :--------------------- | :------------------------------- | :-------------------- |
 | **Personal Portal**    | Цифровий Дім, Блог, Ідентичність | `@yaro/home`          |
 | **Auth**               | Суверенна Ідентичність, Паспорт  | `@nan0web/auth`       |
-| **Industrial Bank**    | Фінанси, Картки, Кредити         | `@industrialbank/v2`  |
+| **Industrial Bank**    | Фінанси, Картки, Кредити         | `@bank/v2`            |
 | **Archetypics School** | Освіта, Дослідження, Бібліотека  | `@nan•web/school.app` |
 | **National Audit**     | Антикорупція, Індекс Prozorro    | `@nan•web/audit`      |
 | **Advocates NYC**      | Маркетплейс Послуг, Pro-bono     | `@nyc/advocates`      |

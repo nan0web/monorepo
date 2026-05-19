@@ -1,4 +1,3 @@
-/// <reference types="node" />
 export default IncomingMessage;
 /**
  * Extended HTTP Incoming Message class for Node.js environment
@@ -10,10 +9,16 @@ declare class IncomingMessage extends HttpIncomingMessage {
      * @param {import('node:net').Socket} socket - The socket
      * @param {Object} [options={}] - Options
      */
-    constructor(socket: import('node:net').Socket, options?: any);
+    constructor(socket: import("node:net").Socket, options?: any);
     params: {};
     method: any;
     url: any;
+    /**
+     * Lazy-parsed query parameters from the URL
+     * @type {Record<string, string>}
+     */
+    get query(): Record<string, string>;
+    _query: {} | undefined;
     /**
      * Implements Readable stream _read method
      */

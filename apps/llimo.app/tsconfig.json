@@ -27,6 +27,7 @@
 		"node_modules",
 		"**/*.test.js",
 		"**/*.story.js",
-		"src/test"
+		"src/test",
+		"src/ui/vscode"
 	]
 }

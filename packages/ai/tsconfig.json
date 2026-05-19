@@ -12,7 +12,14 @@
 		"outDir": "dist",
 		"declaration": true,
 		"emitDeclarationOnly": true,
-		"declarationDir": "types"
+		"declarationDir": "types",
+		"paths": {
+			"@nan0web/*": [
+				"../*/types",
+				"../*/types/index.d.ts",
+				"../*/types/index.js"
+			]
+		}
 	},
 	"include": [
 		"src/**/*.js"

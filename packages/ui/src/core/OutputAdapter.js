@@ -1,6 +1,4 @@
 import Event from '@nan0web/event/oop'
-import OutputMessage from './Message/OutputMessage.js'
-import FormMessage from './Form/Message.js'
 
 /**
  * Abstract output adapter for UI implementations.
@@ -12,7 +10,7 @@ class OutputAdapter extends Event {
 	/**
 	 * Renders a message to the user.
 	 *
-	 * @param {OutputMessage|FormMessage} message - Message to render.
+	 * @param {object} message - Message to render.
 	 * @throws {Error} If not overridden by a subclass.
 	 */
 	render(message) {
@@ -27,16 +25,14 @@ class OutputAdapter extends Event {
 	 * @returns {void}
 	 */
 	progress(progress, metadata = {}) {
-		this.render(
-			OutputMessage.from({
-				content: [],
-				metadata: {
-					...metadata,
-					progress,
-					elementType: 'progress',
-				},
-			}),
-		)
+		this.render({
+			content: [],
+			metadata: {
+				...metadata,
+				progress,
+				elementType: 'progress',
+			},
+		})
 	}
 
 	/**

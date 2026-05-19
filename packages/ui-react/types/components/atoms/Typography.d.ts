@@ -9,7 +9,7 @@ declare function Typography({ variant, children, ...props }: {
     children: React.ReactNode;
     style?: React.CSSProperties | undefined;
 }): React.ReactElement<{
-    style: any;
+    style: React.CSSProperties;
 }, string | React.JSXElementConstructor<any>>;
 declare namespace Typography {
     namespace propTypes {

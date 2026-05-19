@@ -8,6 +8,8 @@ export class FTPAdapter {
 		this.client = new Client()
 		this.logger = new Logger()
 		this.dbfs = new DBFS({ root: process.cwd() }) // DBFS relative to cwd
+		/** @type {((info: any) => void) | null} */
+		this.onProgress = null
 	}
 
 	async connect() {
@@ -29,7 +31,8 @@ export class FTPAdapter {
 			this.client.trackProgress((info) => {
 				if (this.onProgress) this.onProgress(info)
 			})
-		} catch (err) {
+		} catch (e) {
+			const err = /** @type {any} */ (e)
 			this.logger.error(`FTP Connection failed: ${err.message}`)
 			throw err
 		}
@@ -84,7 +87,8 @@ export class FTPAdapter {
 		}
 		try {
 			await this.client.remove(remotePath)
-		} catch (err) {
+		} catch (e) {
+			const err = /** @type {any} */ (e)
 			this.logger.error(`Failed deleting file ${remotePath}: ${err.message}`)
 		}
 	}

@@ -4,23 +4,26 @@ A tiny, zero‑dependency i18n helper for Java•Script projects.
 It provides a default English dictionary and a simple `createT` factory to
 generate translation functions for any language.
 
-|Package name|[Status](https://github.com/nan0web/monorepo/blob/main/system.md#написання-сценаріїв)|Documentation|Test coverage|Features|Npm version|
-|---|---|---|---|---|---|
-|[@nan0web/i18n](https://github.com/nan0web/i18n/) |🟢 `100%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/i18n/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/i18n/blob/main/docs/uk/README.md) |- |✅ d.ts 📜 system.md 🛡️ i18n inspect |1.5.0 |
+|
+|
+|
 
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/i18n
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/i18n
 ```
 
 How to install with yarn?
+
 ```bash
 yarn add @nan0web/i18n
 ```
@@ -28,6 +31,7 @@ yarn add @nan0web/i18n
 ## Usage with Locale Detection
 
 How to handle multiple dictionaries?
+
 ```js
 import { i18n, createT } from "@nan0web/i18n"
 const en = { 'Welcome!': 'Welcome, {name}!' }
@@ -65,28 +69,37 @@ t('Language title')
 
 ### 2. Decentralization & Namespacing
 To avoid collisions between hundreds of packages, we use **dot notation**:
+
 - `ui-cli.Pick a color`
 - `core.User age`
 
+
 ### 3. "Pure Model" Principle
 Models are data structures. They shouldn't know about the current UI language:
+
 - **In Model**: `static title = { help: "Language title" }` — this is the i18n key
 - **In UI/Adapter**: `t(Language.title.help)` — resolution happens here
 - **Mandatory Export**: every Model with i18n fields **must** be `export class`
 
+
 ### 4. Cascading Fallback
 If a translation is missing, the system follows a trust algorithm:
-1. **Look in local vocabulary** of the product.
-2. **Look in parent vocabularies** (via `I18nDb` segments).
-3. **Original Key from the Model** (as a final fallback).
+
+1.- **Look in local vocabulary** of the product.
+- **Look in parent vocabularies** (via `I18nDb` segments).
+- **Original Key from the Model** (as a final fallback).
+
 
 ### 5. Architectural Integrity (v1.5.0+)
 Use `i18n inspect` to ensure that:
+
 - No hardcoded string literals are used in `t()` calls.
 - All keys used in UI are present in the vocabulary.
 - No unused keys are wasting space in your dictionaries.
 
+
 How to handle translations with missing keys?
+
 ```js
 import { i18n, createT } from "@nan0web/i18n"
 const getVocab = i18n({ en: { 'Welcome!': 'Welcome, {name}!' } })
@@ -99,6 +112,7 @@ console.info(t('Welcome!', { name: 'Fallback' })) // ← "Welcome, Fallback!"
 `I18nDb` supports hierarchical loading (Local -> Parent -> Root) and namespacing.
 
 How to use database-backed translations with hierarchical loading, namespacing and fallback?
+
 ```js
 import DB from "@nan0web/db"
 import { I18nDb } from "@nan0web/i18n"
@@ -151,6 +165,7 @@ Supports both **camelCase** (`errorInvalid`, `helpAlt`) and **snake_case** (`err
 Extractable fields: `help*`, `label*`, `title*`, `placeholder*`, `message*`, `error*`, `value*`.
 
 How to extract translation keys from Model classes?
+
 ```js
 import { extractFromModels } from "@nan0web/i18n"
 import { Language } from "./domain/Language.js"
@@ -162,6 +177,7 @@ console.info(keys)
 CamelCase and snake_case field names are both supported:
 
 extractFromModels supports camelCase and snake_case fields
+
 ```js
 class UserModel {
 	static email = {
@@ -181,6 +197,7 @@ console.info(keys)
 > ⚠️ Deprecated in favor of `extractFromModels()`. Retained for backward compatibility.
 
 How to extract translation keys from source code? (legacy)
+
 ```js
 import { extract } from "@nan0web/i18n"
 const content = `
@@ -248,10 +265,12 @@ The `@nan0web/i18n` package provides a command-line interface for managing trans
 ### Installation
 
 If installed globally:
+
 ```bash
 npm install -g @nan0web/i18n
 ```
 Or use via `npx`:
+
 ```bash
 npx i18n <command>
 ```
@@ -262,6 +281,7 @@ npx i18n <command>
 Generates Java•Script cache files from source of truth. This is useful for web bundles (Vite/Webpack) to avoid parsing YAML/JSON at runtime.
 
 - **Options**
+
   - `--data <dir>` – Data directory containing `{locale}/_/t` (default: `./data`)
   - `--out <dir>` – Output directory for `.js` files (default: `./src/i18n`)
 
@@ -274,9 +294,11 @@ Audits i18n keys using `extractKeysFromModels()` and finds missing or unused tra
 
 #### `i18n inspect` *(v1.5.0+)*
 Performs a deterministic architectural audit using Regex parsing:
+
 - Detects forbidden hardcoded literals in `t()` calls.
 - Scans Model classes for architectural compliance.
 - Checks for missing keys in vocabulary files.
+
 
 ```bash
 npx i18n inspect --domain=src/domain --vocab=data/uk/_/t.nan0 --ui=src/ui
@@ -289,6 +311,7 @@ Syncs translations using Model keys as the single source of truth.
 Generates a shell completion script for bash or zsh.
 
 - **Usage**
+
 ```bash
 # For bash
 source <(i18n completion bash)
@@ -299,6 +322,7 @@ source <(i18n completion zsh)
 
 **Permanent Setup (Zsh):**
 Add this to your `~/.zshrc`:
+
 ```zsh
 if command -v i18n >/dev/null 2>&1; then
   source <(i18n completion zsh)
@@ -310,6 +334,7 @@ How to contribute? - [check here](./CONTRIBUTING.md)
 ## CLI Playground
 
 How to run a CLI sandbox playground to try the library directly?
+
 ```bash
 # Clone the repository and run the CLI playground
 git clone https://github.com/nan0web/i18n.git
@@ -325,3 +350,5 @@ Uses `d.ts` to provide autocomplete hints.
 ## License
 
 How to license? - [ISC LICENSE](./LICENSE) file.
+
+

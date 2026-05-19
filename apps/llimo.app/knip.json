@@ -3,10 +3,22 @@
 	"ignore": [
 		"types/**",
 		"play/**",
-		"src/README.md.js"
+		"src/README.md.js",
+		"batch-fix.js",
+		"bin/**",
+		"src/**/*.story.js",
+		"src/domain/LLiMoConfigModel.js",
+		"src/domain/SandboxModel.js",
+		"src/utils/kb/**",
+		"test-generation/**",
+		"tmp/**"
 	],
 	"ignoreDependencies": [
 		"@nan0web/db-browser",
-		"@nan0web/ui-cli"
+		"@nan0web/ui-cli",
+		"@nan0web/ai",
+		"@nan0web/db-fs",
+		"@nan0web/types",
+		"vscode"
 	]
 }

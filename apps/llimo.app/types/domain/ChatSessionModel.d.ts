@@ -1,9 +1,9 @@
 /**
  * Contract for the injected AI Engine
  * @typedef {Object} AIEngineContract
- * @property {import('@nan0web/llimo/src/llm/ModelInfo.js').default | null} selectedModel The currently selected AI model
- * @property {function(string): import('@nan0web/llimo/src/llm/ModelInfo.js').default | undefined} getModel Get a model by ID
- * @property {function(string): import('@nan0web/llimo/src/llm/ModelInfo.js').default | undefined} findModel Find a model by partial ID
+ * @property {import('../llm/ModelInfo.js').ModelInfo | null} selectedModel The currently selected AI model
+ * @property {function(string): import('../llm/ModelInfo.js').ModelInfo | undefined} getModel Get a model by ID
+ * @property {function(string): import('../llm/ModelInfo.js').ModelInfo | undefined} findModel Find a model by partial ID
  * @property {function(string, any[], any=): import('ai').StreamTextResult<any>} streamText Stream text from AI
  */
 /**
@@ -66,7 +66,7 @@ export class ChatSessionModel extends Model {
     /**
      * Main execution loop for the Chat session
      */
-    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ShowIntent | import("@nan0web/ui/src/core/Intent.js").AskIntent | import("@nan0web/ui/src/core/Intent.js").ProgressIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
+    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").AskIntent | import("@nan0web/ui/src/core/Intent.js").ProgressIntent | import("@nan0web/ui/src/core/Intent.js").ShowIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
 }
 /**
  * Contract for the injected AI Engine
@@ -75,15 +75,15 @@ export type AIEngineContract = {
     /**
      * The currently selected AI model
      */
-    selectedModel: import("@nan0web/llimo/src/llm/ModelInfo.js").default | null;
+    selectedModel: import("../llm/ModelInfo.js").ModelInfo | null;
     /**
      * Get a model by ID
      */
-    getModel: (arg0: string) => import("@nan0web/llimo/src/llm/ModelInfo.js").default | undefined;
+    getModel: (arg0: string) => import("../llm/ModelInfo.js").ModelInfo | undefined;
     /**
      * Find a model by partial ID
      */
-    findModel: (arg0: string) => import("@nan0web/llimo/src/llm/ModelInfo.js").default | undefined;
+    findModel: (arg0: string) => import("../llm/ModelInfo.js").ModelInfo | undefined;
     /**
      * Stream text from AI
      */

@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { TelegramAdapter, TelegramAdapterConfig } from '../adapters/TelegramAdapter.js'
-import { SocialAdapterConfig } from '../core/Models.js'
+import { SocialAdapterConfig } from '../domain/Models.js'
 
 /**
  * Creates a TelegramAdapter with a mocked _callApi method.

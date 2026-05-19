@@ -122,7 +122,7 @@ export class SnapshotAuditor extends AuditorModel {
 
 	/**
 	 * Scans data directories to build a word set for each language.
-	 * @param {import('@nan0web/db').DB} fsDb FileSystem DB.
+	 * @param {any} fsDb FileSystem DB.
 	 * @param {string} data
 	 * @returns {Promise<Record<string, Set<string>>>}
 	 */
@@ -170,11 +170,11 @@ export class SnapshotAuditor extends AuditorModel {
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
 	 */
 	async *run() {
-		const { t } = this._
+		const { t } = /** @type {any} */ (this)._
 
-		yield show(t(SnapshotAuditor.UI.starting, { dir: this.dir }))
+		yield show(t(SnapshotAuditor.UI.starting, { dir: /** @type {any} */ (this).dir }))
 
-		const fsDb = this._.db
+		const fsDb = /** @type {any} */ (this)._.db
 
 		if (!fsDb) {
 			yield show(t(SnapshotAuditor.UI.errorDb), 'error')
@@ -182,7 +182,7 @@ export class SnapshotAuditor extends AuditorModel {
 		}
 
 		const files = []
-		const snapshotsDir = fsDb.resolveSync(this.dir)
+		const snapshotsDir = fsDb.resolveSync(/** @type {any} */ (this).dir)
 
 		// Use robust DB.browse for recursive snapshot detection
 		try {

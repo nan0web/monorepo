@@ -6,7 +6,14 @@ import TestPackage from '../TestPackage.js'
 import RRS from '../RRS.js'
 import Message, { OutputMessage } from '@nan0web/co'
 
-export class ProgressMessage extends OutputMessage {}
+export class ProgressMessage extends OutputMessage {
+	/**
+	 * @param {any} [text]
+	 */
+	constructor(text) {
+		super(text)
+	}
+}
 
 class StatusBody {
 	/** @type {boolean} */
@@ -129,10 +136,11 @@ export default class StatusCommand extends CLI {
 	 * --hide-npm
 	 * --todo
 	 * --format {md|txt}
-	 * @param {Status} msg
+	 * @param {any} [msg]
 	 * @returns {AsyncGenerator<OutputMessage>}
 	 */
 	async *run(msg) {
+		const statusMsg = new Status(msg ?? {})
 		const db = new FS()
 		const pkgJson = await db.loadDocument('package.json', {})
 		const { name, repository } = pkgJson
@@ -147,7 +155,7 @@ export default class StatusCommand extends CLI {
 		const Class = name.split('-').includes('react') ? ReactTestPackage : TestPackage
 		const pkg = new Class({
 			cwd: process.cwd(),
-			db,
+			db: /** @type {any} */ (db),
 			name,
 			baseURL,
 		})
@@ -169,12 +177,28 @@ export default class StatusCommand extends CLI {
 			return text + ' '.repeat(Math.abs(27 - text.length)) + value
 		}
 
+		const hasGit = await db.statDocument('.git').then(() => true).catch(() => false)
+		const hasSystemMd = await db.statDocument('system.md').then(() => true).catch(() => false)
+		const hasReleaseMd = await db.statDocument('release.md').then(() => true).catch(() => false)
+		const hasCoverageJson = await db.statDocument('.coverage/test.json').then(() => true).catch(() => false)
+		let coverageText = '   -'
+		if (hasCoverageJson) {
+			try {
+				const cov = await db.loadDocument('.coverage/test.json', {})
+				const vals = Object.values(cov)
+				if (vals.length) {
+					const avg = vals.reduce((sum, item) => sum + (item.line || 0), 0) / vals.length
+					coverageText = `✅ ${avg.toFixed(1)}%`
+				}
+			} catch {}
+		}
+
 		yield new OutputMessage('\n--- Required ---\n')
-		yield new OutputMessage(print('Git repository', rrs.required.git ? '✅ OK' : '✖️ fail'))
+		yield new OutputMessage(print('Git repository', hasGit ? '✅ OK' : '✖️ fail'))
 		yield new OutputMessage(
 			print('Types d.ts no warnings', rrs.required.buildPass ? '✅ OK' : '✖️ fail'),
 		)
-		yield new OutputMessage(print('Present system.md', rrs.required.systemMd ? '✅ OK' : '✖️ fail'))
+		yield new OutputMessage(print('Present system.md', hasSystemMd ? '✅ OK' : '✖️ fail'))
 		yield new OutputMessage(print('All tests passed', rrs.required.testPass ? '✅ OK' : '✖️ fail'))
 		yield new OutputMessage(
 			print('Present tsconfig.json', rrs.required.tsconfig ? '✅ OK' : '✖️ fail'),
@@ -191,15 +215,15 @@ export default class StatusCommand extends CLI {
 		yield new OutputMessage(
 			print('Present README.md.js', rrs.optional.readmeTest ? '✅ OK' : '   -'),
 		)
-		yield new OutputMessage(print('Present release.md', rrs.optional.releaseMd ? '✅ OK' : '   -'))
-		yield new OutputMessage(print('Test coverage', rrs.coverage('')))
+		yield new OutputMessage(print('Present release.md', hasReleaseMd ? '✅ OK' : '   -'))
+		yield new OutputMessage(print('Test coverage', coverageText))
 
 		const features = []
 		if (rrs.required.buildPass) features.push('✅ d.ts')
-		if (rrs.required.systemMd) features.push('📜 system.md')
+		if (hasSystemMd) features.push('📜 system.md')
 		if (rrs.optional.playground) features.push('🕹️ playground')
 
-		const cols = Object.keys(TestPackage.COLUMNS).filter((c) => !msg.body['hide_' + c])
+		const cols = Object.keys(TestPackage.COLUMNS).filter((c) => !statusMsg.body['hide_' + c])
 
 		const md = await db.loadDocument('README.md')
 		if (md.includes('<!-- %PACKAGE_STATUS% -->')) {
@@ -211,11 +235,11 @@ export default class StatusCommand extends CLI {
 			await db.saveDocument('README.md', text)
 		}
 
-		if (msg.body.todo) {
+		if (statusMsg.body.todo) {
 			const md = pkg.toMarkdown(rrs)
-			if ('html' === msg.body.format) {
+			if ('html' === statusMsg.body.format) {
 				yield new OutputMessage('OUTPUT.html:\n' + md.toHTML())
-			} else if ('md' === msg.body.format) {
+			} else if ('md' === statusMsg.body.format) {
 				yield new OutputMessage('OUTPUT.md:\n' + String(md))
 			} else {
 				yield new OutputMessage('OUTPUT.txt:\n' + md.toArray().join(''))

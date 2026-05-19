@@ -2,7 +2,11 @@
 	"compilerOptions": {
 		"target": "ES2020",
 		"useDefineForClassFields": true,
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"lib": [
+			"ES2020",
+			"DOM",
+			"DOM.Iterable"
+		],
 		"module": "ESNext",
 		"skipLibCheck": true,
 		"moduleResolution": "bundler",
@@ -16,7 +20,11 @@
 		"noFallthroughCasesInSwitch": false,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@nan0web/*": [
+				"../*/types",
+				"../*/types/index.d.ts",
+				"../*/types/index.js"
+			]
 		},
 		"allowJs": true,
 		"checkJs": false,
@@ -25,6 +33,15 @@
 		"outDir": "./types",
 		"declarationDir": "./types"
 	},
-	"include": ["src/**/*.js", "src/**/*.jsx"],
-	"exclude": ["node_modules", "src/**/*.test.js", "src/**/*.test.jsx", "src/README.md.js", "types"]
+	"include": [
+		"src/**/*.js",
+		"src/**/*.jsx"
+	],
+	"exclude": [
+		"node_modules",
+		"src/**/*.test.js",
+		"src/**/*.test.jsx",
+		"src/README.md.js",
+		"types"
+	]
 }

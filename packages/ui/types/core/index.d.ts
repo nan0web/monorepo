@@ -1,9 +1,9 @@
 export { default as InputAdapter } from "./InputAdapter.js";
 export { default as OutputAdapter } from "./OutputAdapter.js";
+export { default as FormInput } from "./Form/Input.js";
 export { default as UiMessage } from "./Message/Message.js";
 export { default as FormMessage } from "./Form/Message.js";
-export { default as FormInput } from "./Form/Input.js";
-export { default as UiAdapter } from "./UiAdapter.js";
+export { default as OutputMessage } from "./Message/OutputMessage.js";
 export { IntentErrorModel } from "./IntentErrorModel.js";
 export { runGenerator } from "./GeneratorRunner.js";
 export { MaskHandler } from "./MaskHandler.js";

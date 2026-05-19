@@ -1,7 +1,4 @@
-export { ExecutableCommand } from './Protocol/index.js'
-export { StackDetector } from './Protocol/StackDetector.js'
-export { ModelError } from '@nan0web/types'
-export { Model } from './Model.js'
+export { Model, ModelError } from '@nan0web/types'
 export { ProjectModel } from './ProjectModel.js'
 export { default as AppResult } from './AppResult.js'
 export { default as AppCore, default } from './AppCore.js'

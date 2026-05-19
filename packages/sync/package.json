@@ -16,25 +16,24 @@
 		"bin/**/*.js",
 		"README.md"
 	],
-	"main": "src/Export.js",
+	"main": "src/index.js",
 	"scripts": {
 		"test": "node --test src/*.test.js",
 		"test:docs": "node --test src/README.md.js",
 		"test:snapshot": "node --test --test-timeout=3333 bin/*.test.js",
-		"test:types": "tsc --noEmit",
+		"prebuild": "rm -rf types/",
+		"build": "tsc --noEmit && cp README.md public/README.md && vite build && cp -r data dist/web/data",
 		"test:release": "npm run test:all",
 		"play": "node --test play/**/*.test.js",
-		"test:all": "npm run test && npm run test:docs && npm run test:snapshot && npm run test:types && npm run knip",
+		"test:all": "npm run test && npm run test:docs && npm run test:snapshot && npm run build && npm run knip",
 		"release:spec": "node --test release/**/*.spec.js",
 		"release:verify": "node --test release/**/*.spec.js",
 		"knip": "knip --production",
-		"build": "npm run test:docs && cp README.md public/README.md && vite build && cp -r data dist/web/data",
 		"dev": "npm run test:docs && cp README.md public/README.md && vite",
 		"docs:build": "npm run build",
 		"docs:dev": "npm run dev"
 	},
 	"dependencies": {
-		"@nan0web/db-browser": "workspace:*",
 		"@nan0web/db-fs": "workspace:*",
 		"@nan0web/log": "workspace:*",
 		"basic-ftp": "^5.2.0"

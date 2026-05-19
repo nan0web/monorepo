@@ -7,8 +7,19 @@
  * console.log(email.toString()) // "mailto:test@example.com"
  *
  * @class Contact
+ * @extends Model
  */
-export default class Contact {
+export default class Contact extends Model {
+    static type: {
+        help: string;
+        default: string;
+        type: string;
+    };
+    static value: {
+        help: string;
+        default: string;
+        type: string;
+    };
     /** @type {string} */
     static ADDRESS: string;
     /** @type {string} */
@@ -53,22 +64,11 @@ export default class Contact {
     /**
      * Create a Contact instance.
      *
-     * @param {object} [input={}]
-     * @param {string} [input.type=Contact.ADDRESS] - One of the static URI prefixes.
-     * @param {string} [input.value=""] - The raw value without the prefix.
+     * @param {object} [data={}]
+     * @param {object} [options={}]
      */
-    constructor(input?: {
-        type?: string | undefined;
-        value?: string | undefined;
-    });
-    /** @type {string} */
-    type: string;
-    /** @type {string} */
-    value: string;
-    /**
-     * Convert the contact to its string representation.
-     *
-     * @returns {string} URI string (e.g. `mailto:test@example.com` or `address:123 Main St`).
-     */
-    toString(): string;
+    constructor(data?: object, options?: object);
+    /** @type {string} Contact type/URI scheme */ type: string;
+    /** @type {string} Contact value */ value: string;
 }
+import { Model } from '@nan0web/types';

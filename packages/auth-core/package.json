@@ -39,7 +39,6 @@
     "@nan0web/types": "workspace:*"
   },
   "dependencies": {
-    "@nan0web/db-browser": "workspace:*",
     "@nan0web/log": "workspace:*"
   }
 }

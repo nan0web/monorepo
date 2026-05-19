@@ -1,4 +1,5 @@
 {
 	"entry": ["src/index.js"],
-	"ignore": ["play/**", "src/README.md.js", "types/**"]
+	"ignore": ["play/**", "src/README.md.js", "types/**"],
+	"ignoreDependencies": ["@nan0web/types"]
 }

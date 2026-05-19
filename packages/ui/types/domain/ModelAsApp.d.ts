@@ -33,7 +33,7 @@ export class ModelAsApp extends Model {
         _isExplicit: boolean;
         db: import("@nan0web/db").default | null | undefined;
         plugins: Record<string, any>;
-        t: import("@nan0web/types/src/utils/TFunction").TFunction;
+        t: import("../../../types/types/utils/TFunction.js").TFunction;
     };
     /**
      * Instantiates a subcommand if the value matches one of the options.

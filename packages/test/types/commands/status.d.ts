@@ -1,3 +1,9 @@
+export class ProgressMessage extends OutputMessage {
+    /**
+     * @param {any} [text]
+     */
+    constructor(text?: any);
+}
 /**
  * @extends {CLI}
  */
@@ -14,11 +20,12 @@ export default class StatusCommand extends CLI {
      * --hide-npm
      * --todo
      * --format {md|txt}
-     * @param {Status} msg
+     * @param {any} [msg]
      * @returns {AsyncGenerator<OutputMessage>}
      */
-    run(msg: Status): AsyncGenerator<OutputMessage>;
+    run(msg?: any): AsyncGenerator<OutputMessage>;
 }
+import { OutputMessage } from '@nan0web/co';
 import { CLI } from '@nan0web/ui-cli';
 /**
  * @extends {Message}
@@ -31,7 +38,6 @@ declare class Status extends Message {
     /** @type {StatusBody} */
     body: StatusBody;
 }
-import { OutputMessage } from '@nan0web/co';
 import Message from '@nan0web/co';
 declare class StatusBody {
     static hide_name: {

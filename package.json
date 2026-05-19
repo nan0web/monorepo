@@ -12,17 +12,17 @@
 		"test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
 		"test:docs": "node --test src/README.md.js",
 		"test:release": "node --test releases/1/0/v1.0.0/**/*.test.js | grep #TODO",
-		"test:status": "node bin/packages-status.js -i app -i auth-browser -i auth-core -i auth-node -i llimo -i rss -i story -i ui-lit -i ui-llm -i xml",
+		"test:status": "node bin/packages-status.js",
 		"test:audit": "node bin/audit.js",
 		"test:all": "npm run test && npm run test:docs",
-		"test:every": "pnpm -r run test:all",
+		"test:every": "pnpm -r --no-bail --workspace-concurrency=4 run test:all",
 		"test:changed": "pnpm -r --filter \"...[HEAD]\" run test:all",
 		"test:failed": "pnpm -r run test:all --reporter-hide-passed",
 		"fix:all": "pnpm -r exec npm run lint --fix || pnpm run lint:fix",
 		"dev:setup": "pnpm install && pnpm -r install",
 		"dev:all": "pnpm -r run dev",
-		"play": "pnpm --filter industrialbank play",
 		"build:all": "pnpm -r run build",
+		"build:changed": "pnpm -r --filter \"...[HEAD]\" run build",
 		"docs:gen": "node scripts/gen-docs.js",
 		"ai:index": "pnpm --filter @nan0web/ai run index",
 		"ai:setup": "pnpm --filter @nan0web/ai run mcp:install",
@@ -77,5 +77,11 @@
 		"micromatch": "^4.0.8",
 		"openai": "^6.27.0",
 		"react-icons": "^5.6.0"
+	},
+	"pnpm": {
+		"overrides": {
+			"brace-expansion": "^5.0.6",
+			"ip-address": "^10.1.1"
+		}
 	}
 }

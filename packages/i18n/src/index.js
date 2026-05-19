@@ -1,4 +1,4 @@
-import i18n from './i18n.js'
+import { i18n } from './i18n.js'
 import I18nDb from './I18nDb.js'
 
 /** @typedef {import('@nan0web/types').TFunction} TFunction */

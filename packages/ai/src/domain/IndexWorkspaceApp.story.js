@@ -77,7 +77,11 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 		const discovered = await app._getProjectsToIndex(storeDb, workspaceRoot)
 		assert.strictEqual(discovered.length, 1, 'Should load exactly 1 project from store')
 		assert.strictEqual(discovered[0].name, 'pkg-a', 'Should be pkg-a')
-		assert.strictEqual(discovered[0].dir, 'packages/pkg-a', 'Should resolve directory relative to root')
+		assert.strictEqual(
+			discovered[0].dir,
+			'packages/pkg-a',
+			'Should resolve directory relative to root',
+		)
 
 		await mockFs.disconnect()
 	})
@@ -115,8 +119,6 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 		const mockEmbedder = new MockEmbedder()
 		const events = []
 		for await (const ev of app.indexFull({
-			show: (msg, type) => ({ type, message: msg }),
-			progress: (msg, percent, opts) => ({ type: 'progress', message: msg, percent, opts }),
 			MarkdownIndexer,
 			Embedder: function () {
 				return mockEmbedder
@@ -125,7 +127,7 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 			events.push(ev)
 		}
 
-		const successEvents = events.filter((e) => e.type === 'success')
+		const successEvents = events.filter((e) => e.type === 'show' && e.level === 'success')
 		assert.ok(successEvents.length > 0, 'Indexing should complete successfully')
 
 		MarkdownIndexer.prototype.getWorkspaceRoot = originalGetWorkspaceRoot
@@ -164,14 +166,11 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 		app.getWorkspaceRoot = () => '/'
 
 		const agentEvents = []
-		for await (const ev of app.indexAgents({
-			show: (msg, type) => ({ type, message: msg }),
-			progress: (msg, percent, opts) => ({ type: 'progress', message: msg, percent, opts }),
-		})) {
+		for await (const ev of app.indexAgents()) {
 			agentEvents.push(ev)
 		}
 
-		const agentSuccess = agentEvents.filter((e) => e.type === 'success')
+		const agentSuccess = agentEvents.filter((e) => e.type === 'show' && e.level === 'success')
 		assert.ok(agentSuccess.length > 0, 'Agent indexing should complete successfully')
 
 		const indexExists = await app._.db.statDocument('nan0web_agents.index.nan0')

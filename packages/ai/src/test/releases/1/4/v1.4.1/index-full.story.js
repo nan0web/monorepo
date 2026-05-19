@@ -27,12 +27,14 @@ describe('IndexWorkspaceApp Story (SpecRunner)', () => {
 		const stream = [
 			{ IndexWorkspaceApp: { silent: false } },
 			{ show: '*' }, // Starting...
+			{ progress: '*' }, // Verifying cache...
 			{ progress: '*' }, // Scanning (docs)
 			{ show: '*' },     // ui-core indexed (docs)
 			{ progress: '*' }, // Scanning (source)
 			{ show: '*' },     // ui-core indexed (source)
 			{ progress: '*' }, // Scanning (data)
 			{ show: '*' },     // ui-core indexed (data)
+			{ progress: '*' }, // Mass index stop
 			{ show: '*' }      // Done
 		]
 

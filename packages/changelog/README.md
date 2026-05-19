@@ -16,6 +16,7 @@ Core classes:
 - `Change` — encapsulates change entries like Added, Fixed, etc.
 - `Section` — groups related changes under headings (e.g., `### Added`).
 
+
 Use cases:
 
 - Automate release notes generation.
@@ -23,19 +24,23 @@ Use cases:
 - Query latest or specific version changes.
 - Programmatically add new changes or versions.
 
+
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/changelog
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/changelog
 ```
 
 How to install with yarn?
+
 ```bash
 yarn add @nan0web/changelog
 ```
@@ -47,6 +52,7 @@ yarn add @nan0web/changelog
 Start with an empty changelog and add required metadata.
 
 How to initialize a new Changelog?
+
 ```js
 import { Changelog } from '@nan0web/changelog'
 const log = new Changelog()
@@ -64,6 +70,7 @@ console.info(String(log.document))
 Parse a markdown string into a structured changelog.
 
 How to parse existing changelog text?
+
 ```js
 import { Changelog } from '@nan0web/changelog'
 const log = new Changelog()
@@ -90,6 +97,7 @@ console.info(String(log.document))
 Create a `Change` and add it under the right version.
 
 How to add a new change to a version?
+
 ```js
 import { Changelog } from '@nan0web/changelog'
 const log = new Changelog()
@@ -117,6 +125,7 @@ console.info(String(log.document))
 Add changes incrementally to the same version.
 
 How to add additional changes to an existing version?
+
 ```js
 import { Changelog, Version, Section } from '@nan0web/changelog'
 const log = new Changelog()
@@ -152,6 +161,7 @@ console.info(String(log.document))
 Extract list of versions in order they appear (newest first).
 
 How to get list of versions in changelog?
+
 ```js
 import { Changelog } from '@nan0web/changelog'
 const log = new Changelog()
@@ -171,6 +181,7 @@ console.info(JSON.stringify(versions))
 Use `getLatestVersion()` for oldest, `getRecentVersion()` for newest.
 
 How to get latest and recent versions?
+
 ```js
 import { Changelog } from '@nan0web/changelog'
 const log = new Changelog()
@@ -191,6 +202,7 @@ console.info(`Latest: ${latest?.ver}, Recent: ${recent?.ver}`)
 Extract structured data for a specific version.
 
 How to retrieve changes for a specific version?
+
 ```js
 import { Changelog } from '@nan0web/changelog'
 const log = new Changelog()
@@ -213,6 +225,7 @@ console.info(JSON.stringify(entry?.ver))
 Compare versions using SemVer rules.
 
 How to compare versions using SemVer?
+
 ```js
 import { Version } from '@nan0web/changelog'
 const v1 = new Version('1.2.3')
@@ -230,6 +243,7 @@ console.info(`v3 >= v1: ${v3.acceptableTo(v1)}`)
 Generate version strings in markdown or plain text.
 
 How to format Version as string in different formats?
+
 ```js
 import { Version, Section } from '@nan0web/changelog'
 const v = new Version({ major: 1, minor: 2, patch: 3, date: '2025-01-01' })
@@ -307,6 +321,7 @@ Uses `d.ts` files for autocompletion
 Run interactive demos.
 
 How to run playground script?
+
 ```bash
 pnpm play
 ```
@@ -318,3 +333,5 @@ How to contribute? - [check here](./CONTRIBUTING.md)
 ## License
 
 How to license ISC? - [check here](./LICENSE)
+
+

@@ -108,7 +108,7 @@ describe('Rendering DB-FIRST-PATTERN.md', async () => {
 		await fs.saveDocument('.datasets/DB-FIRST-PATTERN.dataset.jsonl', dataset)
 
 		const savedText = await fs.loadDocument(targetPath)
-		const content = typeof savedText === 'string' ? savedText : JSON.stringify(savedText)
+		const content = String(savedText)
 		assert.ok(content.includes('# DB-First Architecture Pattern'))
 		assert.ok(content.includes('## Ключові правила'))
 	})

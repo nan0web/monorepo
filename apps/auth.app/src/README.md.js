@@ -8,7 +8,7 @@ import {
 	DatasetParser,
 	DocsParser,
 } from '@nan0web/test'
-import { AuthPolicy, AuthApp, UserAccount, AuthConfig } from './index.js'
+import { AuthPolicy, AuthApp, UserAccount, AuthConfig, SignUpMessage, ConfirmSignUpMessage } from './index.js'
 
 const fs = new FS()
 let pkg
@@ -187,8 +187,12 @@ function testRender() {
 		const signupFlow = app.run(msg)
 
 		for await (const output of signupFlow) {
-			const label = Array.isArray(output.content) ? output.content[0] : output.body?.message || output.error?.message
-			console.info(label)
+			if (Array.isArray(output.content)) {
+				output.content.forEach((x) => console.info(x))
+			} else {
+				const label = output.body?.message || output.error?.message
+				if (label) console.info(label)
+			}
 		}
 
 		assert.equal(console.output()[0][1], 'Registration successful')
@@ -216,8 +220,12 @@ function testRender() {
 		const confirmFlow = app.confirmSignUp({ body: { contact: 'test@example.com', code: '123456' } })
 		
 		for await (const output of confirmFlow) {
-			const label = Array.isArray(output.content) ? output.content[0] : output.body?.message || output.error?.message
-			if (label) console.info(label)
+			if (Array.isArray(output.content)) {
+				output.content.forEach((x) => console.info(x))
+			} else {
+				const label = output.body?.message || output.error?.message
+				if (label) console.info(label)
+			}
 		}
 
 		assert.equal(console.output()[0][1], 'Email verified successfully')

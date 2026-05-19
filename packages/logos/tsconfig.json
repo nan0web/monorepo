@@ -1,0 +1,33 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"strict": false,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"allowJs": true,
+		"checkJs": false,
+		"baseUrl": ".",
+		"outDir": "dist",
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"declarationDir": "types",
+		"paths": {
+			"@nan0web/*": [
+				"../*/types",
+				"../*/types/index.d.ts",
+				"../*/types/index.js"
+			]
+		}
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"types",
+		"**/*.story.js",
+		"src/test"
+	]
+}

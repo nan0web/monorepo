@@ -1,4 +1,4 @@
-import { I18nMessage } from '@nan0web/types'
+import { I18nMessage } from '@nan0web/co'
 
 /**
  * @typedef {Object} RegistrationBody

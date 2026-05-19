@@ -61,8 +61,9 @@ export function createT(vocab = {}, locale = 'en') {
 		if (!vars || typeof vars !== 'object') return { template, found }
 
 		const result = template.replace(/\{([^}]+)\}/g, (_, name) => {
-			if (Object.prototype.hasOwnProperty.call(vars, name)) {
-				const val = vars[name]
+			const varName = Object.prototype.hasOwnProperty.call(vars, name) ? name : ('$' + name)
+			if (Object.prototype.hasOwnProperty.call(vars, varName)) {
+				const val = vars[varName]
 				if (typeof val === 'number') {
 					// recursive translation shorthand ONLY if variable name is NOT the current key
 					// (to prevent infinite loops in templates like day_one: "{day}st day")

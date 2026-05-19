@@ -62,6 +62,7 @@ class ArchitectureAuditor extends AuditorModel {
 
 	static timeout = {
 		help: 'Timeout for the audit operations in ms',
+		type: 'number',
 		default: 30_000
 	}
 
@@ -184,24 +185,29 @@ class ArchitectureAuditor extends AuditorModel {
 				while (true) {
 					// Add a safety timeout for each step of the auditor
 					const stepPromise = gen.next()
-					const timeoutPromise = new Promise((_, reject) =>
-						setTimeout(() => reject(new Error(`Auditor ${config.key} timed out`)), this.timeout),
-					)
+					let timerId
+					const timeoutPromise = new Promise((_, reject) => {
+						timerId = setTimeout(() => reject(new Error(`Auditor ${config.key} timed out`)), this.timeout)
+					})
 
-					const { done, value } = await Promise.race([stepPromise, timeoutPromise])
+					try {
+						const { done, value } = await Promise.race([stepPromise, timeoutPromise])
 
-					if (done) {
-						resValue = value
-						break
+						if (done) {
+							resValue = value
+							break
+						}
+						lastStep = value
+						if (value?.type === 'progress') {
+							const title = `[${config.key}] ${String(value.props?.title || '').replace(/\.+$/, '')}`
+							if (title === lastProgress) continue
+							lastProgress = title
+							if (value.props) value.props.title = title
+						}
+						yield value
+					} finally {
+						clearTimeout(timerId)
 					}
-					lastStep = value
-					if (value?.type === 'progress') {
-						const title = `[${config.key}] ${String(value.props?.title || '').replace(/\.+$/, '')}`
-						if (title === lastProgress) continue
-						lastProgress = title
-						if (value.props) value.props.title = title
-					}
-					yield value
 				}
 
 				const data = resValue?.data || resValue || { success: true }

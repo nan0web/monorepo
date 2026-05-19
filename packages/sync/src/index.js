@@ -8,6 +8,6 @@ export { YouTubeAdapter } from './adapters/youtube.js';
 // export { FTPAdapter } from './adapters/ftp.js'; // to be migrated or configured
 
 // Engine (Core)
-export { Engine } from './Engine.js';
+export { SyncEngine as Engine } from './Engine.js';
 export { SyncConfig } from './SyncConfig.js';
 export { SyncManifest } from './SyncManifest.js';

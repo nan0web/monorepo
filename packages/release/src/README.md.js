@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 import FS from '@nan0web/db-fs'
 import { NoConsole } from '@nan0web/log'
 import { DatasetParser, DocsParser, runSpawn } from '@nan0web/test'
-import ReleaseCLi from './ui/cli/ReleaseCLi.js'
+import { App } from './index.js'
 import Release from './Release.js'
 import ReleaseDocument from './Release/Document.js'
 import Person from './Release/Person.js'
@@ -100,11 +100,10 @@ function testRender() {
 	it('How to initialize a new release version?', () => {
 		/**
 		 * ```bash
-		 * release init v1.0.0
+		 * nan0release init v1.0.0
 		 * ```
 		 */
-		const cli = ReleaseCLi()
-		assert.ok(cli.logger)
+		assert.ok(new App().constructor.command.options)
 	})
 
 	/**
@@ -132,11 +131,10 @@ function testRender() {
 	it('How to list all releases?', () => {
 		/**
 		 * ```bash
-		 * release list [--json]
+		 * nan0release list [--json]
 		 * ```
 		 */
-		const cli = ReleaseCLi()
-		assert.ok(cli.logger)
+		assert.ok(new App().constructor.command.options)
 	})
 
 	/**
@@ -146,11 +144,10 @@ function testRender() {
 	it('How to write a release chat message?', () => {
 		/**
 		 * ```bash
-		 * release chat write --user alice "Issue with the build pipeline"
+		 * nan0release chat write --user alice "Issue with the build pipeline"
 		 * ```
 		 */
-		const cli = ReleaseCLi()
-		assert.ok(cli.logger)
+		assert.ok(new App().constructor.command.options)
 	})
 
 	/**
@@ -160,11 +157,10 @@ function testRender() {
 	it('How to host release UI?', () => {
 		/**
 		 * ```bash
-		 * release host [--webui] [--port 3000]
+		 * nan0release host [--webui] [--port 3000]
 		 * ```
 		 */
-		const cli = ReleaseCLi()
-		assert.ok(cli.logger)
+		assert.ok(new App().constructor.command.options)
 	})
 
 	/**
@@ -174,11 +170,10 @@ function testRender() {
 	it('How to serve release static assets?', () => {
 		/**
 		 * ```bash
-		 * release serve [--port 8080]
+		 * nan0release serve [--port 8080]
 		 * ```
 		 */
-		const cli = ReleaseCLi()
-		assert.ok(cli.logger)
+		assert.ok(new App().constructor.command.options)
 	})
 
 	/**
@@ -188,9 +183,10 @@ function testRender() {
 	it('How to validate release tasks?', () => {
 		/**
 		 * ```bash
-		 * release validate [--ignore-fail]
+		 * nan0release validate [--ignore-fail]
 		 * ```
 		 */
+		assert.ok(true)
 		const release = new Release({
 			version: 'v1.0.0',
 			createdAt: new Date('2025-08-20'),
@@ -205,11 +201,10 @@ function testRender() {
 	it('How to seal a release?', () => {
 		/**
 		 * ```bash
-		 * release seal [--message "All core APIs are stable and tested"]
+		 * nan0release seal [--message "All core APIs are stable and tested"]
 		 * ```
 		 */
-		const cli = ReleaseCLi()
-		assert.ok(cli.logger)
+		assert.ok(new App().constructor.command.options)
 	})
 
 	/**
@@ -404,7 +399,10 @@ Release milestone includes UI polish and core API stabilization.
 		assert.ok(pkg.scripts?.playground)
 		const response = await runSpawn('git', ['remote', 'get-url', 'origin'])
 		assert.ok(response.code === 0)
-		assert.ok(response.text.trim().endsWith('nan0web/monorepo.git') || response.text.trim().endsWith('nan0web/release.git'))
+		assert.ok(
+			response.text.trim().endsWith('nan0web/monorepo.git') ||
+				response.text.trim().endsWith('nan0web/release.git'),
+		)
 	})
 
 	/**

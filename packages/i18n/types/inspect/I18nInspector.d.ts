@@ -16,5 +16,4 @@ export class I18nInspector extends AuditorModel {
      */
     constructor(data?: any, options?: any);
 }
-export default I18nInspector;
 import { AuditorModel } from '@nan0web/inspect';

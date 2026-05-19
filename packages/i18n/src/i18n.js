@@ -35,7 +35,7 @@ export function i18n(mapLike) {
 				'- Array<readonly [string, string]>',
 				'- Record<string, string>',
 				'- Map<string, string>',
-			].join('\n'),
+			].join('\n')
 		)
 	}
 
@@ -70,5 +70,3 @@ export function i18n(mapLike) {
 		return defaultValue
 	}
 }
-
-export default i18n

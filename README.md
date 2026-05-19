@@ -21,14 +21,16 @@ Please select your preferred language for technical documentation, setup guides,
 
 For developers who want to contribute or build on top of NaN•Web:
 
-1. Clone and Install
+1.- Clone and Install
+
 ```bash
 git clone https://github.com/nan0web/monorepo.git
 cd monorepo
 pnpm install
 ```
 
-2. Verify installation
+1.- Verify installation
+
 ```bash
 pnpm test
 ```
@@ -41,32 +43,38 @@ NaN•Web is designed to be developed alongside AI agents. To give your agent fu
 Specify the address of your local embedding server (LM Studio or Ollama).
 
 **For Linux / macOS (zsh, bash):**
+
 ```bash
 export EMBEDDER_URL="http://localhost:1234/v1"
 ```
 **For Windows (Command Prompt):**
+
 ```cmd
 set EMBEDDER_URL=http://localhost:1234/v1
 ```
 **For Windows (PowerShell):**
+
 ```powershell
 $env:EMBEDDER_URL = "http://localhost:1234/v1"
 ```
 
 ### 2. Index the Workspace (docs, source, data)
 Index all packages and the global documentation to build the knowledge base:
+
 ```bash
 pnpm run ai:index
 ```
 
 ### 3. Index Agent configurations
 Generate the agent registry for specialized tasks:
+
 ```bash
 pnpm run ai:index --agents
 ```
 
 ### 4. Setup MCP Server
 Register the `@nan0web/ai` server in your AI client (e.g. Claude Desktop or Antigravity):
+
 ```bash
 pnpm run ai:setup
 ```
@@ -81,11 +89,13 @@ You can install the assistant globally to access NaN•Web knowledge from anywhe
 pnpm add -g @nan0web/ai
 ```
 Now the `nan0ai` command is available everywhere. Try:
+
 ```bash
 nan0ai search "How to create a new component?"
 ```
 
-4. Global AI access
+1.- Global AI access
+
 
 ## 🏛️ Ecosystem Highlights
 
@@ -93,6 +103,7 @@ nan0ai search "How to create a new component?"
 - **Auth.app** — Sovereign identity and authorization.
 - **Editor.app** — Data-driven document editor.
 - **UI-CLI** — Premium terminal interface with "Lux-level" aesthetics.
+
 
 ---
 > NaN•Web v3.0.0 — Designed for Sovereign Developers & AI Agents.
@@ -104,3 +115,5 @@ How to contribute? [check here](./CONTRIBUTING.md)
 ## License
 
 How to license? See the [ISC LICENSE](./LICENSE) file.
+
+

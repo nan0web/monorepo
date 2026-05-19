@@ -20,7 +20,7 @@ export function matchProject(projectId, filter, nameToDir) {
 	const lastSegment = pid.split('/').pop() || pid
 
 	// 1. @scope/name → resolve via store registry (EXACT name match)
-	//    "@nan0web/ui" must NOT match "apps/.../industrialbank/ui"
+	//    "@nan0web/ui" must NOT match "apps/.../bank/ui"
 	if (f.startsWith('@')) {
 		if (nameToDir) {
 			const resolvedDir = nameToDir.get(f)

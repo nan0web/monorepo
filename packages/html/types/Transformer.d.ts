@@ -19,7 +19,7 @@ export default class HTMLTransformer extends XMLTransformer {
         tab?: string | undefined;
         eol?: string | undefined;
         defaultTags?: HTMLTags | undefined;
-    } | undefined);
+    });
     /**
      * Decodes an HTML string to a nano object.
      *

@@ -12,7 +12,7 @@ import {
 	createContent,
 	createFeedback,
 	createTarget,
-} from '../core/Models.js'
+} from '../domain/Models.js'
 
 test('Model - base class', async (t) => {
 	await t.test('toJSON returns plain object', () => {

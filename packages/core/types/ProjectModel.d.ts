@@ -59,4 +59,4 @@ export class ProjectModel extends Model {
     constructor(data?: Partial<ProjectModel>, options?: object);
     tags: string[] | undefined;
 }
-import { Model } from './Model.js';
+import { Model } from '@nan0web/types';

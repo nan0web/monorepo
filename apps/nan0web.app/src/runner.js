@@ -24,7 +24,6 @@ class I18n {
 	}
 }
 
-
 // Re-export for backward compat (cli.js imports from here)
 export { NaN0WebConfig }
 
@@ -133,12 +132,14 @@ export class AppRunner extends EventEmitter {
 					break
 				}
 				default:
-					throw new Error(`Unsupported DSN protocol: '${protocol}://' (currently only http/https and local fs/ folders are fully implemented)`)
+					throw new Error(
+						`Unsupported DSN protocol: '${protocol}://' (currently only http/https and local fs/ folders are fully implemented)`,
+					)
 			}
 		} else {
 			this.dataDb = this.db.extract(this.config.dsn)
 		}
-		
+
 		if (this.config.aliases && Object.keys(this.config.aliases).length > 0) {
 			this.dataDb.aliases = this.config.aliases
 			yield `🔀 Virtual Aliases: ${Object.keys(this.config.aliases).length} active`
@@ -155,8 +156,8 @@ export class AppRunner extends EventEmitter {
 
 		// 5. Load i18n translations
 		if (this.state.langs) {
-			const langList = Array.isArray(this.state.langs.children) 
-				? this.state.langs.children.map(l => l.code || l.id)
+			const langList = Array.isArray(this.state.langs.children)
+				? this.state.langs.children.map((l) => l.code || l.id)
 				: Object.keys(this.state.langs)
 			yield `🗣️ Available languages: ${langList.join(', ')}`
 		}
@@ -220,9 +221,9 @@ export class AppRunner extends EventEmitter {
 	 * Config example:
 	 *   apps:
 	 *     - name: deposits
-	 *       src: "@industrialbank/deposits"
+	 *       src: "@bank/deposits"
 	 *     - name: credits
-	 *       src: "@industrialbank/credits"
+	 *       src: "@bank/credits"
 	 *       locale: en
 	 *
 	 * @param {import('./domain/AppEntryConfig.js').default} appDef
@@ -244,7 +245,7 @@ export class AppRunner extends EventEmitter {
 			await appDb.connect()
 
 			// Read package.json to discover UI adapters from exports
-			const pkg = await appDb.fetch('package.json') ?? {}
+			const pkg = (await appDb.fetch('package.json')) ?? {}
 			if (pkg.name || pkg.exports) {
 				const manifest = this.registry.registerFromPackage(pkg)
 				const adapters = manifest.adapters
@@ -257,7 +258,7 @@ export class AppRunner extends EventEmitter {
 
 			// Load app's index into state under its namespace
 			const appIndex = await appDb.fetch('index')
-			
+
 			if (appDef.isolation) {
 				// App Isolation (Phase 5): Hide from global scope if isolated
 				this.state[name] = appIndex
@@ -413,7 +414,7 @@ export class AppRunner extends EventEmitter {
 			const globalIndex = await this.dataDb.fetch('index')
 			if (globalIndex) {
 				Object.assign(state, globalIndex)
-				
+
 				// Feature: Auto-load translations from 't' key if present
 				if (state.t) {
 					this.i18n.load(state.t)
@@ -460,8 +461,8 @@ export class AppRunner extends EventEmitter {
 
 	/**
 	 * Update app state and notify observers.
-	 * @param {string} key 
-	 * @param {any} value 
+	 * @param {string} key
+	 * @param {any} value
 	 */
 	updateState(key, value) {
 		this.state[key] = value

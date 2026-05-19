@@ -140,4 +140,5 @@ export type ButtonTheme = {
     fontSize: string;
     paddingX: string;
     paddingY: string;
+    fontFamily: string;
 };

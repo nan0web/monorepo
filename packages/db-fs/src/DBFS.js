@@ -1,10 +1,94 @@
 import DB, { DocumentStat, DocumentEntry } from '@nan0web/db'
 import FS from './FSAdapter.js'
 import FSDriver from './FSDriver.js'
+import YAML from 'yaml'
+import { NaN0 } from '@nan0web/types'
+import Markdown from '@nan0web/markdown'
+import { parseToObjects, stringifyCSV } from './file-system/csv.js'
 
 class DBFS extends DB {
 	static FS = FS
 	static Driver = FSDriver
+
+	constructor(input = {}) {
+		super(input)
+
+		// Register default formats for db-fs
+		this.registry.register('.jsonl',
+			(str) => str.split('\n').filter(Boolean).map(x => JSON.parse(x)),
+			(arr) => arr.map(x => JSON.stringify(x)).join('\n') + '\n'
+		)
+
+		this.registry.register('.txt',
+			(str) => str,
+			(doc) => String(doc)
+		)
+
+		this.registry.register('.md',
+			(str) => new Markdown(str),
+			(doc) => {
+				if (doc instanceof Markdown) return String(doc)
+				return String(new Markdown(doc))
+			}
+		)
+
+		const yamlLoader = (str) => YAML.parse(str)
+		const yamlSaver = (doc) => YAML.stringify(doc)
+		this.registry.register('.yaml', yamlLoader, yamlSaver)
+		this.registry.register('.yml', yamlLoader, yamlSaver)
+
+		const nan0Loader = (str) => NaN0.parse(str)
+		const nan0Saver = (doc) => NaN0.stringify(doc)
+		this.registry.register('.nan0', nan0Loader, nan0Saver)
+		this.registry.register('.nan', nan0Loader, nan0Saver)
+		this.registry.register('.nano', nan0Loader, nan0Saver)
+
+		const csvLoader = (str, ext) => {
+			const delim = ext === '.tsv' ? '\t' : ','
+			return parseToObjects(str, delim)
+		}
+		const csvSaver = (arr, ext) => {
+			const delim = ext === '.tsv' ? '\t' : ','
+			return stringifyCSV(arr, delim)
+		}
+
+		const csv0Loader = (str, ext) => {
+			const delim = ext === '.tsv' || ext === '.tsv0' ? '\t' : ','
+			const trimmed = str.trimStart()
+			let metadata = {}
+			let csvContent = str
+			if (trimmed.startsWith('---')) {
+				const afterFirst = trimmed.indexOf('\n') + 1
+				const closingIndex = trimmed.indexOf('\n---', afterFirst)
+				if (closingIndex >= 0) {
+					const block = trimmed.slice(afterFirst, closingIndex)
+					csvContent = trimmed.slice(closingIndex + 4).replace(/^\n+/, '')
+					try {
+						metadata = NaN0.parse(block) || {}
+					} catch (e) {}
+				}
+			}
+			const arr = /** @type {any} */ (parseToObjects(csvContent, delim))
+			arr.vars = metadata
+			return arr
+		}
+		const csv0Saver = (arr, ext) => {
+			const delim = ext === '.tsv' || ext === '.tsv0' ? '\t' : ','
+			const csvStr = stringifyCSV(arr, delim)
+			const vars = /** @type {any} */ (arr).vars
+			if (vars && Object.keys(vars).length > 0) {
+				const block = NaN0.stringify(vars)
+				return ['---', block, '---', '', csvStr].join('\n')
+			}
+			return csvStr
+		}
+
+		this.registry.register('.csv', csvLoader, csvSaver)
+		this.registry.register('.tsv', csvLoader, csvSaver)
+		this.registry.register('.csv0', csv0Loader, csv0Saver)
+		this.registry.register('.tsv0', csv0Loader, csv0Saver)
+	}
+
 	/**
 	 * Array of loader functions that attempt to load data from a file path.
 	 * Each loader returns false if it cannot handle the data format.
@@ -134,39 +218,12 @@ class DBFS extends DB {
 			return this.data.has(file) ? this.data.get(file) : defaultValue
 		}
 
-		// Optimization: Use FS.loadAsync directly if not using custom loaders
-		// But only if we are't explicitly asking for .txt or other raw format
-		const isText = ['.txt', '.md', '.csv'].includes(ext)
-		if (!isText) {
-			const res = await this.FS.loadAsync(path, { format: ext, softError: true })
-			this.console.debug('DBFS.loadDocumentAs FS.loadAsync result:', {
-				uri,
-				ext,
-				res,
-				type: typeof res,
-			})
-			if (res !== false && res !== undefined) return res
-		}
-
-		for (const loader of this.loaders) {
-			try {
-				const res = loader(path, null, ext)
-				if (false !== res) {
-					return res
-				}
-			} catch (/** @type {any} */ err) {
-				this.console.error(['Could not load', path].join(': '))
-				this.console.error(err.stack ?? err.message)
-			}
-		}
-		
-		// Final fallback for any unknown extensions - try to load as text if explicitly requested
-		// or if we have no other options and it's not a known binary format
-		if (isText || !ext) {
-			try {
-				const text = this.FS.loadTXT(path, '', true)
-				if (text) return text
-			} catch (e) {}
+		const loader = this.registry.resolveLoader(ext)
+		try {
+			const raw = this.FS.loadTXT(path, '', true)
+			return loader(/** @type {string} */ (raw), /** @type {string} */ (ext))
+		} catch (error) {
+			return defaultValue
 		}
 
 		return defaultValue
@@ -196,15 +253,18 @@ class DBFS extends DB {
 		const file = await this.resolve(uri)
 		const cleanFile = file.startsWith('/') ? file.slice(1) : file
 		const path = this.FS.resolve(this.cwd, this.root, cleanFile)
-		const res = await this.FS.saveAsync(path, document, ext)
-		if (false !== res) {
+		const saver = this.registry.resolveSaver(ext)
+		try {
+			const raw = saver(document, ext)
+			await this.FS.saveAsync(path, raw, '.txt')
 			const stat = await this.statDocument(uri)
 			this.meta.set(uri, stat)
 			this.data.set(uri, false)
 			this.emit('change', { uri, type: 'save', data: document })
 			return true
+		} catch (e) {
+			return false
 		}
-		return false
 	}
 
 	/**
@@ -218,18 +278,20 @@ class DBFS extends DB {
 		this.console.debug('Saving document', { uri, document })
 		await this.ensureAccess(uri, 'w')
 		await this._buildPath(uri)
-		const file = this.resolveSync(uri)
 		const path = this.location(uri)
 		const ext = this.extname(uri)
-		const res = await this.FS.saveAsync(path, document, ext)
-		if (false !== res) {
+		const saver = this.registry.resolveSaver(ext)
+		try {
+			const raw = saver(document, ext)
+			await this.FS.saveAsync(path, raw, '.txt')
 			const stat = await this.statDocument(uri)
 			this.meta.set(uri, stat)
 			this.data.set(uri, false)
 			this.emit('change', { uri, type: 'save', data: document })
 			return true
+		} catch (e) {
+			return false
 		}
-		return false
 	}
 	/**
 	 * Appends a chunk of data to a document at the given URI.

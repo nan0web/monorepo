@@ -8,4 +8,5 @@ export { HygieneAuditor } from "./app/HygieneAuditor.js";
 export { ExportAuditor } from "./app/ExportAuditor.js";
 export { DomainAuditor } from "./app/DomainAuditor.js";
 export { VerificationAuditor } from "./app/VerificationAuditor.js";
+export { StackDetector } from "./StackDetector.js";
 export type LanguagePlatform = import("./AuditorModel.js").LanguagePlatform;

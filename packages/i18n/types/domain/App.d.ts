@@ -4,6 +4,10 @@ export class InfoCommand extends ModelAsApp {
 }
 export class GenerateCommand extends ModelAsApp {
 }
+export class InspectCommand extends ModelAsApp {
+}
+export class CompletionCommand extends ModelAsApp {
+}
 /**
  * Main application model for i18n CLI toolkit.
  */
@@ -15,7 +19,7 @@ export class App extends ModelAsApp {
     static command: {
         default: string;
         positional: boolean;
-        options: any[];
+        options: (typeof AuditCommand)[];
     };
     static data: {
         default: string;

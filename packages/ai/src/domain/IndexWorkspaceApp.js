@@ -1,5 +1,4 @@
 import { ModelAsApp } from '@nan0web/ui-cli'
-import path from 'node:path'
 import os from 'node:os'
 import { matchProject, loadNameToDir } from './projectFilter.js'
 import { show, progress, ask } from '@nan0web/ui'
@@ -13,7 +12,7 @@ import { DBFS } from '@nan0web/db-fs'
 
 /** @typedef {import('@nan0web/types').TFunction} TFunction */
 
-const storeDir = path.join(os.homedir(), '.nan0web/store')
+const storeDir = new DBFS({ root: '' }).resolveSync(os.homedir(), '.nan0web/store')
 
 class IndexState {
 	/**
@@ -61,10 +60,8 @@ class IndexState {
 	 * @param {string} scopeName
 	 * @param {any} details
 	 * @param {TFunction} t
-	 * @param {ShowFn} [showFn]
 	 */
-	*completeScope(projectName, terminalType, scopeName, details, t, showFn) {
-		const showCall = showFn || show
+	*completeScope(projectName, terminalType, scopeName, details, t) {
 		const isTest =
 			typeof process !== 'undefined' &&
 			(process.env.NODE_ENV === 'test' ||
@@ -73,17 +70,24 @@ class IndexState {
 				!process.stdout ||
 				!process.stdout.isTTY)
 
+		const UI = IndexWorkspaceApp.UI
+
 		if (isTest) {
 			this.processedScopes++
 			if (!this.silent) {
-				const UI = IndexWorkspaceApp.UI
 				if (terminalType === 'missing') {
-					const ctx = projectName ? `[${projectName}] ` : ''
-					yield showCall(`${ctx}${t('No files found for scope: ' + scopeName)}`, 'error')
+					yield show(
+						t(projectName ? UI.projectNoFiles : UI.noFilesForScope, {
+							project: projectName,
+							scope: scopeName,
+							scopes: scopeName,
+						}),
+						'error',
+					)
 				} else if (terminalType === 'cached') {
-					yield showCall(t(UI.projectCached, { name: projectName, dir: details.dir || '' }), 'info')
+					yield show(t(UI.projectCached, { name: projectName, dir: details.dir || '' }), 'info')
 				} else if (terminalType === 'indexed') {
-					yield showCall(
+					yield show(
 						t(UI.projectIndexed, {
 							name: projectName,
 							files: details.files,
@@ -92,8 +96,12 @@ class IndexState {
 						'success',
 					)
 				} else if (terminalType === 'error') {
-					const ctx = projectName ? `[${projectName}] ` : ''
-					yield showCall(`${ctx}${t(details.message)}`, 'error')
+					yield show(
+						projectName
+							? t(UI.projectError, { project: projectName, message: t(details.message) })
+							: t(details.message),
+						'error',
+					)
 				}
 			}
 			return
@@ -118,22 +126,33 @@ class IndexState {
 		if (comp === this.totalScopesForProject) {
 			if (!this.silent) {
 				if (agg.missingScopes.length > 0) {
-					yield showCall(`[${projectName}] No files found: ${agg.missingScopes.join(', ')}`, 'error')
+					yield show(
+						t(UI.projectNoFiles, { project: projectName, scopes: agg.missingScopes.join(', ') }),
+						'error',
+					)
 				}
 				if (agg.cachedScopes.length > 0) {
-					yield showCall(
-						`Project ${projectName} skipped (cache matched) in ${agg.projectDir}: ${agg.cachedScopes.join(', ')}`,
+					yield show(
+						t(UI.projectSkippedInfo, {
+							project: projectName,
+							dir: agg.projectDir,
+							scopes: agg.cachedScopes.join(', '),
+						}),
 						'info',
 					)
 				}
 				if (agg.indexedScopes.length > 0) {
-					yield showCall(
-						`Project ${projectName} indexed in ${agg.projectDir}: ${agg.indexedScopes.join(', ')}`,
+					yield show(
+						t(UI.projectIndexedSuccess, {
+							project: projectName,
+							dir: agg.projectDir,
+							scopes: agg.indexedScopes.join(', '),
+						}),
 						'success',
 					)
 				}
 				for (const err of agg.otherErrors) {
-					yield showCall(`[${projectName}] Error: ${t(err)}`, 'error')
+					yield show(t(UI.projectError, { project: projectName, message: t(err) }), 'error')
 				}
 			}
 		}
@@ -157,6 +176,15 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		verifyingCacheProject: 'Verifying Cache... [{project}]',
 		generatingVectors: 'Generating vectors...',
 		errorIndexing: 'Error indexing {name} [{scope}]: {message}',
+		agentsDone: 'Agents indexed: {agents} agents in {projects} packages.',
+		generatingVectorsProgress: 'Generating vectors [{project}]: {file}',
+		scanningProgress: 'Scanning packages for nan0web.nan0...',
+		scanningProject: 'Scanning [{project}]',
+		noFilesForScope: 'No files found for scope: {scope}',
+		projectNoFiles: '[{project}] No files found: {scopes}',
+		projectSkippedInfo: 'Project {project} skipped (cache matched) in {dir}: {scopes}',
+		projectIndexedSuccess: 'Project {project} indexed in {dir}: {scopes}',
+		projectError: '[{project}] Error: {message}',
 	}
 
 	static project = {
@@ -248,8 +276,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 		const defaultScopes = ['docs', 'source', 'data']
 		if (this.skipData) defaultScopes.splice(defaultScopes.indexOf('data'), 1)
-		if (this.skipSources)
-			defaultScopes.splice(defaultScopes.indexOf('source'), 1)
+		if (this.skipSources) defaultScopes.splice(defaultScopes.indexOf('source'), 1)
 		if (this.skipDocs) defaultScopes.splice(defaultScopes.indexOf('docs'), 1)
 
 		/** @type {string[]} */ this.scopes = this.sources
@@ -288,15 +315,11 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 	/**
 	 * @param {object} [deps]
-	 * @param {ShowFn} [deps.show]
-	 * @param {ProgressFn} [deps.progress]
 	 * @param {typeof import('./MarkdownIndexer.js').MarkdownIndexer} [deps.MarkdownIndexer]
 	 * @param {typeof import('./Embedder.js').Embedder} [deps.Embedder]
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
 	 */
-	async *indexFull({ show: customShow, progress: customProgress, MarkdownIndexer, Embedder } = {}) {
-		const showCall = customShow || show
-		const progressCall = customProgress || progress
+	async *indexFull({ MarkdownIndexer, Embedder } = {}) {
 		const { t } = this._
 
 		/**
@@ -305,14 +328,17 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		 */
 		const fs = await import('node:fs')
 		const process = await import('node:process')
-		let workspaceRoot = path.resolve(/** @type {any} */ (this._).workspaceRoot || process.cwd())
+		const pathDb = new DBFS({ root: process.cwd() })
+		let workspaceRoot = pathDb.resolveSync(
+			/** @type {any} */ (this._).workspaceRoot || process.cwd(),
+		)
 		let current = workspaceRoot
 		while (current && current !== '/') {
-			if (fs.existsSync(path.join(current, 'pnpm-workspace.yaml'))) {
+			if (fs.existsSync(pathDb.resolveSync(current, 'pnpm-workspace.yaml'))) {
 				workspaceRoot = current
 				break
 			}
-			const parent = path.dirname(current)
+			const parent = pathDb.dirname(current)
 			if (parent === current) break
 			current = parent
 		}
@@ -322,12 +348,12 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot)
 
 		if (projects.length === 0) {
-			if (!this.silent) yield showCall(t(IndexWorkspaceApp.UI.noProjects, { dir: storeDir }), 'error')
+			if (!this.silent) yield show(t(IndexWorkspaceApp.UI.noProjects, { dir: storeDir }), 'error')
 			return
 		}
 
 		if (!this.silent)
-			yield showCall(t(IndexWorkspaceApp.UI.info, { projects: projects.length }), 'info')
+			yield show(t(IndexWorkspaceApp.UI.info, { projects: projects.length }), 'info')
 
 		const nameToDir = this.project?.startsWith('@') ? await loadNameToDir(workspaceDb) : undefined
 
@@ -343,9 +369,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		const totalScopes = activeProjects.length * this.scopes.length
 		const state = new IndexState(totalScopes, this.silent, this.scopes.length)
 
-		if (process.stdout && process.stdout.isTTY) {
-			yield progressCall('Verifying cache...', 0, { id: 'Mass_Index', width: 30 })
-		}
+		yield progress(t(IndexWorkspaceApp.UI.verifyingCache), 0, { id: 'Mass_Index', width: 30 })
 
 		if (this.concurrency > 1) {
 			const queue = []
@@ -412,7 +436,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				}
 				const it = queue.shift()
 				if (!it) continue
-				yield* this._handleEvent(it, { show: showCall, progress: progressCall, t }, state)
+				yield* this._handleEvent(it, state)
 			}
 		} else {
 			for (const proj of activeProjects) {
@@ -431,35 +455,58 @@ export class IndexWorkspaceApp extends ModelAsApp {
 					for await (const it of indexer.indexAll(embedder, { force: this.force })) {
 						it.project = it.project || proj.name
 						it.scope = scope
-						yield* this._handleEvent(it, { show: showCall, progress: progressCall, t }, state)
+						yield* this._handleEvent(it, state)
 					}
 				}
 			}
 		}
 
-		if (process.stdout && process.stdout.isTTY) {
-			yield progressCall('', 100, { id: 'Mass_Index', stop: 'success' })
-		}
+		yield progress('', 100, { id: 'Mass_Index', stop: 'success' })
 
-		if (!this.silent) yield showCall(t(IndexWorkspaceApp.UI.done), 'success')
+		if (!this.silent) yield show(t(IndexWorkspaceApp.UI.done), 'success')
 	}
 	/**
 	 * Shared event handler for indexing progress events
 	 * @param {any} it - indexing event
 	 * @param {object} deps
 	 * @param {TFunction} deps.t
-	 * @param {ShowFn} [deps.show]
-	 * @param {ProgressFn} [deps.progress]
 	 * @param {IndexState} state
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
 	 */
-	*_handleEvent(it, { show: customShow, progress: customProgress, t }, state) {
-		const showCall = customShow || show
-		const progressCall = customProgress || progress
+	*_handleEvent(it, stateOrDeps) {
+		const { t } = this._
 		const UI = IndexWorkspaceApp.UI
 		const projectName = it.project || it.name || ''
 
+		// Detect if we received custom deps instead of IndexState
+		const isDeps =
+			stateOrDeps &&
+			(typeof stateOrDeps.show === 'function' || typeof stateOrDeps.progress === 'function')
+
+		let state = stateOrDeps
+		let localT = t
+		let localShow = show
+		let localProgress = progress
+
+		if (isDeps) {
+			localT = stateOrDeps.t || t
+			localShow = stateOrDeps.show || show
+			localProgress = stateOrDeps.progress || progress
+			state = new IndexState(1, false, 1)
+		}
+
 		if (it.type === 'error') {
+			if (isDeps) {
+				let msg = projectName
+					? localT(UI.projectError, { project: projectName, message: localT(it.message) })
+					: localT(it.message)
+				if (typeof msg === 'string') {
+					msg = msg.replace('{message}', it.message).replace('{project}', projectName)
+				}
+				yield localShow(msg, 'error')
+				return
+			}
+
 			if (it.message.startsWith('No files found for scope:')) {
 				const sc = it.message.split(': ')[1]
 				yield* state.completeScope(
@@ -468,7 +515,6 @@ export class IndexWorkspaceApp extends ModelAsApp {
 					sc,
 					{ totalScopesForProject: state.totalScopesForProject },
 					t,
-					showCall,
 				)
 			} else {
 				yield* state.completeScope(
@@ -477,87 +523,100 @@ export class IndexWorkspaceApp extends ModelAsApp {
 					it.scope || '',
 					{ message: it.message, totalScopesForProject: state.totalScopesForProject },
 					t,
-					showCall,
 				)
 			}
 			return
 		}
 
 		if (it.type === 'projectCached') {
+			if (isDeps) {
+				yield localShow(localT(UI.projectCached, { name: projectName, dir: it.dir || '' }), 'info')
+				return
+			}
 			yield* state.completeScope(
 				projectName,
 				'cached',
 				it.scope,
 				{ dir: it.dir, totalScopesForProject: state.totalScopesForProject },
 				t,
-				showCall,
 			)
 			return
 		}
 
 		if (it.type === 'projectIndexed') {
+			if (isDeps) {
+				yield localShow(
+					localT(UI.projectIndexed, { name: projectName, files: it.files, dir: it.dir || '' }),
+					'success',
+				)
+				return
+			}
 			yield* state.completeScope(
 				projectName,
 				'indexed',
 				it.scope,
 				{ dir: it.dir, files: it.files, totalScopesForProject: state.totalScopesForProject },
 				t,
-				showCall,
 			)
 			return
 		}
 
-		const percent = Math.round((state.processedScopes / state.totalScopes) * 100)
+		// Calculate percentage: support explicit current/total in it, with fallback to state scopes
+		const percent = it.total
+			? Math.round((it.current / it.total) * 100)
+			: Math.round(((state ? state.processedScopes : 0) / (state ? state.totalScopes : 1)) * 100)
 
 		// Other progress events
 		if (it.type === 'scanProgress') {
-			yield progressCall(t(UI.scanning, { project: it.project, files: it.files }), percent, {
+			yield localProgress(localT(UI.scanning, { project: it.project, files: it.files }), percent, {
 				id: 'Mass_Index',
 				width: 30,
 			})
 		}
 		if (it.type === 'cacheCheckProgress') {
-			yield progressCall(t(UI.verifyingCacheProject, { project: it.project }), percent, {
+			yield localProgress(localT(UI.verifyingCacheProject, { project: it.project }), percent, {
 				id: 'Mass_Index',
 				width: 30,
 			})
 		}
 		if (it.type === 'calc') {
-			yield progressCall(t(UI.generatingVectors), percent, {
+			yield localProgress(localT(UI.generatingVectors), percent, {
 				id: 'Mass_Index',
 				width: 30,
 			})
 		}
 		if (it.type === 'tick') {
-			yield progressCall(`Generating vectors [${it.project}]: ${it.file}`, percent, {
-				id: 'Mass_Index',
-				width: 30,
-			})
+			yield localProgress(
+				localT(UI.generatingVectorsProgress, { project: it.project, file: it.file }),
+				percent,
+				{
+					id: 'Mass_Index',
+					width: 30,
+				},
+			)
 		}
 	}
 
 	/**
-	 * @param {object} [deps]
-	 * @param {ShowFn} [deps.show]
-	 * @param {ProgressFn} [deps.progress]
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
 	 */
-	async *indexAgents({ show: customShow, progress: customProgress } = {}) {
-		const showCall = customShow || show
-		const progressCall = customProgress || progress
+	async *indexAgents() {
 		const { t } = this._
-		if (!this.silent) yield showCall(t(IndexWorkspaceApp.UI.agentsStart), 'info')
+		if (!this.silent) yield show(t(IndexWorkspaceApp.UI.agentsStart), 'info')
 
-		const fs = await import('node:fs')
-		const process = await import('node:process')
-		let workspaceRoot = path.resolve(/** @type {any} */ (this._).workspaceRoot || process.cwd())
+		const pathDb = new DBFS({ root: process.cwd() })
+		let workspaceRoot = pathDb.resolveSync(
+			/** @type {any} */ (this._).workspaceRoot || process.cwd(),
+		)
 		let current = workspaceRoot
 		while (current && current !== '/') {
-			if (fs.existsSync(path.join(current, 'pnpm-workspace.yaml'))) {
+			const tempDb = new DBFS({ cwd: current, root: '' })
+			const stat = await tempDb.statDocument('pnpm-workspace.yaml')
+			if (stat.exists) {
 				workspaceRoot = current
 				break
 			}
-			const parent = path.dirname(current)
+			const parent = pathDb.dirname(current)
 			if (parent === current) break
 			current = parent
 		}
@@ -570,17 +629,17 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		const projects = await this._getProjectsToIndex(storeDb, workspaceRoot)
 
 		if (projects.length === 0) {
-			if (!this.silent) yield showCall(`No projects found in global store at ${storeDir}.`, 'error')
+			if (!this.silent) yield show(t(IndexWorkspaceApp.UI.noProjects, { dir: storeDir }), 'error')
 			return
 		}
 
-		yield progressCall('Scanning packages for nan0web.nan0...', 0, { id: 'Agents_Index', width: 30 })
+		yield progress(t(IndexWorkspaceApp.UI.scanningProgress), 0, { id: 'Agents_Index', width: 30 })
 
 		const allAgents = []
 		let scanned = 0
 
 		for (const proj of projects) {
-			const configPath = path.join(proj.dir, 'nan0web.nan0')
+			const configPath = pathDb.resolveSync(proj.dir, 'nan0web.nan0')
 			let config = await workspaceDb.loadDocument('/' + configPath, null).catch(() => null)
 			if (typeof config === 'string') {
 				config = parseNAN0(config)
@@ -598,13 +657,17 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				}
 			}
 			scanned++
-			yield progressCall(`[${proj.name}]`, (scanned / projects.length) * 100, {
-				id: 'Agents_Index',
-				width: 30,
-			})
+			yield progress(
+				t(IndexWorkspaceApp.UI.scanningProject, { project: proj.name }),
+				(scanned / projects.length) * 100,
+				{
+					id: 'Agents_Index',
+					width: 30,
+				},
+			)
 		}
 
-		yield progressCall('', 100, { id: 'Agents_Index', stop: 'success' })
+		yield progress('', 100, { id: 'Agents_Index', stop: 'success' })
 
 		const indexPath = '/nan0web_agents.index.nan0'
 		const _db = /** @type {any} */ (db)
@@ -614,8 +677,8 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			agents: allAgents,
 		})
 		if (!this.silent)
-			yield showCall(
-				t('Agents indexed: {agents} agents in {projects} packages.', {
+			yield show(
+				t(IndexWorkspaceApp.UI.agentsDone, {
 					agents: allAgents.length,
 					projects: projects.length,
 				}),

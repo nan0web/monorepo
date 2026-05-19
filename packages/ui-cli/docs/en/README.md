@@ -164,21 +164,79 @@ import { Table } from '@nan0web/ui-cli'
 const data = [{ id: 1, name: 'Alice' }]
 console.info(data)
 ```
-### Feedback & Progress
+### Feedback & Progress (OLMUI)
 
-#### Spinner
+Following the **"One Logic, Many UI" (OLMUI)** philosophy, business logic should never directly import CLI-specific components. Instead, the domain model behaves as a generator and controls the progress state via universal intentions (`yield { type: 'progress', ... }`). The terminal's UI adapter automatically intercepts these intents and renders the appropriate indicators.
 
-How to use Spinner?
+#### Spinner (Indeterminate Progress)
+
+To start a spinning loader (e.g., for API requests or long-running computations):
 ```js
-import { render, Spinner } from '@nan0web/ui-cli'
-console.info('Loading...')
+// In your model (generator):
+yield { 
+	type: 'progress', 
+	message: 'Fetching data...', 
+	id: 'fetch-loader' 
+}
+
+// ... execute async logic ...
+
+// Stop the spinner with a success status
+yield { 
+	type: 'progress', 
+	id: 'fetch-loader', 
+	options: { stop: 'success' }, 
+	message: 'Data loaded successfully!' 
+}
 ```
-#### Progress Bars
 
-How to use ProgressBar?
+#### Progress Bar (Determinate Progress)
+
+To display a progress bar with percentage and estimated time remaining (ETA):
 ```js
-import { render, ProgressBar } from '@nan0web/ui-cli'
-console.info('Progress: 100%')
+// Initialize progress bar
+yield { 
+	type: 'progress', 
+	message: 'Processing files...', 
+	total: 10, 
+	value: 0, 
+	id: 'file-progress' 
+}
+
+for (let i = 0; i < 10; i++) {
+	await sleep(100)
+	// Update progress value
+	yield { 
+		type: 'progress', 
+		id: 'file-progress', 
+		value: i + 1 
+	}
+}
+
+// Stop the progress bar
+yield { 
+	type: 'progress', 
+	id: 'file-progress', 
+	options: { stop: 'success' }, 
+	message: 'All files processed successfully!' 
+}
+```
+
+#### Standalone CLI Usage (Outside Models)
+
+If you are developing a basic CLI script without the full OLMUI model architecture, you can invoke components directly:
+```js
+import { render, Spinner, ProgressBar } from '@nan0web/ui-cli'
+
+// Spinner
+const loader = await render(Spinner, { text: 'Loading...' })
+// ... work ...
+loader.stop()
+
+// Progress Bar
+const bar = await render(ProgressBar, { title: 'Copying...', total: 100 })
+bar.update(50)
+bar.success('Done!')
 ```
 ### Sub-path Exports (OLMUI)
 

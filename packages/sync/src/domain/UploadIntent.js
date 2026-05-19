@@ -1,5 +1,4 @@
 import { SyncIntent } from './SyncIntent.js'
-import { List } from '@nan0web/types'
 
 /**
  * UploadIntent (або ShareIntent) — Модель, що описує намір перетворити
@@ -7,17 +6,20 @@ import { List } from '@nan0web/types'
  * Підтримує концепт побудови тредів (ланцюжків).
  */
 export class UploadIntent extends SyncIntent {
-  constructor (data = {}) {
-    super(data)
+	static source = { type: 'string', default: '' }
+	static pipeline = { type: 'array', default: () => [] }
 
-    /**
-     * @type {string} Вказівник на першоджерело локального контенту (наприклад, ID або шлях до .md)
-     */
-    this.source = this.init('source', String)
+	constructor(data = {}, options = {}) {
+		super(data, options)
 
-    /**
-     * @type {List} Ланцюжок трансформацій до публікації (наприклад: ["text", "to-tts", "publish"])
-     */
-    this.pipeline = this.init('pipeline', List, { of: String })
-  }
+		/**
+		 * @type {string} Вказівник на першоджерело локального контенту (наприклад, ID або шлях до .md)
+		 */
+		this.source
+
+		/**
+		 * @type {string[]} Ланцюжок трансформацій до публікації (наприклад: ["text", "to-tts", "publish"])
+		 */
+		this.pipeline
+	}
 }

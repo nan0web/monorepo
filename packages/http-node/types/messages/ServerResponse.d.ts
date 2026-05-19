@@ -1,4 +1,3 @@
-/// <reference types="node" />
 /**
  * @extends {HttpServerResponse}
  */
@@ -8,7 +7,7 @@ export default class ServerResponse extends HttpServerResponse<import("http").In
      * @param {IncomingMessage} [req]
      * @param {object} [options]
      */
-    constructor(req?: IncomingMessage | undefined, options?: object);
+    constructor(req?: IncomingMessage, options?: object);
     /** @type {Object} */
     params: any;
     /**
@@ -32,4 +31,4 @@ export default class ServerResponse extends HttpServerResponse<import("http").In
     end(chunk: any, encoding: any, callback: any): this;
 }
 import { ServerResponse as HttpServerResponse } from 'node:http';
-import IncomingMessage_1 from './IncomingMessage.js';
+import IncomingMessage from './IncomingMessage.js';

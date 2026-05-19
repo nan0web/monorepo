@@ -1,16 +1,7 @@
 {
-	"entry": ["src/index.js"],
-	"project": ["src/**/*.js", "!src/**/*.test.js"],
-	"ignore": ["play/**", "releases/**", "types/**", "src/README.md.js", "bin/**", "src/FS.js"],
-	"ignoreDependencies": [
-		"husky",
-		"@nan0web/test",
-		"@nan0web/release",
-		"@nan0web/ui-cli",
-		"@nan0web/event",
-		"@nan0web/types",
-		"@nan0web/log",
-		"yaml"
-	],
-	"ignoreExportsUsedInFile": true
+	"$schema": "https://unpkg.com/knip@latest/schema.json",
+	"entry": ["src/index.js", "play/main.js"],
+	"project": ["src/**/*.js", "play/**/*.js"],
+	"ignore": ["types/**", "src/README.md.js"],
+	"ignoreDependencies": ["husky", "@nan0web/log", "@nan0web/markdown", "yaml"]
 }

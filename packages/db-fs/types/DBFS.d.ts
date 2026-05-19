@@ -20,6 +20,7 @@ declare class DBFS extends DB {
      * @returns {DBFS} A new or existing DBFS instance.
      */
     static from(input: object): DBFS;
+    constructor(input?: {});
     /**
      * Array of loader functions that attempt to load data from a file path.
      * Each loader returns false if it cannot handle the data format.

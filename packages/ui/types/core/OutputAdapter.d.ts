@@ -9,10 +9,10 @@ declare class OutputAdapter extends Event {
     /**
      * Renders a message to the user.
      *
-     * @param {OutputMessage|FormMessage} message - Message to render.
+     * @param {object} message - Message to render.
      * @throws {Error} If not overridden by a subclass.
      */
-    render(message: OutputMessage | FormMessage): void;
+    render(message: object): void;
     /**
      * Shows progress of a long‑running operation.
      *
@@ -29,5 +29,3 @@ declare class OutputAdapter extends Event {
     stop(): void;
 }
 import Event from '@nan0web/event/oop';
-import OutputMessage from './Message/OutputMessage.js';
-import FormMessage from './Form/Message.js';

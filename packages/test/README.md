@@ -12,16 +12,19 @@ especially useful for LLM fine-tuning.
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/test
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/test
 ```
 
 How to install with yarn?
+
 ```bash
 yarn add @nan0web/test
 ```
@@ -29,13 +32,16 @@ yarn add @nan0web/test
 ## Core Concepts
 
 This package is designed with zero external dependencies and maximum clarity:
+
 - ✅ Fully typed with **JSDoc** and `.d.ts` files
 - 🔁 Includes mocked utilities for real testing scenarios
 - 🧠 Built for cognitive clarity: each function has a clear purpose
 - 🌱 Enables lightweight testing without side effects
 
+
 ### `MemoryDB(options)`
 Utility to simulate a file system for tests.
+
 > @deprecated Use the `@nan0web/db.DB` as it has the same functionality.
 
 * **Parameters**
@@ -43,6 +49,7 @@ Utility to simulate a file system for tests.
     - `predefined` – Map of pre-defined file contents (e.g., `{ 'users.json': '[{ id: 1 }]' }`)
 
 How to mock file system using MemoryDB?
+
 ```js
 import { MemoryDB } from "@nan0web/test"
 const db = new MemoryDB({
@@ -67,6 +74,7 @@ Utility to mock and execute child processes (for CLI tools).
   * `{ code: number, text: string }`
 
 How to use runSpawn as a CLI test tool?
+
 ```js
 import { runSpawn } from "@nan0web/test"
 const { code, text } = await runSpawn('echo', ['hello world'])
@@ -80,10 +88,10 @@ Class to automate package verification based on nan0web standards.
   * `options` – package metadata and file system db instance
 
 How to validate a package using TestPackage.run(rrs)?
+
 ```js
 import { TestPackage, RRS } from "@nan0web/test"
 const db = new MemoryDB()
-db.set('system.md', '# system.md')
 db.set('tsconfig.json', '{}')
 db.set('README.md', '# README.md')
 db.set('LICENSE', 'ISC')
@@ -104,6 +112,7 @@ console.info(statuses.join('\n'))
 Parser to extract documentation from tests and generate markdown (ProvenDoc).
 
 It reads js tests with comments like:
+
 ```js
 it("How to do something?", () => {
   ...
@@ -116,11 +125,13 @@ and converts them into structured `.md` documents.
 Parser that converts markdown docs (such as README.md) into structured `.jsonl` datasets.
 
 Each How-to block becomes one test case:
+
 ```json
 {"instruction": "How to do X?", "output": "```js\n doX()\n```", ...}
 ```
 
 How to generate dataset from markdown documentation?
+
 ```js
 import { DatasetParser } from "@nan0web/test"
 const md = '# Title\n\nHow to do X?\n```js\ndoX()\n```'
@@ -133,6 +144,7 @@ This package doesn't use heavy mocking or virtual environments — it simulates 
 You can play in its sandbox as follows:
 
 How to run CLI sandbox?
+
 ```bash
 git clone https://github.com/nan0web/test.git
 cd test
@@ -143,6 +155,7 @@ npm run play
 ## API Components
 
 has multiple test components that can be imported separately
+
 ```js
 import { MemoryDB, DocsParser, DatasetParser, runSpawn } from "@nan0web/test"
 ```
@@ -158,3 +171,5 @@ How to contribute? - [check here]($pkgURL/blob/main/CONTRIBUTING.md)
 ## License
 
 How to license? - [LICENSE]($pkgURL/blob/main/LICENSE)
+
+

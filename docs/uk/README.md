@@ -73,6 +73,16 @@ nan0ai search "Як створити новий компонент?"
 - **@nan0web/ai** — «Мозок» екосистеми, що відповідає за RAG та MCP пошук.
 
 ---
-> Ця документація синхронізується автоматично через Sovereign Inheritance (ProvenDoc).
 
-Експорти пакетів валідні
+## 📖 Архітектурний Глосарій
+
+Для підтримки найвищої якості коду та безперешкодної ко-креації з ШІ-агентами, NaN•Web впроваджує чотири фундаментальні архітектурні стовпи:
+
+- **TLI (Total Logic Isolation)** — [Читати концепт](terms/TLI.md)
+- **OLMUI (One Logic — Many UI)** — [Читати концепт](terms/OLMUI.md)
+- **Model-as-Schema** — [Читати концепт](terms/Model-as-Schema.md)
+- **NaN•Format** — [Читати концепт](terms/NaN0-Format.md)
+- **ProvenDoc** — [Читати концепт](terms/ProvenDoc.md)
+
+---
+> Ця документація синхронізується автоматично через Sovereign Inheritance (ProvenDoc).

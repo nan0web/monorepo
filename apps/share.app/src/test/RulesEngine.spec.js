@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { parseDelay, matchesConditions, evaluateRules, executeTasks } from '../core/RulesEngine.js'
-import { DummyAdapter } from '../core/DummyAdapter.js'
+import { parseDelay, matchesConditions, evaluateRules, executeTasks } from '../domain/RulesEngine.js'
+import { DummyAdapter } from '../domain/DummyAdapter.js'
 
 // ─── parseDelay ──────────────────────────────────────────────
 

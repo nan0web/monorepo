@@ -21,6 +21,10 @@ export class MarkdownIndexer extends Model {
     };
     static UI: {
         scanning: string;
+        errorDbMissing: string;
+        errorIndexing: string;
+        errorLoadIndex: string;
+        errorSearchIndex: string;
     };
     /**
      * @param {string} content
@@ -61,7 +65,7 @@ export class MarkdownIndexer extends Model {
         content: string;
         hash: string;
     } & any>;
-    getWorkspaceRoot(): string;
+    getWorkspaceRoot(): Promise<string>;
     getDatasetDir(): string;
     /**
      * Scans the workspace and indexes target markdown files.
@@ -84,7 +88,10 @@ export class MarkdownIndexer extends Model {
         strict?: boolean;
         maxDistance?: number;
         project?: string;
-    }): Promise<any[]>;
+    }): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").LogIntent | {
+        type: string;
+        data: any;
+    }, void, unknown>;
 }
 export type IndexerScope = "data" | "docs" | "source";
 import { Model } from '@nan0web/types';

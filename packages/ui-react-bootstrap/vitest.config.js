@@ -35,6 +35,7 @@ export default defineConfig({
 			'releases/**/*.{spec,test}.js',
 		],
 		setupFiles: ['./vitest.setup.js'],
+		pool: 'vmThreads',
 		server: {
 			deps: {
 				inline: [/@nan0web/],

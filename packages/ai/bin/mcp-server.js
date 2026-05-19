@@ -148,11 +148,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 			for (const [name, vdb] of databases.entries()) {
 				if (targetProjects && !targetProjects.includes(name)) continue
 				const fetchCount = Math.max(k * 10, 100)
-				const res = vdb.search(vec, fetchCount)
-				for (const r of res) {
-					if (r.distance <= maxDistance) {
-						allResults.push({ project: name, ...r })
+				try {
+					const res = vdb.search(vec, fetchCount)
+					for (const r of res) {
+						if (r.distance <= maxDistance) {
+							allResults.push({ project: name, ...r })
+						}
 					}
+				} catch (e) {
+					console.error(`MCP Server: Failed to search index for ${name}:`, e.message)
 				}
 			}
 

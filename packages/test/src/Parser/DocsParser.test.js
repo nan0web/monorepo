@@ -194,8 +194,7 @@ describe('DocsParser', () => {
 	let md = '',
 		js = ''
 	before(async () => {
-		const doc = await fs.loadDocument('DocsParser.test.md')
-		md = doc?.content ?? String(doc)
+		md = await fs.loadDocumentAs('.txt', 'DocsParser.test.md')
 	})
 	it('should parse a function', async () => {
 		const db = new DB()

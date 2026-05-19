@@ -107,6 +107,6 @@ export default class AuthCLI {
 import AuthApp from '../AuthApp.js';
 import { CLiInputAdapter as CLIInputAdapter } from '@nan0web/ui-cli';
 import { SignUpMessage } from '../messages/index.js';
-import { OutputMessage } from '@nan0web/types';
+import { OutputMessage } from '@nan0web/co';
 import { ConfirmSignUpMessage } from '../messages/index.js';
 import { LoginMessage } from '../messages/index.js';

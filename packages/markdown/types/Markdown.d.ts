@@ -17,6 +17,19 @@ export default class Markdown {
     constructor(input?: Partial<Markdown> | string);
     /** @type {MDElement} */
     document: MDElement;
+    /** @type {'yaml' | 'nan0'} */
+    frontmatterFormat: "yaml" | "nan0";
+    /** @type {Record<string, any>} */
+    vars: Record<string, any>;
+    /**
+     * Parses optional frontmatter block.
+     * @param {string} raw
+     * @returns {{ content: string, metadata: Record<string, any> }}
+     */
+    parseFrontmatter(raw: string): {
+        content: string;
+        metadata: Record<string, any>;
+    };
     /**
      * Proxies to document.add()
      * @param {MDElement} element
@@ -36,6 +49,9 @@ export default class Markdown {
      * @returns {this}
      */
     table(data: Array<any | Array<string | number>>): this;
+    set content(value: string);
+    /** @type {string} */
+    get content(): string;
     /**
      * Returns markdown string representation.
      * @returns {string}

@@ -14,12 +14,12 @@ describe('AppEntryConfig', () => {
 	it('ініціалізація з повними даними', () => {
 		const entry = new AppEntryConfig({
 			name: 'deposits',
-			src: '@industrialbank/deposits',
+			src: '@bank/deposits',
 			dsn: 'custom-data/',
 			locale: 'en',
 		})
 		assert.equal(entry.name, 'deposits')
-		assert.equal(entry.src, '@industrialbank/deposits')
+		assert.equal(entry.src, '@bank/deposits')
 		assert.equal(entry.dsn, 'custom-data/')
 		assert.equal(entry.locale, 'en')
 	})
@@ -27,7 +27,7 @@ describe('AppEntryConfig', () => {
 	it('порожні dsn та locale означають успадкування від батька', () => {
 		const entry = new AppEntryConfig({
 			name: 'credits',
-			src: '@industrialbank/credits',
+			src: '@bank/credits',
 		})
 		// Порожні значення — сигнал для runner: бери від батька
 		assert.equal(entry.dsn, '')

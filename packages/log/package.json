@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
+    "prebuild": "rm -rf types/",
     "build": "tsc",
     "play": "node play/main.js",
     "test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
@@ -51,8 +52,6 @@
     "knip": "^5.86.0"
   },
   "dependencies": {
-    "@nan0web/db-browser": "workspace:*",
-    "@nan0web/log": "workspace:*",
     "@nan0web/types": "workspace:*",
     "string-width": "^7.2.0"
   }

@@ -23,4 +23,4 @@ export type AuthorizedHead = {
      */
     authorization: string;
 };
-import { I18nMessage } from '@nan0web/types';
+import { I18nMessage } from '@nan0web/co';

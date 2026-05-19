@@ -15,6 +15,15 @@ export class IndexWorkspaceApp extends ModelAsApp {
         verifyingCacheProject: string;
         generatingVectors: string;
         errorIndexing: string;
+        agentsDone: string;
+        generatingVectorsProgress: string;
+        scanningProgress: string;
+        scanningProject: string;
+        noFilesForScope: string;
+        projectNoFiles: string;
+        projectSkippedInfo: string;
+        projectIndexedSuccess: string;
+        projectError: string;
     };
     static project: {
         help: string;
@@ -78,55 +87,52 @@ export class IndexWorkspaceApp extends ModelAsApp {
     };
     /**
      * @param {Partial<IndexWorkspaceApp> | Record<string, any>} [data] Initial state
-     * @param {any} [options] Model options
+     * @param {import('@nan0web/types').ModelOptions} [options] Model options
      */
-    constructor(data?: Partial<IndexWorkspaceApp> | Record<string, any>, options?: any);
-    /** @type {string|null} */ project: string | null;
+    constructor(data?: Partial<IndexWorkspaceApp> | Record<string, any>, options?: import("@nan0web/types").ModelOptions);
+    /** @type {string|null} Project id */ project: string | null;
+    /** @type {string|null} Scope target */ scope: string | null;
+    /** @type {boolean} Shortcut for source scope */ sources: boolean;
+    /** @type {boolean} Skip data indexing */ skipData: boolean;
+    /** @type {boolean} Skip source indexing */ skipSources: boolean;
+    /** @type {boolean} Skip docs indexing */ skipDocs: boolean;
+    /** @type {boolean} Force re-indexing */ force: boolean;
+    /** @type {boolean} Build agents index */ agents: boolean;
     /** @type {string[]} */ scopes: string[];
-    /** @type {boolean} */ sources: boolean;
-    /** @type {boolean} */ force: boolean;
-    /** @type {boolean} */ agents: boolean;
     /** @type {number} */ concurrency: number;
     /** @type {boolean} */ silent: boolean;
     /** @type {string[]} */ ignore: string[];
     /**
-     * @returns {AsyncGenerator<any, any, any>}
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
      */
-    run(): AsyncGenerator<any, any, any>;
+    run(): AsyncGenerator<import("@nan0web/ui").Intent, void, unknown>;
     /**
-     * @param {object} deps
-     * @param {any} deps.show
-     * @param {any} deps.progress
-     * @param {any} deps.MarkdownIndexer
-     * @param {any} deps.Embedder
+     * @param {object} [deps]
+     * @param {typeof import('./MarkdownIndexer.js').MarkdownIndexer} [deps.MarkdownIndexer]
+     * @param {typeof import('./Embedder.js').Embedder} [deps.Embedder]
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
      */
-    indexFull({ show, progress, MarkdownIndexer, Embedder }: {
-        show: any;
-        progress: any;
-        MarkdownIndexer: any;
-        Embedder: any;
-    }): AsyncGenerator<any, void, unknown>;
+    indexFull({ MarkdownIndexer, Embedder }?: {
+        MarkdownIndexer?: typeof import("./MarkdownIndexer.js").MarkdownIndexer;
+        Embedder?: typeof import("./Embedder.js").Embedder;
+    }): AsyncGenerator<import("@nan0web/ui").Intent, void, unknown>;
     /**
      * Shared event handler for indexing progress events
      * @param {any} it - indexing event
      * @param {object} deps
-     * @param {any} deps.show
-     * @param {any} deps.progress
-     * @param {any} deps.t
+     * @param {TFunction} deps.t
+     * @param {IndexState} state
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
      */
-    _handleEvent(it: any, { show, progress, t }: {
-        show: any;
-        progress: any;
-        t: any;
-    }): Generator<any, void, unknown>;
+    _handleEvent(it: any, stateOrDeps: any): AsyncGenerator<import("@nan0web/ui").Intent, void, unknown>;
     /**
-     * @param {object} deps
-     * @param {any} deps.show
-     * @param {any} deps.progress
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
      */
-    indexAgents({ show, progress }: {
-        show: any;
-        progress: any;
-    }): AsyncGenerator<any, void, unknown>;
+    indexAgents(): AsyncGenerator<import("@nan0web/ui").Intent, void, unknown>;
+    _getProjectsToIndex(storeDb: any, workspaceRoot: any): Promise<{
+        name: any;
+        dir: any;
+    }[]>;
 }
+export type TFunction = import("@nan0web/types").TFunction;
 import { ModelAsApp } from '@nan0web/ui-cli';

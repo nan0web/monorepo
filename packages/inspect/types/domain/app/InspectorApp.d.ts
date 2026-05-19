@@ -7,7 +7,7 @@ export class InspectorApp extends ModelAsApp {
     static command: {
         type: typeof ModelAsApp;
         help: string;
-        options: (typeof SnapshotAuditor | typeof PhaseAuditor | typeof CircularDependencyAuditor | typeof ArchitectureAuditor)[];
+        options: (typeof PhaseAuditor | typeof CircularDependencyAuditor | typeof ArchitectureAuditor | typeof SnapshotAuditor)[];
         default: typeof ArchitectureAuditor;
         positional: boolean;
     };
@@ -38,7 +38,7 @@ export class InspectorApp extends ModelAsApp {
 }
 import { ModelAsApp } from '@nan0web/ui';
 import { AuditorModel } from '../AuditorModel.js';
-import { SnapshotAuditor } from '@nan0web/ui/inspect';
 import { PhaseAuditor } from './PhaseAuditor.js';
 import { CircularDependencyAuditor } from './CircularDependencyAuditor.js';
 import { ArchitectureAuditor } from './ArchitectureAuditor.js';
+import { SnapshotAuditor } from '@nan0web/ui/inspect';

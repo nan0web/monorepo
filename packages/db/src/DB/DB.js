@@ -10,6 +10,7 @@ import GetOptions from './GetOptions.js'
 import FetchOptions from './FetchOptions.js'
 import AuthContext from './AuthContext.js'
 import DBDriverProtocol from './DriverProtocol.js'
+import FormatRegistry from '../FormatRegistry.js'
 import {
 	absolute,
 	basename,
@@ -127,6 +128,8 @@ export default class DB {
 		)
 	}
 
+	/** @type {FormatRegistry} */
+	registry
 	/** @type {DBDriverProtocol} */
 	driver
 	/** @type {string} */
@@ -190,6 +193,8 @@ export default class DB {
 	 * @param {Function} [input.Model] - Shorthand: single Model class for all URIs
 	 * @param {Record<string, string>} [input.aliases={}] - URI aliases for virtual projection
 	 * @param {Console | NoConsole} [input.console=new NoConsole()] - Logging console
+	 * @param {FormatRegistry} [input.registry] - Format registry instance
+	 * @param {Array<{ext: string, load: (str: string, ext: string) => any, save: (doc: any, ext: string) => string}>} [input.formats] - Custom format registrations
 	 */
 	constructor(input = {}) {
 		const {
@@ -207,10 +212,21 @@ export default class DB {
 			models,
 			Model,
 			console: consoleInput = new NoConsole({ silent: true }),
+			formats,
+			registry,
 		} = input
 		this.root = root
 		this.cwd = cwd
-		this.driver = this.Driver.from(driver ?? { cwd, root })
+		this.registry = registry || new FormatRegistry()
+		if (Array.isArray(formats)) {
+			for (const f of formats) {
+				this.registry.register(f.ext, f.load, f.save)
+			}
+		}
+		this.driver = this.Driver.from(driver ?? { cwd, root, registry: this.registry })
+		if (this.driver && !this.driver.registry) {
+			this.driver.registry = this.registry
+		}
 		this.ttl = Number(ttl || 0)
 		this.data = data instanceof Map ? data : new TTLMap(this.ttl, data)
 		this.meta = meta instanceof Map ? meta : new TTLMap(this.ttl, meta)
@@ -783,7 +799,7 @@ export default class DB {
 	 * @returns {Promise<void>}
 	 */
 	async buildIndexes(dir = '.') {
-		const stream = this.Index.generateAllIndexes(this, dir)
+		const stream = this.Index.generateAllIndexes(/** @type {any} */ (this), dir)
 		for await (const [uri, index] of stream) {
 			if (this.Index.isFullIndex(uri)) {
 				await this.saveDocument(uri, index.encode({ long: true, inc: true }))
@@ -801,7 +817,7 @@ export default class DB {
 	 * @returns
 	 */
 	async _buildRecursiveDirectoryTree(dirPath, entries = [], depth = 0) {
-		const immediateEntries = await DirectoryIndex.getDirectoryEntries(this, dirPath)
+		const immediateEntries = await DirectoryIndex.getDirectoryEntries(/** @type {any} */ (this), dirPath)
 
 		for (const [name, stat] of immediateEntries) {
 			const fullPath = dirPath === '.' ? name : this.resolveSync(dirPath, name)
@@ -2271,10 +2287,10 @@ export default class DB {
 		if ([this.Index.FULL_INDEX, this.Index.INDEX].includes(base)) {
 			return
 		}
-		const indexUris = DirectoryIndex.getIndexesToUpdate(this, uri)
+		const indexUris = DirectoryIndex.getIndexesToUpdate(/** @type {any} */ (this), uri)
 		for (const indexPath of indexUris) {
 			const dirPath = this.dirname(indexPath)
-			const entries = await DirectoryIndex.getDirectoryEntries(this, dirPath)
+			const entries = await DirectoryIndex.getDirectoryEntries(/** @type {any} */ (this), dirPath)
 			await this.saveIndex(dirPath, entries)
 		}
 		this.console.debug('_updateIndex().done', uri, {

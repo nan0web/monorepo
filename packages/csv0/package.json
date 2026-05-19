@@ -27,9 +27,7 @@
   },
   "author": "YaRaSLove (ЯRаСлав)",
   "license": "ISC",
-  "dependencies": {
-    "@nan0web/log": "workspace:*"
-  },
+
   "devDependencies": {
     "@nan0web/release": "workspace:*",
     "@nan0web/types": "workspace:*"

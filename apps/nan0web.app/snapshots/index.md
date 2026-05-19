@@ -5,12 +5,12 @@
 ## 🇬🇧 EN Language
 
 - [📄 **index_en.txt**](cli/index_en.txt) — 4 lines
-- [📄 **pages_en.txt**](cli/pages_en.txt) — 81 lines
+- [📄 **pages_en.txt**](cli/pages_en.txt) — 37 lines
 
 ## 🇺🇦 UK Language
 
 - [📄 **index_uk.txt**](cli/index_uk.txt) — 4 lines
-- [📄 **pages_uk.txt**](cli/pages_uk.txt) — 81 lines
+- [📄 **pages_uk.txt**](cli/pages_uk.txt) — 37 lines
 
 ## 🌐 Web Snapshots
 

@@ -1,4 +1,4 @@
-import { Model } from './Model.js'
+import { Model } from '@nan0web/types'
 
 const LANGS = ['en', 'uk', 'de', 'fr', 'es', 'pl']
 

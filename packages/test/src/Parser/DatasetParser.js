@@ -22,7 +22,7 @@ export default class DatasetParser {
 	static parse(text, pkgName) {
 		const md = new Markdown()
 		md.parse(text)
-		const dataset = md.document
+		const dataset = md.document.children
 			.map((el, i, arr) => {
 				if (
 					el instanceof MDParagraph &&

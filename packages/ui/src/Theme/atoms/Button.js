@@ -20,6 +20,7 @@ import { tokens } from '../tokens.js'
  * @property {string} fontSize
  * @property {string} paddingX
  * @property {string} paddingY
+ * @property {string} fontFamily
  */
 
 /**

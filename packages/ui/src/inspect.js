@@ -1,3 +1,6 @@
 export * from './testing/SnapshotRunner.js'
 export * from './testing/verifySnapshot.js'
 export { SnapshotAuditor } from './domain/app/SnapshotAuditor.js'
+export { IntentAuditor } from './domain/app/IntentAuditor.js'
+export { JsIntentAuditor } from './domain/app/JsIntentAuditor.js'
+export { PyIntentAuditor } from './domain/app/PyIntentAuditor.js'

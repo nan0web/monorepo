@@ -1,0 +1,21 @@
+{
+  "name": "@nan0web/pipeline",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Abstract Node-based Pipeline Architecture for NanoWeb",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test src/**/*.test.js"
+  },
+  "keywords": [
+    "nan0web",
+    "pipeline",
+    "node-based",
+    "workflow"
+  ],
+  "author": "Antigravity",
+  "license": "ISC",
+  "dependencies": {
+    "@nan0web/types": "workspace:*"
+  }
+}

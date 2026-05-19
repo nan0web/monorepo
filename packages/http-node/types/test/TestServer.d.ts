@@ -5,7 +5,7 @@
  */
 export default class TestServer {
     constructor(options?: {});
-    server: import("../server/Server.js").default;
+    server: import("../index.js").Server;
     baseUrl: string | null;
     /**
      * Add a route to the test server
@@ -39,5 +39,5 @@ export default class TestServer {
      */
     request(path: string, options?: any): Promise<ResponseMessage>;
 }
-export type MiddlewareFn = import('../server/Server.js').MiddlewareFn;
+export type MiddlewareFn = import("../server/Server.js").MiddlewareFn;
 export type ResponseMessage = import("../messages/ResponseMessage.js").default;

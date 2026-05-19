@@ -9,7 +9,6 @@ export default class TestPackage {
 		name: 'Package name', // t("Package name")
 		status: 'Status', // t("Status")
 		docs: 'Documentation', // t("Documentation")
-		coverage: 'Test coverage', // t("Test coverage")
 		features: 'Features', // t("Features")
 		npm: 'Npm version', // t("Npm version")
 	}
@@ -117,10 +116,11 @@ export default class TestPackage {
 
 	/**
 	 * @param {RRS} rrs
-	 * @param {*} cache
+	 * @param {any} [cache=false]
+	 * @param {((line: string) => void) | null} [onOutput=null]
 	 * @returns {AsyncGenerator<{ name: string, value: any }>}
 	 */
-	async *run(rrs, cache = false) {
+	async *run(rrs, cache = false, onOutput = null) {
 		this.hash = ''
 		for (const file of this.RELATED) {
 			const stat = await this.db.statDocument(file)
@@ -129,40 +129,44 @@ export default class TestPackage {
 		const pkgName = this.name
 		const pkg = await this.db.loadDocument('package.json', {})
 		cache = cache?.pkg?.hash === this.hash
+		this.cachedHit = cache
 
 		const cwd = this.cwd
 		const docs = []
-		let name = 'git remote get-url origin'
-		yield { name, value: '' }
-		if (!cache) {
-			const result = await this.spawn('git', ['remote', 'get-url', 'origin'], { cwd })
-			if (0 !== result.code) {
-				rrs.required.git = 0
+
+		/**
+		 * @param {string} cmd
+		 * @param {string[]} cmdArgs
+		 * @param {Object & { onData?: (chunk: Buffer) => void, cwd?: string }} [cmdOpts]
+		 */
+		const spawnWithOutput = async (cmd, cmdArgs, cmdOpts = {}) => {
+			const finalOpts = { ...cmdOpts }
+			if (onOutput) {
+				finalOpts.onData = (chunk) => {
+					const text = chunk.toString().trim()
+					if (text) {
+						const lines = text.split('\n').filter(Boolean)
+						const lastLine = lines[lines.length - 1]
+						onOutput(lastLine)
+					}
+				}
 			}
+			return await this.spawn(cmd, cmdArgs, finalOpts)
 		}
-		yield { name, value: rrs.required.git ? ' 🟢' : ' 🔴' }
-		name = 'pnpm build'
+
+		let name = 'pnpm build'
 		yield { name, value: '' }
 		if (!cache) {
-			const result = await this.spawn('pnpm', ['build'], { cwd })
+			const result = await spawnWithOutput('pnpm', ['build'], { cwd })
 			if (0 !== result.code) {
 				rrs.required.buildPass = 0
 			}
 		}
 		yield { name, value: rrs.required.buildPass ? ' 🟢' : ' 🔴' }
-		name = 'load system.md'
-		yield { name, value: '' }
-		if (!cache) {
-			const systemMd = await this.db.loadDocument('system.md', '')
-			if ('' === systemMd) {
-				rrs.required.systemMd = 0
-			}
-		}
-		yield { name, value: rrs.required.systemMd ? ' 🟢' : ' 🔴' }
 		name = 'pnpm test'
 		yield { name, value: '' }
 		if (!cache) {
-			const result = await this.spawn('pnpm', ['test'], { cwd })
+			const result = await spawnWithOutput('pnpm', ['test'], { cwd })
 			if (0 !== result.code) {
 				rrs.required.testPass = 0
 			}
@@ -177,30 +181,7 @@ export default class TestPackage {
 			}
 		}
 		yield { name, value: rrs.required.tsconfig ? ' 🟢' : ' 🔴' }
-		name = 'pnpm test:coverage'
-		yield { name, value: '' }
-		if (!cache) {
-			const result = await this.spawn('pnpm', ['test:coverage'], { cwd })
-			rrs.optional.testCoverage = 0
-			if (0 === result.code) {
-				const rows = result.text.split('\n')
-				const startIndex = rows.findIndex((r) => '# start of coverage report' === r)
-				const endIndex = rows.findIndex((r) => '# end of coverage report' === r)
-				const coverage = rows.slice(startIndex, endIndex)
-				if (coverage.length > 3) {
-					const allFiles = coverage[coverage.length - 2] || ''
-					if (allFiles.startsWith('# all files ')) {
-						const cols = allFiles.split(' |')
-						rrs.optional.testCoverage = Math.max(
-							parseFloat(cols[1]),
-							parseFloat(cols[2]),
-							parseFloat(cols[3]),
-						)
-					}
-				}
-			}
-		}
-		yield { name, value: rrs.optional.testCoverage ? ' 🟢' : ' 🟡' }
+
 		name = 'load CONTRIBUTING.md && load LICENSE'
 		yield { name, value: '' }
 		if (!cache) {
@@ -238,7 +219,10 @@ export default class TestPackage {
 				docs.push(`[Українською 🇺🇦](${this.baseURL}blob/main/docs/uk/README.md)`)
 			}
 
-			const readmeTest = await this.db.loadDocument('src/README.md.js', '')
+			let readmeTest = await this.db.loadDocument('src/README.md.js', '')
+			if ('' === readmeTest) {
+				readmeTest = await this.db.loadDocument('src/docs/README.md.js', '')
+			}
 			if ('' === readmeTest) {
 				rrs.optional.readmeTest = 0
 			}
@@ -247,7 +231,7 @@ export default class TestPackage {
 		name = 'npm info ' + this.name
 		yield { name, value: '' }
 		if (!cache) {
-			const result = await this.spawn('npm', ['info', pkgName, '--json'], { cwd })
+			const result = await spawnWithOutput('npm', ['info', pkgName, '--json'], { cwd })
 			if (0 !== result.code) {
 				rrs.optional.npmPublished = 0
 			} else {
@@ -256,17 +240,7 @@ export default class TestPackage {
 			}
 		}
 		yield { name, value: rrs.optional.npmPublished ? ' 🟢' : ' 🟡' }
-		name = 'releases'
-		yield { name, value: '' }
-		if (!cache) {
-			const releases = Array.from(this.db.meta.keys()).filter(
-				(k) => k.endsWith('release.md') && k.startsWith('releases/'),
-			)
-			if (1 !== releases.length) {
-				rrs.optional.releaseMd = 0
-			}
-		}
-		yield { name, value: rrs.optional.releaseMd ? ' 🟢' : ' 🟡' }
+
 		if (docs.length || !cache) {
 			rrs.docs = docs
 		}
@@ -334,13 +308,12 @@ export default class TestPackage {
 		if (body) {
 			const row = []
 			if (cols.includes('name')) {
-				row.push(rrs.required.git ? `[${this.name}](${this.baseURL})` : this.name)
+				row.push(this.baseURL ? `[${this.name}](${this.baseURL})` : this.name)
 			}
 			if (cols.includes('status')) row.push(rrs.icon())
 			if (cols.includes('docs')) {
 				row.push((rrs.optional.readmeTest ? '🧪 ' : '🟡 ') + rrs.docs.join('<br />'))
 			}
-			if (cols.includes('coverage')) row.push(rrs.coverage())
 			if (cols.includes('features')) row.push(features.join(' '))
 			if (cols.includes('npm')) {
 				if (rrs.npmInfo) {

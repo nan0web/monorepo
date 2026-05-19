@@ -1,5 +1,5 @@
 import { ModelAsApp } from '@nan0web/ui'
-import { StackDetector } from '@nan0web/core'
+import { StackDetector } from './StackDetector.js'
 
 /** @typedef {'js' | 'python' | 'unknown'} LanguagePlatform */
 
@@ -61,11 +61,10 @@ export class AuditorModel extends ModelAsApp {
 		/** @type {string} Target directory to audit */ this.dir
 		/** @type {boolean} Show help */ this.help
 		/** @type {LanguagePlatform} Language platform to audit */ this.platform
-		/** @type {boolean} Automatically apply fixes where possible */ this.fix =
-			Boolean(data.fix || (options && 'fix' in options ? (/** @type {any} */(options)).fix : false))
+		/** @type {boolean} Automatically apply fixes where possible */ this.fix = Boolean(
+			data.fix || (options && 'fix' in options ? /** @type {any} */ (options).fix : false),
+		)
 		this.#specificPlatform = data.platform
-
-
 	}
 
 	/**

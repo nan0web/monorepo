@@ -9,7 +9,7 @@ export default _default;
 export { OlmuiInspector } from "../play/components/OlmuiInspector.jsx";
 /** @type {Map<string, React.ComponentType<any>>} */
 export const components: Map<string, React.ComponentType<any>>;
-export const renderers: Map<string, typeof BootstrapRenderers.renderTreeView>;
+export const renderers: Map<string, typeof import("../../ui-react/types/renderers/renderForm.js").default>;
 import { UIReact } from '@nan0web/ui-react';
 import { useUI } from '@nan0web/ui-react';
 import { UIProvider } from '@nan0web/ui-react';
@@ -44,6 +44,5 @@ import Blog from './components/molecules/Blog/Blog.jsx';
 import Contacts from './components/molecules/Contacts/Contacts.jsx';
 import { SortableList } from './components/SortableList.jsx';
 import Sandbox from './components/organisms/Sandbox/Sandbox.jsx';
-import * as BootstrapRenderers from './renderers/index.jsx';
 export { UIReact, useUI, UIProvider, UIContextValue, tokens, Element, Theme, BootstrapTheme, Button, Input, Typography, Card, Modal, TreeView, Autocomplete, Header, Footer, Promo, Telephone, Email, Address, Icon, Loading, Heading, Accordion, Blog, Contacts, SortableList, Sandbox };
 export { Renderer, renderItem, layoutToContent } from "./renderItem.jsx";

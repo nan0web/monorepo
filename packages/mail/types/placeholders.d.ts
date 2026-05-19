@@ -5,4 +5,4 @@
  * @param {Function} escaper - The escape value function;
  * @returns {string} - The string with replaced placeholders.
  */
-export function replace(template: string, data: object, escaper?: Function): string
+export function replace(template: string, data: object, escaper?: Function): string;

@@ -20,19 +20,19 @@ export default class ResponseMessage extends Readable {
      */
     constructor(bodyOrReq: any, options?: any);
     /** @type {import('node:net').Socket|undefined} */
-    socket: import('node:net').Socket | undefined;
+    socket: import("node:net").Socket | undefined;
     /** @type {number} */
-    set status(arg: number);
+    set status(value: number);
     /** @type {number} */
     get status(): number;
     /** @type {string} */
-    set statusText(arg: string);
+    set statusText(value: string);
     /** @type {string} */
     get statusText(): string;
     /** @type {boolean} */
     get ok(): boolean;
     /** @type {boolean} */
-    set headersSent(arg: boolean);
+    set headersSent(v: boolean);
     /** @type {boolean} */
     get headersSent(): boolean;
     /** Mimic ServerResponse.writeHead – set status and mark headers sent. */
@@ -66,21 +66,21 @@ export default class ResponseMessage extends Readable {
      * Assign socket to response (required by Node.js HTTP server)
      * @param {import('node:net').Socket} socket
      */
-    assignSocket(socket: import('node:net').Socket): void;
+    assignSocket(socket: import("node:net").Socket): void;
     /**
      * Write data to response
      * @param {string|Buffer} chunk
      * @param {string} [encoding]
      * @param {Function} [callback]
      */
-    write(chunk: string | Buffer, encoding?: string | undefined, callback?: Function | undefined): boolean;
+    write(chunk: string | Buffer, encoding?: string, callback?: Function): boolean;
     /**
      * End response
      * @param {string|Buffer} [data]
      * @param {string} [encoding]
      * @param {Function} [callback]
      */
-    end(data?: string | Buffer | undefined, encoding?: string | undefined, callback?: Function | undefined): this;
+    end(data?: string | Buffer, encoding?: string, callback?: Function): this;
     #private;
 }
 import { Readable } from 'node:stream';

@@ -10,6 +10,10 @@ import { DB } from '@nan0web/db'
  */
 export class SyncWorkspaceApp extends ModelAsApp {
 	static alias = 'sync'
+	static locale = {
+		help: 'Locale of workflows to synchronize (e.g., uk, en)',
+		default: '',
+	}
 	static UI = {
 		syncStarted: 'Starting global synchronization across all editors...',
 		workflowsSynced: 'Workflows & Rules synced to {target}',
@@ -35,8 +39,23 @@ export class SyncWorkspaceApp extends ModelAsApp {
 
 		const { t } = this._
 		const db = new DB()
-		const root = /** @type {any} */ (this._).workspaceRoot || process.cwd()
-		db.mount('@app', new DBFS({ cwd: root, root: '' }))
+
+		let workspaceRoot = path.resolve(/** @type {any} */ (this._).workspaceRoot || process.cwd())
+		let current = workspaceRoot
+		while (current && current !== '/') {
+			const tempDb = new DBFS({ cwd: current, root: '' })
+			const stat = await tempDb.statDocument('pnpm-workspace.yaml')
+			if (stat.exists) {
+				workspaceRoot = current
+				break
+			}
+			const parent = path.dirname(current)
+			if (parent === current) break
+			current = parent
+		}
+
+		db.mount('@app', new DBFS({ cwd: process.cwd(), root: '' }))
+		db.mount('@ws', new DBFS({ cwd: workspaceRoot, root: '' }))
 
 		yield show(t(SyncWorkspaceApp.UI.syncStarted), 'info')
 
@@ -56,15 +75,21 @@ export class SyncWorkspaceApp extends ModelAsApp {
 		db.mount('@cursor', cursorGlobal)
 
 		try {
-			// 1. Load Ecosystem & Identity
-			const ecosystem = await db.get('@app/ecosystem.json').catch(() => ({}))
-			const identity = await db.get('@app/identity.json').catch(() => ({}))
+			// 1. Load Identity
+			const identity = (await db.get('@ws/identity.json').catch(() => ({}))) || {}
 
 			// Only sync public key
 			const publicIdentity = identity.publicKey ? { publicKey: identity.publicKey } : {}
 
 			// 2. Discover workflows in @nan0web/ai
-			const aiWorkflowsDir = '@app/packages/ai/workflows'
+			let aiWorkflowsDir = '@ws/packages/ai/workflows'
+			const aiPkg = await db.get('@ws/packages/ai/package.json').catch(() => null)
+			if (aiPkg && aiPkg.nan0web) {
+				const systemLocale = (process.env.LANG || 'uk').split('.')[0].split('_')[0]
+				const locale = this.locale || this._.locale || systemLocale
+				const relativeWorkflowDir = aiPkg.nan0web.workflowDir.replace('{locale}', locale)
+				aiWorkflowsDir = `@ws/packages/ai/${relativeWorkflowDir}`
+			}
 			const workflows = await db.listDir(aiWorkflowsDir).catch(() => [])
 
 			// 3. Define Targets from Ecosystem
@@ -89,10 +114,6 @@ export class SyncWorkspaceApp extends ModelAsApp {
 
 				yield show(t(SyncWorkspaceApp.UI.workflowsSynced, { target: target.name }), 'success')
 			}
-
-			// 4. Update Sync Timestamp in ecosystem.json
-			ecosystem.lastSync = new Date().toISOString()
-			await db.saveDocument('@app/ecosystem.json', ecosystem)
 
 			yield show(t(SyncWorkspaceApp.UI.done), 'success')
 		} catch (e) {

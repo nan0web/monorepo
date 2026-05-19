@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { Model } from './Model.js'
+import { Model } from './index.js'
 import { ProjectModel } from './ProjectModel.js'
 import { ModelError } from '@nan0web/types'
 

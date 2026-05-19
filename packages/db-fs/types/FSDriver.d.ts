@@ -8,6 +8,7 @@ export default class FSDriver extends DBDriverProtocol {
      * @returns {FSDriver}
      */
     static from(input: any): FSDriver;
+    constructor(config?: {});
     /**
      * Connects to the file system.
      * @returns {Promise<void>}

@@ -25,4 +25,3 @@ export function parseCSV0(source) {
 	return { frontMatter: '', csvBody: source }
 }
 
-export default parseCSV0

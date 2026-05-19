@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import FS from '@nan0web/db-fs'
 import { NoConsole } from '@nan0web/log'
 import { DocsParser, DatasetParser } from '@nan0web/test'
-import { AppCore, AppResult, ExecutableCommand, ProjectModel } from './index.js'
+import { AppCore, AppResult, ProjectModel } from './index.js'
 import DB from '@nan0web/db'
 
 /**
@@ -171,12 +171,7 @@ function testRender() {
 		assert.equal(ProjectModel.UI.title, 'Project Data')
 	})
 
-	/**
-	 * ## ExecutableCommand exposure
-	 */
-	it('Are exported commands available?', () => {
-		assert.ok(ExecutableCommand)
-	})
+
 
 	/**
 	 * ## TypeScript declarations

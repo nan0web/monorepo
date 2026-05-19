@@ -126,7 +126,7 @@ function testRender() {
 	 */
 	/** @docs */
 	it('rules-engine', async () => {
-		const { parseDelay } = await import('./core/RulesEngine.js')
+		const { parseDelay } = await import('./domain/RulesEngine.js')
 		assert.equal(parseDelay('30m'), 1800000)
 		assert.equal(parseDelay('2h'), 7200000)
 	})
@@ -164,7 +164,7 @@ function testRender() {
 	 */
 	/** @docs */
 	it('models', async () => {
-		const { SocialAdapterConfig } = await import('./core/Models.js')
+		const { SocialAdapterConfig } = await import('./domain/Models.js')
 		const { TelegramAdapterConfig } = await import('./adapters/TelegramAdapter.js')
 		const config = new TelegramAdapterConfig({ botToken: 'abc', chatId: '@ch' })
 		assert.ok(config instanceof SocialAdapterConfig)
@@ -297,7 +297,7 @@ describe('Rendering README.md', async () => {
 	await fs.saveDocument('.datasets/README.dataset.jsonl', dataset)
 
 	it(`document is rendered in README.md [${format(Buffer.byteLength(text))}b]`, async () => {
-		const doc = await fs.loadDocument('README.md')
+		const doc = await fs.loadDocumentAs('.txt', 'README.md')
 		assert.ok(doc.includes('## Architecture'))
 		assert.ok(doc.includes('## Installation'))
 		assert.ok(doc.includes('## Full Lifecycle'))

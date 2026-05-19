@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@nan0web/log": "workspace:*",
+    "@nan0web/markdown": "workspace:*",
     "yaml": "^2.8.2"
   }
 }

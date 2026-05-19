@@ -22,20 +22,26 @@ graph TD
 
 ### AuthPolicy
 
-| Property | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| enabled | boolean | true | global auth toggle |
-| protectedPaths | string[] | ['/api/**'] | glob-patterns to guard |
-| publicPaths | string[] | ['/api/health'] | glob-overrides (public) |
-| strategy | enum | 'jwt' | jwt, session, or apikey |
+|
+|
+|
+|
+|
+|
 
-### UserAccount
+|
+|
+|
+|
+|
 
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| username | string | Unique login identifier |
-| email | string | Primary contact (validated) |
-| soulId | string | Sovereign identity bridge |
+### AuthConfig
+
+|
+|
+|
+|
+|
 
 ## Installation
 ```bash
@@ -50,6 +56,7 @@ How to install?
 Define protection rules using glob patterns with automatic public overrides.
 
 How to check if a path is protected?
+
 ```js
 import { AuthPolicy } from '@nan0web/auth.app'
 const policy = new AuthPolicy({
@@ -61,6 +68,7 @@ const policy = new AuthPolicy({
 Formalize system behavior using the AuthConfig model.
 
 How to configure the auth system?
+
 ```js
 import { AuthConfig } from '@nan0web/auth.app'
 const config = new AuthConfig({
@@ -73,6 +81,7 @@ console.info(config.passwordMinLength)
 Extend the base `UserAccount` to add specific fields for your application (e.g., coins, roles).
 
 How to extend UserAccount for your app?
+
 ```js
 import { UserAccount } from '@nan0web/auth.app'
 class SunAccount extends UserAccount {
@@ -84,35 +93,85 @@ const user = new SunAccount({
 	dailyCoins: 500
 })
 ```
-### 🏁 Headless Auth Dispatcher (AuthApp)
-Orchestrate complex flows (signup, login) while staying platform-agnostic.
+### 🧩 Registration Strategies
+Configure how users join your community using the `verificationFlow` parameter.
+
+|
+|
+|
+|
+|
+
+### 🚀 Polymorphic Dispatcher (run)
+The `AuthApp` uses a generator-based pipeline to process any domain message.
+It automatically routes `[Action]Message` to the corresponding `[action]` method.
 
 ```mermaid
 sequenceDiagram
-    Client->>AuthApp: signUp(data)
-    AuthApp-->>DB: createUser()
-    AuthApp-->>Client: "Registration successful"
+    Adapter->>AuthApp: run(SignUpMessage)
+    AuthApp->>Logic: dispatch to signUp()
+    Logic-->>AuthApp: yields OutputMessage
+    AuthApp-->>Adapter: streaming results
 ```
 
 How to run the signup flow?
+
 ```js
 import { AuthApp, AuthConfig } from '@nan0web/auth.app'
 const config = new AuthConfig({ 'default-community-coins': 500 })
 const app = new AuthApp(config, {
 	db: {
 		getUser: async () => null,
-		createUser: async () => ({ email: 'test@example.com' }),
-		saveVerificationCode: async () => {}
+		createUser: async () => ({ email: 'test@example.com', name: 'testuser' }),
+		saveVerificationCode: async () => {},
+		saveUser: async () => {}
+	},
+	tokenManager: {
+		getShortHash: (v) => 'hash-' + v.slice(0,6),
+		createTokenPair: () => ({ accessToken: 'at', refreshToken: 'rt' })
+	},
+	tokenRotationRegistry: { registerToken: () => {} }
+})
+// 1. Using the polymorphic run() dispatcher
+const msg = SignUpMessage.from({
+	body: { email: 'test@example.com', username: 'testuser', password: 'password123' }
+})
+const signupFlow = app.run(msg)
+for await (const output of signupFlow) {
+	if (Array.isArray(output.content)) {
+		output.content.forEach((x) => console.info(x))
+	} else {
+		const label = output.body?.message || output.error?.message
+		if (label) console.info(label)
+	}
+}
+```
+### 🛡 Advanced Strategies: Email + Admin approval
+In this mode, the user confirms their email, but the account remains unapproved until an administrator takes action.
+
+How to use email+admin strategy?
+
+```js
+const config = new AuthConfig({ 'verification-flow': 'email+admin' })
+const app = new AuthApp(config, {
+	db: {
+		getUser: async () => null,
+		getUserByEmail: async () => ({ name: 'testuser', email: 'test@example.com', verified: false, approved: false, verificationCode: '123456' }),
+		createUser: async () => ({ email: 'test@example.com', name: 'testuser' }),
+		saveVerificationCode: async () => {},
+		saveUser: async () => {}
 	},
 	tokenManager: { getShortHash: (v) => 'hash-' + v.slice(0,6) },
 	tokenRotationRegistry: { registerToken: () => {} }
 })
-const signupFlow = app.signUp({
-	body: { email: 'test@example.com', username: 'testuser', password: 'password123' }
-})
-for await (const message of signupFlow) {
-	const label = Array.isArray(message.content) ? message.content[0] : message.body?.message || message.error?.message
-	console.info(label)
+const confirmFlow = app.confirmSignUp({ body: { contact: 'test@example.com', code: '123456' } })
+for await (const output of confirmFlow) {
+	if (Array.isArray(output.content)) {
+		output.content.forEach((x) => console.info(x))
+	} else {
+		const label = output.body?.message || output.error?.message
+		if (label) console.info(label)
+	}
 }
 ```
 ## API Reference (v1.1.0)
@@ -123,3 +182,5 @@ for await (const message of signupFlow) {
 * **AuthConfig**: system environment settings.
 
 API completeness check
+
+

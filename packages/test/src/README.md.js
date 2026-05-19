@@ -148,7 +148,6 @@ function testRender() {
 		//import { TestPackage, RRS } from "@nan0web/test"
 		const db = new MemoryDB()
 
-		db.set('system.md', '# system.md')
 		db.set('tsconfig.json', '{}')
 		db.set('README.md', '# README.md')
 		db.set('LICENSE', 'ISC')
@@ -168,7 +167,8 @@ function testRender() {
 		}
 
 		console.info(statuses.join('\n'))
-		assert.ok(statuses.includes('load system.md: 🟢'))
+		assert.ok(statuses.includes('load README.md: 🟢'))
+		assert.ok(statuses.includes('load docs/uk/README.md:'))
 	})
 
 	/**

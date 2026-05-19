@@ -1,4 +1,4 @@
-import Message from '@nan0web/types'
+import Message from '@nan0web/co'
 
 export class LogInBody {
 	static ERRORS = {

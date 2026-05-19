@@ -37,6 +37,11 @@ export class UserAccount extends Model {
         type: string;
         default: string;
     };
+    static approved: {
+        help: string;
+        type: string;
+        default: boolean;
+    };
     /**
      * @param {Partial<UserAccount> | Record<string, any>} [data]
      * @param {object} [options]
@@ -47,5 +52,6 @@ export class UserAccount extends Model {
     /** @type {string} */ avatar: string;
     /** @type {boolean} */ verified: boolean;
     /** @type {string} */ soulId: string;
+    /** @type {boolean} */ approved: boolean;
 }
 import { Model } from '@nan0web/types';

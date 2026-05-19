@@ -482,6 +482,6 @@ describe('Rendering README.md', async () => {
 
 	it(`document is rendered in README.md [${format(Buffer.byteLength(text))}b]`, async () => {
 		const saved = await fs.loadDocument('README.md')
-		assert.ok(saved.includes('## License'))
+		assert.ok(String(saved).includes('## License'))
 	})
 })

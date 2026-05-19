@@ -11,7 +11,15 @@
 		"strict": true,
 		"noEmit": false,
 		"skipLibCheck": true,
-		"outDir": "./types"
+		"outDir": "./types",
+		"baseUrl": ".",
+		"paths": {
+			"@nan0web/*": [
+				"../*/types",
+				"../*/types/index.d.ts",
+				"../*/types/index.js"
+			]
+		}
 	},
 	"include": [
 		"src/**/*.js"
@@ -20,6 +28,7 @@
 		"node_modules",
 		"**/*.test.js",
 		"**/*.story.js",
-		"src/test"
+		"src/test",
+		"src/README.md.js"
 	]
 }

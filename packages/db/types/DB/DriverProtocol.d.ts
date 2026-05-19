@@ -4,6 +4,8 @@
  * @property {string} [root="."] - Root path for URI resolution
  * @property {typeof Directory} [Directory=Directory] - Directory class with data functionality
  * @property {DBDriverProtocol} [driver] - Next driver if current fails, undefined by default
+ * @property {FormatRegistry} [registry] - Format registry instance
+ * @property {Array<{ext: string, load: (str: string, ext: string) => any, save: (doc: any, ext: string) => string}>} [formats] - Custom format registrations
  */
 /**
  * Base protocol for database drivers.
@@ -15,8 +17,10 @@
  */
 export default class DBDriverProtocol {
     static Formats: {
-        loaders: ((str: any, ext: any) => any)[];
-        savers: ((doc: any, ext: any) => string | false)[];
+        readonly loaders: ((str: any, ext: any) => any)[];
+        readonly savers: ((doc: any, ext: any) => string | false)[];
+        load(str: any, ext: any): any;
+        save(doc: any, ext: any): string;
     };
     /**
      * @param {any} input
@@ -35,6 +39,8 @@ export default class DBDriverProtocol {
     Directory: typeof Directory;
     /** @type {DBDriverProtocol | undefined} */
     driver: DBDriverProtocol | undefined;
+    /** @type {FormatRegistry} */
+    registry: FormatRegistry;
     /**
      * Connects to the physical environment
      * Initializes the driver (e.g., open connection, mount filesystem).
@@ -140,7 +146,20 @@ export type DriverConfig = {
      * - Next driver if current fails, undefined by default
      */
     driver?: DBDriverProtocol | undefined;
+    /**
+     * - Format registry instance
+     */
+    registry?: FormatRegistry | undefined;
+    /**
+     * - Custom format registrations
+     */
+    formats?: {
+        ext: string;
+        load: (str: string, ext: string) => any;
+        save: (doc: any, ext: string) => string;
+    }[] | undefined;
 };
 import Directory from '../Directory.js';
+import FormatRegistry from '../FormatRegistry.js';
 import AuthContext from './AuthContext.js';
 import DocumentStat from '../DocumentStat.js';

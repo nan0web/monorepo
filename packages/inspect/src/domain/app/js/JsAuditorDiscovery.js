@@ -43,7 +43,11 @@ export class JsAuditorDiscovery extends AuditorDiscovery {
 			
 			// 1. Check target project's own 'inspect' export from package.json
 			if (pkg?.exports?.['./inspect']) {
-				localEntries.unshift(pkg.exports['./inspect'])
+				const inspectExport = pkg.exports['./inspect']
+				const entry = typeof inspectExport === 'object' && inspectExport !== null ? inspectExport.import : inspectExport
+				if (entry) {
+					localEntries.unshift(entry)
+				}
 			}
 
 			// 2. Scan and import local entries

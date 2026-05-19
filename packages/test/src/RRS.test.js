@@ -8,24 +8,23 @@ describe('RRS', () => {
 
 		assert.ok(rrs.required instanceof RRS.Required)
 		assert.ok(rrs.optional instanceof RRS.Optional)
-		assert.strictEqual(rrs.max, 624)
+		assert.strictEqual(rrs.max, 323)
 		assert.strictEqual(rrs.npmInfo, '')
 		assert.deepStrictEqual(rrs.docs, [])
 	})
 
 	it('should create an RRS instance with custom values', () => {
-		const required = { git: 50, systemMd: 75 }
-		const optional = { readmeTest: 20, testCoverage: 85 }
+		const required = { testPass: 50, buildPass: 75 }
+		const optional = { readmeTest: 20 }
 		const npmInfo = '1.0.0'
 		const docs = ['README.md', 'docs/uk/README.md']
 		const max = 1000
 
 		const rrs = new RRS({ required, optional, npmInfo, docs, max })
 
-		assert.strictEqual(rrs.required.git, 50)
-		assert.strictEqual(rrs.required.systemMd, 75)
+		assert.strictEqual(rrs.required.testPass, 50)
+		assert.strictEqual(rrs.required.buildPass, 75)
 		assert.strictEqual(rrs.optional.readmeTest, 20)
-		assert.strictEqual(rrs.optional.testCoverage, 85)
 		assert.strictEqual(rrs.npmInfo, '1.0.0')
 		assert.deepStrictEqual(rrs.docs, ['README.md', 'docs/uk/README.md'])
 		assert.strictEqual(rrs.max, 1000)
@@ -33,32 +32,28 @@ describe('RRS', () => {
 
 	it('should calculate percentage correctly', () => {
 		const rrs = new RRS({
-			required: { git: 100, systemMd: 100, testPass: 100, buildPass: 100, tsconfig: 100 },
+			required: { testPass: 100, buildPass: 100, tsconfig: 100 },
 			optional: {
 				readmeTest: 10,
 				playground: 10,
-				testCoverage: 20,
-				releaseMd: 1,
 				readmeMd: 1,
 				npmPublished: 1,
 				contributingAndLicense: 1,
 			},
 		})
 
-		// Total score: 500 (required) + 44 (optional) = 544
-		// Max score: 624
-		// Percentage: 544/624 * 100 ≈ 87.2
-		assert.strictEqual(rrs.percentage.toFixed(1), '87.2')
+		// Total score: 300 (required) + 23 (optional) = 323
+		// Max score: 323
+		// Percentage: 323/323 * 100 = 100%
+		assert.strictEqual(rrs.percentage.toFixed(1), '100.0')
 	})
 
 	it('should return missing properties with icons', () => {
 		const rrs = new RRS({
-			required: { git: 0, systemMd: 100, testPass: 0, buildPass: 100, tsconfig: 100 },
+			required: { testPass: 0, buildPass: 100, tsconfig: 100 },
 			optional: {
 				readmeTest: 0,
 				playground: 10,
-				testCoverage: 0,
-				releaseMd: 1,
 				readmeMd: 0,
 				npmPublished: 1,
 				contributingAndLicense: 0,
@@ -66,7 +61,6 @@ describe('RRS', () => {
 		})
 
 		const missing = rrs.missing
-		assert.ok(missing.includes('git'))
 		assert.ok(missing.includes(rrs.required.icon('testPass')))
 		assert.ok(missing.includes(rrs.optional.icon('readmeTest')))
 		assert.ok(missing.includes(rrs.optional.icon('contributingAndLicense')))
@@ -75,38 +69,43 @@ describe('RRS', () => {
 
 	it('should return status icon based on percentage', () => {
 		const rrsLow = new RRS({
-			required: { git: 0, systemMd: 0, testPass: 0, buildPass: 0, tsconfig: 0 },
+			required: { testPass: 0, buildPass: 0, tsconfig: 0 },
 			optional: {
 				readmeTest: 0,
 				playground: 0,
-				testCoverage: 0,
-				releaseMd: 0,
 				readmeMd: 0,
 				npmPublished: 0,
 				contributingAndLicense: 0,
 			},
 		})
 
-		const rrsMedium = new RRS({
-			required: { git: 100, systemMd: 100, testPass: 100, buildPass: 100, tsconfig: 100 },
+		const rrsYellow = new RRS({
+			required: { testPass: 100, buildPass: 100, tsconfig: 0 },
 			optional: {
-				readmeTest: 0,
-				playground: 0,
-				testCoverage: 0,
-				releaseMd: 0,
-				readmeMd: 0,
-				npmPublished: 0,
-				contributingAndLicense: 0,
+				readmeTest: 10,
+				playground: 10,
+				readmeMd: 1,
+				npmPublished: 1,
+				contributingAndLicense: 1,
 			},
 		})
 
 		const rrsHigh = new RRS({
-			required: { git: 100, systemMd: 100, testPass: 100, buildPass: 100, tsconfig: 100 },
+			required: { testPass: 100, buildPass: 100, tsconfig: 100 },
 			optional: {
 				readmeTest: 10,
 				playground: 10,
-				testCoverage: 90,
-				releaseMd: 1,
+				readmeMd: 1,
+				npmPublished: 1,
+				contributingAndLicense: 1,
+			},
+		})
+
+		const rrsBlocker = new RRS({
+			required: { testPass: 0, buildPass: 100, tsconfig: 100 },
+			optional: {
+				readmeTest: 10,
+				playground: 10,
 				readmeMd: 1,
 				npmPublished: 1,
 				contributingAndLicense: 1,
@@ -114,25 +113,14 @@ describe('RRS', () => {
 		})
 
 		assert.ok(rrsLow.icon().startsWith('🔴'))
-		assert.ok(rrsMedium.icon().startsWith('🟡'))
+		assert.ok(rrsYellow.icon().startsWith('🟡')) // 223 / 323 ≈ 69.0%
 		assert.ok(rrsHigh.icon().startsWith('🟢'))
-	})
-
-	it('should return coverage status with icon', () => {
-		const rrsNone = new RRS({ optional: { testCoverage: 0 } })
-		const rrsLow = new RRS({ optional: { testCoverage: 45 } })
-		const rrsMedium = new RRS({ optional: { testCoverage: 75 } })
-		const rrsHigh = new RRS({ optional: { testCoverage: 95 } })
-
-		assert.strictEqual(rrsNone.coverage(), '-')
-		assert.ok(rrsLow.coverage().startsWith('🔴'))
-		assert.ok(rrsMedium.coverage().startsWith('🟡'))
-		assert.ok(rrsHigh.coverage().startsWith('🟢'))
+		assert.ok(rrsBlocker.icon().startsWith('🔴')) // blocker testPass = 0
 	})
 
 	it('should create RRS instance from existing RRS instance', () => {
 		const original = new RRS({
-			required: { git: 50 },
+			required: { testPass: 50 },
 			optional: { readmeTest: 20 },
 			npmInfo: '1.0.0',
 			docs: ['README.md'],
@@ -147,7 +135,7 @@ describe('RRS', () => {
 
 	it('should create new RRS instance from plain object', () => {
 		const input = {
-			required: { git: 75 },
+			required: { testPass: 75 },
 			optional: { readmeTest: 15 },
 			npmInfo: '2.0.0',
 			docs: ['docs/uk/README.md'],
@@ -157,7 +145,7 @@ describe('RRS', () => {
 		const rrs = RRS.from(input)
 
 		assert.ok(rrs instanceof RRS)
-		assert.strictEqual(rrs.required.git, 75)
+		assert.strictEqual(rrs.required.testPass, 75)
 		assert.strictEqual(rrs.optional.readmeTest, 15)
 		assert.strictEqual(rrs.npmInfo, '2.0.0')
 		assert.deepStrictEqual(rrs.docs, ['docs/uk/README.md'])
@@ -169,8 +157,6 @@ describe('RRSRequired', () => {
 	it('should create an RRSRequired instance with default values', () => {
 		const required = new RRS.Required()
 
-		assert.strictEqual(required.git, 100)
-		assert.strictEqual(required.systemMd, 100)
 		assert.strictEqual(required.testPass, 100)
 		assert.strictEqual(required.buildPass, 100)
 		assert.strictEqual(required.tsconfig, 100)
@@ -178,13 +164,9 @@ describe('RRSRequired', () => {
 
 	it('should create an RRSRequired instance with custom values', () => {
 		const required = new RRS.Required({
-			git: 50,
-			systemMd: 75,
 			testPass: 80,
 		})
 
-		assert.strictEqual(required.git, 50)
-		assert.strictEqual(required.systemMd, 75)
 		assert.strictEqual(required.testPass, 80)
 		assert.strictEqual(required.buildPass, 100) // default value
 		assert.strictEqual(required.tsconfig, 100) // default value
@@ -193,8 +175,6 @@ describe('RRSRequired', () => {
 	it('should return icons for required fields', () => {
 		const required = new RRS.Required()
 
-		assert.strictEqual(required.icon('git'), 'git')
-		assert.strictEqual(required.icon('systemMd'), '🤖')
 		assert.strictEqual(required.icon('testPass'), '✅')
 		assert.strictEqual(required.icon('buildPass'), '💿')
 		assert.strictEqual(required.icon('tsconfig'), 'ts')
@@ -202,7 +182,7 @@ describe('RRSRequired', () => {
 	})
 
 	it('should create RRSRequired instance from existing instance', () => {
-		const original = new RRS.Required({ git: 50 })
+		const original = new RRS.Required({ testPass: 50 })
 		const required = RRS.Required.from(original)
 
 		assert.strictEqual(required, original)
@@ -210,12 +190,12 @@ describe('RRSRequired', () => {
 	})
 
 	it('should create new RRSRequired instance from plain object', () => {
-		const input = { git: 75, systemMd: 85 }
+		const input = { testPass: 75, buildPass: 85 }
 		const required = RRS.Required.from(input)
 
 		assert.ok(required instanceof RRS.Required)
-		assert.strictEqual(required.git, 75)
-		assert.strictEqual(required.systemMd, 85)
+		assert.strictEqual(required.testPass, 75)
+		assert.strictEqual(required.buildPass, 85)
 	})
 })
 
@@ -225,8 +205,6 @@ describe('RRSOptional', () => {
 
 		assert.strictEqual(optional.readmeTest, 10)
 		assert.strictEqual(optional.playground, 10)
-		assert.strictEqual(optional.testCoverage, 0)
-		assert.strictEqual(optional.releaseMd, 1)
 		assert.strictEqual(optional.readmeMd, 1)
 		assert.strictEqual(optional.npmPublished, 1)
 		assert.strictEqual(optional.contributingAndLicense, 1)
@@ -239,14 +217,11 @@ describe('RRSOptional', () => {
 		const optional = new RRS.Optional({
 			readmeTest: 20,
 			playground: 15,
-			testCoverage: 90,
 			translations,
 		})
 
 		assert.strictEqual(optional.readmeTest, 20)
 		assert.strictEqual(optional.playground, 15)
-		assert.strictEqual(optional.testCoverage, 90)
-		assert.strictEqual(optional.releaseMd, 1) // default value
 		assert.ok(optional.translations instanceof Map)
 		assert.strictEqual(optional.translations.size, 1)
 	})
@@ -256,8 +231,6 @@ describe('RRSOptional', () => {
 
 		assert.strictEqual(optional.icon('readmeTest'), '🧪')
 		assert.strictEqual(optional.icon('playground'), '🕹️')
-		assert.strictEqual(optional.icon('testCoverage'), '⚙️')
-		assert.strictEqual(optional.icon('releaseMd'), '📜')
 		assert.strictEqual(optional.icon('readmeMd'), '📖')
 		assert.strictEqual(optional.icon('npmPublished'), 'npm')
 		assert.strictEqual(optional.icon('contributingAndLicense'), '🛜')
@@ -276,7 +249,6 @@ describe('RRSOptional', () => {
 		const input = {
 			readmeTest: 15,
 			playground: 25,
-			testCoverage: 80,
 			translations: [['uk', 'docs/uk/README.md']],
 		}
 		const optional = RRS.Optional.from(input)
@@ -284,7 +256,6 @@ describe('RRSOptional', () => {
 		assert.ok(optional instanceof RRS.Optional)
 		assert.strictEqual(optional.readmeTest, 15)
 		assert.strictEqual(optional.playground, 25)
-		assert.strictEqual(optional.testCoverage, 80)
 		assert.ok(optional.translations instanceof Map)
 		assert.strictEqual(optional.translations.size, 1)
 	})

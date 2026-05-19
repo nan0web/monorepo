@@ -10,8 +10,6 @@ export default class AuthApp extends Model {
      * @param {any} [options] - Infrastructure and Models (Register)
      */
     constructor(data?: AuthConfig | any, options?: any);
-    /** @returns {any} */
-    get _(): any;
     /** @returns {import('@nan0web/log').Logger} */
     get logger(): import("@nan0web/log").Logger;
     /**
@@ -110,11 +108,17 @@ export default class AuthApp extends Model {
      * @yields {OutputMessage} Registration result
      */
     registerForCommunity(input: any): AsyncGenerator<OutputMessage, void, unknown>;
+    /**
+     * Approves a user account (Admin action)
+     * @param {string} username - Username to approve
+     * @yields {OutputMessage} Approval result
+     */
+    approveUser(username: string): AsyncGenerator<OutputMessage, void, unknown>;
     #private;
 }
 import { Model } from '@nan0web/types';
 import { SignUpMessage } from './messages/index.js';
-import { OutputMessage } from '@nan0web/types';
+import { OutputMessage } from '@nan0web/co';
 import { ConfirmSignUpMessage } from './messages/index.js';
 import { LoginMessage } from './messages/index.js';
 import { UpdateInfoMessage } from './messages/index.js';

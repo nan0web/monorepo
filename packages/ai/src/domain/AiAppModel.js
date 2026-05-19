@@ -83,8 +83,12 @@ export class AiAppModel extends ModelAsApp {
 
 		for (const scope of scopes) {
 			const indexer = new MarkdownIndexer({ scope: /** @type {any} */ (scope) }, { ...this._ })
-			const results = await indexer.search(/** @type {any} */ (vector), opts)
-			allResults.push(...results)
+			const searchGen = indexer.search(/** @type {any} */ (vector), opts)
+			for await (const it of searchGen) {
+				if (it.type === 'result') {
+					allResults.push(it.data)
+				}
+			}
 		}
 
 		allResults.sort((a, b) => a.score - b.score)

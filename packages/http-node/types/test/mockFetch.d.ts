@@ -23,7 +23,7 @@
  * const response = await fetch('/users');
  * const data = await response.json();
  */
-export default function mockFetch(routes: Array<[string, (any | any[] | Function)]>, base?: string | undefined): (url: string, options: object) => Promise<MockFetchResponse>;
+export default function mockFetch(routes: Array<[string, (any | any[] | Function)]>, base?: string): (url: string, options: object) => Promise<MockFetchResponse>;
 export type MockFetchResponse = {
     ok: boolean;
     status: number;

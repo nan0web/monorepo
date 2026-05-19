@@ -14,4 +14,5 @@ import { FetchOptions } from './DB/index.js';
 import { AuthContext } from './DB/index.js';
 import DBConfig from './domain/DBConfig.js';
 import RevisionInfo from './domain/RevisionInfo.js';
-export { Directory, DirectoryIndex, DocumentEntry, DocumentStat, StreamEntry, Data, DB, DBDriverProtocol, GetOptions, FetchOptions, AuthContext, DBConfig, RevisionInfo };
+import FormatRegistry from './FormatRegistry.js';
+export { Directory, DirectoryIndex, DocumentEntry, DocumentStat, StreamEntry, Data, DB, DBDriverProtocol, GetOptions, FetchOptions, AuthContext, DBConfig, RevisionInfo, FormatRegistry };

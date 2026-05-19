@@ -92,14 +92,14 @@ export default class ParseCommand extends CLI {
 	 * --skip
 	 * --todo
 	 * --format {md|txt}
-	 * @param {ParseMessage} msg
+	 * @param {any} [msg]
 	 * @returns {AsyncGenerator<OutputMessage>}
 	 */
 	async *run(msg) {
 		const input = await this.readInput()
 		const parser = new TapParser()
 		const result = parser.decode(input)
-		const opts = msg.body
+		const opts = ParseMessage.from(msg).body
 
 		// let output = result.toString()
 		/** @type {TestNode} */

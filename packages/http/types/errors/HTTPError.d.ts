@@ -9,7 +9,7 @@ declare class HTTPError extends Error {
      * @param {string} message - Error message
      * @param {number} [status=400] - HTTP status code
      */
-    constructor(message: string, status?: number | undefined);
+    constructor(message: string, status?: number);
     /** @type {number} */
     status: number;
 }

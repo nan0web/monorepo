@@ -29,7 +29,7 @@ export type BootstrapAppConfig = {
     /**
      * Translation function.
      */
-    t?: import("@nan0web/types/src/utils/TFunction").TFunction | undefined;
+    t?: import("../../../types/types/utils/TFunction.js").TFunction | undefined;
     /**
      * Provides a result instead of exit when true.
      */

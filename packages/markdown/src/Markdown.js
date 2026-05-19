@@ -22,6 +22,8 @@ import MDTableCell from './MDTableCell.js'
 import MDTaskList from './MDTaskList.js'
 import ParseContext from './Parse/Context.js'
 import InterceptorInput from './InterceptorInput.js'
+import YAML from 'yaml'
+import { NaN0 } from '@nan0web/types'
 
 /**
  * Markdown parser for nanoweb.
@@ -59,15 +61,107 @@ export default class Markdown {
 	/** @type {MDElement} */
 	document
 
+	/** @type {'yaml' | 'nan0'} */
+	frontmatterFormat = 'nan0'
+
+	/** @type {Record<string, any>} */
+	vars = {}
+
 	/**
 	 * @param {Partial<Markdown> | string} [input]
 	 */
 	constructor(input = {}) {
+		let docInput = input
 		if ('string' === typeof input) {
-			input = { document: new MDElement({ children: Markdown.parse(input) }) }
+			const parsed = this.parseFrontmatter(input)
+			docInput = {
+				document: new MDElement({ children: Markdown.parse(parsed.content) }),
+				vars: parsed.metadata
+			}
+		} else if (input && 'string' === typeof input.content) {
+			const parsed = this.parseFrontmatter(input.content)
+			const mergedVars = { ...(input.vars || {}), ...parsed.metadata }
+			docInput = {
+				document: new MDElement({ children: Markdown.parse(parsed.content) }),
+				vars: mergedVars
+			}
 		}
-		const { document = new MDElement() } = input
+		/** @type {any} */
+		const { document = new MDElement(), vars = {} } = docInput
 		this.document = document
+		this.vars = vars
+
+		return new Proxy(this, {
+			get(target, prop, receiver) {
+				if (typeof prop === 'string' && prop !== 'constructor' && !(prop in target)) {
+					return target.vars[prop]
+				}
+				return Reflect.get(target, prop, receiver)
+			},
+			set(target, prop, value, receiver) {
+				if (typeof prop === 'string' && !(prop in target)) {
+					target.vars[prop] = value
+					return true
+				}
+				return Reflect.set(target, prop, value, receiver)
+			}
+		})
+	}
+
+	/**
+	 * Parses optional frontmatter block.
+	 * @param {string} raw
+	 * @returns {{ content: string, metadata: Record<string, any> }}
+	 */
+	parseFrontmatter(raw) {
+		const trimmed = String(raw).trimStart()
+		if (!trimmed.startsWith('---')) {
+			return { content: raw, metadata: {} }
+		}
+		const afterFirst = trimmed.indexOf('\n') + 1
+		const closingIndex = trimmed.indexOf('\n---', afterFirst)
+		if (closingIndex < 0) {
+			return { content: raw, metadata: {} }
+		}
+		const block = trimmed.slice(afterFirst, closingIndex)
+		const content = trimmed.slice(closingIndex + 4).replace(/^\n+/, '')
+
+		let metadata = {}
+		try {
+			if (block.includes(':') && !block.includes('=')) {
+				// Looks like YAML or NaN0
+				if (this.frontmatterFormat === 'yaml') {
+					metadata = YAML.parse(block) || {}
+				} else {
+					metadata = NaN0.parse(block) || {}
+				}
+			}
+		} catch (e) {
+			try {
+				metadata = NaN0.parse(block) || {}
+			} catch (e2) {
+				try {
+					metadata = YAML.parse(block) || {}
+				} catch (e3) {}
+			}
+		}
+
+		// Resilient parsing of inline arrays for nan0 [x, y] format
+		for (const key of Object.keys(metadata)) {
+			let val = metadata[key]
+			if (typeof val === 'string' && val.startsWith('[') && val.endsWith(']')) {
+				try {
+					const inner = val.slice(1, -1).trim()
+					if (inner === '') {
+						metadata[key] = []
+					} else {
+						metadata[key] = inner.split(',').map(x => x.trim().replace(/^["']|["']$/g, ''))
+					}
+				} catch (e) {}
+			}
+		}
+
+		return { content, metadata }
 	}
 
 	/**
@@ -142,11 +236,48 @@ export default class Markdown {
 		return this
 	}
 
+	/** @type {string} */
+	get content() {
+		return this.document.toString().trimEnd()
+	}
+
+	set content(value) {
+		this.document = new MDElement({ children: Markdown.parse(value) })
+	}
+
 	/**
 	 * Returns markdown string representation.
 	 * @returns {string}
 	 */
 	toString() {
+		const metadata = { ...this.vars }
+		const hasMetadata = Object.keys(metadata).length > 0
+		if (hasMetadata) {
+			let block = ''
+			if (this.frontmatterFormat === 'yaml') {
+				block = YAML.stringify(metadata).trimEnd()
+			} else {
+				const lines = []
+				for (const [key, value] of Object.entries(metadata)) {
+					if (typeof value === 'string') {
+						lines.push(`${key}: "${value.replace(/"/g, '\\"')}"`)
+					} else if (Array.isArray(value)) {
+						lines.push(`${key}:`)
+						value.forEach(item => {
+							if (typeof item === 'string') {
+								lines.push(`  - "${item.replace(/"/g, '\\"')}"`)
+							} else {
+								lines.push(`  - ${item}`)
+							}
+						})
+					} else {
+						lines.push(`${key}: ${value}`)
+					}
+				}
+				block = lines.join('\n')
+			}
+			return ['---', block, '---', '', this.document.toString()].join('\n')
+		}
 		return this.document.toString()
 	}
 
@@ -156,7 +287,12 @@ export default class Markdown {
 	 * @returns {MDElement[]} - Root element children
 	 */
 	parse(text) {
-		this.document.children = Markdown.parse(text)
+		const parsed = this.parseFrontmatter(text)
+		Object.assign(this.vars, parsed.metadata)
+		if (!this.document) {
+			this.document = new MDElement()
+		}
+		this.document.children = Markdown.parse(parsed.content)
 		return this.document.children
 	}
 

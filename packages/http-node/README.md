@@ -1,7 +1,9 @@
 # @nan0web/http-node
 
 This document is available in other languages:
+
 - [Ukrainian 🇺🇦](./docs/uk/README.md)
+
 
 Node.js HTTP client and server built on native modules with minimal dependencies.
 
@@ -18,22 +20,26 @@ It includes:
 - **Middlewares**: Built-in parsers like `bodyParser` and rate limiting (`bruteForce`).
 - **Router**: Method-based routing with parameter extraction.
 
+
 Designed for monorepos and minimal setups, following nan0web philosophy: zero dependencies,
 full test coverage, and pure JavaScript with JSDoc typing.
 
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/http-node
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/http-node
 ```
 
 How to install with yarn?
+
 ```bash
 yarn add @nan0web/http-node
 ```
@@ -45,6 +51,7 @@ yarn add @nan0web/http-node
 Create and start a basic HTTP server with routes.
 
 How to create and start a basic HTTP server?
+
 ```js
 import { createServer, fetch } from "@nan0web/http-node"
 const server = createServer()
@@ -63,6 +70,7 @@ await server.close()
 Support for GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS.
 
 How to add routes for different HTTP methods?
+
 ```js
 import { createServer, post } from "@nan0web/http-node"
 import { bodyParser } from "@nan0web/http-node/middlewares"
@@ -82,6 +90,7 @@ await server.close()
 ```
 
 How to handle DELETE requests with 204 status?
+
 ```js
 import { createServer, del } from "@nan0web/http-node"
 const server = createServer()
@@ -106,6 +115,7 @@ await server.close()
 Apply global middleware like body parsing.
 
 How to use bodyParser middleware?
+
 ```js
 import { createServer } from "@nan0web/http-node"
 import { bodyParser } from "@nan0web/http-node/middlewares"
@@ -123,6 +133,7 @@ await server.close()
 ```
 
 How to use bruteForce rate limiting?
+
 ```js
 import { createServer } from "@nan0web/http-node"
 import { bruteForce } from "@nan0web/http-node/middlewares"
@@ -143,6 +154,7 @@ await server.close()
 Use `fetch` or helpers like `get`, `post`.
 
 How to make a GET request with fetch?
+
 ```js
 import { fetch, createServer } from "@nan0web/http-node"
 const server = createServer()
@@ -158,6 +170,7 @@ await server.close()
 ```
 
 How to use APIRequest for base URL management?
+
 ```js
 import { APIRequest, createServer } from "@nan0web/http-node"
 const server = createServer()
@@ -179,6 +192,7 @@ Extend `IncomingMessage` and `ResponseMessage` for custom handling.
 You can import classes directly from a /messages.
 
 How to create a custom IncomingMessage?
+
 ```js
 import { IncomingMessage } from "@nan0web/http-node/messages"
 const socket = { remoteAddress: '127.0.0.1' }
@@ -193,6 +207,7 @@ console.info(req.headers['content-type'] || '') // "application/json"
 ```
 
 How to create a ResponseMessage with body?
+
 ```js
 import { ResponseMessage } from "@nan0web/http-node/messages"
 const response = new ResponseMessage('Hello from custom response', {
@@ -208,6 +223,7 @@ console.info(text) // "Hello from custom response"
 Use `Router` independently for advanced routing.
 
 How to use Router for parameter extraction?
+
 ```js
 import { Router } from "@nan0web/http-node/server"
 const router = new Router()
@@ -228,6 +244,7 @@ console.info(capturedParams)
 - `get/post/put/patch/del/head/options(url, body?, options?)` – Convenience methods.
 - `APIRequest(baseUrl, defaults)` – Class for API clients with method chaining.
 
+
 **Options**: `method`, `headers`, `body`, `type` ('json'|'binary'|'sockets'), `protocol`, `timeout`, `rejectUnauthorized`.
 
 ### Server
@@ -236,11 +253,13 @@ console.info(capturedParams)
 - `Server` class: `.use(middleware)`, `.get/post/put/delete/patch(head|options)(path, handler)`.
 - `.listen()` / `.close()` for lifecycle.
 
+
 ### Router
 
 - `new Router()`: `.get/post/.../use(path|middleware)`.
 - `.handle(req, res, notFoundHandler)` – Processes request.
 - Supports params like `/user/:id` and wildcards `*`.
+
 
 ### Messages
 
@@ -248,10 +267,12 @@ console.info(capturedParams)
 - `ResponseMessage`: Readable stream with `json()`, `text()`, `buffer()`, `status`, `headers`.
 - `ServerResponse`: Extends Node's with `.json(data)`, route helpers.
 
+
 ### Middlewares
 
 - `Middlewares.bodyParser()` – Parses JSON/form bodies into `req.body`.
 - `Middlewares.bruteForce(options)` – Rate limits by IP/path (e.g., `{ max: 100, windowMs: 60000 }`).
+
 
 ## Java•Script
 
@@ -260,6 +281,7 @@ Uses `d.ts` files for autocompletion
 ## CLI Playground
 
 How to run playground script?
+
 ```bash
 # Clone the repository and run the CLI playground
 git clone https://github.com/nan0web/http-node.git
@@ -276,3 +298,5 @@ How to contribute? - [check here](./CONTRIBUTING.md)
 ## License
 
 How to license ISC? - [check here](./LICENSE)
+
+

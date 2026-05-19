@@ -19,5 +19,4 @@ export const defaultVocab: {
     'Try to use keys as default text': string;
 };
 export { createT } from "@nan0web/types";
-export default i18n;
 export type TFunction = import("@nan0web/types").TFunction;

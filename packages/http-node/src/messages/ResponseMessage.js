@@ -228,7 +228,7 @@ export default class ResponseMessage extends Readable {
 	async arrayBuffer() {
 		// @todo cover with a test
 		const buf = await this.buffer()
-		return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
+		return /** @type {ArrayBuffer} */ (buf.buffer).slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
 	}
 
 	/** @returns {any} – returns this instance (compatible with socket streaming). */

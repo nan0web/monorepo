@@ -11,27 +11,29 @@
  * - How to validate data
  * - What helper texts to show
  */
-export default class ConfirmSignUpMessage extends InputMessage {
-    static name: string;
-    /**
-     * Creates an instance from input
-     * @param {any} input - Input data
-     * @return {ConfirmSignUpMessage}
-     */
-    static from(input: any): ConfirmSignUpMessage;
-    constructor(input?: {});
-    /** @type {ConfirmSignUpBody} */
-    body: ConfirmSignUpBody;
-    /**
-     * Returns errors for each field
-     * @returns {Array<string|Array<string,Object>>}
-     */
-    get errors(): Array<string | Array<string, any>>;
+export default class ConfirmSignUpMessage extends ModelInputMessage {
+    static alias: string;
+    static contact: {
+        help: string;
+        type: string;
+        required: boolean;
+        default: string;
+        validate: (v: any) => true | "Contact is required";
+    };
+    static code: {
+        help: string;
+        type: string;
+        required: boolean;
+        default: string;
+        validate: (v: any) => any;
+    };
+    /** @type {string} */ contact: string;
+    /** @type {string} */ code: string;
     get contactLabel(): string;
-    get contactHelp(): string;
+    get contactHelp(): any;
     get contactPlaceholder(): string;
     get codeLabel(): string;
-    get codeHelp(): string;
+    get codeHelp(): any;
     get codePlaceholder(): string;
     get codeMinLength(): number;
 }
@@ -45,4 +47,4 @@ export type ConfirmSignUpBody = {
      */
     code: string;
 };
-import { InputMessage } from '@nan0web/types';
+import ModelInputMessage from './ModelInputMessage.js';

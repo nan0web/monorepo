@@ -17,19 +17,23 @@ Minimal authentication core providing:
 - `Crypto` – Ed25519 key generation, signing, verification
 - `Auth` – facade exporting the above
 
+
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/auth-core
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/auth-core
 ```
 
 How to install with yarn?
+
 ```bash
 yarn add @nan0web/auth-core
 ```
@@ -39,6 +43,7 @@ yarn add @nan0web/auth-core
 Create a user, assign roles and check role existence.
 
 How to create a User and check roles?
+
 ```js
 import { User, Role } from "@nan0web/auth-core"
 const user = new User({
@@ -56,6 +61,7 @@ console.info(user.is('guest')) // ← false
 Manage tokens with `TokenExpiryService`.
 
 How to create a token and validate its expiry?
+
 ```js
 import { TokenExpiryService } from "@nan0web/auth-core"
 const service = new TokenExpiryService(2000) // 2 seconds
@@ -72,6 +78,7 @@ console.info(service.getExpiryDate(tokenTime).toISOString())
 Join a group, check permissions, mint daily coins and see admin bypass.
 
 How to use Membership to manage group permissions?
+
 ```js
 import { Membership, Role } from "@nan0web/auth-core"
 const mem = new Membership()
@@ -92,6 +99,7 @@ Universal parser and matcher for access rules (.access and .group files).
 Three-level resolution: User → Group → Global (*).
 
 How to check access using AccessControl?
+
 ```js
 import { AccessControl } from "@nan0web/auth-core"
 const ac = new AccessControl()
@@ -109,6 +117,7 @@ console.info(ac.check('guest', '/admin', 'r')) // ← false
 Scrypt-based hashing with timing-safe verification.
 
 How to hash and verify passwords?
+
 ```js
 import { Password } from "@nan0web/auth-core"
 const hash = Password.hash('sovereign')
@@ -121,6 +130,7 @@ console.info(Password.verify('wrong', hash)) // ← false
 Save/load user identity (email) to a JSON file.
 
 How to persist user session?
+
 ```js
 import { Session } from "@nan0web/auth-core"
 const session = new Session('./session.json')
@@ -133,6 +143,7 @@ session.clear()
 Exported object provides easy access to core classes.
 
 How to use the Auth facade?
+
 ```js
 import { Auth } from "@nan0web/auth-core"
 const user = new Auth.User({ name: 'Bob' })
@@ -146,6 +157,7 @@ console.info(user.toString())
 Create, verify, and refresh Ed25519-signed tokens.
 
 How to create and verify a Token?
+
 ```js
 import { Token, Crypto } from "@nan0web/auth-core"
 const { publicKey, privateKey } = Crypto.generateKeyPair()
@@ -259,3 +271,5 @@ How to contribute? - [check here](./CONTRIBUTING.md)
 ## License
 
 How to license ISC? - [check here](./LICENSE)
+
+

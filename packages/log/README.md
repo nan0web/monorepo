@@ -16,22 +16,26 @@ Core classes:
 - `NoLogger` — captures logs in memory, perfect for testing
 - `NoConsole` — captures console output in memory, perfect for testing
 
+
 These classes are perfect for building CLI tools, debugging layers, structured logs,
 and streaming data to files or external services.
 
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/log
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/log
 ```
 
 How to install with yarn?
+
 ```bash
 yarn add @nan0web/log
 ```
@@ -43,6 +47,7 @@ yarn add @nan0web/log
 Logger can be instantiated with a level or options and logs everything below that level
 
 How to create a Logger instance with level?
+
 ```js
 import Logger from '@nan0web/log'
 const logger = new Logger('debug')
@@ -51,6 +56,7 @@ logger.info(logger.level) // ← debug
 ```
 
 How to create a Logger instance with options?
+
 ```js
 import Logger from '@nan0web/log'
 const logger = new Logger({
@@ -66,6 +72,7 @@ logger.info('Hello with options') // ← TIME-HH-IIT... ℹ Hello with options
 Logger supports custom formats for different levels
 
 How to use custom formats for different levels?
+
 ```js
 import Logger from '@nan0web/log'
 const logger = new Logger({
@@ -90,6 +97,7 @@ logger.success('Success message') // ← \x1b[32m✅ Success message
 Logger supports streaming logs to files or external services
 
 How to stream logs to a file?
+
 ```js
 import Logger from '@nan0web/log'
 let streamOutput = ''
@@ -108,6 +116,7 @@ console.log(streamOutput) // ← Streamed message
 NoLogger captures logs in memory instead of printing them, perfect for testing
 
 How to capture logs in memory with NoLogger?
+
 ```js
 import { NoLogger } from '@nan0web/log'
 const logger = new NoLogger({ level: 'debug' })
@@ -124,6 +133,7 @@ console.log(logs) // ← [ [ "debug", "Debug message" ], [ "info", "Info message
 Logger includes useful helpers for formatting, tables, progress, etc.
 
 How to create and display formatted tables?
+
 ```js
 import Logger from '@nan0web/log'
 const logger = new Logger()
@@ -143,6 +153,7 @@ logger.table(data, ['name', 'age', 'city'], { padding: 2, border: 1 })
 ```
 
 How to style text with colors and background?
+
 ```js
 import Logger from '@nan0web/log'
 const styled = Logger.style('Styled text', {
@@ -159,6 +170,7 @@ The logger methods return the ANSI escape sequences, which you can log
 directly. Each call creates a separate log entry.
 
 How to work with cursor and clear lines for progress?
+
 ```js
 const logger = new Logger()
 // Log a multiline message
@@ -173,6 +185,7 @@ logger.info(logger.clearLine())
 Logger can prepend a custom prefix to every log line.
 
 How to use Logger.prefix option?
+
 ```js
 const logger = new Logger({ prefix: 'PREFIX> ' })
 logger.info('Message with prefix') // ← PREFIX> Message with prefix
@@ -289,6 +302,7 @@ Uses `d.ts` files for autocompletion
 ## CLI Playground
 
 How to run playground script?
+
 ```bash
 # Clone the repository and run the CLI playground
 git clone https://github.com/nan0web/log.git
@@ -301,6 +315,12 @@ npm run play
 
 How to contribute? - [check here](./CONTRIBUTING.md)
 
+```js
+const text = await fs.loadDocument('CONTRIBUTING.md')
+const str = String(text)
+```
 ## License
 
 How to license ISC? - [check here](./LICENSE)
+
+

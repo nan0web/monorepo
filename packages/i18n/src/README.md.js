@@ -1,7 +1,7 @@
 import { describe, it, before, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { Model } from '@nan0web/core'
+import { Model } from '@nan0web/types'
 import DB from '@nan0web/db'
 import FS from '@nan0web/db-fs'
 import { NoConsole } from '@nan0web/log'

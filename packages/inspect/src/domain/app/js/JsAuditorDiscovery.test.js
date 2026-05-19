@@ -27,6 +27,29 @@ describe('JsAuditorDiscovery', () => {
 		assert.equal(results.size, 1)
 	})
 
+	it('resolves local entry properly when target project exports is nested object', async () => {
+		const db = new DB({ predefined: [
+			['package.json', { 
+				name: 'main-project',
+				exports: { 
+					'./inspect': {
+						import: './src/inspect.js',
+						types: './types/inspect.d.ts'
+					}
+				}
+			}],
+			['src/inspect.js', '']
+		] })
+		await db.connect()
+
+		const discovery = new JsAuditorDiscovery({}, { db })
+		discovery.importModule = async () => ({
+			LocalAuditor: class extends AuditorModel {}
+		})
+		const results = await discovery.discover('.')
+		assert.equal(results.size, 1)
+	})
+
 	it('discovers auditors from devDependencies as well', async () => {
 		const db = new DB({ predefined: [
 			['package.json', { 

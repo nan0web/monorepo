@@ -12,6 +12,7 @@ Powered by the `prompts` engine, it provides a premium "Lux-level" terminal expe
 The `@nan0web/ui-cli` package transforms basic CLI interactions into stunning, interactive experiences using the "One Logic, Many UI" philosophy.
 
 Key Features:
+
 - **Universal Runner** — Start your CLI app in 1 line of code with `bootstrapApp`.
 - **Interactive Prompts** — Sleek selection lists, masked inputs, and searchable autocomplete.
 - **Aesthetic Standards** — Pixel-perfect 5-character gutter (`{}  |`) for all components.
@@ -19,9 +20,11 @@ Key Features:
 - **Build Optimization** — Blazing fast monorepo type-checking with isolated package depth.
 - **One Logic, Many UI** — Use the same shared logic across Web and Terminal.
 
+
 ## Installation
 
 How to install the package?
+
 ```bash
 npm install @nan0web/ui-cli
 ```
@@ -43,6 +46,7 @@ The `ModelAsApp` class provides a unified architecture for both Domain Logic and
 It automatically handles CLI help generation, subcommand routing, and i18n variables.
 
 How to bootstrap a CLI application?
+
 ```js
 import { bootstrapApp, ModelAsApp, show } from '@nan0web/ui-cli'
 class StatusApp extends ModelAsApp {
@@ -65,6 +69,7 @@ This is perfect for automation scripts like the `ReadmeMd` documentation generat
 Additionally, standard tools are natively aliased in `nan0cli`:
 
 How to run internal apps like ReadmeMd?
+
 ```js
 /* Programmatic Headless Execution:
 import { ReadmeMd } from '@nan0web/ui-cli/domain/ReadmeMd.js'
@@ -83,6 +88,7 @@ Starting from v2.0, we recommend using the `ask()` function with Composable Comp
 #### Input & Password
 
 How to use Input and Password components?
+
 ```js
 import { ask, Input, Password } from '@nan0web/ui-cli'
 const user = 'Alice'
@@ -91,6 +97,7 @@ console.info(`User: ${user}`)
 #### Select & Multiselect
 
 How to use Select component?
+
 ```js
 import { ask, Select } from '@nan0web/ui-cli'
 const lang = { value: 'en' }
@@ -99,6 +106,7 @@ console.info(`Selected: ${lang.value}`)
 #### Multiselect
 
 How to use Multiselect component?
+
 ```js
 import { ask, Multiselect } from '@nan0web/ui-cli'
 const roles = ['admin', 'user']
@@ -107,6 +115,7 @@ console.info(`Roles: ${roles.join(', ')}`)
 #### Masked Input
 
 How to use Mask component?
+
 ```js
 import { ask, Mask } from '@nan0web/ui-cli'
 const phone = '123-456'
@@ -115,6 +124,7 @@ console.info(`Phone: ${phone}`)
 #### Autocomplete
 
 How to use Autocomplete component?
+
 ```js
 import { ask, Autocomplete } from '@nan0web/ui-cli'
 const model = 'gpt-4'
@@ -123,6 +133,7 @@ console.info(`Model: ${model}`)
 #### Slider, Toggle & DateTime
 
 How to use Slider and Toggle?
+
 ```js
 import { ask, Slider, Toggle } from '@nan0web/ui-cli'
 const volume = 50
@@ -134,6 +145,7 @@ console.info(`Active: ${active}`)
 Hierarchical data selection made easy.
 
 How to use Tree component?
+
 ```js
 import { ask, Tree } from '@nan0web/ui-cli'
 const selected = '/src/index.js'
@@ -143,6 +155,7 @@ console.info(`Selected file: ${selected}`)
 Drag and drop items in the terminal.
 
 How to use Sortable component?
+
 ```js
 import { ask, Sortable } from '@nan0web/ui-cli'
 const items = ['First', 'Second', 'Third']
@@ -154,6 +167,7 @@ console.info(`Order: ${items.join(' > ')}`)
 You can pass a Model class to `ask()` to automatically generate and process an interactive form.
 
 How to use ask with Models?
+
 ```js
 import { ask } from '@nan0web/ui-cli'
 class UserProfile {
@@ -167,6 +181,7 @@ You can request an AI agent task using the `agent` intent.
 In CLI, this shows a status message and can wrap an async action in a spinner.
 
 How to use ask with Agents?
+
 ```js
 import { ask } from '@nan0web/ui-cli'
 import { agent } from '@nan0web/ui'
@@ -180,6 +195,7 @@ import { agent } from '@nan0web/ui'
 #### Alerts
 
 How to render Alerts?
+
 ```js
 import { ask, Alert } from '@nan0web/ui-cli'
 const out = await ask(Alert({ variant: 'success', children: 'Operation completed' }))
@@ -187,26 +203,93 @@ const out = await ask(Alert({ variant: 'success', children: 'Operation completed
 #### Dynamic Tables
 
 How to render Tables?
+
 ```js
 import { ask, Table } from '@nan0web/ui-cli'
 const data = [{ id: 1, name: 'Alice' }]
 const out = await ask(Table({ data, interactive: false }))
 ```
-### Feedback & Progress
+### Feedback & Progress (OLMUI)
 
-#### Spinner
+Following the **"One Logic, Many UI" (OLMUI)** philosophy, business logic should never directly import CLI-specific components. Instead, use the platform-agnostic `progress` helper yielded from your generator models.
+
+To enforce the **Strict Model-First i18n** architecture, the progress message parameter MUST be a reference to a static `UI` dictionary property of your model, rather than a hardcoded literal string.
+
+The `progress(message, value, optionsOrTotalOrId, id)` helper supports multiple syntax variations:
+
+#### 1. Short Positional Syntax (Determinate Progress)
+
+Pass the `message` (referencing model `UI`), `value`, `total` steps, and optional tracking `id` as direct positional parameters:
 
 How to use Spinner?
+
 ```js
-import { ask, Spinner } from '@nan0web/ui-cli'
+import { progress } from '@nan0web/ui'
+
+// class SyncApp extends ModelAsApp {
+//     static UI = {
+//         syncing: 'Syncing files...',
+//         done: 'Synchronization complete!'
+//     }
+//     async *run() {
+//         // Start & Update (pos: message reference, value, total, id)
+//         yield progress(SyncApp.UI.syncing, 50, 100, 'sync-loader')
+
+//         // Complete (stop with success status)
+//         yield progress(SyncApp.UI.done, 100, { id: 'sync-loader', stop: 'success' })
+//     }
+// }
 const action = Promise.resolve('Done')
 const result = await ask(Spinner({ UI: 'Loading...', action }))
 ```
-#### Progress Bars
+#### 2. Short Indeterminate Spinner
+
+Omit the `total` steps or pass `0` to render an indeterminate pulsing spinner (e.g. for unknown API delays), using the model's static `UI` reference:
+
+```js
+class FetchApp extends ModelAsApp {
+    static UI = {
+        loading: 'Connecting to API...',
+        connected: 'Connected!'
+    }
+    async *run() {
+        // Start spinner (pos: message, value, id)
+        yield progress(FetchApp.UI.loading, 0, 'api-spinner')
+
+        // Stop spinner
+        yield progress(FetchApp.UI.connected, 100, { id: 'api-spinner', stop: 'success' })
+    }
+}
+```
+
+#### 3. Options Object Syntax (Determinate / Customized)
+
+Pass an options object as the third argument to unlock fine-grained control:
 
 How to use ProgressBar?
+
 ```js
-import { ask, ProgressBar } from '@nan0web/ui-cli'
+import { progress } from '@nan0web/ui'
+
+// class ExportApp extends ModelAsApp {
+//     static UI = {
+//         exporting: 'Exporting database...',
+//         failed: 'Export failed!'
+//     }
+//     async *run() {
+//         // Start & Customize (total, id, width, fps, format, forceOneLine)
+//         yield progress(ExportApp.UI.exporting, 25, {
+//             total: 100,
+//             id: 'export-bar',
+//             width: 20,            // character width of visual bar
+//             fps: 15,             // limit updates rate for smooth terminal rendering
+//             format: '{time} {bar} {percent} {title}'
+//         })
+
+//         // Stop with error status
+//         yield progress(ExportApp.UI.failed, 25, { id: 'export-bar', stop: 'error' })
+//     }
+// }
 const p = await ask(ProgressBar({ UI: 'Downloading...', total: 100 }))
 p.update(100)
 p.success('Done')
@@ -222,6 +305,7 @@ You can render any UI component (Alert, Table, etc.) from within your generator
 by yielding a `render` intent.
 
 How to render components in a generator?
+
 ```js
 import { render } from '@nan0web/ui'
 async function* myGenerator() {
@@ -243,6 +327,7 @@ The package uses "One Logic, Many UI" (OLMUI) architecture, exposing only strict
 - `import { App } from '@nan0web/ui-cli/app'` — Main Application Model & Router.
 - `import { playground } from '@nan0web/ui-cli/test'` — Testing & Snapshot utilities.
 
+
 How to use isolated domain models and UI adapters?
 
 ## Legacy API
@@ -250,12 +335,14 @@ How to use isolated domain models and UI adapters?
 ### CLiInputAdapter
 
 How to request form input via CLiInputAdapter?
+
 ```js
 import { CLiInputAdapter } from '@nan0web/ui-cli'
 ```
 ## Playground
 
 How to run the playground?
+
 ```bash
 npm run play
 ```
@@ -263,3 +350,5 @@ npm run play
 ## License
 
 How to check the license? - [ISC LICENSE](./LICENSE) file.
+
+

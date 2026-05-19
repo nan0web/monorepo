@@ -413,7 +413,6 @@ function testRender() {
 	 */
 	it('How to contribute? - [check here](./CONTRIBUTING.md)', async () => {
 		assert.ok(pkg.scripts?.test)
-		assert.equal(pkg.devDependencies?.husky, '^9.1.7')
 		const text = await fs.loadDocument('CONTRIBUTING.md', { exists: true })
 		const str = String(text || '')
 		assert.ok(str.includes('# Contributing') || 'CONTRIBUTING.md may not exist yet')

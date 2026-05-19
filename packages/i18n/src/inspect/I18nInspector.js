@@ -2,7 +2,17 @@ import { AuditorModel } from '@nan0web/inspect'
 import { progress, show, result } from '@nan0web/ui'
 import { extract } from '../extract.js'
 
-const EXCLUDE_DIRS = ['.git', '.nan0web', 'node_modules', 'dist', 'build', 'out', 'target', 'vendor', '.cache']
+const EXCLUDE_DIRS = [
+	'.git',
+	'.nan0web',
+	'node_modules',
+	'dist',
+	'build',
+	'out',
+	'target',
+	'vendor',
+	'.cache',
+]
 
 /**
  * I18nInspector — Validates i18n compliance across the project.
@@ -30,8 +40,8 @@ export class I18nInspector extends AuditorModel {
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
 	 */
 	async *run() {
-		const { db, t } = this._
-		const locale = this._.locale || 'uk'
+		const { db, t } = /** @type {any} */ (this._)
+		const locale = /** @type {any} */ (this._).locale || 'uk'
 		const targetDir = this.dir || '.'
 		let absDir = targetDir
 		if (!absDir.startsWith('@') && !absDir.startsWith('/') && !absDir.startsWith('~')) {
@@ -55,7 +65,8 @@ export class I18nInspector extends AuditorModel {
 						continue
 					}
 
-					const fullPath = entry.path || (dir.endsWith('/') ? `${dir}${entryName}` : `${dir}/${entryName}`)
+					const fullPath =
+						entry.path || (dir.endsWith('/') ? `${dir}${entryName}` : `${dir}/${entryName}`)
 					const isDir = entry.stat?.isDirectory || entry.isDirectory
 
 					if (isDir) {
@@ -75,7 +86,8 @@ export class I18nInspector extends AuditorModel {
 		// Load vocabulary
 		const vocabPath = `@app/data/${locale}/index.nan0`
 		const vocabDoc = await db.loadDocument(vocabPath).catch(() => null)
-		const vocabulary = vocabDoc && typeof vocabDoc === 'object' ? (vocabDoc.value || vocabDoc.content || vocabDoc) : {}
+		const vocabulary =
+			vocabDoc && typeof vocabDoc === 'object' ? vocabDoc.value || vocabDoc.content || vocabDoc : {}
 		const vocabKeys = new Set(Object.keys(vocabulary))
 
 		let missingCount = 0
@@ -85,10 +97,13 @@ export class I18nInspector extends AuditorModel {
 			processed++
 
 			const fileLabel = file.length > 50 ? '...' + file.substring(file.length - 47) : file
-			yield progress(t(I18nInspector.UI.scanning, { dir: `${fileLabel} [${processed}/${allFiles.length}]` }))
+			yield progress(
+				t(I18nInspector.UI.scanning, { dir: `${fileLabel} [${processed}/${allFiles.length}]` })
+			)
 
 			const doc = await db.loadDocument(file).catch(() => null)
-			const content = typeof doc === 'object' && doc ? (doc.content || doc.value || '') : String(doc || '')
+			const content =
+				typeof doc === 'object' && doc ? doc.content || doc.value || '' : String(doc || '')
 
 			if (typeof content === 'string') {
 				const keys = extract(content)
@@ -109,5 +124,3 @@ export class I18nInspector extends AuditorModel {
 		return result({ success: true })
 	}
 }
-
-export default I18nInspector

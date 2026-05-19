@@ -8,6 +8,7 @@ import { tokens } from '../tokens.js'
 export default createTheme({
 	atoms: {
 		Button: {
+			fontFamily: tokens.font.family,
 			color: tokens.color.text,
 			background: tokens.color.primary,
 			shadow: tokens.shadow.sm,
@@ -19,14 +20,14 @@ export default createTheme({
 			paddingX: tokens.space.lg,
 			paddingY: tokens.space.md,
 			solid: {
-				primary: { background: '#000000', color: '#ffffff' },
-				secondary: { background: '#333333', color: '#ffffff' },
-				success: { background: '#006600', color: '#ffffff' },
-				warning: { background: '#996600', color: '#000000' },
-				danger: { background: '#990000', color: '#ffffff' },
-				info: { background: '#006699', color: '#ffffff' },
-				light: { background: '#dddddd', color: '#000000' },
-				dark: { background: '#222222', color: '#ffffff' },
+				primary: { background: '#000000', color: '#ffffff', border: '#000000' },
+				secondary: { background: '#333333', color: '#ffffff', border: '#333333' },
+				success: { background: '#006600', color: '#ffffff', border: '#006600' },
+				warning: { background: '#996600', color: '#000000', border: '#996600' },
+				danger: { background: '#990000', color: '#ffffff', border: '#990000' },
+				info: { background: '#006699', color: '#ffffff', border: '#006699' },
+				light: { background: '#dddddd', color: '#000000', border: '#dddddd' },
+				dark: { background: '#222222', color: '#ffffff', border: '#222222' },
 				link: { background: 'transparent', color: '#000099', border: 'transparent' },
 			},
 			outline: {
@@ -44,6 +45,11 @@ export default createTheme({
 					fontSize: '0.875rem',
 					paddingX: '0.5rem',
 					paddingY: '0.25rem',
+				},
+				md: {
+					fontSize: '1rem',
+					paddingX: '1rem',
+					paddingY: '0.5rem',
 				},
 			},
 			animation: {

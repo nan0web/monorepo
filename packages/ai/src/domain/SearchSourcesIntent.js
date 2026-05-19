@@ -112,13 +112,19 @@ export class SearchSourcesIntent extends ModelAsApp {
 
 		for (const scope of scopesToSearch) {
 			const indexer = new MarkdownIndexer({ scope: /** @type {any} */ (scope) }, { ...this._ })
-			const results = await indexer.search(this.query, {
+			const searchGen = indexer.search(this.query, {
 				limit: Number(this.limit) || 10,
 				strict: this.strictSearch,
 				maxDistance: Number(this.maxDistance) || 0.18,
 				project: this.project || undefined,
 			})
-			allResults.push(...results)
+			for await (const it of searchGen) {
+				if (it.type === 'log') {
+					yield it
+				} else if (it.type === 'result') {
+					allResults.push(it.data)
+				}
+			}
 		}
 
 		// Combine and sort the results from multiple scopes

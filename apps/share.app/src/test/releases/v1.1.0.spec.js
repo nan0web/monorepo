@@ -6,16 +6,16 @@
  */
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { SocialAdapter, NotImplementedError } from '../../core/SocialAdapter.js'
-import { DummyAdapter } from '../../core/DummyAdapter.js'
+import { SocialAdapter, NotImplementedError } from '../../domain/SocialAdapter.js'
+import { DummyAdapter } from '../../domain/DummyAdapter.js'
 import { TelegramAdapter, TelegramAdapterConfig } from '../../adapters/TelegramAdapter.js'
 import {
 	Model,
 	SocialAdapterConfig,
 	SocialAdapterContent,
 	SocialAdapterValidationError,
-} from '../../core/Models.js'
-import { evaluateRules, executeTasks } from '../../core/RulesEngine.js'
+} from '../../domain/Models.js'
+import { evaluateRules, executeTasks } from '../../domain/RulesEngine.js'
 
 // ─── 1. update() Protocol ────────────────────────────────────
 

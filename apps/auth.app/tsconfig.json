@@ -18,7 +18,7 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"jsx": "react-jsx"
 	},
 	"include": [

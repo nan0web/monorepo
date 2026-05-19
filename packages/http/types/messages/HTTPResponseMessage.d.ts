@@ -27,7 +27,7 @@ declare class HTTPResponseMessage extends HTTPMessage {
         statusText?: string | undefined;
         type?: string | undefined;
         redirected?: boolean | undefined;
-    } | undefined);
+    });
     /** @type {boolean} */
     ok: boolean;
     /** @type {number} */
@@ -43,14 +43,3 @@ declare class HTTPResponseMessage extends HTTPMessage {
     text(): Promise<string>;
 }
 import HTTPMessage from './HTTPMessage.js';
-/**
- * @typedef {"basic" | "cors" | "default" | "error" | "opaque" | "opaqueredirect"} ResponseType
- */
-/**
- * @typedef {301 | 302 | 303 | 307 | 308} ResponseRedirectStatus
- */
-/**
- * @param {string} input
- * @returns {ResponseType}
- */
-declare function ResponseType(input: string): ResponseType;

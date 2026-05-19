@@ -20,7 +20,7 @@ export class Document extends Model {
     };
     static langs: {
         type: string;
-        model: any;
+        model: typeof Language;
         help: string;
     };
     /**
@@ -38,3 +38,4 @@ export class Document extends Model {
 import { Model } from '@nan0web/types';
 import { Content } from './Content.js';
 import Navigation from './Navigation.js';
+import { Language } from '@nan0web/i18n';

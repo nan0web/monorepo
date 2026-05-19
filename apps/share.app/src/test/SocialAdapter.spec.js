@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { SocialAdapter, NotImplementedError } from '../core/SocialAdapter.js'
-import { DummyAdapter } from '../core/DummyAdapter.js'
+import { SocialAdapter, NotImplementedError } from '../domain/SocialAdapter.js'
+import { DummyAdapter } from '../domain/DummyAdapter.js'
 
 test('SocialAdapter - Base Protocol Enforcement', async (t) => {
 	const adapter = new SocialAdapter()

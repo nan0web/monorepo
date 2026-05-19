@@ -17,4 +17,11 @@ export {
 	ChangelogTaskManager
 }
 
-export { App, InitCommand } from './domain/App.js'
+export { App } from './domain/App.js'
+export { default as InitCommand } from './domain/InitCommand.js'
+export { default as CheckCommand } from './domain/CheckCommand.js'
+export { default as CloseCommand } from './domain/CloseCommand.js'
+export { default as DepsCommand } from './domain/DepsCommand.js'
+export { default as PublishCommand } from './domain/PublishCommand.js'
+export { default as SpecCommand } from './domain/SpecCommand.js'
+export { default as StatusCommand } from './domain/StatusCommand.js'

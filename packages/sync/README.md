@@ -13,19 +13,23 @@ calculating remote vs local differences using MD5 hashing, atomic locking,
 and remote manifests to reduce overhead during continuous deployment.
 
 Core Features:
+
 - **Differential Sync** — only changed files are uploaded and removed files are deleted.
 - **Remote Manifest** — stores the directory state remotely to skip full FTP directory scanning.
 - **Atomic Locking** — prevents concurrent deployments.
 - **Git Validation** — enforces deployment order.
 
+
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install -g @nan0web/sync
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add -g @nan0web/sync
 ```
@@ -35,6 +39,7 @@ pnpm add -g @nan0web/sync
 The `nan0sync` command is the primary way to interact with the engine.
 
 How to use nan0sync via CLI?
+
 ```bash
 # Run live synchronization
 nan0sync push
@@ -54,6 +59,7 @@ nan0sync status
 Sync supports hierarchical config loading (`sync.config.js`). It reads default, env, and local configs.
 
 How to create sync.config.js?
+
 ```javascript
 export default {
   adapter: 'ftp',
@@ -75,6 +81,7 @@ export default {
 The engine executes the synchronization state machine via a generator function `run()`.
 
 How to use SyncEngine programmatically?
+
 ```js
 import { SyncEngine, SyncConfig } from '@nan0web/sync'
 const config = new SyncConfig({
@@ -95,3 +102,5 @@ How to contribute? - [check here]($pkgURL/blob/main/CONTRIBUTING.md)
 ## License
 
 How to license? - [ISC LICENSE]($pkgURL/blob/main/LICENSE) file.
+
+

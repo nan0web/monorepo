@@ -3,7 +3,7 @@
  * Defines the granular permissions that apps can request from the Sovereign User.
  */
 
-export const Scope = {
+const Scope = {
 	// Identity
 	IDENTITY_EMAIL: 'identity.email',
 	IDENTITY_PHONE: 'identity.phone',

@@ -77,6 +77,8 @@ export default class DB {
      * @param {Function} [input.Model] - Shorthand: single Model class for all URIs
      * @param {Record<string, string>} [input.aliases={}] - URI aliases for virtual projection
      * @param {Console | NoConsole} [input.console=new NoConsole()] - Logging console
+     * @param {FormatRegistry} [input.registry] - Format registry instance
+     * @param {Array<{ext: string, load: (str: string, ext: string) => any, save: (doc: any, ext: string) => string}>} [input.formats] - Custom format registrations
      */
     constructor(input?: {
         cwd?: string | undefined;
@@ -93,7 +95,15 @@ export default class DB {
         Model?: Function | undefined;
         aliases?: Record<string, string> | undefined;
         console?: Console | NoConsole | undefined;
+        registry?: FormatRegistry | undefined;
+        formats?: {
+            ext: string;
+            load: (str: string, ext: string) => any;
+            save: (doc: any, ext: string) => string;
+        }[] | undefined;
     });
+    /** @type {FormatRegistry} */
+    registry: FormatRegistry;
     /** @type {DBDriverProtocol} */
     driver: DBDriverProtocol;
     /** @type {string} */
@@ -813,6 +823,7 @@ export default class DB {
     }): AsyncGenerator<DocumentEntry, void, unknown>;
     #private;
 }
+import FormatRegistry from '../FormatRegistry.js';
 import DBDriverProtocol from './DriverProtocol.js';
 import DocumentStat from '../DocumentStat.js';
 import AuthContext from './AuthContext.js';

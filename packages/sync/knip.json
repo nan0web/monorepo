@@ -6,6 +6,7 @@
 		"@nan0web/icons",
 		"@nan0web/ui-cli",
 		"@nan0web/db-fs",
+		"@nan0web/log",
 		"basic-ftp",
 		"js-yaml",
 		"lit",

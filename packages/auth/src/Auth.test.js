@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert'
 import { Auth } from './index.js'
-import { Scope } from './core/Scope.js'
+import Scope from './core/Scope.js'
 // Importing directly from source to bypass package resolution issues during dev
 import { runFlow } from '../../ui/src/core/Flow.js'
 
