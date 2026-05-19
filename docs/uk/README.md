@@ -63,7 +63,7 @@ pnpm є обовʼязковим менеджером
 ```bash
 pnpm add -g @nan0web/ai
 ```
-> 💡 **Примітка:** Якщо під час запуску виникає помилка завантаження нативних біндінгів (`Could not locate the bindings file` для `hnswlib-node`), виконайте: `cd $(pnpm root -g)/.. && pnpm rebuild hnswlib-node`
+> 💡 **Примітка:** Якщо під час запуску виникає помилка завантаження нативних біндінгів (`Could not locate the bindings file` для `hnswlib-node`), виконайте: `npm rebuild hnswlib-node --prefix $(pnpm root -g)/..`
 
 Тепер команда `nan0ai` доступна всюди. Спробуйте:
 
