@@ -172,7 +172,7 @@ describe('I18nDb', () => {
 		assert.equal(t('Top-up Telephone'), 'Поповнення телефону')
 	})
 
-	it.todo('should emit error event when loadT fails', async () => {
+	it('should emit error event when loadT fails', async () => {
 		let errorEmitted = false
 		let emittedError = null
 
@@ -190,7 +190,7 @@ describe('I18nDb', () => {
 		await i18nWithError.connect()
 		i18nWithError.emitter.on('error', (err) => {
 			errorEmitted = true
-			emittedError = err.data
+			emittedError = err.data.data
 		})
 
 		await i18nWithError.loadT('/missing/path')

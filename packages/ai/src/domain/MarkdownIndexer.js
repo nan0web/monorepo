@@ -222,7 +222,7 @@ export class MarkdownIndexer extends Model {
 
 		// Load global vector cache
 		try {
-			const raw = await workspaceDb.loadDocument(VECTOR_CACHE_PATH).catch(() => null)
+			const raw = await workspaceDb.loadDocumentAs('.txt', VECTOR_CACHE_PATH).catch(() => null)
 			if (raw && typeof raw === 'string') {
 				const lines = raw.split('\n')
 				for (const line of lines) {
@@ -379,7 +379,7 @@ export class MarkdownIndexer extends Model {
 
 						if (missingChunks.length > 0) {
 							const texts = missingChunks.map((c) => c.text)
-							const vectors = await embedder.embedBatch(texts)
+							const vectors = await embedder.embedBatch(texts, { type: 'passage' })
 							for (let k = 0; k < vectors.length; k++) {
 								const v = new Float32Array(vectors[k])
 								const originalIdx = missingChunks[k].idx
@@ -490,7 +490,9 @@ export class MarkdownIndexer extends Model {
 				typeof query !== 'string' &&
 				/** @type {any} */ (query).buffer instanceof ArrayBuffer)
 		const queryVector =
-			opts.strict || isVector ? query : await embedder.embed(/** @type {string} */ (query))
+			opts.strict || isVector
+				? query
+				: await embedder.embed(/** @type {string} */ (query), { type: 'query' })
 
 		const nameToDir = opts.project?.startsWith('@')
 			? await loadNameToDir(/** @type {any} */ (this._).db || workspaceDb)

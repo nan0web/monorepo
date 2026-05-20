@@ -37,29 +37,53 @@ export class Embedder extends Model {
 	}
 
 	/**
+	 * Checks whether the current model is an E5-Instruct variant
+	 * that requires query:/passage: prefix injection.
+	 * @returns {boolean}
+	 */
+	isE5Instruct() {
+		return /e5[\w-]*instruct/i.test(this.model)
+	}
+
+	/**
+	 * Conditionally prepends E5-Instruct prefix to input texts.
+	 * @param {string[]} texts
+	 * @param {{ type?: 'query' | 'passage' }} [opts]
+	 * @returns {string[]}
+	 */
+	prefixInput(texts, opts = {}) {
+		if (!this.isE5Instruct() || !opts.type) return texts
+		const prefix = opts.type === 'query' ? 'query: ' : 'passage: '
+		return texts.map((t) => `${prefix}${t}`)
+	}
+
+	/**
 	 * Computes embeddings for single or multiple inputs.
 	 * @param {string|string[]} input
+	 * @param {{ type?: 'query' | 'passage' }} [opts]
 	 * @returns {Promise<number[] | number[][]>}
 	 */
-	async embed(input) {
+	async embed(input, opts) {
 		const isArray = Array.isArray(input)
 		const texts = isArray ? input : [input]
-		const results = await this.embedBatch(texts)
+		const results = await this.embedBatch(texts, opts)
 		return isArray ? results : results[0]
 	}
 
 	/**
 	 * @param {string[]} texts
+	 * @param {{ type?: 'query' | 'passage' }} [opts]
 	 * @returns {Promise<number[][]>}
 	 */
-	async embedBatch(texts) {
+	async embedBatch(texts, opts) {
 		if (texts.length === 0) return []
+		const prefixed = this.prefixInput(texts, opts)
 		const response = await this._fetch(`${this.baseURL}/embeddings`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				model: this.model,
-				input: texts,
+				input: prefixed,
 			}),
 		})
 		if (!response.ok) {

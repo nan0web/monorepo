@@ -562,9 +562,10 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		}
 
 		// Calculate percentage: support explicit current/total in it, with fallback to state scopes
-		const percent = (it.total && typeof it.current === 'number')
-			? Math.round((it.current / it.total) * 100)
-			: Math.round(((state ? state.processedScopes : 0) / (state ? state.totalScopes : 1)) * 100)
+		const percent =
+			it.total && typeof it.current === 'number'
+				? Math.round((it.current / it.total) * 100)
+				: Math.round(((state ? state.processedScopes : 0) / (state ? state.totalScopes : 1)) * 100)
 
 		// Other progress events
 		if (it.type === 'scanProgress') {

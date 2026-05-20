@@ -1,4 +1,4 @@
-# 🏗️ Документація NaN•Web (UA)
+# 🏗️ Документація NaN•Web (UK)
 
 Головний вузол знань екосистеми NaN•Web <v name="version">v3.0.0</v>.
 
@@ -9,7 +9,6 @@ NaN•Web базується на принципі **One Logic, Many UI (OLMUI)*
 - [Огляд Архітектури](../../ARCHITECTURE.md) — Фундаментальні принципи.
 - [Налаштування Бази Знань ШІ](./SETUP_KNOWLEDGE_BASE.md) — **ВАЖЛИВО**: Як надати вашому ШІ-агенту контекст проекту.
 - [Статус Пакетів](../../STATUS.md) — Поточний стан кожного модуля.
-
 
 ## 🚀 Швидкий Старт
 
@@ -29,32 +28,37 @@ pnpm є обовʼязковим менеджером
 
 1.- **Налаштування EMBEDDER_URL**:
 
-   Вкажіть адресу вашого локального сервера ембедінгів (LM Studio або Ollama).
+Вкажіть адресу вашого локального сервера ембедінгів (LM Studio або Ollama).
 
-   **Для Linux / macOS (zsh, bash):**
-   ```bash
-   export EMBEDDER_URL="http://localhost:1234/v1"
-   ```
-   **Для Windows (Command Prompt):**
-   ```cmd
-   set EMBEDDER_URL=http://localhost:1234/v1
-   ```
-   **Для Windows (PowerShell):**
-   ```powershell
-   $env:EMBEDDER_URL = "http://localhost:1234/v1"
-   ```
+**Для Linux / macOS (zsh, bash):**
+
+```bash
+export EMBEDDER_URL="http://localhost:1234/v1"
+```
+
+**Для Windows (Command Prompt):**
+
+```cmd
+set EMBEDDER_URL=http://localhost:1234/v1
+```
+
+**Для Windows (PowerShell):**
+
+```powershell
+$env:EMBEDDER_URL = "http://localhost:1234/v1"
+```
 
 1.- **Індексація воркспейсу**:
 
-   ```bash
-   pnpm run ai:index
-   ```
+```bash
+pnpm run ai:index
+```
 
 1.- **Налаштування MCP сервера**:
 
-   ```bash
-   pnpm run ai:setup
-   ```
+```bash
+pnpm run ai:setup
+```
 
 ### 3. Глобальний доступ до ШІ (nan0ai)
 
@@ -63,6 +67,7 @@ pnpm є обовʼязковим менеджером
 ```bash
 pnpm add -g @nan0web/ai
 ```
+
 > 💡 **Примітка:** Якщо під час запуску виникає помилка завантаження нативних біндінгів (`Could not locate the bindings file` для `hnswlib-node`), виконайте: `npm rebuild hnswlib-node --prefix $(pnpm root -g)/..`
 
 Тепер команда `nan0ai` доступна всюди. Спробуйте:
@@ -79,7 +84,6 @@ nan0ai search "Як створити новий компонент?"
 - **@nan0web/db-fs** — Високопродуктивна документо-орієнтована БД для файлової системи.
 - **@nan0web/ai** — «Мозок» екосистеми, що відповідає за RAG та MCP пошук.
 
-
 ---
 
 ## 📖 Архітектурний Глосарій
@@ -92,10 +96,8 @@ nan0ai search "Як створити новий компонент?"
 - **NaN•Format** — [Читати концепт](terms/NaN0-Format.md)
 - **ProvenDoc** — [Читати концепт](terms/ProvenDoc.md)
 
-
 ---
+
 > Ця документація синхронізується автоматично через Sovereign Inheritance (ProvenDoc).
 
 Експорти пакетів валідні
-
-

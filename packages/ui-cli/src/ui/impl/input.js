@@ -69,10 +69,14 @@ export async function text(config) {
 	validateFunction(config.validate, 'validate', 'Input.text')
 	validateFunction(config.format, 'format', 'Input.text')
 
-	const { message, initial, validate, type = 'text', format } = config
+	let type = config.type || 'text'
+	if (type === 'text/markdown' || type === 'text/html') {
+		type = 'text'
+	}
+	const { message, initial, validate, format } = config
 	const response = await prompts(
 		{
-			type: type,
+			type,
 			name: 'value',
 			message,
 			initial,

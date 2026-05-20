@@ -51,9 +51,11 @@ describe('v1.0.6 — I18n Parser and Lang Options', () => {
 	})
 
 	it('package.json version matches 1.0.6+', () => {
-		assert(
-			['1.0.6', '1.1.0', '1.1.1', '1.2.0', '1.3.0', '1.4.0', '1.5.0', '3.0.0'].includes(pkg.version),
-			`expected 1.0.6, 1.1.0, 1.1.1, 1.2.0, 1.3.0, 1.4.0, 1.5.0 or 3.0.0, got ${pkg.version}`,
-		)
+		const parts = pkg.version.split('.').map(Number)
+		const isAtLeast106 =
+			parts[0] > 1 ||
+			(parts[0] === 1 && parts[1] > 0) ||
+			(parts[0] === 1 && parts[1] === 0 && parts[2] >= 6)
+		assert.ok(isAtLeast106, `expected version >= 1.0.6, got ${pkg.version}`)
 	})
 })

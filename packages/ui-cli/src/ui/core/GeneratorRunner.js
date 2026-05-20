@@ -128,6 +128,45 @@ export async function runGenerator(model, adapter, options = {}) {
 					nextVal = await adapter.progressIntent(intent)
 					break
 				}
+				case 'agent': {
+					if (typeof adapter.agentIntent === 'function') {
+						nextVal = await adapter.agentIntent(intent)
+					} else {
+						try {
+							const { AI } = await import('@nan0web/ai')
+							const ai = new AI()
+							await ai.refreshModels()
+							
+							let model = ai.selectedModel
+							if (!model) {
+								const models = Array.from(ai.findModels(''))
+								model = models.find(m => m.provider === 'groq' || m.provider === 'google' || m.provider === 'cerebras') || models[0]
+							}
+							
+							if (!model) {
+								throw new Error('No AI models configured or available')
+							}
+							
+							const systemPrompt = intent.task
+							const userPrompt = intent.context?.data?.text || intent.context?.text || ''
+							
+							const messages = [
+								{ role: 'user', content: userPrompt }
+							]
+							
+							const response = await ai.generateText(model, messages, { system: systemPrompt })
+							nextVal = { success: true, message: response.text }
+						} catch (e) {
+							await adapter.logIntent({
+								type: 'show',
+								level: 'warn',
+								message: `[AI Agent Fallback] ${intent.task}\n(AI failed: ${e.message})`,
+							})
+							nextVal = { success: false, message: 'AI Agent not available' }
+						}
+					}
+					break
+				}
 				case 'show':
 				case 'log': {
 					await adapter.logIntent(intent)

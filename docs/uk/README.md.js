@@ -14,7 +14,7 @@ before(async () => {
 async function testRender() {
 	/**
 	 * @docs
-	 * # 🏗️ Документація NaN•Web (UA)
+	 * # 🏗️ Документація NaN•Web (UK)
 	 *
 	 * Головний вузол знань екосистеми NaN•Web <v name="version">v3.0.0</v>.
 	 *

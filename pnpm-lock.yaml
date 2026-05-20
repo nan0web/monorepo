@@ -1342,6 +1342,9 @@ importers:
 
   packages/ui-cli:
     dependencies:
+      '@nan0web/ai':
+        specifier: workspace:*
+        version: link:../ai
       '@nan0web/core':
         specifier: workspace:*
         version: link:../core

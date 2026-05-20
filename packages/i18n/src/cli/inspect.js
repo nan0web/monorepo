@@ -12,21 +12,49 @@ import { join, relative, resolve } from 'node:path'
 import { EXTRACT_FIELDS } from '../extract.js'
 import { Alert, spinner } from '@nan0web/ui-cli'
 
-async function findFiles(dir, files = []) {
-	try {
-		const entries = await readdir(dir, { withFileTypes: true })
-		for (const entry of entries) {
-			const res = join(dir, entry.name)
-			if (entry.isDirectory()) {
-				await findFiles(res, files)
-			} else if (entry.name.endsWith('.js')) {
-				files.push(res)
+const getReaders = (db, ROOT) => {
+	if (db) {
+		return {
+			async findFiles(dir) {
+				const files = []
+				const relativeDir = relative(ROOT, dir) || '.'
+				for await (const entry of db.findStream(relativeDir, { skipIndex: true })) {
+					const path = entry.file?.path
+					if (path && path.endsWith('.js')) {
+						files.push(resolve(ROOT, path))
+					}
+				}
+				return files
+			},
+			async readFile(file) {
+				const relativePath = relative(ROOT, file)
+				return db.loadDocument(relativePath)
 			}
 		}
-	} catch (e) {
-		// Dir doesn't exist, ignore
 	}
-	return files
+	return {
+		async findFiles(dir) {
+			const files = []
+			async function traverse(currentDir) {
+				try {
+					const entries = await readdir(currentDir, { withFileTypes: true })
+					for (const entry of entries) {
+						const res = join(currentDir, entry.name)
+						if (entry.isDirectory()) {
+							await traverse(res)
+						} else if (entry.name.endsWith('.js')) {
+							files.push(res)
+						}
+					}
+				} catch (e) {}
+			}
+			await traverse(dir)
+			return files
+		},
+		async readFile(file) {
+			return readFile(file, 'utf-8')
+		}
+	}
 }
 
 /**
@@ -39,6 +67,8 @@ export default async function inspect(args = {}) {
 	const UTILS_DIR = resolve(ROOT, 'src/utils')
 	const COMPONENTS_DIR = resolve(ROOT, args.components || 'src/components')
 	const VOCAB_FILE = resolve(ROOT, args.vocab || 'play/data/uk/_/t.nan0')
+
+	const readers = getReaders(args.db, ROOT)
 
 	const fieldPatterns = EXTRACT_FIELDS.map((f) => f.replace('*', '[a-zA-Z0-9_]*')).join('|')
 
@@ -66,11 +96,12 @@ export default async function inspect(args = {}) {
 
 	let s = spinner(`Scanning Domain: ${relative(ROOT, DOMAIN_DIR)} for i18n keys...`)
 
-	const domainFiles = await findFiles(DOMAIN_DIR)
+	const domainFiles = await readers.findFiles(DOMAIN_DIR)
 	const domainKeys = new Set()
 
 	for (const file of domainFiles) {
-		const content = await readFile(file, 'utf-8')
+		const content = await readers.readFile(file)
+		if (typeof content !== 'string') continue
 		let match
 
 		// 1. Direct static properties
@@ -107,7 +138,8 @@ export default async function inspect(args = {}) {
 	s = spinner(`Validating translations in: ${relative(ROOT, VOCAB_FILE)}...`)
 	let vocabContent = ''
 	try {
-		vocabContent = await readFile(VOCAB_FILE, 'utf-8')
+		vocabContent = await readers.readFile(VOCAB_FILE)
+		if (typeof vocabContent !== 'string') vocabContent = ''
 	} catch (e) {
 		s.stop()
 		console.log(
@@ -150,14 +182,15 @@ export default async function inspect(args = {}) {
 	}
 
 	s = spinner(`Scanning UI (${relative(ROOT, UI_SRC_DIR)}) for hardcoded t() calls...`)
-	const uiFiles = await findFiles(UI_SRC_DIR)
-	const componentsFiles = await findFiles(COMPONENTS_DIR)
+	const uiFiles = await readers.findFiles(UI_SRC_DIR)
+	const componentsFiles = await readers.findFiles(COMPONENTS_DIR)
 	const allUiFiles = [...uiFiles, ...componentsFiles]
 
 	let hardcodedCount = 0
 	let hardcodedMessages = []
 	for (const file of allUiFiles) {
-		const content = await readFile(file, 'utf-8')
+		const content = await readers.readFile(file)
+		if (typeof content !== 'string') continue
 		let match
 		while ((match = T_LITERAL_REGEX.exec(content)) !== null) {
 			const key = match[1]
@@ -168,11 +201,12 @@ export default async function inspect(args = {}) {
 	s.stop()
 
 	s = spinner(`Scanning Utils (${relative(ROOT, UTILS_DIR)}) for t() usage (forbidden)...`)
-	const utilsFiles = await findFiles(UTILS_DIR)
+	const utilsFiles = await readers.findFiles(UTILS_DIR)
 	let utilsTCount = 0
 	let utilsMessages = []
 	for (const file of utilsFiles) {
-		const content = await readFile(file, 'utf-8')
+		const content = await readers.readFile(file)
+		if (typeof content !== 'string') continue
 		if (ANY_T_REGEX.test(content)) {
 			utilsMessages.push(`t() usage in utils: ${relative(ROOT, file)}`)
 			utilsTCount++
@@ -207,6 +241,9 @@ export default async function inspect(args = {}) {
 			}),
 		)
 	} else {
+		if (args.throwOnError) {
+			throw new Error('i18n Assessment failed')
+		}
 		process.exit(1)
 	}
 }

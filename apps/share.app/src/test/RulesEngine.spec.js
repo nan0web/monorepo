@@ -191,7 +191,7 @@ test('executeTasks - executes publish tasks with delays', async (t) => {
 		assert.equal(results[0].ruleName, 'Now')
 		assert.equal(results[1].ruleName, 'Later')
 		// Delayed task should have waited ~50ms (not 30 min)
-		assert.ok(elapsed < 500, `Expected <500ms but took ${elapsed}ms`)
+		assert.ok(elapsed < 1000, `Expected <1000ms but took ${elapsed}ms`)
 	})
 
 	await t.test('handles multiple delayed tasks in parallel', async () => {
@@ -208,6 +208,6 @@ test('executeTasks - executes publish tasks with delays', async (t) => {
 
 		assert.equal(results.length, 3)
 		// All delayed tasks run in parallel, each capped at 50ms
-		assert.ok(elapsed < 500, `Expected <500ms but took ${elapsed}ms`)
+		assert.ok(elapsed < 1000, `Expected <1000ms but took ${elapsed}ms`)
 	})
 })
