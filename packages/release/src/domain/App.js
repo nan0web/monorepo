@@ -6,8 +6,9 @@ import DepsCommand from './DepsCommand.js'
 import PublishCommand from './PublishCommand.js'
 import SpecCommand from './SpecCommand.js'
 import StatusCommand from './StatusCommand.js'
+import BumpCommand from './BumpCommand.js'
 
-export class App extends ModelAsApp {
+export class ReleaseApp extends ModelAsApp {
 	static command = {
 		help: 'Subcommand to run',
 		options: [
@@ -18,12 +19,14 @@ export class App extends ModelAsApp {
 			PublishCommand,
 			SpecCommand,
 			StatusCommand,
+			BumpCommand,
 		],
+		positional: true,
 		default: null,
 	}
 
 	/**
-	 * @param {Partial<App>} [data]
+	 * @param {Partial<ReleaseApp>} [data]
 	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
 	 */
 	constructor(data = {}, options = {}) {

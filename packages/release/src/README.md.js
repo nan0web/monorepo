@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 import FS from '@nan0web/db-fs'
 import { NoConsole } from '@nan0web/log'
 import { DatasetParser, DocsParser, runSpawn } from '@nan0web/test'
-import { App } from './index.js'
+import { ReleaseApp } from './index.js'
 import Release from './Release.js'
 import ReleaseDocument from './Release/Document.js'
 import Person from './Release/Person.js'
@@ -103,7 +103,7 @@ function testRender() {
 		 * nan0release init v1.0.0
 		 * ```
 		 */
-		assert.ok(new App().constructor.command.options)
+		assert.ok(new ReleaseApp().constructor.command.options)
 	})
 
 	/**
@@ -134,7 +134,7 @@ function testRender() {
 		 * nan0release list [--json]
 		 * ```
 		 */
-		assert.ok(new App().constructor.command.options)
+		assert.ok(new ReleaseApp().constructor.command.options)
 	})
 
 	/**
@@ -147,7 +147,7 @@ function testRender() {
 		 * nan0release chat write --user alice "Issue with the build pipeline"
 		 * ```
 		 */
-		assert.ok(new App().constructor.command.options)
+		assert.ok(new ReleaseApp().constructor.command.options)
 	})
 
 	/**
@@ -160,7 +160,7 @@ function testRender() {
 		 * nan0release host [--webui] [--port 3000]
 		 * ```
 		 */
-		assert.ok(new App().constructor.command.options)
+		assert.ok(new ReleaseApp().constructor.command.options)
 	})
 
 	/**
@@ -173,7 +173,7 @@ function testRender() {
 		 * nan0release serve [--port 8080]
 		 * ```
 		 */
-		assert.ok(new App().constructor.command.options)
+		assert.ok(new ReleaseApp().constructor.command.options)
 	})
 
 	/**
@@ -204,7 +204,7 @@ function testRender() {
 		 * nan0release seal [--message "All core APIs are stable and tested"]
 		 * ```
 		 */
-		assert.ok(new App().constructor.command.options)
+		assert.ok(new ReleaseApp().constructor.command.options)
 	})
 
 	/**

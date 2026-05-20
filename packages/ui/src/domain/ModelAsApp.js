@@ -311,7 +311,7 @@ export class ModelAsApp extends Model {
 	 */
 	async *run() {
 		// 1. Automatic Help Handling (Premium OLMUI style)
-		if (/** @type {any} */ (this).help) {
+		if (this.help) {
 			const content = this.generateHelp()
 			const UI = /** @type {any} */ (this.constructor).UI || {}
 			const title = UI.title || this.constructor.name

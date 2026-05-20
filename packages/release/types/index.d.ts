@@ -1,4 +1,4 @@
-export { App } from "./domain/App.js";
+export { ReleaseApp } from "./domain/App.js";
 export { default as InitCommand } from "./domain/InitCommand.js";
 export { default as CheckCommand } from "./domain/CheckCommand.js";
 export { default as CloseCommand } from "./domain/CloseCommand.js";
