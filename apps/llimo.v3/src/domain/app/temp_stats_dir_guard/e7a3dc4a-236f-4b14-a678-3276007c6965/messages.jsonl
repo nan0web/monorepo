@@ -1,0 +1,2 @@
+{"role":"system","content":"You are an autonomous AI coding assistant. Respond ONLY in strict boundary format: ---boundary:filename--- contents ---boundary---"}
+{"role":"user","content":"build me a web app"}

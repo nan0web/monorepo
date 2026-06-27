@@ -1,0 +1,86 @@
+---
+metadata:
+  description: "Advanced OLMUI LLM Agent & Session Orchestrator for NaN0Web"
+  tags: [agent, chat, olmui, parser]
+  status: planned
+  locale: en
+sections:
+  - title: "Фаза 1: Philosophy & Abstraction (The Seed)"
+    content:
+      - "`llimo.v3` implements the concept of an autonomous developer (AI Agent) operating on **One Logic — Many UIs (OLMUI)** principles. The interaction logic with the user and AI models is fully encapsulated within JS generators and decoupled from any specific rendering layer (CLI, Web, VSCode, etc.)."
+    tasks:
+      - title: "Core Abstractions:"
+        content:
+          - "- **Session (`ChatSessionModel`)**: Holds the state of the conversation."
+          - "- **Strategy (`AiStrategyModel`)**: A queue of LLMs defining fallback execution order during timeouts or API failures."
+          - "- **Boundary Format**: Specialized block protocol for file updates `---boundary:filepath---`."
+          - "- **Local Metrics**: Storing call metrics (speed, tokens, duration, cost, efficiency) in `~/.llimo/stats.jsonl`."
+        items: []
+        total: 0
+        completed: 0
+  - title: "Фаза 2: Domain Modeling (Data-Driven Models)"
+    content:
+      - "All domain models extend `ModelAsApp` or `AiModelAsApp` and declare schemas via static properties (Model-as-Schema)."
+      - "1. **`ChatSessionModel`** (`src/domain/app/ChatSessionModel.js`):"
+      - "- Runs the generator loop `run()`."
+      - "- Connects to database via `@nan0web/db`."
+      - "- Parses LLM answers with `Strict Boundary Interpreter`."
+      - "2. **`AiStrategyModel`** (`src/domain/strategy/AiStrategyModel.js`):"
+      - "- Controls the queue of fallback models."
+      - "3. **`StatsReportModel`** (`src/domain/stats/StatsReportModel.js`):"
+      - "- Parses `stats.jsonl` and reports model performance."
+    tasks: []
+  - title: "Фаза 3: CLI Integration (Scenarios & Commands)"
+    content:
+      - "Fallback/strategy queue operations:"
+      - "- `strategy list` — view fallback models."
+      - "- `strategy remove [pattern]` — remove model by ID/wildcard."
+      - "- `strategy add [model]` — append/prepend/insert models with `--before`, `--after`, `--position`."
+      - "- `strategy edit` — interactive strategic editor."
+    tasks: []
+  - title: "Фаза 4: Sovereign Workbench / The Master IDE"
+    content:
+      - "Playground sandbox runs in `play/main.js` utilizing In-Memory `@nan0web/db` for test assertions without modifying physical disks."
+    tasks: []
+  - title: "Фаза 5: Theming"
+    content:
+      - "The core is 100% UI-blind. Terminal styling is provided by `@nan0web/ui-cli` utilizing NaN•Web design tokens."
+    tasks: []
+  - title: "Фаза 6: Quality & Distribution"
+    content:
+      - "- Automated testing via Node.js Test Runner."
+      - "- Coverage: 30+ unit and integration tests."
+      - "- Static typing check via TypeScript & JSDoc."
+    tasks: []
+  - title: "Фаза 7: Value & Economy"
+    content:
+      - "- Minimal API costs due to surgical line-range updates."
+      - "- Model cascades for optimized latency, quality, and API budget."
+    tasks: []
+  - title: "Фаза 8: Sovereignty"
+    content:
+      - "- Zero lock-in, open protocols."
+      - "- Runs on abstract `@nan0web/db` and local file systems."
+    tasks: []
+  - title: "Фаза 9: World Impact"
+    content:
+      - "- Empowering developers with open-source agent tooling."
+    tasks: []
+  - title: "Definition of Done (DoD)"
+    content: []
+    tasks:
+      - title: "General"
+        content: []
+        items:
+          - text: "All unit and integration tests pass successfully."
+            completed: true
+          - text: "No TypeScript compilation errors."
+            completed: true
+          - text: "Commands and workflow pipeline fully localized."
+            completed: true
+        total: 3
+        completed: 3
+stats:
+  totalTasks: 3
+  completedTasks: 3
+  progress: 100

@@ -1,0 +1,2 @@
+{"ts":"2026-06-26T20:50:11.814Z","type":"prompt","content":"build me a web app"}
+{"ts":"2026-06-26T20:50:11.846Z","type":"llm_call","model":"guard-model","provider":"openrouter","usage":{"promptTokens":10,"completionTokens":10},"duration":0,"cost":0}
