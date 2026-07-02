@@ -29,6 +29,12 @@ export class DummyAdapter extends SocialAdapter {
         replyTo: string;
         author: string;
     }>;
+    get capabilities(): string[];
+    /**
+     * @param {import('./Models.js').SocialAdapterContent} content
+     * @returns {Promise<import('./Models.js').SocialAdapterPublishResult>}
+     */
+    publish(content: import("./Models.js").SocialAdapterContent): Promise<import("./Models.js").SocialAdapterPublishResult>;
     delete(postId: any): Promise<boolean>;
 }
 import { SocialAdapterConfig } from './Models.js';

@@ -160,10 +160,10 @@ const deleted = await adapter.delete(post.id)
 
 ## Available Adapters
 
-|
-|
-|
-|
+| Adapter           | Platform                   | Status    |
+| ----------------- | -------------------------- | --------- |
+| `DummyAdapter`    | In-memory (test/reference) | ✅ v1.0.0 |
+| `TelegramAdapter` | Telegram Bot API           | ✅ v1.0.0 |
 
 Planned: `@nan0web/share-rss` (RSS Feed), `@nan0web/share-x` (X/Twitter API).
 
@@ -171,14 +171,14 @@ Planned: `@nan0web/share-rss` (RSS Feed), `@nan0web/share-x` (X/Twitter API).
 
 ## Capabilities Token Reference
 
-|
-|
-|
-|
-|
-|
-|
-|
+| Token                                    | Meaning                               |
+| ---------------------------------------- | ------------------------------------- |
+| `media`                                  | Platform accepts photo/video/document |
+| `edit`                                   | Platform supports editing posts       |
+| `delete`                                 | Platform allows deleting posts        |
+| `reply`                                  | Platform supports native replies      |
+| `threads`                                | Platform supports threaded posts      |
+| `photo` / `video` / `document` / `audio` | Specific media types                  |
 
 ```js
 adapter.can('media')  // true / false

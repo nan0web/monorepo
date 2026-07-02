@@ -3,6 +3,6 @@
 	"entry": ["src/index.js"],
 	"project": ["src/**/*.js"],
 	"ignore": ["src/test/**", "src/**/*.spec.js", "releases/**", "src/README.md.js"],
-	"ignoreDependencies": ["@nan0web/ai"],
+	"ignoreDependencies": ["@nan0web/ai", "googleapis"],
 	"ignoreExportsUsedInFile": true
 }

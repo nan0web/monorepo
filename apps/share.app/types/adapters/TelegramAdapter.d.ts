@@ -46,6 +46,7 @@ export class TelegramAdapter extends SocialAdapter {
     constructor(config?: ConstructorParameters<typeof TelegramAdapterConfig>[0]);
     /** @type {TelegramAdapterConfig} */
     config: TelegramAdapterConfig;
+    get capabilities(): string[];
     /**
      * Low-level HTTP caller for the Telegram Bot API.
      * Extracted for easy mocking in tests.
@@ -54,6 +55,11 @@ export class TelegramAdapter extends SocialAdapter {
      * @returns {Promise<Record<string, any>>}
      */
     _callApi(method: string, body: Record<string, any>): Promise<Record<string, any>>;
+    /**
+     * @param {import('../domain/Models.js').SocialAdapterContent} content
+     * @returns {Promise<import('../core/Models.js').SocialAdapterPublishResult>}
+     */
+    publish(content: import("../domain/Models.js").SocialAdapterContent): Promise<any>;
     delete(postId: any): Promise<boolean>;
     syncFeedback(postId: any): Promise<any[]>;
     #private;

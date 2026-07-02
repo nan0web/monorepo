@@ -11,6 +11,19 @@
  */
 export class Model {
 	/**
+	 * @param {any} [data]
+	 * @param {any} [options]
+	 */
+	constructor(data = {}, options = {}) {
+		Object.defineProperty(this, '_', {
+			value: options,
+			enumerable: false,
+			writable: true,
+			configurable: true
+		})
+	}
+
+	/**
 	 * Instantiates a model from raw data, parsing strings as JSON.
 	 * @param {any} data
 	 * @returns {any}
@@ -320,3 +333,46 @@ export class SocialAdapterTarget extends Model {
 export function createTarget(raw = {}) {
 	return SocialAdapterTarget.from(raw)
 }
+
+// ─── ResultIntent ────────────────────────────────────────────
+
+export class ResultIntent extends Model {
+	static ok = {
+		help: 'Execution success status.',
+		default: true,
+	}
+	static code = {
+		help: 'Standard status code (e.g. 200, 400, 500).',
+		default: 200,
+	}
+	static errors = {
+		help: 'List of validation or processing error messages.',
+		default: [],
+	}
+
+	constructor(raw = {}) {
+		super()
+		/** @type {boolean} */
+		this.ok = raw.ok ?? (raw.success !== undefined ? !!raw.success : true)
+		/** @type {number} */
+		this.code = raw.code ?? (this.ok ? 200 : 500)
+		/** @type {string[]} */
+		this.errors = Array.isArray(raw.errors) ? raw.errors : (raw.error ? [raw.error] : [])
+
+		// Copy custom payload properties (like outputPath, cid, etc.)
+		Object.assign(this, raw)
+
+		// Enforce typing invariants
+		this.ok = !!this.ok
+		this.code = Number(this.code)
+	}
+}
+
+/**
+ * @param {Partial<ResultIntent>} raw
+ * @returns {ResultIntent}
+ */
+export function createResultIntent(raw = {}) {
+	return ResultIntent.from(raw)
+}
+

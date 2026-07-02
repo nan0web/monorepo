@@ -4,6 +4,13 @@
   "description": "Sovereign Social Distribution Layer (Rules Engine)",
   "type": "module",
   "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./ui/lit": "./src/ui/lit/ShareWeb.js"
+  },
+  "bin": {
+    "share": "bin/share.js"
+  },
   "license": "ISC",
   "author": "nan0web",
   "repository": {
@@ -32,6 +39,8 @@
     "knip": "knip --production",
     "play": "node play/main.js",
     "download": "node bin/download-whisper.js",
+    "stats:analyze": "node bin/stats-analyzer.js",
+    "shorts:generate": "node bin/script-generator.js",
     "audit": "pnpm audit --prod || true"
   },
   "devDependencies": {
@@ -42,6 +51,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@nan0web/ai": "workspace:*"
+    "@nan0web/ai": "workspace:*",
+    "googleapis": "^144.0.0"
   }
 }

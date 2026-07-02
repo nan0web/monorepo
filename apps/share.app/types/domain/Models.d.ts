@@ -31,6 +31,11 @@ export function createFeedback(raw?: Partial<SocialAdapterFeedback>): SocialAdap
  */
 export function createTarget(raw?: Partial<SocialAdapterTarget>): SocialAdapterTarget;
 /**
+ * @param {Partial<ResultIntent>} raw
+ * @returns {ResultIntent}
+ */
+export function createResultIntent(raw?: Partial<ResultIntent>): ResultIntent;
+/**
  * Typed models for the @nan0web/share.app Sovereign Social Distribution Protocol.
  * Every model is a real class: validates input, serializable, introspectable for auto-docs.
  */
@@ -55,6 +60,11 @@ export class Model {
         help: string;
         default: any;
     }>;
+    /**
+     * @param {any} [data]
+     * @param {any} [options]
+     */
+    constructor(data?: any, options?: any);
     /**
      * Returns a plain object representation for serialization.
      * @returns {Record<string, any>}
@@ -251,6 +261,27 @@ export class SocialAdapterTarget extends Model {
     account: string | undefined;
     /** @type {string|undefined} */
     postId: string | undefined;
+}
+export class ResultIntent extends Model {
+    static ok: {
+        help: string;
+        default: boolean;
+    };
+    static code: {
+        help: string;
+        default: number;
+    };
+    static errors: {
+        help: string;
+        default: any[];
+    };
+    constructor(raw?: {});
+    /** @type {boolean} */
+    ok: boolean;
+    /** @type {number} */
+    code: number;
+    /** @type {string[]} */
+    errors: string[];
 }
 export type SocialAdapterContentOptions = {
     parseMode?: string;
