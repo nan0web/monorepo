@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert'
 import path from 'node:path'
-import { AppPipeline } from './pipelines/AppPipeline.js'
+import { AppPipelineModel } from './pipelines/AppPipelineModel.js'
 import { PipelineRunner } from './PipelineRunner.js'
 
 describe('Pipeline & Phase Detection Suite', () => {
@@ -40,7 +40,7 @@ describe('Pipeline & Phase Detection Suite', () => {
 	}
 
 	it('should detect Phase 1 (SEED) when no description exists', async () => {
-		const pipeline = new AppPipeline({})
+		const pipeline = new AppPipelineModel({}, {})
 		const fs = mockFs([])
 		const fsPromises = mockFsPromises([])
 		const phase = await pipeline.detectCurrentPhase('/app', fs, fsPromises, path)
@@ -48,7 +48,7 @@ describe('Pipeline & Phase Detection Suite', () => {
 	})
 
 	it('should detect Phase 2 (MODEL) when description exists but no domain files', async () => {
-		const pipeline = new AppPipeline({})
+		const pipeline = new AppPipelineModel({}, {})
 		const fs = mockFs([
 			'/app/releases/1/0/v1.0.0/release.md'
 		])
@@ -60,7 +60,7 @@ describe('Pipeline & Phase Detection Suite', () => {
 	})
 
 	it('should detect Phase 3 (CONTRACT) when description and domain model exists but no tests', async () => {
-		const pipeline = new AppPipeline({})
+		const pipeline = new AppPipelineModel({}, {})
 		const fs = mockFs([
 			'/app/releases/1/0/v1.0.0/release.md',
 			'/app/src/domain/CalcModel.js'
@@ -73,7 +73,7 @@ describe('Pipeline & Phase Detection Suite', () => {
 	})
 
 	it('should detect Phase 4 (ADAPTER) when model and tests exist but no UI adapter', async () => {
-		const pipeline = new AppPipeline({})
+		const pipeline = new AppPipelineModel({}, {})
 		const fs = mockFs([
 			'/app/releases/1/0/v1.0.0/release.md',
 			'/app/src/domain/CalcModel.js',
@@ -88,7 +88,7 @@ describe('Pipeline & Phase Detection Suite', () => {
 	})
 
 	it('should detect Phase 5 (UI-CLI) when adapter exists but no CLI entry point', async () => {
-		const pipeline = new AppPipeline({})
+		const pipeline = new AppPipelineModel({}, {})
 		const fs = mockFs([
 			'/app/releases/1/0/v1.0.0/release.md',
 			'/app/src/domain/CalcModel.js',
@@ -105,7 +105,7 @@ describe('Pipeline & Phase Detection Suite', () => {
 	})
 
 	it('should detect Phase 6 (UI-CHAT) when CLI exists but no Chat interface', async () => {
-		const pipeline = new AppPipeline({})
+		const pipeline = new AppPipelineModel({}, {})
 		const fs = mockFs([
 			'/app/releases/1/0/v1.0.0/release.md',
 			'/app/src/domain/CalcModel.js',
@@ -124,7 +124,7 @@ describe('Pipeline & Phase Detection Suite', () => {
 	})
 
 	it('should detect Phase 7 (UI-WEB) when Chat exists but no Web interface', async () => {
-		const pipeline = new AppPipeline({})
+		const pipeline = new AppPipelineModel({}, {})
 		const fs = mockFs([
 			'/app/releases/1/0/v1.0.0/release.md',
 			'/app/src/domain/CalcModel.js',
@@ -145,7 +145,7 @@ describe('Pipeline & Phase Detection Suite', () => {
 	})
 
 	it('should detect Phase 8 (UI-MOBILE) when Web exists but no Mobile interface', async () => {
-		const pipeline = new AppPipeline({})
+		const pipeline = new AppPipelineModel({}, {})
 		const fs = mockFs([
 			'/app/releases/1/0/v1.0.0/release.md',
 			'/app/src/domain/CalcModel.js',
@@ -168,7 +168,7 @@ describe('Pipeline & Phase Detection Suite', () => {
 	})
 
 	it('should detect Phase 9 (QA) when all UI interfaces are present', async () => {
-		const pipeline = new AppPipeline({})
+		const pipeline = new AppPipelineModel({}, {})
 		const fs = mockFs([
 			'/app/releases/1/0/v1.0.0/release.md',
 			'/app/src/domain/CalcModel.js',
@@ -205,5 +205,27 @@ describe('Pipeline & Phase Detection Suite', () => {
 		}
 		assert.strictEqual(result.ok, false)
 		assert.ok(result.error.includes('not found'))
+	})
+
+	it('should load phase config and safely parse array fields', async () => {
+		const pipeline = new AppPipelineModel({}, {})
+		const mockDb = {
+			async loadDocument(uri) {
+				assert.strictEqual(uri, '@data/uk/pipelines/app')
+				return {
+					phases: {
+						'7-ui-web': {
+							workflows: '[pipeline-no7-ui-web]',
+							inspectors: '[phase, hygiene]',
+							instructions: 'Test instructions'
+						}
+					}
+				}
+			}
+		}
+		const config = await pipeline.loadPhaseConfig('7-ui-web', mockDb)
+		assert.deepStrictEqual(config.workflows, ['pipeline-no7-ui-web'])
+		assert.deepStrictEqual(config.inspectors, ['phase', 'hygiene'])
+		assert.strictEqual(config.instructions, 'Test instructions')
 	})
 })

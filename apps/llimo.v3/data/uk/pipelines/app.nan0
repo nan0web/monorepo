@@ -1,0 +1,96 @@
+phases:
+  1-seed:
+    workflows:
+      - init-project
+      - pipeline-no1-seed
+    inspectors:
+      - phase
+    instructions: |
+      Ви перебуваєте у Фазі 1 (SEED).
+      Генеруйте ВИКЛЮЧНО: langs, release.md, package.json.
+
+  2-model:
+    workflows:
+      - pipeline-no2-model
+    inspectors:
+      - phase
+      - domain
+    instructions: |
+      Ви перебуваєте у Фазі 2 (MODEL).
+      Напишіть доменну модель в src/domain/.
+
+  3-contract:
+    workflows:
+      - pipeline-no3-contract
+    inspectors:
+      - phase
+      - domain
+      - verification
+    instructions: |
+      Ви перебуваєте у Фазі 3 (CONTRACT).
+      Напишіть контрактні тести для моделі.
+
+  4-adapter:
+    workflows:
+      - pipeline-no4-adapter
+    inspectors:
+      - phase
+      - domain
+      - export
+    instructions: |
+      Ви перебуваєте у Фазі 4 (ADAPTER).
+      Напишіть UI Адаптер, який пов'язує доменні моделі з компонентами UI.
+
+  5-ui-cli:
+    workflows:
+      - pipeline-no5-ui-cli
+    inspectors:
+      - phase
+      - hygiene
+      - export
+    instructions: |
+      Ви перебуваєте у Фазі 5 (UI-CLI).
+      Створіть консольний CLI інтерфейс для додатку в src/ui/cli/.
+
+  6-ui-chat:
+    workflows:
+      - pipeline-no6-ui-chat
+    inspectors:
+      - phase
+      - hygiene
+    instructions: |
+      Ви перебуваєте у Фазі 6 (UI-CHAT).
+      Створіть інтерактивний Chat-інтерфейс у src/ui/chat/.
+
+  7-ui-web:
+    workflows:
+      - pipeline-no7-ui-web
+    inspectors:
+      - phase
+      - hygiene
+    instructions: |
+      Ви перебуваєте у Фазі 7 (UI-WEB).
+      Створіть веб-інтерфейс у src/ui/web/.
+
+  8-ui-mobile:
+    workflows:
+      - pipeline-no8-ui-mobile
+    inspectors:
+      - phase
+      - hygiene
+    instructions: |
+      Ви перебуваєте у Фазі 8 (UI-MOBILE).
+      Створіть мобільний інтерфейс у src/ui/mobile/.
+
+  9-qa:
+    workflows:
+      - pipeline-no9-qa
+    inspectors:
+      - architecture
+      - hygiene
+      - export
+      - verification
+      - circular
+    instructions: |
+      Ви перебуваєте у Фазі 9 (QA).
+      Виконайте фінальну перевірку проєкту.
