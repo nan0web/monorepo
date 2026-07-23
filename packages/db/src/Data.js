@@ -302,17 +302,17 @@ class Data {
 	 * Later entries override earlier ones.
 	 *
 	 * @static
-	 * @param {Array<Array<string, any>>} target - Base flat data entries.
-	 * @param {Array<Array<string, any>>} source - Override flat data entries.
+	 * @param {Array<[string, any]>} target - Base flat data entries.
+	 * @param {Array<[string, any]>} source - Override flat data entries.
 	 * @param {{ referenceKey?: string }} options - Merge options.
-	 * @returns {Array<Array<string, any>>} Merged flat entries.
+	 * @returns {Array<[string, any]>} Merged flat entries.
 	 */
 	static mergeFlat(target, source, { referenceKey = this.REFERENCE_KEY } = {}) {
 		const map = new Map()
 
 		/**
 		 * Add an entry to the map.
-		 * @param {Array<string, any>} entry - Tuple of key and value.
+		 * @param {[string, any]} entry - Tuple of key and value.
 		 * @param {boolean} overwrite - Whether to overwrite existing keys.
 		 */
 		const add = (entry, overwrite) => {
@@ -384,10 +384,10 @@ class Data {
 	 * Gets flat sibling entries of a specific key.
 	 * Filters flat entries at the same level (excluding self).
 	 * @static
-	 * @param {Array<Array<string, any>>|Object} flat - Flattened data.
+	 * @param {Array<[string, any]>|Object} flat - Flattened data.
 	 * @param {string} key - The target key to find siblings for.
 	 * @param {string} [parentKey] - Optional parent key to avoid recomputation.
-	 * @returns {Array<Array<string, any>>} Flat sibling entries.
+	 * @returns {Array<[string, any]>} Flat sibling entries.
 	 */
 	static flatSiblings(flat, key, parentKey = this.getParentKey(key)) {
 		if (!Array.isArray(flat)) flat = Object.entries(flat)

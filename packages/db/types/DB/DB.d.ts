@@ -610,7 +610,15 @@ export default class DB {
      * @param {AuthContext | object} [context=this.context] - Auth context
      * @returns {Promise<boolean>}
      */
-    saveDocument(uri: string, document: any, context?: AuthContext | object): Promise<boolean>;
+    /**
+     * Saves raw file content directly without parsing or serialization.
+     * @param {string} uri - Document URI
+     * @param {string|Buffer} content - Raw content to write
+     * @param {AuthContext | object} [context=this.context] - Auth context
+     * @returns {Promise<boolean>}
+     */
+    saveFile(uri: string, content: string | Buffer, context?: AuthContext | object): Promise<boolean>;
+    saveDocument(uri: any, document: any, context?: AuthContext): any;
     /**
      * Reads statistics for a specific document.
      * Must be overwritten to have the proper file or database document stat operation.

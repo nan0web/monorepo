@@ -639,7 +639,7 @@ export default class DB {
 			const prefix = normalized.split('/')[0]
 			throw new Error(
 				`Mount point "${prefix}" not found for URI "${uri}". ` +
-					`Did you forget to call db.mount('${prefix}', targetDb)?`,
+					`Did you forget to call db.mount('${prefix}', targetDb)?`
 			)
 		}
 		return null
@@ -703,7 +703,7 @@ export default class DB {
 			new Map(
 				Array.from(entries)
 					.filter(([key]) => key.startsWith(prefix))
-					.map(([key, value]) => [String(key.substring(prefix.length) || '.'), value]),
+					.map(([key, value]) => [String(key.substring(prefix.length) || '.'), value])
 			)
 
 		let cwd = this.absolute(uri)
@@ -817,7 +817,10 @@ export default class DB {
 	 * @returns
 	 */
 	async _buildRecursiveDirectoryTree(dirPath, entries = [], depth = 0) {
-		const immediateEntries = await DirectoryIndex.getDirectoryEntries(/** @type {any} */ (this), dirPath)
+		const immediateEntries = await DirectoryIndex.getDirectoryEntries(
+			/** @type {any} */ (this),
+			dirPath
+		)
 
 		for (const [name, stat] of immediateEntries) {
 			const fullPath = dirPath === '.' ? name : this.resolveSync(dirPath, name)
@@ -1045,7 +1048,7 @@ export default class DB {
 					mtimeMs: Date.now(),
 					isFile: !isDir,
 					isDirectory: isDir,
-				}),
+				})
 			)
 		}
 		for (const key of Array.from(this.meta.keys())) {
@@ -1062,7 +1065,7 @@ export default class DB {
 				if (!this.meta.has('.')) {
 					this.meta.set(
 						'.',
-						new DocumentStat({ isDirectory: true, mtimeMs: stat.mtimeMs, size: stat.size }),
+						new DocumentStat({ isDirectory: true, mtimeMs: stat.mtimeMs, size: stat.size })
 					)
 				} else {
 					const dirStat = this.meta.get('.')
@@ -1078,7 +1081,7 @@ export default class DB {
 					if (!this.meta.has(current)) {
 						this.meta.set(
 							current,
-							new DocumentStat({ isDirectory: true, mtimeMs: stat.mtimeMs, size: stat.size }),
+							new DocumentStat({ isDirectory: true, mtimeMs: stat.mtimeMs, size: stat.size })
 						)
 					} else {
 						const dirStat = this.meta.get(current)
@@ -1139,7 +1142,7 @@ export default class DB {
 	async getAll(uris, input = {}, context = this.context) {
 		/** @type {[string, any][]} */
 		const results = await Promise.all(
-			uris.map(async (uri) => [uri, await this.get(uri, input, context)]),
+			uris.map(async (uri) => [uri, await this.get(uri, input, context)])
 		)
 		return new Map(results)
 	}
@@ -1378,6 +1381,66 @@ export default class DB {
 	 * @param {AuthContext | object} [context=this.context] - Auth context
 	 * @returns {Promise<boolean>}
 	 */
+	/**
+	 * Saves raw file content directly without parsing or serialization.
+	 * @param {string} uri - Document URI
+	 * @param {string|Buffer} content - Raw content to write
+	 * @param {AuthContext | object} [context=this.context] - Auth context
+	 * @returns {Promise<boolean>}
+	 */
+	async saveFile(uri, content, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) {
+			const anyDb = /** @type {any} */ (mount.db)
+			if (typeof anyDb.saveFile === 'function') {
+				return anyDb.saveFile(mount.subUri, content, context)
+			}
+			if (typeof anyDb.saveDocumentAs === 'function') {
+				return anyDb.saveDocumentAs('.txt', mount.subUri, content, context)
+			}
+			if (typeof anyDb.saveDocument === 'function') {
+				return anyDb.saveDocument(mount.subUri, content, context)
+			}
+			if (typeof anyDb.set === 'function') {
+				return anyDb.set(mount.subUri, content, context)
+			}
+			return anyDb.save(mount.subUri, content, context)
+		}
+		this.console.debug('saveFile()', uri, { content })
+		const authContext = AuthContext.from(context)
+		await this.ensureAccess(uri, 'w', authContext)
+		const abs = this.normalize(await this.resolve(uri))
+		if (this.driver) {
+			const abs = this.absolute(uri)
+			try {
+				const result = await this.driver.write(abs, content)
+				if (false === result) {
+					throw new Error('Unable to save with a driver: ' + this.driver.constructor.name)
+				}
+			} catch (error) {
+				this.console.error('Cannot save file', { uri, abs, content, context, error })
+				return false
+			}
+		}
+
+		this.data.set(abs, content)
+		const stat = this._statFromMeta(abs)
+		stat.isFile = true
+		stat.mtimeMs = Date.now()
+		stat.size = Buffer.byteLength(String(content))
+		this.meta.set(abs, stat)
+		await this._updateIndex(abs)
+		this.emit('change', { uri, type: 'save', data: content })
+		return true
+	}
+
+	/**
+	 * Save the document.
+	 * @param {string} uri - Document URI
+	 * @param {any} document - Document to save
+	 * @param {AuthContext | object} [context=this.context] - Auth context
+	 * @returns {Promise<boolean>}
+	 */
 	async saveDocument(uri, document, context = this.context) {
 		const mount = this._findMount(uri)
 		if (mount) return mount.db.saveDocument(mount.subUri, document, context)
@@ -1474,7 +1537,7 @@ export default class DB {
 				isFile: true,
 				size: str.length + chunk.length,
 				mtimeMs: Date.now(),
-			}),
+			})
 		)
 		return true
 	}
@@ -1546,7 +1609,7 @@ export default class DB {
 		if (!['r', 'w', 'd'].includes(level)) {
 			this.console.debug('Incorrect level', { uri, level, context })
 			throw new TypeError(
-				['Access level must be one of [r, w, d]', 'r = read', 'w = write', 'd = delete'].join('\n'),
+				['Access level must be one of [r, w, d]', 'r = read', 'w = write', 'd = delete'].join('\n')
 			)
 		}
 
@@ -1686,7 +1749,9 @@ export default class DB {
 		}
 		const localUri = uri === '/' ? '.' : uri.startsWith('/') && uri.length > 1 ? uri.slice(1) : uri
 		const prefix = localUri === '.' ? '' : localUri.endsWith('/') ? localUri : localUri + '/'
-		const depth = (localUri.endsWith('/') ? localUri.slice(0, -1) : localUri).split('/').filter(Boolean).length
+		const depth = (localUri.endsWith('/') ? localUri.slice(0, -1) : localUri)
+			.split('/')
+			.filter(Boolean).length
 		const keys = Array.from(this.meta.keys())
 		const filtered = keys.filter((key) => {
 			if (!key.startsWith(prefix) || key === prefix || this.isRoot(key)) return false
@@ -2099,7 +2164,7 @@ export default class DB {
 		uri,
 		opts = new FetchOptions(),
 		contextOrVisited = this.context,
-		visited = new Set(),
+		visited = new Set()
 	) {
 		const authContext = AuthContext.from(contextOrVisited)
 		let visitedSet = visited
@@ -2230,7 +2295,7 @@ export default class DB {
 				const parentKey = this._getParentReferenceKey(key)
 				const siblings = this.Data.flatSiblings(Object.entries(newFlat), key, parentKey).map(
 					([k, val]) =>
-						parentKey ? [k.slice((parentKey + this.Data.OBJECT_DIVIDER).length), val] : [k, val],
+						parentKey ? [k.slice((parentKey + this.Data.OBJECT_DIVIDER).length), val] : [k, val]
 				)
 
 				if (parentKey === '' && key === this.Data.REFERENCE_KEY) {
@@ -2241,7 +2306,7 @@ export default class DB {
 				} else if (siblings.length > 0) {
 					newFlat[parentKey] = this.Data.merge(
 						typeof refValue === 'object' ? refValue : { value: refValue },
-						Object.fromEntries(siblings),
+						Object.fromEntries(siblings)
 					)
 					// Cleanup sibling keys
 					for (const [k] of siblings) {
@@ -2357,7 +2422,13 @@ export default class DB {
 	 * @yields {DocumentEntry} File entries
 	 */
 	async *browse(uri = '.', options = {}) {
-		const { depth = -1, includeDirs = false, skipIndex = false, ignore = [], ...readOptions } = options
+		const {
+			depth = -1,
+			includeDirs = false,
+			skipIndex = false,
+			ignore = [],
+			...readOptions
+		} = options
 		for await (const entry of this.readDir(uri, {
 			...readOptions,
 			depth,

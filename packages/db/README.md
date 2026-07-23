@@ -159,6 +159,27 @@ await db.connect()
 const res = await db.fetch('data.json')
 console.info(res) // ← { global: "value", key: "val" }
 ```
+### Auditing and Validation
+
+`ReferenceValidator` helps you audit database documents to ensure that all internal
+references (`$ref`, `href`, `$href`) point to existing paths. It supports single-document
+validation and full database audits.
+
+How to validate all references in the database?
+
+```js
+import DB from "@nan0web/db"
+import { ReferenceValidator } from "@nan0web/db/domain"
+const db = new DB({
+	predefined: [
+		['doc.json', { $ref: 'missing.json' }], // Missing reference
+		['other.json', { href: 'doc.json' }], // Valid reference
+	],
+})
+const validator = new ReferenceValidator(db)
+const brokenRefs = await validator.validateAll()
+console.info(brokenRefs['doc.json'][0].ref) // ← "missing.json"
+```
 ## Playground
 
 CLI sandbox for safe experiments:

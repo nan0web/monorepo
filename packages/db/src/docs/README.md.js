@@ -31,9 +31,10 @@ import {
 	isRemote,
 	isAbsolute,
 } from '../DB/path.js'
+import { ReferenceValidator } from '../domain/index.js'
 
 const fs = new DBFS()
-let pkg
+let pkg = {}
 
 before(async () => {
 	pkg = await fs.loadDocument('package.json')
@@ -104,6 +105,7 @@ function testRender() {
 		assert.ok(StreamEntry instanceof Function)
 		assert.ok(DBConfig instanceof Function)
 		assert.ok(RevisionInfo instanceof Function)
+		assert.ok(ReferenceValidator instanceof Function)
 	})
 	/**
 	 * @docs
@@ -251,6 +253,31 @@ function testRender() {
 		const res = await db.fetch('data.json')
 		console.info(res) // ← { global: "value", key: "val" }
 		assert.deepStrictEqual(console.output()[0][1], { global: 'value', key: 'val' })
+	})
+
+	/**
+	 * @docs
+	 * ### Auditing and Validation
+	 *
+	 * `ReferenceValidator` helps you audit database documents to ensure that all internal
+	 * references (`$ref`, `href`, `$href`) point to existing paths. It supports single-document
+	 * validation and full database audits.
+	 */
+	it('How to validate all references in the database?', async () => {
+		//import DB from "@nan0web/db"
+		//import { ReferenceValidator } from "@nan0web/db/domain"
+		const db = new DB({
+			predefined: [
+				['doc.json', { $ref: 'missing.json' }], // Missing reference
+				['other.json', { href: 'doc.json' }], // Valid reference
+			],
+		})
+
+		const validator = new ReferenceValidator(db)
+		const brokenRefs = await validator.validateAll()
+
+		console.info(brokenRefs['doc.json'][0].ref) // ← "missing.json"
+		assert.strictEqual(console.output()[0][1], 'missing.json')
 	})
 
 	/**
@@ -781,7 +808,8 @@ describe('Rendering README.md', async () => {
 		await fs.saveDocument('.datasets/README.dataset.jsonl', dataset)
 
 		let textSaved = await fs.loadDocument('README.md')
-		const content = typeof textSaved === 'string' ? textSaved : (textSaved?.content || JSON.stringify(textSaved))
+		const content =
+			typeof textSaved === 'string' ? textSaved : textSaved?.content || JSON.stringify(textSaved)
 		assert.ok(content.includes('# @nan0web/db'))
 		assert.ok(content.includes('## License'))
 	})
