@@ -3,14 +3,12 @@ import { render, screen, cleanup } from '@testing-library/react'
 import Typography from './Typography.jsx'
 import { useUI } from '../../index.jsx'
 
-// Mock useUI
-vi.mock('../../index.jsx', async (importOriginal) => {
+// Mock useUI from @nan0web/ui-react
+vi.mock('@nan0web/ui-react', async (importOriginal) => {
 	const actual = await importOriginal()
-	const mockUseUI = vi.fn()
-	mockUseUI.mockReturnValue({ theme: { name: 'default' } })
 	return {
 		...actual,
-		useUI: mockUseUI,
+		useUI: vi.fn().mockReturnValue({ theme: { name: 'default' } }),
 	}
 })
 
