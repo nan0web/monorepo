@@ -1,0 +1,20 @@
+title: 'Input: Color Picker'
+content:
+  - h1: 'Вибір Кольору'
+  - p: 'Стандартний HTML5 Color Picker.'
+  
+  - h2: '1. Простий вибір кольору'
+  - Input: '#0ea5e9'
+    $type: 'color'
+    
+  - h2: '2. Складний приклад (Налаштування теми)'
+  - blockquote: 'Уявімо, що користувач налаштовує кольори свого профілю.'
+  - Card: ''
+    $title: 'Theme Settings'
+    $content:
+      - p: 'Primary Color:'
+      - Input: '#1e293b'
+        $type: 'color'
+      - p: 'Accent Color:'
+      - Input: '#0ea5e9'
+        $type: 'color'

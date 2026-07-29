@@ -30,13 +30,26 @@ nan0web.json
 
 # Temp and playground folders
 /tmp/
+**/tmp/
 /scratch/
+**/scratch/
 /play/
 .agent/
+**/.llimo/
+@current/
+export/
+scratch.js
+task*.md
+test_*.sh
+todo.app/
+needed_files.md
 
-# Logs
+# Logs and Cache
 logs/
 *.log
+**/coverage/
+**/cache/
+**/.cache/
 
 # Artifacts and Media
 **/screenshots/
@@ -48,5 +61,10 @@ logs/
 **/*.gif
 **/*.mp4
 **/*.webm
+**/*.mp3
+**/*.jsonl
 # WebP is allowed for lightweight documentation
 !**/*.webp
+
+# Build artifacts
+*.tsbuildinfo

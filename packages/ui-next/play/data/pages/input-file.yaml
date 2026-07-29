@@ -1,0 +1,15 @@
+title: 'Input: File Upload'
+content:
+  - h1: 'Завантаження Файлів'
+  - p: 'Компонент для роботи з файловою системою пристрою.'
+  
+  - h2: '1. Просте завантаження'
+  - Input: ''
+    $type: 'file'
+    
+  - h2: '2. Складний приклад: Фото профілю'
+  - blockquote: 'Обмеження лише на зображення (png, jpg) та множинний вибір.'
+  - Input: ''
+    $type: 'file'
+    $multiple: true
+    $accept: 'image/png, image/jpeg'

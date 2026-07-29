@@ -1,0 +1,19 @@
+title: 'Input: Selection (Select, Checkbox)'
+content:
+  - h1: 'Вибір з варіантів'
+  - p: 'Компоненти для вибору значень: списки, чекбокси та радіо-кнопки.'
+  
+  - h2: '1. Одиночний чекбокс'
+  - Checkbox: ''
+    $label: 'Я погоджуюсь з умовами використання'
+    $checked: false
+    
+  - h2: '2. Select Dropdown (Один з багатьох)'
+  - blockquote: 'Вибір лише одного елемента зі списку.'
+  - Select: 'banana'
+    $options: ['apple', 'banana', 'orange']
+    
+  - h2: '3. Складний приклад: Multiselect'
+  - blockquote: 'Вибір кількох ролей одночасно.'
+  - Multiselect: ['admin']
+    $options: ['user', 'moderator', 'admin', 'guest']

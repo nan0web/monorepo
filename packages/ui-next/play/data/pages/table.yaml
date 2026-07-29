@@ -1,0 +1,19 @@
+title: 'Table Data'
+content:
+  - h1: 'Data Table'
+  - p: 'A component for displaying tabular data.'
+  - Table: ''
+    $columns:
+      - key: 'id'
+        label: 'ID'
+      - key: 'name'
+        label: 'Name'
+      - key: 'role'
+        label: 'Role'
+    $data:
+      - id: 1
+        name: 'Alice'
+        role: 'Admin'
+      - id: 2
+        name: 'Bob'
+        role: 'User'

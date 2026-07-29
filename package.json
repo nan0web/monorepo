@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/monorepo",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Monorepo for @nan0web packages and applications",
   "main": "index.js",
   "type": "module",
@@ -11,11 +11,12 @@
     "clean": "rm -rf .cache/ && rm -rf dist/",
     "clean:modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
     "test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
+    "test:stories": "node --test --test-timeout=3333 \"src/**/*.story.js\"",
     "test:docs": "node --test src/README.md.js",
     "test:release": "node --test releases/1/0/v1.0.0/**/*.test.js | grep #TODO",
     "test:status": "node bin/packages-status.js",
     "test:audit": "node bin/audit.js",
-    "test:all": "npm run test && npm run test:docs",
+    "test:all": "npm run test && npm run test:stories && npm run test:docs",
     "test:every": "pnpm -r --no-bail --workspace-concurrency=4 run test:all",
     "test:changed": "pnpm -r --filter \"...[HEAD]\" run test:all",
     "test:failed": "pnpm -r run test:all --reporter-hide-passed",
@@ -39,7 +40,11 @@
     "prepare": "husky",
     "test:indexator": "node bin/indexator.js",
     "test:index": "node bin/indexator.js",
-    "test:validate": "node bin/project-validator.js"
+    "test:workflow-index": "node --test src/domain/app/WorkflowIndexApp.story.js",
+    "gen:workflow-index": "node bin/workflow-index.js docs/uk/workflows && node bin/workflow-index.js docs/en/workflows",
+    "test:validate": "node bin/project-validator.js",
+    "task:prepare": "node bin/task-prepare.js",
+    "task:rename-pipelines": "node scripts/rename-pipelines.js"
   },
   "keywords": [],
   "author": "ЯRаСлав YaRaSLove <support@yaro.page>",
@@ -82,8 +87,29 @@
   },
   "pnpm": {
     "overrides": {
-      "brace-expansion": "^5.0.6",
-      "ip-address": "^10.1.1"
+      "ip-address": "^10.1.1",
+      "qs@>=6.11.1 <=6.15.1": ">=6.15.2",
+      "react": "19.2.5",
+      "react-dom": "19.2.5",
+      "vitest@<4.1.0": ">=4.1.0",
+      "react-router@>=7.0.0 <=7.14.1": ">=7.14.2",
+      "react-router@>=7.0.0 <7.14.1": ">=7.14.1",
+      "react-router@>=7.0.0 <7.15.0": ">=7.15.0",
+      "hono@<4.12.21": ">=4.12.21",
+      "shell-quote@>=1.1.0 <=1.8.3": ">=1.8.4",
+      "joi@>=18.0.0 <18.2.1": ">=18.2.1",
+      "esbuild@>=0.27.3 <0.28.1": ">=0.28.1",
+      "ws@>=8.0.0 <8.21.0": ">=8.21.0",
+      "form-data@>=4.0.0 <4.0.6": ">=4.0.6",
+      "vite@<=6.4.2": ">=6.4.3",
+      "vite@>=7.0.0 <=7.3.4": ">=7.3.5",
+      "vite@>=8.0.0 <=8.0.15": ">=8.0.16",
+      "js-yaml@<=4.1.1": ">=4.2.0",
+      "@babel/core@<=7.29.0": ">=7.29.6",
+      "nodemailer@<=8.0.8": ">=8.0.9",
+      "nodemailer@<=8.0.7": ">=8.0.8",
+      "hono@<4.12.25": ">=4.12.25",
+      "nodemailer@<=9.0.0": ">=9.0.1"
     }
   }
 }

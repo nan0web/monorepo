@@ -1,0 +1,5 @@
+title: 'Confirm'
+content:
+  - h1: 'Confirm Component'
+  - p: 'Used to ask the user for confirmation before proceeding with an action.'
+  - Confirm: 'Are you sure you want to delete this repository? This action cannot be undone.'
