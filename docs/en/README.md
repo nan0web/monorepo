@@ -1,14 +1,43 @@
 # 🏗️ NaN•Web Documentation (EN)
 
-The main knowledge hub for the NaN•Web ecosystem <v name="version">v3.0.0</v>.
+Main knowledge hub for the NaN•Web ecosystem <v name="version">v3.2.0</v>.
 
-## 🏛️ Architecture
+---
 
-NaN•Web follows the **One Logic, Many UI (OLMUI)** principle. Business logic is strictly isolated in `src/`, while UI adapters live in `src/ui/`.
+## 🌟 Foreword: Mission & Philosophy
+
+**NaN•Web** is a decentralized, crypto-anarchic network of fractal applications designed for the benefit of society and nature as a whole.
+
+> Zero is not a number, it is the universe.
+
+---
+
+## 🏛️ Architectural Determinism (OLMUI & Model-as-App)
+
+The foundation of the platform is strict and universal software determinism:
+
+1.- **Total Logic Isolation (TLI)**: Business logic and validation are strictly separated from visual rendering.
+- **Model-as-Schema / Model-as-App**: Data descriptions, validation, and behaviors are unified inside JS domain models.
+- **Data-Driven Applications**: All screens, layouts, and pages render strictly from route definitions and models stored in any agnostic database via the `db.fetch()` protocol.
+- **One Logic — Multiple User Interfaces (OLMUI)**:
+
+   Fundamental triad of determinism:
+   - **Models**: Algorithms and business domain logic.
+   - **Styles & Components**: Presentation and formatting of data.
+   - **Navigation**: Layout of components into pages for human usability.
+
+Thanks to this, a single layer of business logic by default **works out-of-the-box across all UI implementations**:
+
+- 🖥️ **CLI** (Interactive Terminal)
+- 💬 **Chat** (Autonomous LLM Agents)
+- 🌐 **Web & SSG** (Next.js / Turbopack / Vanilla DOM)
+- ⚛️ **React / Lit** (Web Components)
+- 🎙️ **Voice** (Voice Assistant Interface)
+
 
 - [Architecture Overview](../../ARCHITECTURE.md) — Fundamental principles.
 - [AI Knowledge Base Setup](./SETUP_KNOWLEDGE_BASE.md) — **CRITICAL**: How to give your AI agent project context.
-- [Package Status](../../STATUS.md) — Current health of every module.
+- [Package Status](../../STATUS.md) — Current health of every module (v3.2.0).
 
 
 ## 🚀 Quick Start

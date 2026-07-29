@@ -24,7 +24,13 @@ export class Document extends Model {
         help: string;
     };
     /**
-     *
+     * Normalizes a URI for document fetching from DBFS.
+     * @param {string} uri - The URI to normalize.
+     * @param {import('@nan0web/db').DB} [db] - Optional DB instance.
+     * @returns {string} The normalized URL suitable for `db.fetch()`.
+     */
+    static normalizeUrl(uri: string, db?: import("@nan0web/db").DB): string;
+    /**
      * @param {Partial<Document>} [data]
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
      */
@@ -34,6 +40,13 @@ export class Document extends Model {
     /** @type {Array<Content>} Layout configuration */ $content: Array<Content>;
     /** @type {Navigation|string|Array<Navigation>} Navigation config */ nav: Navigation | string | Array<Navigation>;
     /** @type {Array<Language>} Supported languages */ langs: Array<Language>;
+    /**
+     * Normalizes a URI using this instance's attached DB (`this._.db`).
+     * @param {string} uri
+     * @param {import('@nan0web/db').DB} [db]
+     * @returns {string}
+     */
+    normalizeUrl(uri: string, db?: import("@nan0web/db").DB): string;
 }
 import { Model } from '@nan0web/types';
 import { Content } from './Content.js';
