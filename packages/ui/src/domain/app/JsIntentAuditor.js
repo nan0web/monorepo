@@ -7,7 +7,7 @@ import { IntentAuditor } from './IntentAuditor.js'
  */
 export class JsIntentAuditor extends AuditorModel {
 	/** @type {string[]} Directories to ignore during scanning */
-	static IGNORE_DIRS = ['node_modules', '.git', '.venv', '.datasets', 'dist', 'build', 'types', 'play', 'test']
+	static IGNORE_DIRS = ['node_modules', '.git', '.venv', '.datasets', 'dist', 'build', 'types', 'play', 'test', 'examples', 'scripts']
 
 	/**
 	 * Checks if a directory or file should be ignored.
@@ -36,7 +36,7 @@ export class JsIntentAuditor extends AuditorModel {
 		const targetDir = fsDb.resolveSync(/** @type {any} */ (this).dir)
 
 		try {
-			for await (const entry of fsDb.browse(targetDir, { depth: Infinity })) {
+			for await (const entry of fsDb.browse(targetDir, { depth: Infinity, ignore: JsIntentAuditor.IGNORE_DIRS })) {
 				if (JsIntentAuditor.isIgnored(entry.name)) continue
 				
 				if (

@@ -1,9 +1,11 @@
+import LogConsole from './Console.js'
+
 /**
  * Memory-bound Console implementation that captures logs without output.
  * Part of the `nan0coding.architect` trusted knowledge system.
  */
-export default class NoConsole {
-	/** @type {Array<any[]>} */
+export default class NoConsole extends LogConsole {
+	/** @type {Array<[string, ...any[]]>} */
 	#logs = []
 
 	/**
@@ -13,6 +15,7 @@ export default class NoConsole {
 	 * @param {any} [options.prefix] - The prefix data for logs (inherited)
 	 */
 	constructor(options = {}) {
+		super(options)
 		const { silent = false } = options
 		this.silent = Boolean(silent)
 	}
@@ -82,7 +85,7 @@ export default class NoConsole {
 	/**
 	 * Returns captured logs with preserved structure.
 	 * @param {string | Function | null} type The type to filter
-	 * @returns {Array<Array<string, any[]>>}
+	 * @returns {Array<[string, ...any[]]>}
 	 */
 	output(type = null) {
 		if ('string' === typeof type) {

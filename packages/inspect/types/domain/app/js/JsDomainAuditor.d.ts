@@ -9,7 +9,7 @@ export class JsDomainAuditor extends DomainAuditor {
      * @param {import('../DomainAuditor.js').DomainError[]} errors
      * @param {import('@nan0web/i18n').TFunction} t
      */
-    checkPlatformDomain(errors: import("../DomainAuditor.js").DomainError[], t: import("@nan0web/i18n").TFunction): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ShowIntent, {
+    checkPlatformDomain(errors: import("../DomainAuditor.js").DomainError[], t: import("@nan0web/i18n").TFunction): AsyncGenerator<import("../../../../../ui/types/core/Intent.js").ShowIntent, {
         domain: {
             violations: import("../DomainAuditor.js").DomainError[];
         };

@@ -29,5 +29,4 @@ export { EmptyStateModel } from "./EmptyStateModel.js";
 export { BannerModel } from "./BannerModel.js";
 export { ProfileDropdownModel } from "./ProfileDropdownModel.js";
 export { MarkdownModel } from "./MarkdownModel.js";
-export { ShellModel } from "./ShellModel.js";
 export { FeatureGridModel, FeatureItemModel } from "./FeatureGridModel.js";

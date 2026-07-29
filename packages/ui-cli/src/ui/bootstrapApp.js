@@ -225,6 +225,12 @@ async function resolveModel(AppModel, { pkg, appCwd }) {
 	return FinalModel
 }
 
+class BootstrapApp {
+	static UI = {
+		cancelled: 'Selection cancelled.',
+	}
+}
+
 /**
  * Universal App Runner (Bootstrap) for standalone OLMUI CLI applications.
  *
@@ -250,13 +256,13 @@ export async function bootstrapApp(AppModel, config = {}) {
 		config,
 	})
 
-	if (typeof /** @type {any} */ (db).seal !== 'function') {
+	if (typeof (/** @type {any} */ (db).seal) !== 'function') {
 		throw new TypeError(
 			'db.seal is not a function (Secure App Bootstrap requires a modern DB version)'
 		)
 	}
 
-	/** @type {any} */ (db).seal()
+	/** @type {any} */ db.seal()
 	await db.connect()
 
 	// 4. I18n setup
@@ -280,6 +286,41 @@ export async function bootstrapApp(AppModel, config = {}) {
 	// 5. Resolve Model
 	const FinalModel = await resolveModel(AppModel, { pkg, appCwd })
 
+	// Check for completion mode before creating model
+	const completionArgIndex = argv.findIndex(arg => arg === '--completion' || arg.startsWith('--completion='))
+	if (completionArgIndex !== -1) {
+		const completionType = argv[completionArgIndex].includes('=') 
+			? argv[completionArgIndex].split('=')[1] 
+			: argv[completionArgIndex + 1]
+		
+		if (completionType === 'zsh' || completionType === 'bash') {
+			const CompletionGenerator = (await import('./core/CompletionGenerator.js')).default
+			const appName = config.appName || pkg.name || 'app'
+			const commandStructure = CompletionGenerator.extractCommandStructure(FinalModel)
+			const completionScript = CompletionGenerator.generateCompletionScript(completionType, commandStructure, appName)
+			
+			process.stdout.write(completionScript)
+			if (config.noExit) return { success: true, data: completionScript }
+			
+			if (isTestMode && !process.env.UI_SNAPSHOT) {
+				process.exit(0)
+			} else {
+				setTimeout(() => process.exit(0), 5)
+			}
+			return
+		} else if (completionType) {
+			console.error(`Error: Unsupported shell type: ${completionType}. Use 'zsh' or 'bash'.`)
+			if (config.noExit) throw new Error(`Unsupported shell type: ${completionType}`)
+			
+			if (isTestMode && !process.env.UI_SNAPSHOT) {
+				process.exit(1)
+			} else {
+				setTimeout(() => process.exit(1), 5)
+			}
+			return
+		}
+	}
+
 	const adapter = new CLiInputAdapter({ console, t })
 	const appOptions = { db, logger: console, t, adapter, locale: lang, ...config }
 	const model = modelFromArgv(FinalModel, appArgv, appOptions)
@@ -287,7 +328,9 @@ export async function bootstrapApp(AppModel, config = {}) {
 	try {
 		const res = await runGenerator(/** @type {any} */ (model), adapter, appOptions)
 		if (res.cancelled) {
-			process.stdout.write('\nSelection cancelled.\n')
+			process.stdout.write('\n')
+			process.stdout.write(t(BootstrapApp.UI.cancelled))
+			process.stdout.write('\n')
 		}
 		if (config.noExit) return res
 		const status = res.data?.status || res.data?.data?.status

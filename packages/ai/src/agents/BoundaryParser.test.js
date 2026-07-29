@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { parseBoundaries } from './BoundaryParser.js'
+import { parseBoundaries, applyBoundaries } from './BoundaryParser.js'
 
 describe('BoundaryParser', () => {
 	it('parses single boundary', () => {
@@ -51,6 +51,41 @@ only one line
 ---boundary---
 `
 		assert.throws(() => parseBoundaries(raw), /expects 3 lines, but got 1/)
+	})
+
+	it('applies full files and snippet boundaries to original files', () => {
+		const original = {
+			'src/Button.js': 'line A\nline B\nline C\nline D\nline E',
+			'src/Label.js': 'old label content',
+		}
+		const raw = `
+---boundary:src/Button.js:2:2---
+new line B
+new line C
+---boundary---
+---boundary:src/Label.js---
+new label content
+---boundary---
+---boundary:src/NewFile.js---
+hello world
+---boundary---
+`
+		const parsed = parseBoundaries(raw)
+		const updated = applyBoundaries(original, parsed)
+
+		assert.equal(updated['src/Button.js'], 'line A\nnew line B\nnew line C\nline D\nline E')
+		assert.equal(updated['src/Label.js'], 'new label content')
+		assert.equal(updated['src/NewFile.js'], 'hello world')
+	})
+
+	it('throws on out-of-bounds startLine in applyBoundaries', () => {
+		const original = {
+			'src/Button.js': 'line A',
+		}
+		const parsed = {
+			'src/Button.js:10:1': 'new line',
+		}
+		assert.throws(() => applyBoundaries(original, parsed), /Invalid startLine 10/)
 	})
 
 	it('returns empty object when no boundaries found', () => {

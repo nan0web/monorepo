@@ -30,7 +30,7 @@ export class Pricing extends Model {
 				prompt: input ?? data.prompt ?? Pricing.prompt.default,
 				completion: output ?? data.completion ?? Pricing.completion.default,
 			},
-			options,
+			options
 		)
 
 		/** @type {number} Completion cost / 1M tokens */ this.completion = Number(this.completion)
@@ -38,7 +38,7 @@ export class Pricing extends Model {
 		/** @type {number} Cache reading cost */ this.input_cache_read = Number(this.input_cache_read)
 		/** @type {number} Cache writing cost */ this.input_cache_write = Number(this.input_cache_write)
 		/** @type {number} LLM thinking cost */ this.internal_reasoning = Number(
-			this.internal_reasoning,
+			this.internal_reasoning
 		)
 		/** @type {number} Prompt cost / 1M tokens */ this.prompt = Number(this.prompt)
 		/** @type {number} Fixed price per API call */ this.request = Number(this.request)

@@ -34,7 +34,7 @@ export class VectorDB extends Model {
 		/** @type {string} Distance metric to use */ this.space
 		/** @type {number} Max element capacity */ this.maxElements = Math.max(
 			1,
-			Number(this.maxElements || 100000),
+			Number(this.maxElements || 100000)
 		)
 
 		// Ensure db is always available (fixes callback-based fs crash in MCP server)
@@ -98,7 +98,7 @@ export class VectorDB extends Model {
 		} catch (e) {
 			console.error(
 				`VectorDB.search failed for ${num} neighbors. maxElements: ${this.maxElements}, dim: ${this.dim}, space: ${this.space}`,
-				e,
+				e
 			)
 			throw e
 		}

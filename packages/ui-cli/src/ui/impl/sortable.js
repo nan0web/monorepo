@@ -61,6 +61,7 @@ function formatList(message, choices, cursor, grabbed, hint) {
  * @param {{nav?: string, grab?: string, confirm?: string}} [config.controls] - Custom labels for navigation.
  * @param {Function} [config.t] - Translation function.
  * @param {Function} [config.onChange] - Callback on every reorder.
+ * @param {Function} [config.selectFn] - Selection callback for adding new items.
  * @returns {Promise<{value: any[], cancelled: boolean}>}
  */
 export async function sortable(config) {
@@ -86,7 +87,8 @@ export async function sortable(config) {
 	})
 
 	const { nav = '↑/↓', grab = 'Grab', confirm = 'Confirm' } = config.controls || {}
-	const hint = config.hint || `${nav}: Navigate, Space: ${grab}, Enter: ${confirm}`
+	const extraHint = config.selectFn ? ', a: Add, d: Delete' : ', d: Delete'
+	const hint = config.hint || `${nav}: Navigate, Space: ${grab}${extraHint}, Enter: ${confirm}`
 
 	return new Promise((resolve, reject) => {
 		let cursor = 0
@@ -169,6 +171,48 @@ export async function sortable(config) {
 			if (key === ' ') {
 				grabbed = !grabbed
 				draw()
+				return
+			}
+
+			// 'a' — add item
+			if (key === 'a' && !grabbed) {
+				if (typeof config.selectFn === 'function') {
+					cleanup()
+					clearWidget()
+					config.selectFn(model.getItems()).then((res) => {
+						// Re-enable raw stdin
+						stdin.setRawMode(true)
+						stdin.resume()
+						stdin.on('data', onData)
+
+						if (res && !res.cancelled && res.value !== undefined && res.value !== null) {
+							const currentItems = model.getItems()
+							const exists = currentItems.some(it => it.value === res.value)
+							if (!exists) {
+								model.addItem({ label: res.label || res.value, value: res.value })
+								cursor = model.getItems().length - 1
+							}
+						}
+						draw()
+					}).catch(() => {
+						stdin.setRawMode(true)
+						stdin.resume()
+						stdin.on('data', onData)
+						draw()
+					})
+				}
+				return
+			}
+
+			// 'd' or Backspace / Delete — remove item
+			if ((key === 'd' || key === '\x7f' || key === '\x1b[3~') && !grabbed) {
+				const current = model.getItems()
+				if (current.length > 0) {
+					model.removeItem(cursor)
+					const newLen = model.getItems().length
+					cursor = Math.min(Math.max(0, cursor), newLen - 1)
+					draw()
+				}
 				return
 			}
 

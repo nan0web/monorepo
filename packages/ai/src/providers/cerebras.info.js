@@ -57,7 +57,7 @@ function makeFlat(models) {
 		return new ModelInfo({
 			...m,
 			...staticInfo,
-			context_length: 65_000,
+			context_length: 30_000,
 			maximum_output: 65_000,
 			provider: 'cerebras',
 			pricing: new Pricing(staticInfo.pricing || m.pricing || { prompt: 0, completion: 0 }),
@@ -67,4 +67,18 @@ function makeFlat(models) {
 
 export default {
 	makeFlat,
+	freeModels: [
+		{
+			id: 'zai-glm-4.7',
+			object: 'model',
+			created: 0,
+			owned_by: 'Cerebras',
+		},
+		{
+			id: 'gpt-oss-120b',
+			object: 'model',
+			created: 0,
+			owned_by: 'Cerebras',
+		},
+	],
 }

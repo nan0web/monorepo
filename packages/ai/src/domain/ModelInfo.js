@@ -65,11 +65,11 @@ export class ModelInfo extends Model {
 				: {}
 
 		/** @type {Architecture} Architecture component */ this.architecture = new Architecture(
-			this.architecture,
+			this.architecture
 		)
 		/** @type {Pricing} Commercial metrics */ this.pricing = new Pricing(this.pricing)
 		/** @type {TopProvider} Org/Owner metadata */ this.top_provider = new TopProvider(
-			this.top_provider,
+			this.top_provider
 		)
 		/** @type {Limits} Active rate limits */ this.limits = new Limits(this.limits)
 

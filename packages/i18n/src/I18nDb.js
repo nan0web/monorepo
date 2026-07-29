@@ -308,7 +308,7 @@ export default class I18nDb {
 		const re = /\.(js|ts|jsx|tsx)$/
 
 		for await (const entry of this.db.findStream(srcPath)) {
-			if (!re.test(entry.file.name)) continue // only JS-like files
+			if (!re.test(entry.file.name) || entry.file.name.includes('.test.')) continue // only JS-like non-test files
 
 			const content = await this.db.loadDocument(entry.file.path)
 			if (typeof content !== 'string') continue // skip non-string data

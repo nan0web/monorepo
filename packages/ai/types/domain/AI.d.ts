@@ -179,11 +179,34 @@ export class AI {
      * @param {string} [options.outputDir] - Optional directory for temp files.
      * @returns {Promise<string>} Transcription text.
      */
+    /**
+     * Transcribes audio file using best available local whisper backend.
+     *
+     * Supports multiple backends: mlx_whisper (Apple Silicon), openai-whisper
+     * (CPU/GPU cross-platform), whisper-cli (whisper.cpp, CPU).
+     *
+     * Backend is auto-detected on first call and cached.
+     * Returns file paths — caller reads the result file.
+     *
+     * @param {string} audioPath - Path to audio file on disk.
+     * @param {Object} [options={}]
+     * @param {string} [options.model='base'] - whisper model (tiny, base, small, medium, large, turbo)
+     * @param {string} [options.language] - ISO-639-1 language code (omit for auto-detect)
+     * @param {string} [options.format='txt'] - Output format: txt, srt, vtt, json, tsv
+     * @param {string} [options.outputDir] - Directory for output files (defaults to audio dir)
+     * @returns {Promise<{outputDir: string, baseName: string, format: string, filePaths: string[]}>}
+     */
     transcribe(audioPath: string, options?: {
         model?: string;
         language?: string;
+        format?: string;
         outputDir?: string;
-    }): Promise<string>;
+    }): Promise<{
+        outputDir: string;
+        baseName: string;
+        format: string;
+        filePaths: string[];
+    }>;
     #private;
 }
 export type AiStrategyFinance = "free" | "cheap" | "expensive";

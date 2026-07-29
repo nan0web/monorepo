@@ -2,6 +2,7 @@ export { defaultVocab } from "./i18n.js";
 export function t(key: string): string;
 export { createT } from "@nan0web/types";
 export { Language } from "./domain/Language.js";
+export { I18nAtom } from "./I18nAtom.js";
 export default i18n;
 export type TFunction = import("@nan0web/types").TFunction;
 import I18nDb from './I18nDb.js';

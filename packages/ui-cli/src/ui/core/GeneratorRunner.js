@@ -109,7 +109,18 @@ export async function runGenerator(model, adapter, options = {}) {
 		}
 
 		const intent = res.value
-		if (!intent || !intent.type) {
+		if (!intent) {
+			nextVal = intent
+			continue
+		}
+
+		if (typeof intent.renderIn === 'function') {
+			await intent.renderIn(adapter)
+			nextVal = undefined
+			continue
+		}
+
+		if (!intent.type) {
 			nextVal = intent
 			continue
 		}
@@ -129,8 +140,9 @@ export async function runGenerator(model, adapter, options = {}) {
 					break
 				}
 				case 'agent': {
-					if (typeof adapter.agentIntent === 'function') {
-						nextVal = await adapter.agentIntent(intent)
+					const rawAdapter = /** @type {any} */ (adapter)
+					if (typeof rawAdapter.agentIntent === 'function') {
+						nextVal = await rawAdapter.agentIntent(intent)
 					} else {
 						try {
 							const { AI } = await import('@nan0web/ai')
@@ -156,7 +168,7 @@ export async function runGenerator(model, adapter, options = {}) {
 							
 							const response = await ai.generateText(model, messages, { system: systemPrompt })
 							nextVal = { success: true, message: response.text }
-						} catch (e) {
+						} catch (/** @type {any} */ e) {
 							await adapter.logIntent({
 								type: 'show',
 								level: 'warn',

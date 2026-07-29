@@ -12,7 +12,6 @@
 		"releases/**/*.js",
 		"releases/**/*.spec.js",
 		"releases/**/*.test.js",
-		"scratch/**/*.js",
 		"types/**",
 		"src/domain/app/.madge-worker-*.js",
 		"src/domain/app/.madge-worker-*.mjs",

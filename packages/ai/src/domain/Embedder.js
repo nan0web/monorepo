@@ -29,7 +29,7 @@ export class Embedder extends Model {
 		super(rest, options)
 		/** @type {string} API root without slash */ this.baseURL = String(this.baseURL).replace(
 			/\/$/,
-			'',
+			''
 		)
 		/** @type {string} Target embedding model ID */ this.model
 		/** @type {typeof globalThis.fetch} Fetch platform override */

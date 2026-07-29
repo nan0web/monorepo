@@ -44,8 +44,9 @@ export class SpecRunner extends ModelAsApp {
      * @param {Array<object>} stream The .nan0 intent stream array
      * @param {Record<string, any>} registry A registry of Model Classes that can be mounted
      * @param {typeof import('node:assert/strict')} [asserter] Custom assertion library
+     * @param {Partial<import('../index.js').ModelAsAppOptions>} [options={}] Additional runner options
      */
-    static execute(stream: Array<object>, registry: Record<string, any>, asserter?: typeof import("node:assert/strict")): Promise<any>;
+    static execute(stream: Array<object>, registry: Record<string, any>, asserter?: typeof import("node:assert/strict"), options?: Partial<import("../index.js").ModelAsAppOptions>): Promise<any>;
     /**
      * @param {Partial<SpecRunner>} [data={}]
      * @param {Partial<import('../index.js').ModelAsAppOptions> & { assert?: typeof import('node:assert/strict') }} [options={}]

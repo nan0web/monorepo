@@ -562,6 +562,34 @@ export default class DB {
 	isRoot(dir) {
 		return ['/', '.', './', ''].includes(dir)
 	}
+
+	/**
+	 * Resolves the actual underlying URI for a path.
+	 * In the base abstract DB, this simply normalizes the URI.
+	 * Adapters like db-fs override this to resolve symlinks and firmlinks.
+	 * @param {string} uri The URI to resolve
+	 * @returns {string} The resolved real URI
+	 */
+	realpath(uri) {
+		return this.normalize(uri)
+	}
+
+	/**
+	 * Returns a list of mounted database instances.
+	 * @returns {Array<{ prefix: string, db: DB }>} Array of mount records
+	 */
+	getMounts() {
+		return Array.from(this.mounts.entries()).map(([prefix, db]) => ({ prefix, db }))
+	}
+
+	/**
+	 * Returns available system volumes/disks as URIs.
+	 * Overridden by adapters that support physical drives.
+	 * @returns {Promise<string[]>} Array of volume URIs (e.g., ['/'])
+	 */
+	async getVolumes() {
+		return ['/']
+	}
 	/**
 	 * Mounts a database instance to a path prefix.
 	 * All requests to URIs starting with this prefix will be routed to the mounted DB.

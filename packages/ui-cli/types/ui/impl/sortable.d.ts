@@ -8,6 +8,7 @@
  * @param {{nav?: string, grab?: string, confirm?: string}} [config.controls] - Custom labels for navigation.
  * @param {Function} [config.t] - Translation function.
  * @param {Function} [config.onChange] - Callback on every reorder.
+ * @param {Function} [config.selectFn] - Selection callback for adding new items.
  * @returns {Promise<{value: any[], cancelled: boolean}>}
  */
 export function sortable(config: {
@@ -24,6 +25,7 @@ export function sortable(config: {
     } | undefined;
     t?: Function | undefined;
     onChange?: Function | undefined;
+    selectFn?: Function | undefined;
 }): Promise<{
     value: any[];
     cancelled: boolean;

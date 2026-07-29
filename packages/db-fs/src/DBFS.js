@@ -15,17 +15,35 @@ class DBFS extends DB {
 		super(input)
 
 		// Register default formats for db-fs
-		this.registry.register('.jsonl',
-			(str) => str.split('\n').filter(Boolean).map(x => JSON.parse(x)),
-			(arr) => arr.map(x => JSON.stringify(x)).join('\n') + '\n'
+		this.registry.register(
+			'.jsonl',
+			(str) =>
+				str
+					.split('\n')
+					.filter(Boolean)
+					.map((x) => JSON.parse(x)),
+			(arr) => {
+				// Validation: must be an array with non-null/undefined items
+				if (!Array.isArray(arr)) {
+					throw new Error('JSONL document must be an array')
+				}
+				for (const item of arr) {
+					if (item === undefined || item === null) {
+						throw new Error('JSONL array items cannot be null or undefined')
+					}
+				}
+				return arr.map((x) => JSON.stringify(x)).join('\n') + '\n'
+			}
 		)
 
-		this.registry.register('.txt',
+		this.registry.register(
+			'.txt',
 			(str) => str,
 			(doc) => String(doc)
 		)
 
-		this.registry.register('.md',
+		this.registry.register(
+			'.md',
 			(str) => new Markdown(str),
 			(doc) => {
 				if (doc instanceof Markdown) return String(doc)
@@ -34,12 +52,30 @@ class DBFS extends DB {
 		)
 
 		const yamlLoader = (str) => YAML.parse(str)
-		const yamlSaver = (doc) => YAML.stringify(doc)
+		const yamlSaver = (doc) => {
+			// Validation: cannot be null or undefined, must be object, string, or number
+			if (doc === undefined || doc === null) {
+				throw new Error('YAML document cannot be null or undefined')
+			}
+			if (typeof doc !== 'object' && typeof doc !== 'string' && typeof doc !== 'number') {
+				throw new Error('YAML document must be an object, string, or number')
+			}
+			return YAML.stringify(doc)
+		}
 		this.registry.register('.yaml', yamlLoader, yamlSaver)
 		this.registry.register('.yml', yamlLoader, yamlSaver)
 
 		const nan0Loader = (str) => NaN0.parse(str)
-		const nan0Saver = (doc) => NaN0.stringify(doc)
+		const nan0Saver = (doc) => {
+			// Validation: cannot be null or undefined, must be an object
+			if (doc === undefined || doc === null) {
+				throw new Error('NaN·Web document cannot be null or undefined')
+			}
+			if (typeof doc !== 'object') {
+				throw new Error('NaN·Web document must be an object')
+			}
+			return NaN0.stringify(doc)
+		}
 		this.registry.register('.nan0', nan0Loader, nan0Saver)
 		this.registry.register('.nan', nan0Loader, nan0Saver)
 		this.registry.register('.nano', nan0Loader, nan0Saver)
@@ -88,6 +124,15 @@ class DBFS extends DB {
 		this.registry.register('.tsv', csvLoader, csvSaver)
 		this.registry.register('.csv0', csv0Loader, csv0Saver)
 		this.registry.register('.tsv0', csv0Loader, csv0Saver)
+
+		// Override JSON saver with validation
+		this.registry.register('.json', (str) => JSON.parse(str), (doc) => {
+			// Validation: cannot be null or undefined
+			if (doc === undefined || doc === null) {
+				throw new Error('JSON document cannot be null or undefined')
+			}
+			return JSON.stringify(doc, null, 2)
+		})
 	}
 
 	/**
@@ -143,12 +188,13 @@ class DBFS extends DB {
 				const resolvedCwd = this.cwd ? this.FS.resolve(this.cwd) : ''
 				if (resolvedCwd && p.startsWith(resolvedCwd)) return true
 
-				const firstSegment = p.split('/').filter(Boolean)[0]
-				if (firstSegment) {
-					try {
-						if (fs.existsSync('/' + firstSegment)) return true
-					} catch (e) {}
-				}
+				// Check if the FULL path exists on disk (file or directory).
+				// Previously only the first segment was checked (e.g. /tmp),
+				// which over-matched subUri paths like /tmp/file.txt from
+				// mount routing (e.g. @app/tmp/file.txt → /tmp/file.txt).
+				try {
+					if (fs.statSync(p)) return true
+				} catch (e) {}
 			}
 			return false
 		}
@@ -157,7 +203,8 @@ class DBFS extends DB {
 			return uri
 		}
 
-		let rel = uri !== args[0] && uri.startsWith('..') ? uri : this.resolveSync(uri, ...args.slice(1))
+		let rel =
+			uri !== args[0] && uri.startsWith('..') ? uri : this.resolveSync(uri, ...args.slice(1))
 
 		const parts = [this.cwd, this.root, rel].map((p, i) => {
 			if (typeof p !== 'string') return p
@@ -210,11 +257,20 @@ class DBFS extends DB {
 		const file = this.resolveSync(this.resolveAlias(uri))
 		const path = this.location(uri)
 		if (!(await this.FS.exists(path))) {
-			if (!ext) {
+			let baseUri = uri
+			let isDataExt = false
+			if (ext) {
+				if (this.Directory.DATA_EXTNAMES.includes(ext)) {
+					isDataExt = true
+					baseUri = uri.substring(0, uri.length - ext.length)
+				}
+			}
+			if (!ext || isDataExt) {
 				for (const fallbackExt of this.Directory.DATA_EXTNAMES) {
-					const stats = await this.statDocument(uri + fallbackExt)
+					if (fallbackExt === ext) continue
+					const stats = await this.statDocument(baseUri + fallbackExt)
 					if (stats.exists && stats.isFile) {
-						const data = await this.loadDocument(uri + fallbackExt, null)
+						const data = await this.loadDocument(baseUri + fallbackExt, null)
 						if (null !== data) {
 							return data
 						}
@@ -261,15 +317,18 @@ class DBFS extends DB {
 		const path = this.FS.resolve(this.cwd, this.root, cleanFile)
 		const saver = this.registry.resolveSaver(ext)
 		try {
-			const raw = saver(document, ext)
+			const raw = saver(document, ext) // Validation errors can be thrown here
 			await this.FS.saveAsync(path, raw, '.txt')
 			const stat = await this.statDocument(uri)
 			this.meta.set(uri, stat)
 			this.data.set(uri, false)
 			this.emit('change', { uri, type: 'save', data: document })
 			return true
-		} catch (e) {
-			return false
+		} catch (/** @type {any} **/ e) {
+			// Log validation errors
+			this.console.error('Document validation failed', { uri, ext, error: e.message })
+			// Re-throw with more context
+			throw new Error(`Invalid document format for ${uri}: ${e.message}`)
 		}
 	}
 
@@ -280,6 +339,29 @@ class DBFS extends DB {
 	 * @param {any} document The document to save.
 	 * @returns {Promise<boolean>} True if saved successfully, false otherwise.
 	 */
+	/**
+	 * Saves raw file content directly to disk without registry savers/formatters.
+	 * @param {string} uri The URI to save the file to.
+	 * @param {string|Buffer} content The raw content to save.
+	 * @returns {Promise<boolean>} True if saved successfully, false otherwise.
+	 */
+	async saveFile(uri, content) {
+		this.console.debug('Saving raw file', { uri })
+		await this.ensureAccess(uri, 'w')
+		await this._buildPath(uri)
+		const path = this.location(uri)
+		try {
+			await this.FS.saveAsync(path, content, '.txt')
+			const stat = await this.statDocument(uri)
+			this.meta.set(uri, stat)
+			this.data.set(uri, false)
+			this.emit('change', { uri, type: 'save', data: content })
+			return true
+		} catch (e) {
+			return false
+		}
+	}
+
 	async saveDocument(uri, document) {
 		this.console.debug('Saving document', { uri, document })
 		await this.ensureAccess(uri, 'w')
@@ -422,26 +504,24 @@ class DBFS extends DB {
 				let stat = new DocumentStat({
 					isDirectory: entry.isDirectory(),
 					isFile: entry.isFile(),
+					isSymbolicLink: entry.isSymbolicLink(),
 				})
 				if (!skipStat) {
 					try {
 						const entryPath = this.FS.resolve(path, entry.name)
-						Object.assign(stat, DBFS.createDocumentStatFrom(await this.FS.stat(entryPath)))
+						Object.assign(stat, DBFS.createDocumentStatFrom(await fs.promises.lstat(entryPath)))
 					} catch (err) {
 						stat.error = /** @type {Error} */ (err)
 					}
 				}
-				const file = this.FS.relative(
-					this.location(''),
-					this.FS.resolve(path, entry.name),
-				)
+				const file = this.FS.relative(this.location(''), this.FS.resolve(path, entry.name))
 				return new DocumentEntry({
 					stat,
 					name: entry.name,
 					path: file,
 					depth,
 				})
-			}),
+			})
 		)
 		files.sort((a, b) => Number(b.stat.isDirectory) - Number(a.stat.isDirectory))
 		return files
@@ -457,7 +537,8 @@ class DBFS extends DB {
 		const locales = []
 
 		for (const entry of entries) {
-			if (!entry.stat.isDirectory || entry.name.startsWith('_') || entry.name.startsWith('.')) continue
+			if (!entry.stat.isDirectory || entry.name.startsWith('_') || entry.name.startsWith('.'))
+				continue
 			try {
 				const loc = new Intl.Locale(entry.name)
 				const display = new Intl.DisplayNames([entry.name], {
@@ -502,19 +583,78 @@ class DBFS extends DB {
 	 * @returns {string} Relative URI
 	 */
 	relative(from, to) {
-		const absFrom = from.startsWith('/') || (this.FS.sep === '\\' && from.includes(':'))
-			? from
-			: this.FS.resolve(this.root, from)
+		const absFrom =
+			from.startsWith('/') || (this.FS.sep === '\\' && from.includes(':'))
+				? from
+				: this.FS.resolve(this.root, from)
 
 		if (to === undefined) {
 			return this.FS.relative(this.root, absFrom)
 		}
 
-		const absTo = to.startsWith('/') || (this.FS.sep === '\\' && to.includes(':'))
-			? to
-			: this.FS.resolve(this.root, to)
+		const absTo =
+			to.startsWith('/') || (this.FS.sep === '\\' && to.includes(':'))
+				? to
+				: this.FS.resolve(this.root, to)
 
 		return this.FS.relative(absTo, absFrom)
+	}
+
+	/**
+	 * Resolves the actual underlying URI for a path.
+	 * Resolves firmlinks and symlinks back to a relative DB URI.
+	 * @param {string} uri The URI to resolve
+	 * @returns {string} The resolved real URI
+	 */
+	realpath(uri) {
+		const absPath = this.location(uri)
+		try {
+			const real = fs.realpathSync(absPath)
+			const rel = this.FS.relative(this.root, real)
+			return rel.startsWith('..') ? this.normalize(uri) : this.normalize(rel)
+		} catch (err) {
+			return this.normalize(uri)
+		}
+	}
+
+	/**
+	 * Returns available system volumes/disks as URIs.
+	 * Handles macOS (/Volumes), Windows (wmic), and Linux (/mnt, /media).
+	 * @returns {Promise<string[]>} Array of volume URIs
+	 */
+	async getVolumes() {
+		const volumes = []
+		try {
+			if (process.platform === 'win32') {
+				const { execSync } = await import('node:child_process')
+				const stdout = execSync('wmic logicaldisk get name', { encoding: 'utf8' })
+				for (const line of stdout.split('\n')) {
+					const trimmed = line.trim()
+					if (trimmed && trimmed.endsWith(':')) {
+						volumes.push(trimmed + '/')
+					}
+				}
+			} else {
+				volumes.push('/') // Root is always a volume
+				const mountDirs = process.platform === 'darwin' ? ['/Volumes'] : ['/mnt', '/media']
+				for (const mnt of mountDirs) {
+					try {
+						const entries = await fs.promises.readdir(mnt, { withFileTypes: true })
+						for (const entry of entries) {
+							if (entry.isDirectory() || entry.isSymbolicLink()) {
+								// Keep it absolute for easy mounting
+								volumes.push(this.FS.resolve(mnt, entry.name))
+							}
+						}
+					} catch (err) {
+						// Ignore if /mnt or /Volumes doesn't exist or permission denied
+					}
+				}
+			}
+		} catch (err) {
+			this.console.warn('Failed to detect volumes', err)
+		}
+		return volumes.length > 0 ? volumes : ['/']
 	}
 
 	/**

@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/db-fs",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Database provider for nan•web with node:fs",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -25,6 +25,7 @@
     "clean": "rm -rf .cache/ && rm -rf dist/",
     "clean:modules": "rm -rf node_modules",
     "test:docs": "node --test src/README.md.js",
+    "test:releases": "node --test \"src/test/releases/**/*.test.js\"",
     "test:release": "node --test \"releases/**/*.test.js\"",
     "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test-coverage-exclude=\"src/**/index.js\" --test \"src/**/*.test.js\"",
     "test:coverage:collect": "nan0test coverage",

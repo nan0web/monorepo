@@ -98,7 +98,7 @@ export class AiStrategy extends Model {
 	 */
 	findModel(models, tokens, safeAnswerTokens = 1e3) {
 		const arr = Array.from(models.values()).filter(
-			(info) => !this.shouldChangeModel(info, tokens, safeAnswerTokens),
+			(info) => !this.shouldChangeModel(info, tokens, safeAnswerTokens)
 		)
 		if (!arr.length) return
 		arr.sort((a, b) => a.pricing.completion - b.pricing.completion)

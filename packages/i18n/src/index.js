@@ -10,6 +10,8 @@ export const t = (/** @type {string} */ key) => key
 export { createT } from '@nan0web/types'
 export { extract, extractFromModels, extractInfo, EXTRACT_FIELDS } from './extract.js'
 export { Language } from './domain/Language.js'
+export { I18nAtom } from './I18nAtom.js'
 
 export { i18n }
 export default i18n
+

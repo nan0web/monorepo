@@ -150,7 +150,7 @@ describe('computeModelScore — Multiplicative Matrix', () => {
 		const [fast, slow] = ai.getModels()
 		assert.ok(
 			ai.computeModelScore(fast, 100) > ai.computeModelScore(slow, 100),
-			'Faster T/s model should score higher',
+			'Faster T/s model should score higher'
 		)
 	})
 
@@ -179,7 +179,7 @@ describe('computeModelScore — Multiplicative Matrix', () => {
 		// 5000 tokens: short-ctx ratio = 8000/6000 ≈ 1.33 → 1.0; long-ctx ratio = 128000/6000 ≈ 21 → 1.3
 		assert.ok(
 			ai.computeModelScore(long, 5000) > ai.computeModelScore(short, 5000),
-			'Model with large context headroom gets bonus',
+			'Model with large context headroom gets bonus'
 		)
 	})
 

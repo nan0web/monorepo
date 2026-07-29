@@ -6,11 +6,11 @@ import {
 	TableModel,
 	ButtonModel,
 } from './components/index.js'
-import { resolveDefaults } from '@nan0web/types'
 
 /**
  * Sub-model representing the user's profile for the showcase journey.
  * Following strictly Model-as-Schema (0HCnAI) pattern.
+ * @extends {Model}
  */
 class ProfileModel extends Model {
 	static $id = '@nan0web/ui/ProfileModel'
@@ -55,6 +55,7 @@ class ProfileModel extends Model {
 /**
  * Model-as-Schema for the entire UI Sandbox Showcase.
  * Represents a complete User Journey demonstrating all components.
+ * @extends {Model}
  */
 export class ShowcaseAppModel extends Model {
 	static $id = '@nan0web/ui/ShowcaseAppModel'

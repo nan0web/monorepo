@@ -148,7 +148,7 @@ export class SnapshotAuditor extends AuditorModel {
 					if (!dicts[lang]) dicts[lang] = new Set()
 
 					// Use browse for deep dictionary scanning
-					for await (const f of fsDb.browse(entry.path, { depth: Infinity })) {
+					for await (const f of fsDb.browse(entry.path, { depth: Infinity, ignore: SnapshotAuditor.IGNORE_DIRS })) {
 						if (SnapshotAuditor.isIgnored(f.name)) continue
 						if (f.isFile) {
 							try {
@@ -182,11 +182,12 @@ export class SnapshotAuditor extends AuditorModel {
 		}
 
 		const files = []
-		const snapshotsDir = fsDb.resolveSync(/** @type {any} */ (this).dir)
+		const pkgDir = this.dir.includes('snapshots') ? '.' : this.dir
+		const snapshotsDir = fsDb.resolveSync(pkgDir, 'snapshots/core')
 
 		// Use robust DB.browse for recursive snapshot detection
 		try {
-			for await (const entry of fsDb.browse(snapshotsDir, { depth: Infinity })) {
+			for await (const entry of fsDb.browse(snapshotsDir, { depth: Infinity, ignore: SnapshotAuditor.IGNORE_DIRS })) {
 				if (SnapshotAuditor.isIgnored(entry.name)) continue
 				if (entry.isFile && (entry.name.endsWith('.nan0') || entry.name.endsWith('.txt'))) {
 					files.push(entry.path)
@@ -197,12 +198,13 @@ export class SnapshotAuditor extends AuditorModel {
 		}
 
 		if (files.length === 0) {
-			yield show(t(SnapshotAuditor.UI.noSnapshots, { dir: this.dir }), 'error')
+			yield show(t(SnapshotAuditor.UI.noSnapshots, { dir: snapshotsDir }), 'error')
 			return result({ success: false })
 		}
 
 		// Preload all dictionaries into memory across all languages
-		const dictionaries = await SnapshotAuditor.buildDictionaries(fsDb, this.data || 'data')
+		const dictDir = fsDb.resolveSync(pkgDir, this.data || 'data')
+		const dictionaries = await SnapshotAuditor.buildDictionaries(fsDb, dictDir)
 
 		// Process all files in parallel for hyper-speed
 		const auditPromises = files.map(async (file) => {

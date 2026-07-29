@@ -36,7 +36,7 @@ function makeFlat(models = []) {
 				context_length: model.context_length ?? pre?.context_length ?? 8192,
 				pricing: new Pricing({ prompt: 0, completion: 0 }), // Free tier
 				architecture: new Architecture({ input_modalities: ['text'], output_modalities: ['text'] }),
-			}),
+			})
 		)
 	}
 	return result

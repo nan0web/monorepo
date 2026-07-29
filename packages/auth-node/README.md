@@ -71,11 +71,11 @@ curl -X POST http://localhost:3000/auth/signup \
 { "message": "Verification code sent" }
 ```
 
-|
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Success — verification code sent (via email) |
+| `400`  | Missing required fields |
+| `409`  | User already exists |
 
 ### PUT /auth/signup/:username — Verify Account
 
@@ -96,12 +96,12 @@ curl -X PUT http://localhost:3000/auth/signup/alice \
 { "message": "Account verified", "accessToken": "...", "refreshToken": "..." }
 ```
 
-|
-|
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Verified — tokens issued |
+| `400`  | Already verified |
+| `401`  | Invalid code |
+| `404`  | User not found |
 
 ### POST /auth/signin/:username — Login
 
@@ -121,12 +121,12 @@ curl -X POST http://localhost:3000/auth/signin/alice \
 { "accessToken": "...", "refreshToken": "..." }
 ```
 
-|
-|
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Success — tokens issued |
+| `401`  | Invalid password |
+| `403`  | Account not verified |
+| `404`  | User not found |
 
 ### PUT /auth/refresh/:token — Refresh Tokens
 
@@ -147,10 +147,10 @@ curl -X PUT http://localhost:3000/auth/refresh/YOUR_REFRESH_TOKEN \
 { "accessToken": "new_access", "refreshToken": "new_refresh" }
 ```
 
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | New tokens issued |
+| `401`  | Invalid or expired refresh token |
 
 ---
 
@@ -170,10 +170,10 @@ curl -X POST http://localhost:3000/auth/forgot/alice
 { "message": "Reset code sent" }
 ```
 
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Reset code generated |
+| `404`  | User not found |
 
 ### PUT /auth/forgot/:username — Reset Password
 
@@ -194,11 +194,11 @@ curl -X PUT http://localhost:3000/auth/forgot/alice \
 { "message": "Password reset successful", "accessToken": "...", "refreshToken": "..." }
 ```
 
-|
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Password changed — new tokens issued |
+| `401`  | Invalid reset code |
+| `404`  | User not found |
 
 ---
 
@@ -220,11 +220,11 @@ curl http://localhost:3000/auth/signin/alice \
 { "name": "alice", "email": "alice@example.com", "verified": true, "roles": ["user"] }
 ```
 
-|
-|
-|
-|
-|
+| Access Level | Visible Fields |
+|-------------|----------------|
+| Own profile | All except password, codes |
+| Admin       | All except password, codes |
+| Other user  | name, email, createdAt |
 
 ### GET /auth/info — List Users (Admin)
 
@@ -243,10 +243,10 @@ curl http://localhost:3000/auth/info \
 { "users": ["alice", "bob", "carol"] }
 ```
 
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | User list returned |
+| `403`  | Not admin |
 
 ### GET /auth/access/info — Access Control Rules
 
@@ -265,10 +265,10 @@ curl http://localhost:3000/auth/access/info \
 { "userAccess": [], "groupRules": [], "globalRules": [], "groups": [] }
 ```
 
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Access rules returned |
+| `401`  | Not authenticated |
 
 ---
 
@@ -288,11 +288,11 @@ curl -X POST http://localhost:3000/private/notes.json \
   -d '{"title":"My Note","content":"Hello World"}'
 ```
 
-|
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `201`  | Created |
+| `401`  | Not authenticated |
+| `403`  | No write permission |
 
 ### GET /private/:path — Read Resource
 
@@ -303,12 +303,12 @@ curl http://localhost:3000/private/notes.json \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
-|
-|
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Resource data returned |
+| `401`  | Not authenticated |
+| `403`  | No read permission |
+| `404`  | Resource not found |
 
 ### HEAD /private/:path — Check Resource Exists
 
@@ -319,12 +319,12 @@ curl -I http://localhost:3000/private/notes.json \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
-|
-|
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Exists |
+| `401`  | Not authenticated |
+| `403`  | No read permission |
+| `404`  | Not found |
 
 ### DELETE /private/:path — Delete Resource
 
@@ -335,12 +335,12 @@ curl -X DELETE http://localhost:3000/private/notes.json \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
-|
-|
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Deleted |
+| `401`  | Not authenticated |
+| `403`  | No delete permission |
+| `404`  | Resource not found |
 
 ### DELETE /auth/signin/:username — Logout
 
@@ -360,12 +360,12 @@ curl -X DELETE http://localhost:3000/auth/signin/alice \
 { "message": "Logged out successfully" }
 ```
 
-|
-|
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Logged out — all tokens cleared |
+| `401`  | Not authenticated |
+| `403`  | Not authorized (if trying to logout someone else) |
+| `404`  | User not found |
 
 ### DELETE /auth/signup/:username — Delete Account
 
@@ -383,10 +383,10 @@ curl -X DELETE http://localhost:3000/auth/signup/alice
 { "message": "Account deleted" }
 ```
 
-|
-|
-|
-|
+| Status | Meaning |
+|--------|---------|
+| `200`  | Account deleted |
+| `404`  | User not found |
 
 ---
 
@@ -457,11 +457,11 @@ npm run play
 
 **Available scenarios:**
 
-|
-|
-|
-|
-|
+| Scenario      | What it tests |
+|---------------|---------------|
+| `demo`        | Full flow: signup → verify → login → private resources → logout |
+| `error-cases` | Duplicate signup, wrong password, unauthorized access |
+| `token-flow`  | Token refresh, HEAD checks, resource lifecycle |
 
 In playground mode, verification codes are automatically read from the database.
 

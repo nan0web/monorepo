@@ -491,12 +491,12 @@ import { UIReact } from '@nan0web/ui-react/src/index.jsx'
 
 Top-level component that loads a document, resolves translations, and renders content.
 
-|
-|
-|
-|
-|
-|
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `db` | `DB` | — | Database instance |
+| `uri` | `string` | `''` | Document URI |
+| `context` | `object` | `{}` | Extra context (apps, actions) |
+| `console` | `Console` | `window.console` | Logger instance |
 
 ### `UIRoot`
 
@@ -506,35 +506,35 @@ Complete application shell with routing, theme switching, and document loading.
 
 A `Map<string, Component>` of all available renderers:
 
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
+| Key | Component | Description |
+|-----|-----------|-------------|
+| `typography` | Typography | Semantic text rendering |
+| `button` | Button | Interactive buttons |
+| `input` | Input | Text input fields |
+| `select` | Select | Dropdown menus |
+| `checkbox` | Checkbox | Boolean toggles |
+| `radio` | Radio | Single selection |
+| `textarea` | TextArea | Multi-line text |
+| `avatar` | Avatar | Profile pictures |
+| `card` | Card | Content containers |
+| `table` | Table | Tabular data |
+| `modal` | Modal | Overlay windows |
+| `form` | Form | Schema-generated forms |
+| `tree` | TreeView | Hierarchical data |
+| `autocomplete` | Autocomplete | Searchable selection |
 
 ### Universal Blocks
 
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
+| Block | Description |
+|-------|-------------|
+| `Nav` | Top navigation bar with doc prop |
+| `Sidebar` | Side navigation with doc prop |
+| `Alert` | Semantic callout with dot-notation |
+| `Markdown` | Markdown rendering via `marked` |
+| `ThemeToggle` | Light/dark theme switcher |
+| `LangSelect` | Language selector |
+| `CodeBlock` | Syntax-highlighted code |
+| `Page` | Full page layout |
 
 All the above renderers are covered by `vitest` tests and rendered automatically via YAML data.
 

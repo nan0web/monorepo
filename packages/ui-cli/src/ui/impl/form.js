@@ -132,6 +132,8 @@ export default class Form {
 	 * @param {(config: any) => Promise<any>} [options.confirmFn] - Custom confirm function.
 	 * @param {(config: any) => Promise<import('@nan0web/ui').AskResponse>} [options.sliderFn] - Custom slider function.
 	 * @param {(config: any) => Promise<import('@nan0web/ui').AskResponse>} [options.toggleFn] - Custom toggle function.
+	 * @param {(config: any) => Promise<any>} [options.sortableFn] - Custom sortable function.
+	 * @param {(config: any) => Promise<any>} [options.tableSelectFn] - Custom tableSelect function.
 	 * @param {Object} [options.adapter] - Optional input adapter for global cancellation state.
 	 * @param {Object} [options.console] - Optional console for logging.
 	 * @param {Function} [options.t] - Optional translation function.
@@ -391,6 +393,47 @@ export default class Form {
 						step: field.step ?? 1,
 						initial: Number(currentValue) || field.min || 0,
 						t: this.t,
+					})
+				} else if (field.type === 'sortable') {
+					const { sortableFn, tableSelectFn } = this.options
+					result = await (sortableFn || (async (cfg) => {
+						const { default: sortablePrompt } = await import('./sortable.js')
+						return await sortablePrompt(cfg)
+					}))({
+						message: promptMsg,
+						items: Array.isArray(currentValue) ? currentValue : [],
+						t: this.t,
+						selectFn: field.options && field.options.length > 0 ? async (currentItems) => {
+							const selectHint = field.schema?.selectHint || field.selectHint
+							const columns = field.schema?.columns || field.columns
+							const currentVals = (currentItems || []).map(it => typeof it === 'object' ? it.value : it)
+							const filteredOptions = field.options.filter(opt => {
+								const val = typeof opt === 'object' ? opt.value : opt
+								return !currentVals.includes(val)
+							})
+
+							if (filteredOptions.length === 0) {
+								if (this.options.console) this.options.console.warn('No more options available to add.')
+								return { cancelled: true }
+							}
+
+							if (selectHint === 'table-select' || columns) {
+								const tableFn = tableSelectFn || this.options.tableSelectFn
+								if (typeof tableFn === 'function') {
+									return await tableFn({
+										title: `Add to ${promptMsg}`,
+										options: filteredOptions,
+										columns,
+										t: this.t,
+									})
+								}
+							}
+							return await selectFn({
+								title: `Add to ${promptMsg}`,
+								options: filteredOptions,
+								t: this.t,
+							})
+						} : undefined
 					})
 				} else if (field.type === 'array') {
 					let arr = Array.isArray(currentValue) ? [...currentValue] : []

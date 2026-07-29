@@ -91,7 +91,7 @@ function makeFlat(models) {
 						found.supports_structured_output ?? opts.supports_structured_output,
 					supports_tools: found.supports_structured_output ?? opts.supports_tools,
 					status: found.status ?? opts.status,
-				}),
+				})
 			)
 		}
 	}

@@ -7,13 +7,13 @@ set -e
 
 STEP="${1:-seed}"
 PROJECT="${2:-.}"
-WF="packages/0HCnAI.framework/templates/workflows"
-SESSION=".agent/session/workflows"
+WF="docs/uk/workflows"
+SESSION="$PROJECT/.agent/session/workflows"
 
 echo "⚡ Nan0web Pipeline: $STEP → $PROJECT"
 
 # 1. Clean & prepare session
-rm -rf .agent/session
+rm -rf "$PROJECT/.agent/session"
 mkdir -p "$SESSION"
 
 # 2. Always-present foundation (14 files)
@@ -102,13 +102,13 @@ case "$STEP" in
 esac
 
 # 4. Generate session index
-echo "# Session: $STEP" > .agent/session/index.md
-echo "" >> .agent/session/index.md
+echo "# Session: $STEP" > "$PROJECT/.agent/session/index.md"
+echo "" >> "$PROJECT/.agent/session/index.md"
 for f in "$SESSION"/*.md; do
   name=$(basename "$f" .md)
-  echo "- [$name](./workflows/$name.md)" >> .agent/session/index.md
+  echo "- [$name](./workflows/$name.md)" >> "$PROJECT/.agent/session/index.md"
 done
 
-echo "✅ Session ready: .agent/session/index.md"
+echo "✅ Session ready: $PROJECT/.agent/session/index.md"
 echo "📂 Workflows: $(ls "$SESSION" | wc -l) files"
-echo "🚀 Open Continue and start working on step: $STEP"wc -l packages/0HCnAI.framework/templates/workflows/olm-ui-architecture*.mdwc -l packages/0HCnAI.framework/templates/workflows/olm-ui-architecture*.mdwc -l packages/0HCnAI.framework/templates/workflows/olm-ui-architecture*.mdwc -l packages/0HCnAI.framework/templates/workflows/olm-ui-architecture*.md
+echo "🚀 Open Continue and start working on step: $STEP"

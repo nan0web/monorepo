@@ -1,7 +1,7 @@
 ---
 version: 1.5.0
 type: feature
-status: active
+status: completed
 locale: uk
 models: []
 ---
@@ -11,9 +11,11 @@ models: []
 [English version](./task.en.md)
 
 ## 🏁 Overview (Огляд)
+
 Індексація source файлів (`src/**/*.{js,jsx,ts,tsx}`) не повертає релевантних результатів при пошуку через `nan0ai search -s source`. Також відсутня можливість переглянути список проіндексованих **файлів** із фільтрацією за scope.
 
 **Кореневі причини:**
+
 1. `MarkdownIndexer.scanRecursive()` — регексп `isSource` не включав `.jsx` та `.tsx` розширення.
 2. `MarkdownIndexer.scanRecursive()` — логіка визначення `inTypesFolder` була надто суворою (лише корінь), що ігнорувало сорс-файли у монорепозиторії (викривлення індексації).
 3. `ListIndexIntent` та `ShowIndexIntent` не підтримували ін'єкцію залежностей (DB), що робило їх нетестованими.
@@ -26,6 +28,7 @@ models: []
 2. **Як розробник**, виконуючи `nan0ai ls -p ui -s source`, я хочу бачити список **файлів** лише для `source` scope та конкретного пакету `*ui*`, щоб розуміти що саме проіндексовано.
 
 ## 🎯 Scope (Задачі)
+
 - [x] Розширити `isSource` regexp у `MarkdownIndexer.scanRecursive()` для підтримки `.jsx` та `.tsx` розширень
 - [x] Виправити "викривлення" індексації у монорепозиторії (гнучкий пошук `src`/`types` папок)
 - [x] Забезпечити тестованість Intent-ів через ін'єкцію `db`
@@ -35,6 +38,7 @@ models: []
 - [x] Зареєструвати `ListIndexIntent` у `AiAppModel`
 
 ## ✅ Acceptance Criteria (DoD)
+
 - [x] **Контрактні тести** (`task.spec.js`) написані і успішно проходять (Green).
 - [x] **MarkdownIndexer** сканує `.js`, `.jsx`, `.ts`, `.tsx` файли у scope `source`.
 - [x] **ShowIndexIntent** підтримує `--scope` / `-s` параметр для фільтрації метаданих індексів.
@@ -44,6 +48,7 @@ models: []
 ## 📊 Прогрес: 100% (Фіналізація)
 
 ### ✅ Виконано:
+
 1. **MarkdownIndexer**: оновлено regexp для `.jsx`, `.tsx`, `.py` та виправлено логіку `inTypesFolder` для монорепозиторіїв.
 2. **Intent Testability**: додано підтримку `this._.db` у `ShowIndexIntent` та `ListIndexIntent`.
 3. **Zero-Disk QA**: всі контрактні тести переписано на роботу виключно з In-Memory DB (без запису на диск).
@@ -57,5 +62,6 @@ models: []
 7. **QA**: 100% тестів пройдено (unit, stories, spec, lint).
 
 ### 🚀 Наступні кроки:
+
 - Реліз v1.5.0.
 - Моніторинг StackDetector @todo.

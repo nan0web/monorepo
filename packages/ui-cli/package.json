@@ -33,6 +33,7 @@
     "./ui/cli": "./src/domain/App.js"
   },
   "scripts": {
+    "prebuild": "rm -rf types/",
     "build": "tsc",
     "build:docs": "node bin/build-docs.mjs",
     "test": "node --test --test-timeout=30000 \"src/**/*.test.js\"",
@@ -44,7 +45,7 @@
     "test:status": "nan0test status --hide-name --debug",
     "test:play": "UI_SNAPSHOT=1 node --test --test-concurrency=1 --test-timeout=15000 play/main.test.js",
     "test:i18n": "node ../i18n/bin/i18n.js audit",
-    "test:all1": "npm run test && npm run test:docs && npm run build",
+    "test:all": "npm run test && npm run test:docs && npm run build && npm run knip",
     "knip": "knip --production",
     "play": "node bin/nan0cli.js --data play/data",
     "play:v1": "node play/main.js",
@@ -68,8 +69,8 @@
   "author": "ЯRаСлав (YaRaSLove) <support@yaro.page>",
   "license": "ISC",
   "bin": {
-    "nan0cli": "bin/nan0cli.js",
-    "nan0cli2": "bin/cli.js",
+    "nan0cli0": "bin/nan0cli.js",
+    "nan0cli": "bin/cli.js",
     "nan0gallery": "bin/gallery.js",
     "nan0truth": "bin/truth-extractor.js"
   },
@@ -85,7 +86,6 @@
     "prettier": "^3.8.1"
   },
   "dependencies": {
-    "@nan0web/ai": "workspace:*",
     "@nan0web/event": "workspace:*",
     "@nan0web/icons": "workspace:*",
     "@nan0web/log": "workspace:*",

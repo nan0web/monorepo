@@ -6,9 +6,12 @@
  * - Comments: // t('key')
  *
  * @param {string} content - Source code content.
+ * @param {{ onlyCalls?: boolean }} [options={}] - Extraction options.
  * @returns {string[]} Sorted array of unique keys.
  */
-export function extract(content: string): string[];
+export function extract(content: string, options?: {
+    onlyCalls?: boolean;
+}): string[];
 /**
  * Extracts translation keys directly from Model-as-Schema classes.
  * This is the **primary** extraction method.

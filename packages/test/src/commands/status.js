@@ -167,7 +167,7 @@ export default class StatusCommand extends CLI {
 		for await (const msg of pkg.run(rrs)) {
 			progress.push(String(msg.value).trim())
 			yield new ProgressMessage(
-				this.logger.cut(progress.filter(Boolean).join(' ') + ' > ' + msg.name),
+				/** @type {any} */ (this).logger.cut(progress.filter(Boolean).join(' ') + ' > ' + msg.name),
 			)
 		}
 		progress.push('= ' + rrs.icon(''))

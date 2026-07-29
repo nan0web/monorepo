@@ -124,6 +124,50 @@ describe('v1.3.0 — SortableList Component', () => {
 		assert.deepStrictEqual(calls[0], ['b', 'c', 'a'])
 	})
 
+	it('addItem inserts item and triggers onChange', async () => {
+		const { default: Component } = await import('../../../../../../src/Component/index.js')
+		const calls = []
+		const list = Component.SortableList.create({
+			items: ['a', 'c'],
+			onChange: (items) => calls.push([...items]),
+		})
+		list.addItem('b', 1)
+		assert.deepStrictEqual(list.getItems(), ['a', 'b', 'c'])
+		list.addItem('d')
+		assert.deepStrictEqual(list.getItems(), ['a', 'b', 'c', 'd'])
+		list.addItem('z', 99)
+		assert.deepStrictEqual(list.getItems(), ['a', 'b', 'c', 'd', 'z'])
+		assert.equal(calls.length, 3)
+	})
+
+	it('removeItem deletes item and triggers onChange', async () => {
+		const { default: Component } = await import('../../../../../../src/Component/index.js')
+		const calls = []
+		const list = Component.SortableList.create({
+			items: ['a', 'b', 'c'],
+			onChange: (items) => calls.push([...items]),
+		})
+		list.removeItem(1)
+		assert.deepStrictEqual(list.getItems(), ['a', 'c'])
+		list.removeItem(99) // out of bounds - no-op
+		assert.deepStrictEqual(list.getItems(), ['a', 'c'])
+		assert.equal(calls.length, 1)
+	})
+
+	it('updateItem modifies item and triggers onChange', async () => {
+		const { default: Component } = await import('../../../../../../src/Component/index.js')
+		const calls = []
+		const list = Component.SortableList.create({
+			items: ['a', 'b', 'c'],
+			onChange: (items) => calls.push([...items]),
+		})
+		list.updateItem(1, 'x')
+		assert.deepStrictEqual(list.getItems(), ['a', 'x', 'c'])
+		list.updateItem(99, 'y') // out of bounds - no-op
+		assert.deepStrictEqual(list.getItems(), ['a', 'x', 'c'])
+		assert.equal(calls.length, 1)
+	})
+
 	/**
 	 * @contract package.json version must be 1.3.0 for this release.
 	 */

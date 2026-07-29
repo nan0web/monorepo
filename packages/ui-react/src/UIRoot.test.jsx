@@ -101,7 +101,7 @@ describe('UIRoot', () => {
 				db: expect.any(DB),
 				uri: '/',
 			}),
-			expect.anything(),
+			undefined,
 		)
 	})
 
@@ -122,7 +122,7 @@ describe('UIRoot', () => {
 				db: mockDb,
 				uri: '/test.json',
 			}),
-			expect.anything(),
+			undefined,
 		)
 	})
 
@@ -282,7 +282,7 @@ describe('UIRoot', () => {
 				db: mockDb,
 				uri: '/',
 			}),
-			expect.anything(),
+			undefined,
 		)
 	})
 })

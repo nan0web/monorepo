@@ -26,6 +26,11 @@ export default class FSDriver extends DBDriverProtocol {
 			(arr) => arr.map(x => JSON.stringify(x)).join('\n') + '\n'
 		)
 
+		this.registry.register('.json',
+			(str) => JSON.parse(str),
+			(doc) => JSON.stringify(doc, null, 2)
+		)
+
 		this.registry.register('.txt',
 			(str) => str,
 			(doc) => String(doc)

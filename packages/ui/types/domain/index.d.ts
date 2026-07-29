@@ -8,6 +8,5 @@ export { LayoutModel } from "./LayoutModel.js";
 export { HeaderModel } from "./HeaderModel.js";
 export { FooterModel } from "./FooterModel.js";
 export { HeroModel } from "./HeroModel.js";
-export { ShellModel } from "./components/ShellModel.js";
 export type ModelAsAppOptions = import("./ModelAsApp.js").ModelAsAppOptions;
 export { ButtonModel, ConfirmModel, InputModel, SpinnerModel, TableModel, ToastModel, SelectModel, AutocompleteModel, TreeModel, TabsModel, AccordionModel, GalleryModel, PriceModel, FeatureGridModel, FeatureItemModel, PricingModel, CommentModel, TestimonialModel, StatsItemModel, StatsModel, TimelineItemModel, TimelineModel, HeaderVisibilityModel, HeaderConfigModel, FooterVisibilityModel, FooterConfigModel, EmptyStateModel, BannerModel, ProfileDropdownModel } from "./components/index.js";

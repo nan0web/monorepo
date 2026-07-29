@@ -51,6 +51,26 @@ declare class SortableList {
      */
     moveTo(from: number, to: number): void;
     /**
+     * Adds an item at the specified index.
+     * If index is omitted or out of bounds, appends to the end.
+     * @param {any} item
+     * @param {number} [index]
+     */
+    addItem(item: any, index?: number): void;
+    /**
+     * Removes the item at the specified index.
+     * No-op if index is out of bounds.
+     * @param {number} index
+     */
+    removeItem(index: number): void;
+    /**
+     * Updates the item at the specified index.
+     * No-op if index is out of bounds.
+     * @param {number} index
+     * @param {any} item
+     */
+    updateItem(index: number, item: any): void;
+    /**
      * Restores the initial order.
      */
     reset(): void;

@@ -34,7 +34,7 @@ export function matchProject(projectId, filter, nameToDir) {
 	// 2. Glob/wildcard: "ui*" or "ui-*"
 	if (f.includes('*')) {
 		const regex = new RegExp(
-			'^' + f.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$',
+			'^' + f.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$'
 		)
 		return regex.test(lastSegment)
 	}

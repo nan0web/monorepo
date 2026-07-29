@@ -34,7 +34,7 @@ function makeFlat(models = []) {
 				context_length: model.context_length ?? pre?.context_length ?? 128_000,
 				pricing: new Pricing({ prompt: 0, completion: 0 }), // Most flash models are free for exp
 				architecture: new Architecture({ input_modalities: ['text'], output_modalities: ['text'] }),
-			}),
+			})
 		)
 	}
 	return result

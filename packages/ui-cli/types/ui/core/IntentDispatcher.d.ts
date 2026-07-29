@@ -31,11 +31,18 @@ export default class IntentDispatcher {
         cancelled: boolean;
     }>;
     /**
+     * Handle OLMUI Show intents.
+     *
+     * @param {Object} intent
+     * @returns {Promise<void>}
+     */
+    showIntent(intent: any): Promise<void>;
+    /**
      * Handle OLMUI Log intents.
      * Multi-line messages are rendered via Alert box.
      * Supports basic markdown: **bold** → ANSI bold.
-     *
      * @param {Object} intent
+     * @returns {Promise<void>}
      */
     logIntent(intent: any): Promise<void>;
     /**
@@ -48,5 +55,7 @@ export default class IntentDispatcher {
         onData: (chunk: any) => void;
         onEnd: () => void;
     } | undefined>;
+    hideActiveProgress(): void;
+    clearActiveProgress(): void;
     #private;
 }

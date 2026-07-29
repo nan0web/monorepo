@@ -19,7 +19,7 @@ export class CnaiRefactorAgent extends Model {
 		super(data, options)
 		/** @type {Record<string, string>} Files to refactor */ this.files = this.files || {}
 		/** @type {string} Instructions for refactoring */ this.instructions = String(
-			this.instructions || '',
+			this.instructions || ''
 		)
 	}
 

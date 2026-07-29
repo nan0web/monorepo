@@ -7,6 +7,7 @@ import SnapshotAuditor from './SnapshotAuditor.js'
 /**
  * SnapshotRunner — Zero-Hallucination Snapshot Generation & Audit (Model-as-Schema v2).
  * Operates entirely through DB-FS abstraction without raw FS/Path hardcodes.
+ * @extends {Model}
  */
 export class SnapshotRunner extends Model {
 	static UI = {

@@ -19,7 +19,7 @@ describe('ModelProvider (Interface Welding)', async () => {
 			Promise.resolve({
 				ok: true,
 				json: () => Promise.resolve(mockResponse),
-			}),
+			})
 		)
 
 		// Set dummy API key
@@ -27,15 +27,16 @@ describe('ModelProvider (Interface Welding)', async () => {
 
 		try {
 			const models = await provider.fetchFromProvider('cerebras')
-			assert.equal(models.length, 1)
-			assert.equal(models[0].id, 'llama-3.3-70b')
+			assert.equal(models.length, 2)
+			assert.equal(models[0].id, 'zai-glm-4.7')
+			assert.equal(models[1].id, 'gpt-oss-120b')
 
 			const flat = provider.flatten(models, 'cerebras')
-			assert.equal(flat.length, 1)
+			assert.equal(flat.length, 2)
 			assert.ok(flat[0] instanceof ModelInfo)
 			assert.equal(flat[0].provider, 'cerebras')
-			// Verify static info was merged (llama-3.3-70b has prompt pricing: 0.85)
-			assert.equal(flat[0].pricing?.prompt, 0.85)
+			assert.equal(flat[1].pricing?.prompt, 0.35)
+			assert.equal(flat[0].pricing?.prompt, 0)
 		} finally {
 			// Restore
 			// @ts-ignore
@@ -63,7 +64,7 @@ describe('ModelProvider (Interface Welding)', async () => {
 			Promise.resolve({
 				ok: true,
 				json: () => Promise.resolve({ data: [] }),
-			}),
+			})
 		)
 
 		try {

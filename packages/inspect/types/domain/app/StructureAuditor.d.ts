@@ -6,6 +6,6 @@ export class StructureAuditor extends AuditorModel {
         playgroundNotFound: string;
         playgroundFound: string;
     };
-    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ProgressIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
+    run(): AsyncGenerator<import("../../../../ui/types/core/Intent.js").ProgressIntent, import("../../../../ui/types/core/Intent.js").ResultIntent, unknown>;
 }
 import { AuditorModel } from '../AuditorModel.js';

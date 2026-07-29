@@ -66,11 +66,9 @@ export function parseBoundaries(text) {
 			// User specifically requested error if 3 lines replaced with 1 etc.
 			if (actualCount !== lineCount) {
 				throw new Error(
-					`Snippet for "${filePath}" expects ${lineCount} lines, but got ${actualCount}`,
+					`Snippet for "${filePath}" expects ${lineCount} lines, but got ${actualCount}`
 				)
 			}
-			// For now we don't handle merging, just return as is or error
-			// But since the contract is Record<string, string>, returning a snippet as a file content is risky
 			files[header] = content
 		} else {
 			files[filePath] = content
@@ -81,4 +79,42 @@ export function parseBoundaries(text) {
 	}
 
 	return files
+}
+
+/**
+ * Applies parsed boundaries (full files or line-range snippets) to a set of original files.
+ *
+ * @param {Record<string, string>} originalFiles Map of original file paths to their contents.
+ * @param {Record<string, string>} parsedBoundaries Map of parsed boundary keys to their contents.
+ * @throws {Error} If snippet boundaries fall out of bounds of the original file.
+ * @returns {Record<string, string>} Map of updated file contents.
+ */
+export function applyBoundaries(originalFiles, parsedBoundaries) {
+	const result = { ...originalFiles }
+
+	for (const [key, content] of Object.entries(parsedBoundaries)) {
+		const parts = key.split(':')
+		const filePath = parts[0].trim()
+
+		if (parts.length === 3) {
+			const startLine = parseInt(parts[1])
+			const lineCount = parseInt(parts[2])
+
+			const originalContent = result[filePath] ?? ''
+			const lines = originalContent ? originalContent.split('\n') : []
+
+			if (startLine < 1 || startLine > lines.length + 1) {
+				throw new Error(
+					`Invalid startLine ${startLine} for file "${filePath}" with ${lines.length} lines`
+				)
+			}
+
+			lines.splice(startLine - 1, lineCount, ...content.split('\n'))
+			result[filePath] = lines.join('\n')
+		} else {
+			result[filePath] = content
+		}
+	}
+
+	return result
 }

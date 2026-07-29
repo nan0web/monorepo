@@ -1,6 +1,7 @@
 packages:
   - 'apps/*'
-  # @nan0web packages
+  - 'apps/3rdparty/*'
+  - 'apps/3rdparty/*/*'
   - 'packages/*'
 allowBuilds:
   '@nan0web/i18n': true

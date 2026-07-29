@@ -38,7 +38,7 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 				storeDb,
 				workspaceDb: mockFs,
 				workspaceRoot,
-			},
+			}
 		)
 		app.getWorkspaceRoot = () => '/'
 
@@ -70,7 +70,7 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 				storeDb,
 				workspaceDb: mockFs,
 				workspaceRoot,
-			},
+			}
 		)
 		app.getWorkspaceRoot = () => '/'
 
@@ -80,7 +80,7 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 		assert.strictEqual(
 			discovered[0].dir,
 			'packages/pkg-a',
-			'Should resolve directory relative to root',
+			'Should resolve directory relative to root'
 		)
 
 		await mockFs.disconnect()
@@ -112,7 +112,7 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 				storeDb,
 				workspaceDb: mockFs,
 				workspaceRoot,
-			},
+			}
 		)
 		app.getWorkspaceRoot = () => '/'
 
@@ -161,7 +161,7 @@ describe('IndexWorkspaceApp Story Test Suite', () => {
 				storeDb,
 				workspaceDb: mockFs,
 				workspaceRoot,
-			},
+			}
 		)
 		app.getWorkspaceRoot = () => '/'
 

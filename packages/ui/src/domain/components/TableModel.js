@@ -4,6 +4,7 @@ import { show, result } from '../../core/Intent.js'
 /**
  * Model-as-Schema for Table Data component.
  * Displays tabular string data in rows and columns.
+ * @extends {Model}
  */
 export class TableModel extends Model {
 	static $id = '@nan0web/ui/TableModel'

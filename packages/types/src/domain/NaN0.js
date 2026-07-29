@@ -82,13 +82,16 @@ export default class NaN0 {
 			}
 		}
 
-		// Priority 4: Quoted strings
+		// Priority 4: Quoted strings (double or single)
 		if (firstChar === '"' && s.endsWith('"')) {
 			try {
 				return JSON.parse(s)
 			} catch {
 				return s.slice(1, -1)
 			}
+		}
+		if (firstChar === "'" && s.endsWith("'")) {
+			return s.slice(1, -1)
 		}
 
 		return s

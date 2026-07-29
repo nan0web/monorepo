@@ -32,14 +32,16 @@ export const extractInfo = {
  * - Comments: // t('key')
  *
  * @param {string} content - Source code content.
+ * @param {{ onlyCalls?: boolean }} [options={}] - Extraction options.
  * @returns {string[]} Sorted array of unique keys.
  */
-export function extract(content) {
+export function extract(content, options = {}) {
+	const { onlyCalls = false } = options
 	const fields = EXTRACT_FIELDS.map((s) => s.replace('*', '[a-zA-Z0-9_]*')).join('|')
 	const regexes = [
-		/\bt\(['"`](.*?)['"`]\)/g,
-		new RegExp(`\\b(?:${fields})\\s*[:=]\\s*['"\`](.*?)['"\`]`, 'g'),
-		/\/\/\s*t\(['"`](.*?)['"`]\)/g,
+		new RegExp('\\bt\\(\\s*(?:\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'|"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|`([^`]*)`)', 'g'),
+		new RegExp(`\\b(?:${fields})\\s*[:=]\\s*(?:'([^'\\\\]*(?:\\\\.[^\'\\\\]*)*)'|"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|\`([^\`]*)\`)`, 'g'),
+		new RegExp('\\/\\/\\s*t\\(\\s*(?:\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'|"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|`([^`]*)`)', 'g'),
 	]
 
 	const keys = new Set()
@@ -81,10 +83,12 @@ export function extract(content) {
 	}
 
 	for (let rIndex = 0; rIndex < regexes.length; rIndex++) {
+		if (onlyCalls && rIndex === 1) continue
 		const re = regexes[rIndex]
 		let match
 		while ((match = re.exec(content)) !== null) {
-			const key = match[1]
+			const key = match[1] || match[2] || match[3]
+			if (key && key.includes('${')) continue
 			if (rIndex === 1) {
 				const fullMatch = match[0]
 				if (fullMatch.startsWith('value')) {

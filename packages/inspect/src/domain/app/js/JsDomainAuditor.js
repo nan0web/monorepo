@@ -55,7 +55,14 @@ export class JsDomainAuditor extends DomainAuditor {
 		const allFiles = await this._collectJsFiles(srcDir)
 
 		for (const file of allFiles) {
-			if (file.startsWith(domainDir + '/') || file === domainDir) continue
+			const normalizedFile = file.replace(/\\/g, '/')
+			if (
+				normalizedFile.includes('/src/domain/') ||
+				normalizedFile.startsWith('src/domain/') ||
+				normalizedFile.endsWith('/src/domain')
+			) {
+				continue
+			}
 
 			const val = await this._.db.loadDocument(file).catch(() => '')
 			const content = typeof val === 'string' ? val : val && val.toString ? val.toString() : ''

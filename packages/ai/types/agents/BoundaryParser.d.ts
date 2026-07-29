@@ -18,3 +18,12 @@
  * @returns {Record<string, string>} Hash map of updated file contents.
  */
 export function parseBoundaries(text: string): Record<string, string>;
+/**
+ * Applies parsed boundaries (full files or line-range snippets) to a set of original files.
+ *
+ * @param {Record<string, string>} originalFiles Map of original file paths to their contents.
+ * @param {Record<string, string>} parsedBoundaries Map of parsed boundary keys to their contents.
+ * @throws {Error} If snippet boundaries fall out of bounds of the original file.
+ * @returns {Record<string, string>} Map of updated file contents.
+ */
+export function applyBoundaries(originalFiles: Record<string, string>, parsedBoundaries: Record<string, string>): Record<string, string>;

@@ -49,7 +49,7 @@ function makeFlat(customModels = []) {
 				supports_structured_output: true,
 				architecture: new Architecture(m.architecture),
 				pricing: new Pricing(m.pricing || { prompt: 0, completion: 0 }),
-			}),
+			})
 	)
 }
 

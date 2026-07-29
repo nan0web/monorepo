@@ -8,12 +8,14 @@ import { resolvePositionalArgs } from '../core/resolvePositionalArgs.js'
  * @property {InputAdapter} adapter
  * @property {string} parentPath
  * @property {boolean} _isExplicit
+ * @property {any} [fs]
  */
 /** @typedef {import('@nan0web/types').ModelOptions & AppOptions} ModelAsAppOptions */
 
 /**
  * The model with a run generator.
  * @property {boolean} help Show help
+ * @extends {Model}
  */
 export class ModelAsApp extends Model {
 	static help = {
@@ -84,7 +86,13 @@ export class ModelAsApp extends Model {
 				className.replace(/Command|App/g, '').toLowerCase()
 			const fullPath = this._.parentPath ? `${this._.parentPath} ${myAlias}` : myAlias
 
-			const finalData = resolvePositionalArgs(SubClass, data._positionals || [], data)
+			const cleanSubData = { ...data }
+			delete cleanSubData[key]
+
+			const subPos = (data._positionals && data._positionals[0] === val)
+				? data._positionals.slice(1)
+				: (data._positionals || [])
+			const finalData = resolvePositionalArgs(SubClass, subPos, cleanSubData)
 			return new SubClass(finalData, { ...this._, parentPath: fullPath, _isExplicit: isExplicit })
 		}
 

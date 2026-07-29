@@ -86,7 +86,8 @@ export class SyncWorkspaceApp extends ModelAsApp {
 			const aiPkg = await db.get('@ws/packages/ai/package.json').catch(() => null)
 			if (aiPkg && aiPkg.nan0web) {
 				const systemLocale = (process.env.LANG || 'uk').split('.')[0].split('_')[0]
-				const locale = this.locale || this._.locale || systemLocale
+				const self = /** @type {any} */ (this)
+				const locale = self.locale || self._.locale || systemLocale
 				const relativeWorkflowDir = aiPkg.nan0web.workflowDir.replace('{locale}', locale)
 				aiWorkflowsDir = `@ws/packages/ai/${relativeWorkflowDir}`
 			}

@@ -5,8 +5,9 @@ import { ExportAuditor } from './ExportAuditor.js'
 import { DomainAuditor } from './DomainAuditor.js'
 import { VerificationAuditor } from './VerificationAuditor.js'
 import { CircularDependencyAuditor } from './CircularDependencyAuditor.js'
+import { BuildWorkflowsApp } from './BuildWorkflowsApp.js'
 import { ModelAsApp, show, result } from '@nan0web/ui'
-import { SnapshotAuditor } from '@nan0web/ui/inspect'
+import { SnapshotAuditor, OlmuiThemingAuditor } from '@nan0web/ui/inspect'
 import { AuditorModel } from '../AuditorModel.js'
 
 export class InspectorApp extends ModelAsApp {
@@ -22,12 +23,14 @@ export class InspectorApp extends ModelAsApp {
 		options: [
 			ArchitectureAuditor,
 			SnapshotAuditor,
+			OlmuiThemingAuditor,
 			PhaseAuditor,
 			HygieneAuditor,
 			ExportAuditor,
 			DomainAuditor,
 			VerificationAuditor,
 			CircularDependencyAuditor,
+			BuildWorkflowsApp,
 		],
 		default: ArchitectureAuditor,
 		positional: true,
@@ -65,6 +68,18 @@ export class InspectorApp extends ModelAsApp {
 		if (this.platform) return
 		if (!this._.db) return
 		try {
+			const path = await import('node:path')
+			const { default: DBFS } = await import('@nan0web/db-fs')
+			const targetAbs = path.resolve(process.cwd(), this.dir || '.')
+
+			this._.db.mount('@app', new DBFS({ cwd: targetAbs, root: '', console: this._.db.console }))
+			this._.db.mount('@data', new DBFS({ cwd: targetAbs, root: 'data', console: this._.db.console }))
+			this._.db.mount('@docs', new DBFS({ cwd: targetAbs, root: 'docs', console: this._.db.console }))
+			this._.db.mount('@play', new DBFS({ cwd: targetAbs, root: 'play', console: this._.db.console }))
+		} catch (e) {
+			// Ignore mount errors
+		}
+		try {
 			const hasPkg = (await this._.db.statDocument('package.json')).exists
 			if (hasPkg) {
 				this.platform = 'js'
@@ -98,15 +113,20 @@ export class InspectorApp extends ModelAsApp {
 		// and it's not a known auditor alias, move it to "dir".
 		const commandValue = /** @type {any} */ (this.command)
 		if (typeof commandValue === 'string') {
+			let normalizedCmd = commandValue
+			if (commandValue === 'architecture') {
+				normalizedCmd = 'audit'
+			}
+
 			const aliases = (InspectorApp.command.options || []).map(o => o.alias).filter(Boolean)
-			const isAlias = aliases.includes(commandValue)
+			const isAlias = aliases.includes(normalizedCmd)
 			if (!isAlias) {
 				// Treat as dir
 				this.dir = commandValue
 				this.command = new ArchitectureAuditor({ dir: this.dir }, this._)
 			} else {
 				// It IS an alias, resolve it to a class
-				const TargetClass = (InspectorApp.command.options || []).find(o => o.alias === commandValue)
+				const TargetClass = (InspectorApp.command.options || []).find(o => o.alias === normalizedCmd)
 				if (TargetClass) {
 					this.command = new TargetClass({ dir: this.dir }, this._)
 				}
@@ -122,6 +142,12 @@ export class InspectorApp extends ModelAsApp {
 			if (ActualClass && ActualClass !== CurrentClass) {
 				this.command = new ActualClass({ ...this.command, platform: this.platform, dir: this.dir }, this._)
 			}
+		}
+
+		if (this.command && typeof this.command.isCapped === 'function' && await this.command.isCapped()) {
+			const alias = /** @type {any} */(this.command.constructor).alias || this.command.constructor.name
+			yield show(`[Step-Capped Validation] skipping auditor ${alias} (capped by active session step)`, 'info')
+			return result({ ok: true, skipped: true })
 		}
 
 		if (!this.command || !(this.command instanceof ModelAsApp)) {

@@ -41,8 +41,8 @@ export class TestAI extends AI {
 			inputTokens: Math.round(
 				messages.reduce(
 					(acc, msg) => acc + (typeof msg.content === 'string' ? msg.content.length / 4 : 0),
-					0,
-				),
+					0
+				)
 			),
 			outputTokens: fullResponse.split(/\s+/).length,
 		})

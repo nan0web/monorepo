@@ -473,7 +473,7 @@ export class MarkdownIndexer extends Model {
 		const dsFolder = this.getDatasetDir()
 		const files = await workspaceDb.listDir(dsFolder).catch(() => [])
 		const indexFiles = files.filter(
-			(f) => f.name.startsWith(this.scope + '-') && f.name.endsWith('-index.bin'),
+			(f) => f.name.startsWith(this.scope + '-') && f.name.endsWith('-index.bin')
 		)
 
 		let allResults = []
@@ -509,11 +509,12 @@ export class MarkdownIndexer extends Model {
 			let loaded = false
 			try {
 				loaded = await vdb.load(f.path, { metaOnly: opts.strict })
-			} catch (e) {
+			} catch (err) {
+				const error = /** @type {any} */ (err)
 				const t = this._.t || ((k) => k)
 				yield log(
 					'error',
-					t(MarkdownIndexer.UI.errorLoadIndex, { path: f.path, message: e.message }),
+					t(MarkdownIndexer.UI.errorLoadIndex, { path: f.path, message: error.message })
 				)
 				continue
 			}
@@ -525,7 +526,8 @@ export class MarkdownIndexer extends Model {
 			} else {
 				try {
 					results = vdb.search(/** @type {number[]} */ (queryVector), opts.limit || 10)
-				} catch (e) {
+				} catch (err) {
+					const error = /** @type {any} */ (err)
 					const t =
 						this._.t ||
 						((k, p) => {
@@ -537,19 +539,19 @@ export class MarkdownIndexer extends Model {
 							}
 							return out
 						})
-					let errMsg = e.message
-					if (e.name === 'ModelError' && e.fields) {
+					let errMsg = error.message
+					if (error.name === 'ModelError' && error.fields) {
 						const meta = Object.fromEntries(
-							Object.entries(e.fields).filter(([key]) => key.startsWith('$')),
+							Object.entries(error.fields).filter(([key]) => key.startsWith('$'))
 						)
-						const vectorKey = e.fields.vector || ''
+						const vectorKey = error.fields.vector || ''
 						if (vectorKey) {
 							errMsg = t(vectorKey, meta)
 						}
 					}
 					yield log(
 						'error',
-						t(MarkdownIndexer.UI.errorSearchIndex, { project: f.name, message: errMsg }),
+						t(MarkdownIndexer.UI.errorSearchIndex, { project: f.name, message: errMsg })
 					)
 					continue
 				}
@@ -562,7 +564,7 @@ export class MarkdownIndexer extends Model {
 				results = results.filter(
 					(r) =>
 						r.content &&
-						r.content.toLowerCase().includes(/** @type {string} */ (query).toLowerCase()),
+						r.content.toLowerCase().includes(/** @type {string} */ (query).toLowerCase())
 				)
 			}
 

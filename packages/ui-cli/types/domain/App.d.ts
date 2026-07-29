@@ -1,4 +1,5 @@
 /** @typedef {import('@nan0web/ui').Intent} Intent */
+/** @typedef {import('@nan0web/ui').ModelAsAppOptions & { appName?: string }} AppOptionsWithName */
 /**
  * App — NaN•Web CLI Runner (Model-as-App v2).
  *
@@ -59,6 +60,11 @@ export class App extends ModelAsApp {
         help: string;
         default: boolean;
     };
+    static completion: {
+        type: string;
+        help: string;
+        default: undefined;
+    };
     static aliases: {
         docs: string;
         app: string;
@@ -66,16 +72,22 @@ export class App extends ModelAsApp {
     };
     /**
      * @param {Partial<App>} [data]
-     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
+     * @param {Partial<AppOptionsWithName>} [options]
      */
-    constructor(data?: Partial<App>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    constructor(data?: Partial<App>, options?: Partial<AppOptionsWithName>);
     /** @type {string | undefined} Target path or URL */ target: string | undefined;
     /** @type {boolean} Enable debug */ debug: boolean;
     /** @type {boolean} CI test mode */ test: boolean;
     /** @type {string | undefined} Locale override */ locale: string | undefined;
     /** @type {string | undefined} Working directory override */ cwd: string | undefined;
     /** @type {boolean} Blueprint mode */ blueprint: boolean;
+    /** @type {string | undefined} Completion script type */ completion: string | undefined;
     /** @type {string[]} Remaining positionals for sub-model */ _positionals: string[];
+    /**
+     * Generate help text with completion instructions.
+     * @returns {string} Help text
+     */
+    generateHelp(): string;
     /**
      * Main execution generator.
      * Routes to the correct execution mode based on parsed args.
@@ -98,6 +110,11 @@ export class App extends ModelAsApp {
      */
     _runModule(specifier: string, argv: string[]): AsyncGenerator<any, any, any>;
     /**
+     * Handle shell completion generation.
+     * @returns {AsyncGenerator<any, any, any>}
+     */
+    _handleCompletion(): AsyncGenerator<any, any, any>;
+    /**
      * Auto-detect entry from package.json and run it.
      * @returns {AsyncGenerator<any, any, any>}
      */
@@ -112,4 +129,7 @@ export class App extends ModelAsApp {
 }
 export default App;
 export type Intent = import("@nan0web/ui").Intent;
+export type AppOptionsWithName = import("@nan0web/ui").ModelAsAppOptions & {
+    appName?: string;
+};
 import { ModelAsApp } from './ModelAsApp.js';

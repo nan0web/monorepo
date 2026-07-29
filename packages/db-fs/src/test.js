@@ -25,6 +25,9 @@ export class DBFS extends DBFSBase {
 export default class TestDir {
 	constructor(root) {
 		this.root = join(os.tmpdir(), 'nan0web-db-fs-' + root)
+		if (!existsSync(this.root)) {
+			mkdirSync(this.root, { recursive: true })
+		}
 	}
 	erase() {
 		const resolvedDir = resolve(this.root)

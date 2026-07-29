@@ -27,6 +27,16 @@ export default class CLiInputAdapter extends BaseInputAdapter {
     get t(): Function;
     /** @returns {NodeJS.WriteStream} */
     get stdout(): NodeJS.WriteStream;
+    /**
+     * Overwrite the current terminal line.
+     * @param {string} [str=""]
+     */
+    overwriteLine(str?: string): void;
+    /**
+     * Move the terminal cursor up by rows.
+     * @param {number} [rows=1]
+     */
+    cursorUp(rows?: number): void;
     set json(val: any);
     get json(): any;
     _json: any;
@@ -197,6 +207,23 @@ export default class CLiInputAdapter extends BaseInputAdapter {
         onChange?: Function | undefined;
     }): Promise<AskResponse>;
     /**
+     * Prompt the user for an autocomplete selection rendered as a beautiful table.
+     *
+     * @param {Object} config - Configuration object.
+     * @param {string} config.title - Prompt title.
+     * @param {Array<Object>} config.options - List of choices with key-value data matching columns.
+     * @param {Array<{key: string, label: string}>} config.columns - Column headers metadata.
+     * @returns {Promise<AskResponse>} Selected option.
+     */
+    requestTableSelect(config: {
+        title: string;
+        options: Array<any>;
+        columns: Array<{
+            key: string;
+            label: string;
+        }>;
+    }): Promise<AskResponse>;
+    /**
      * Request a date or time from the user.
      * @param {Object} config
      * @returns {Promise<AskResponse>}
@@ -210,7 +237,14 @@ export default class CLiInputAdapter extends BaseInputAdapter {
      */
     askIntent(intent: import("@nan0web/ui/core").Intent): Promise<AskResponse>;
     /**
-     * Handle OLMUI Log / Show intents.
+     * Handle OLMUI Show intents.
+     *
+     * @param {import('@nan0web/ui/core').Intent} intent
+     * @returns {Promise<void>}
+     */
+    showIntent(intent: import("@nan0web/ui/core").Intent): Promise<void>;
+    /**
+     * Handle OLMUI Log intents.
      *
      * @param {import('@nan0web/ui/core').Intent} intent
      * @returns {Promise<void>}

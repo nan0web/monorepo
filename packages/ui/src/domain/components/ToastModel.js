@@ -3,6 +3,7 @@ import { show, result } from '../../core/Intent.js'
 
 /**
  * Model-as-Schema for Toast notification.
+ * @extends {Model}
  */
 export class ToastModel extends Model {
 	static $id = '@nan0web/ui/ToastModel'

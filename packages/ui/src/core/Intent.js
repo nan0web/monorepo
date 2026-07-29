@@ -242,19 +242,16 @@ export function validateIntent(intent) {
 /**
  * Create an ask intent.
  *
- * Two modes:
- *   ask('amount', { help: 'Enter amount', type: 'number' })  → single field
- *   ask('transfer', TransferMoneyModel)                       → full Model form
- *
  * @param {string} field - Field name or form name.
  * @param {object | Function} schema - Field descriptor or Model-as-Schema class.
+ * @param {object} [options={}] - Custom options overrides.
  * @returns {AskIntent}
  */
-export function ask(field, schema) {
+export function ask(field, schema, options = {}) {
 	if (isModelSchema(schema)) {
-		return { type: 'ask', field, schema, model: true }
+		return { type: 'ask', field, schema, model: true, ...options }
 	}
-	return { type: 'ask', field, schema }
+	return { type: 'ask', field, schema, ...options }
 }
 
 /**
@@ -267,6 +264,7 @@ export function ask(field, schema) {
  * @property {number} [columns] - Number of columns (terminal width).
  * @property {boolean} [forceOneLine] - Prevent wrapping and truncate instead.
  * @property {boolean|'success'|'error'} [stop] - Set to true to stop, or 'success'/'error' to stop with a status icon (for spinners).
+ * @property {'spinner'} [type] - Progress indicator type (e.g., 'spinner').
  */
 
 /**

@@ -19,6 +19,7 @@
     "test": "node --test --test-timeout=9999 \"src/**/*.test.js\"",
     "test1": "node --test \"src/**/*.test.js\" | nan0test parse --fail",
     "test:docs": "node --test 'src/docs/**/*.md.js'",
+    "test:releases": "node --test \"src/test/releases/**/*.test.js\"",
     "test:release": "node --test \"releases/**/*.test.js\"",
     "release:spec": "node --test \"releases/**/*.spec.js\"",
     "release:verify": "node --test \"src/test/releases/**/*.test.js\"",

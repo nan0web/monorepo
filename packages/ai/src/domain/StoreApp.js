@@ -90,7 +90,7 @@ class StoreList extends ModelAsApp {
 			const csv = [
 				headers.join(','),
 				...allRows.map((r) =>
-					headers.map((h) => `"${String(r[h] || '').replace(/"/g, '""')}"`).join(','),
+					headers.map((h) => `"${String(r[h] || '').replace(/"/g, '""')}"`).join(',')
 				),
 			].join('\n')
 			if (this.raw) {

@@ -4,9 +4,9 @@ A tiny, zero‑dependency i18n helper for Java•Script projects.
 It provides a default English dictionary and a simple `createT` factory to
 generate translation functions for any language.
 
-|
-|
-|
+|Package name|[Status](https://github.com/nan0web/monorepo/blob/main/system.md#написання-сценаріїв)|Documentation|Test coverage|Features|Npm version|
+|---|---|---|---|---|---|
+|[@nan0web/i18n](https://github.com/nan0web/i18n/) |🟢 `100%` |🧪 [English 🏴󠁧󠁢󠁥󠁮󠁧󠁿](https://github.com/nan0web/i18n/blob/main/README.md)<br />[Українською 🇺🇦](https://github.com/nan0web/i18n/blob/main/docs/uk/README.md) |- |✅ d.ts 📜 system.md 🛡️ i18n inspect |1.5.0 |
 
 ## Installation
 

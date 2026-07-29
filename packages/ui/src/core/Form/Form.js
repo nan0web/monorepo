@@ -240,7 +240,7 @@ export default class UIForm extends FormMessage {
 		return {
 			id: this.id,
 			type: this.type,
-			time: new Date(this.time).toISOString(),
+			time: new Date(/** @type {any} */ (this).time).toISOString(),
 			title: this.title,
 			fields: this.fields.map((f) => (f.toJSON ? f.toJSON() : f)),
 			state: this.state,

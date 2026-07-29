@@ -27,10 +27,10 @@ export default class MDElement extends ContainerObject {
     static processInline(text: string, format?: string): string;
     /**
      * Create an element from a props object or string.
-     * @param {MDElement | object | string} input
+     * @param {MDElement | object | string} [input]
      * @returns {MDElement}
      */
-    static from(input: MDElement | object | string): MDElement;
+    static from(input?: MDElement | object | string): MDElement;
     /**
      * @param {MDElementProps} props
      */

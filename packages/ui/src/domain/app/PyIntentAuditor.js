@@ -36,7 +36,7 @@ export class PyIntentAuditor extends AuditorModel {
 		const targetDir = fsDb.resolveSync(/** @type {any} */ (this).dir)
 
 		try {
-			for await (const entry of fsDb.browse(targetDir, { depth: Infinity })) {
+			for await (const entry of fsDb.browse(targetDir, { depth: Infinity, ignore: PyIntentAuditor.IGNORE_DIRS })) {
 				if (PyIntentAuditor.isIgnored(entry.name)) continue
 				
 				if (

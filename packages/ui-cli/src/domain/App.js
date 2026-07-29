@@ -3,6 +3,7 @@ import { ModelAsApp } from './ModelAsApp.js'
 import { Data } from '@nan0web/db'
 
 /** @typedef {import('@nan0web/ui').Intent} Intent */
+/** @typedef {import('@nan0web/ui').ModelAsAppOptions & { appName?: string }} AppOptionsWithName */
 
 /**
  * App — NaN•Web CLI Runner (Model-as-App v2).
@@ -28,6 +29,7 @@ export class App extends ModelAsApp {
 			'{cmd} @nan0web/store           — run a workspace package',
 			'{cmd} https://api.example.com  — connect to remote OLMUI',
 			'{cmd} --blueprint              — scaffold a new project',
+			'{cmd} --completion zsh        — generate shell completion',
 		],
 		noEntry:
 			'No CLI entry point found.\nAdd "exports": { "./ui/cli": "./src/domain/App.js" } to package.json\nOR "nan0web.cli.entry" to package.json',
@@ -82,9 +84,15 @@ export class App extends ModelAsApp {
 		default: false,
 	}
 
+	static completion = {
+		type: 'string',
+		help: 'Generate shell completion script (zsh|bash)',
+		default: undefined,
+	}
+
 	/**
 	 * @param {Partial<App>} [data]
-	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
+	 * @param {Partial<AppOptionsWithName>} [options]
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
@@ -95,6 +103,7 @@ export class App extends ModelAsApp {
 		/** @type {string | undefined} Working directory override */ this.cwd
 		/** @type {boolean} Blueprint mode */ this.blueprint
 		/** @type {boolean} Help mode */ this.help
+		/** @type {string | undefined} Completion script type */ this.completion
 		/** @type {string[]} Remaining positionals for sub-model */ this._positionals
 	}
 
@@ -102,6 +111,60 @@ export class App extends ModelAsApp {
 		docs: './ReadmeMd.js',
 		app: './App.js',
 		config: '@nan0web/ui/src/domain/app/ConfigApp.js'
+	}
+
+	/**
+	 * Generate help text with completion instructions.
+	 * @returns {string} Help text
+	 */
+	generateHelp() {
+		const baseHelp = super.generateHelp?.() || ''
+		const t = this._.t || ((k) => k)
+		/** @type {import('@nan0web/ui').ModelAsAppOptions & { appName?: string }} */
+		const internal = this._
+		const appName = internal.appName || 'nan0cli'
+		
+		// Return help as markdown string for OLMUI rendering
+		return `🏗️ NaN•Web CLI Help
+
+🌐 NaN•Web CLI
+Universal runner for OLMUI applications.
+
+## Usage:
+
+\`\`\`bash
+ [target] [options]
+./src/MyApp.js            — run a local Model-as-App
+@nan0web/store           — run a workspace package
+https://api.example.com  — connect to remote OLMUI
+--blueprint              — scaffold a new project
+--completion zsh         — generate shell completion
+\`\`\`
+
+## Arguments:
+
+\`\`\`bash
+target   - Target path, URL, or package. E.g.: ./src/App.js | @nan0web/ui/inspect | https://app.example.com/run
+\`\`\`
+
+## Options:
+
+\`\`\`bash
+--blueprint    - Bootstrap a new NaN•Web project interactively [false]
+--completion   - Generate shell completion script (zsh|bash)
+--cwd          - Working directory for DB resolution (defaults to process.cwd())
+-d, --debug        - Enable debug output [false]
+--help         - Show help text
+--locale       - Override locale (e.g. uk, en)
+--raw          - Raw output (no UI decorations) [false]
+--test         - Exit with code 1 on error result (CI mode) [false]
+\`\`\`
+
+💡 Shell Completion:
+  ${appName} --completion zsh   # Generate zsh completion
+  ${appName} --completion bash   # Generate bash completion
+  source <(${appName} --completion zsh)  # Load in zsh
+  source <(${appName} --completion bash)  # Load in bash`
 	}
 
 	/**
@@ -116,7 +179,15 @@ export class App extends ModelAsApp {
 
 		// ── Help mode ─────────────────────────────────────────────────────────
 		if (this.help) {
-			yield show(this.generateHelp())
+			// Use standard OLMUI help rendering via ask intent
+			const content = this.generateHelp()
+			yield ask('help', { content, title: 'NaN•Web CLI Help', hint: 'content-viewer' })
+			return result({})
+		}
+
+		// ── Completion mode ──────────────────────────────────────────────────
+		if (this.completion) {
+			yield* this._handleCompletion()
 			return result({})
 		}
 
@@ -388,6 +459,27 @@ export class App extends ModelAsApp {
 
 		yield* this._runModel(AppModel, argv)
 		return result({})
+	}
+
+	/**
+	 * Handle shell completion generation.
+	 * @returns {AsyncGenerator<any, any, any>}
+	 */
+	async *_handleCompletion() {
+		const CompletionGenerator = (await import('../ui/core/CompletionGenerator.js')).default
+		/** @type {import('@nan0web/ui').ModelAsAppOptions & { appName?: string }} */
+		const internal = this._
+		const appName = internal.appName || 'nan0cli'
+		
+		// Extract command structure from this App class
+		const commandStructure = CompletionGenerator.extractCommandStructure(this.constructor)
+		
+		// Generate completion script
+		const shellType = this.completion === 'zsh' ? 'zsh' : 'bash'
+		const completionScript = CompletionGenerator.generateCompletionScript(shellType, commandStructure, appName)
+		
+		// Output the completion script
+		yield { type: 'output', content: completionScript }
 	}
 
 	/**

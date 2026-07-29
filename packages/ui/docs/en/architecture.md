@@ -56,3 +56,22 @@ This is the schema "dictionary" (see [architecture-models.md](./architecture-mod
 This layer was the primary focus of **v1.11.0**. 
 - `SnapshotAuditor` and `verifySnapshot` provide "Zero-Hallucination" guarantees, ensuring intents produced by models contain no artifacts like `NaN` or `undefined`. 
 - `SandboxModel` serves as a container to isolate UI domain components for localized visual Playwright testing.
+
+---
+
+## 📥 Unified Result Contract (`result()`)
+
+Every Domain Model or Auditor, upon completing its execution cycle, returns a final result intent using the `result(data)` helper. To ensure consistency and pipeline reliability across the NaN•Web platform, the return payload is standardized with the following required properties:
+
+1.  **`ok: boolean`**: The primary execution status indicator (analogous to native Fetch `Response.ok`). This completely replaces the legacy `success` property.
+2.  **`code: number`**: A standard HTTP-like status code:
+    -   `200` — Successful execution with no issues.
+    -   `400` — Validation/audit failure (business rule violations, styling/lint errors).
+    -   `404` — Missing targets or files.
+    -   `500` — Critical system or database crash.
+3.  **Backward Compatibility**: All tools and orchestrator models (such as `ArchitectureAuditor`) must verify results by supporting both the modern `ok` parameter and fallback legacy `success` property:
+    ```javascript
+    const isOk = data.ok !== undefined ? data.ok : data.success
+    if (isOk === false) overallSuccess = false
+    ```
+

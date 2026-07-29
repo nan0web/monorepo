@@ -1,6 +1,5 @@
 import CLiInputAdapter from './ui/core/InputAdapter.js'
 import OutputAdapter from './ui/core/OutputAdapter.js'
-import { CancelError } from '@nan0web/ui/core'
 import CLI from './ui/CLI.js'
 import CommandParser from './ui/core/CommandParser.js'
 import CommandHelp from './ui/core/CommandHelp.js'
@@ -11,11 +10,9 @@ import IntentDispatcher from './ui/core/IntentDispatcher.js'
 import { ask } from './ui/impl/input.js'
 import { runGenerator, runApp } from './ui/core/GeneratorRunner.js'
 export { bootstrapApp } from './ui/bootstrapApp.js'
-import { resolvePositionalArgs } from '@nan0web/ui'
 import { modelFromArgv } from './ui/core/modelFromArgv.js'
 import { ModelAsApp } from './domain/ModelAsApp.js'
 export { App } from './domain/App.js'
-export { show, result, render, agent } from '@nan0web/ui'
 
 // Universal Blocks
 import { Layout } from './ui/BlockRenderers/Layout.js'
@@ -82,16 +79,16 @@ export { toggle } from './ui/impl/toggle.js'
 export { slider } from './ui/impl/slider.js'
 export { sortable } from './ui/impl/sortable.js'
 
+export { show, result, render, agent, resolvePositionalArgs, CancelError } from '@nan0web/ui'
+
 // Public V2 API
 export {
 	// Core
 	ask,
 	runGenerator,
 	runApp,
-	resolvePositionalArgs,
 	modelFromArgv,
 	CLiInputAdapter,
-	CancelError,
 	Layout,
 	Control,
 	ModelAsApp,

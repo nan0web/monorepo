@@ -6,7 +6,7 @@ export class JsExportAuditor extends ExportAuditor {
      * @param {Function} dirExists
      * @param {Function} readText
      */
-    checkPlatformExports(errors: import("../ExportAuditor.js").ExportError[], t: import("@nan0web/i18n").TFunction, fileExists: Function, dirExists: Function, readText: Function): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ProgressIntent | import("@nan0web/ui/src/core/Intent.js").ShowIntent, {
+    checkPlatformExports(errors: import("../ExportAuditor.js").ExportError[], t: import("@nan0web/i18n").TFunction, fileExists: Function, dirExists: Function, readText: Function): AsyncGenerator<import("../../../../../ui/types/core/Intent.js").ProgressIntent | import("../../../../../ui/types/core/Intent.js").ShowIntent, {
         exports: {
             missing: string[];
             defaultExports: string[];

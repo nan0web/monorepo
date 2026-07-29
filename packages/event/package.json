@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/event",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Agnostic extendable Event System",
   "type": "module",
   "main": "./src/index.js",
@@ -43,7 +43,7 @@
     "package.json"
   ],
   "scripts": {
-    "prebuild": "rm -rf types/",
+    "prebuild": "rm -rf types/ && rm -f tsconfig.tsbuildinfo",
     "build": "tsc",
     "test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=src/**/*.js",

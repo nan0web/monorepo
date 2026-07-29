@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui-react",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "React UI components for nan0web with SSG and SSR support",
   "main": "./src/index.jsx",
   "types": "./types/index.d.ts",
@@ -53,6 +53,7 @@
     "@nan0web/db": "workspace:*",
     "@nan0web/db-browser": "workspace:*",
     "@nan0web/ui": "workspace:*",
+    "@nan0web/ui-web": "workspace:*",
     "marked": "^15.0.0",
     "prop-types": "^15.8.1",
     "react-icons": "^5.4.0"

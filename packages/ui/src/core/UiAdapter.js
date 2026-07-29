@@ -1,4 +1,4 @@
-import EventProcessor from '@nan0web/event/oop'
+import BaseEvent from '@nan0web/event/oop'
 import CancelError from './Error/CancelError.js'
 import UIMessage from './Message/Message.js'
 import UIForm from './Form/Form.js'
@@ -11,7 +11,7 @@ import OutputMessage from './Message/OutputMessage.js'
  * It manages user interactions and rendering of messages, forms, and progress.
  *
  * @class UiAdapter
- * @extends EventProcessor
+ * @extends BaseEvent
  *
  * @example
  * const adapter = new UiAdapter()
@@ -20,7 +20,7 @@ import OutputMessage from './Message/OutputMessage.js'
  * const result = await adapter.requireInput(new LoginMessage())
  * console.log(result) // { username: "user", password: "pass" }
  */
-export default class UiAdapter extends EventProcessor {
+export default class UiAdapter extends BaseEvent {
 	static CancelError = CancelError
 	/** @returns {typeof CancelError} */
 	get CancelError() {

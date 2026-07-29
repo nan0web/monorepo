@@ -1,7 +1,7 @@
 ---
 version: 1.5.0
 type: feature
-status: active
+status: completed
 locale: en
 models: []
 ---
@@ -11,9 +11,11 @@ models: []
 [Українська версія](./task.md)
 
 ## 🏁 Overview
+
 Source file indexing (`src/**/*.{js,jsx,ts,tsx}`) does not return relevant results when searching via `nan0ai search -s source`. Additionally, there is no command to list the actual **files** that have been indexed, filtered by scope.
 
 **Root causes:**
+
 1. `MarkdownIndexer.scanRecursive()` — the `isSource` regexp did not include `.jsx` and `.tsx` extensions.
 2. `MarkdownIndexer.scanRecursive()` — the `inTypesFolder` logic was too strict (root-only), causing "indexing distortion" in monorepos.
 3. `ListIndexIntent` and `ShowIndexIntent` did not support DB dependency injection, making them untestable.
@@ -26,6 +28,7 @@ Source file indexing (`src/**/*.{js,jsx,ts,tsx}`) does not return relevant resul
 2. **As a developer**, when running `nan0ai ls -p ui -s source`, I want to see a list of **files** only for the `source` scope and packages matching `*ui*`, to understand what has been indexed.
 
 ## 🎯 Scope
+
 - [x] Extend `isSource` regexp in `MarkdownIndexer.scanRecursive()` to support `.jsx` and `.tsx` extensions
 - [x] Fix "indexing distortion" in monorepos (flexible `src`/`types` folder detection)
 - [x] Ensure Intent testability via `db` injection
@@ -35,6 +38,7 @@ Source file indexing (`src/**/*.{js,jsx,ts,tsx}`) does not return relevant resul
 - [x] Register `ListIndexIntent` in `AiAppModel`
 
 ## ✅ Acceptance Criteria (DoD)
+
 - [x] **Contract tests** (`task.spec.js`) written and passing (Green).
 - [x] **MarkdownIndexer** scans `.js`, `.jsx`, `.ts`, `.tsx` files in `source` scope.
 - [x] **ShowIndexIntent** supports `--scope` / `-s` parameter for filtering index metadata.

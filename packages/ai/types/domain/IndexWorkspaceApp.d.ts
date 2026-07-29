@@ -87,9 +87,9 @@ export class IndexWorkspaceApp extends ModelAsApp {
     };
     /**
      * @param {Partial<IndexWorkspaceApp> | Record<string, any>} [data] Initial state
-     * @param {import('@nan0web/types').ModelOptions} [options] Model options
+     * @param {any} [options] Model options
      */
-    constructor(data?: Partial<IndexWorkspaceApp> | Record<string, any>, options?: import("@nan0web/types").ModelOptions);
+    constructor(data?: Partial<IndexWorkspaceApp> | Record<string, any>, options?: any);
     /** @type {string|null} Project id */ project: string | null;
     /** @type {string|null} Scope target */ scope: string | null;
     /** @type {boolean} Shortcut for source scope */ sources: boolean;
@@ -103,28 +103,26 @@ export class IndexWorkspaceApp extends ModelAsApp {
     /** @type {boolean} */ silent: boolean;
     /** @type {string[]} */ ignore: string[];
     /**
-     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}
      */
-    run(): AsyncGenerator<import("@nan0web/ui").Intent, void, unknown>;
+    run(): AsyncGenerator<import("@nan0web/ui").Intent, any, any>;
     /**
      * @param {object} [deps]
-     * @param {typeof import('./MarkdownIndexer.js').MarkdownIndexer} [deps.MarkdownIndexer]
-     * @param {typeof import('./Embedder.js').Embedder} [deps.Embedder]
+     * @param {any} [deps.MarkdownIndexer]
+     * @param {any} [deps.Embedder]
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
      */
-    indexFull({ MarkdownIndexer, Embedder }?: {
-        MarkdownIndexer?: typeof import("./MarkdownIndexer.js").MarkdownIndexer;
-        Embedder?: typeof import("./Embedder.js").Embedder;
+    indexFull(deps?: {
+        MarkdownIndexer?: any;
+        Embedder?: any;
     }): AsyncGenerator<import("@nan0web/ui").Intent, void, unknown>;
     /**
      * Shared event handler for indexing progress events
      * @param {any} it - indexing event
-     * @param {object} deps
-     * @param {TFunction} deps.t
-     * @param {IndexState} state
-     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
+     * @param {any} stateOrDeps
+     * @returns {Generator<import('@nan0web/ui').Intent, void, unknown>}
      */
-    _handleEvent(it: any, stateOrDeps: any): AsyncGenerator<import("@nan0web/ui").Intent, void, unknown>;
+    _handleEvent(it: any, stateOrDeps: any): Generator<import("@nan0web/ui").Intent, void, unknown>;
     /**
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
      */

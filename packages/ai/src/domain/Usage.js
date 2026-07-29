@@ -64,7 +64,7 @@ export class Usage extends Model {
 		super(data, options)
 		/** @type {number} Prompt token count */ this.inputTokens = Number(this.inputTokens)
 		/** @type {number} Internal thought tokens */ this.reasoningTokens = Number(
-			this.reasoningTokens,
+			this.reasoningTokens
 		)
 		/** @type {number} Completion token count */ this.outputTokens = Number(this.outputTokens)
 		/** @type {number} Cached tokens used */ this.cachedInputTokens = Number(this.cachedInputTokens)

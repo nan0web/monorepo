@@ -12,6 +12,12 @@ const EXCLUDE_DIRS = [
 	'target',
 	'vendor',
 	'.cache',
+	'test',
+	'tests',
+	'play',
+	'types',
+	'examples',
+	'scripts',
 ]
 
 /**
@@ -59,7 +65,7 @@ export class I18nInspector extends AuditorModel {
 			try {
 				// We use depth: 0 to prevent internal recursion in db.readDir
 				// and handle it manually to skip excluded directories effectively.
-				for await (const entry of db.readDir(dir, { depth: 0 })) {
+				for await (const entry of db.readDir(dir, { depth: 0, includeDirs: true })) {
 					const entryName = entry.name
 					if (!entryName || entryName.startsWith('.') || EXCLUDE_DIRS.includes(entryName)) {
 						continue
@@ -71,7 +77,7 @@ export class I18nInspector extends AuditorModel {
 
 					if (isDir) {
 						await collect(fullPath)
-					} else if (/\.(js|ts|jsx|tsx)$/.test(entryName) && !entryName.endsWith('.test.js')) {
+					} else if (/\.(js|ts|jsx|tsx)$/.test(entryName) && !entryName.includes('.test.')) {
 						allFiles.push(fullPath)
 					}
 				}
@@ -84,7 +90,7 @@ export class I18nInspector extends AuditorModel {
 		yield progress(t(I18nInspector.UI.scanning, { dir: `${absDir} (${allFiles.length} files)` }))
 
 		// Load vocabulary
-		const vocabPath = `@app/data/${locale}/index.nan0`
+		const vocabPath = `${absDir}/data/${locale}/_/t`
 		const vocabDoc = await db.loadDocument(vocabPath).catch(() => null)
 		const vocabulary =
 			vocabDoc && typeof vocabDoc === 'object' ? vocabDoc.value || vocabDoc.content || vocabDoc : {}
@@ -106,7 +112,8 @@ export class I18nInspector extends AuditorModel {
 				typeof doc === 'object' && doc ? doc.content || doc.value || '' : String(doc || '')
 
 			if (typeof content === 'string') {
-				const keys = extract(content)
+				const isModelFile = file.includes('/domain/') || file.endsWith('Model.js')
+				const keys = extract(content, { onlyCalls: !isModelFile })
 				for (const key of keys) {
 					if (!vocabKeys.has(key)) {
 						missingCount++

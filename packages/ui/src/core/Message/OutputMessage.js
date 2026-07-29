@@ -116,7 +116,7 @@ export default class OutputMessage extends UiMessage {
 			meta: this.meta,
 			type: this.type,
 			id: this.id,
-			time: this.time.toISOString(),
+			time: /** @type {any} */ (this).time.toISOString(),
 			error: this.error
 				? {
 						message: this.error.message,

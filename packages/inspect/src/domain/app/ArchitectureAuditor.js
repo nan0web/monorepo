@@ -176,6 +176,13 @@ class ArchitectureAuditor extends AuditorModel {
 		for (const config of auditorsConfig) {
 			const { _, ...data } = this
 			const auditor = new config.Class({ ...data, dir: config.subDir }, _)
+			
+			if (await auditor.isCapped()) {
+				yield show(`[Step-Capped Validation] skipping auditor ${config.key} (capped by active session step)`, 'info')
+				scores[config.key] = { ok: true, skipped: true }
+				continue
+			}
+
 			const gen = auditor.run()
 			try {
 				let lastStep = null
@@ -199,10 +206,11 @@ class ArchitectureAuditor extends AuditorModel {
 						}
 						lastStep = value
 						if (value?.type === 'progress') {
-							const title = `[${config.key}] ${String(value.props?.title || '').replace(/\.+$/, '')}`
+							const msg = value.message || ''
+							const title = `[${config.key}] ${String(msg).replace(/\.+$/, '')}`
 							if (title === lastProgress) continue
 							lastProgress = title
-							if (value.props) value.props.title = title
+							value.message = title
 						}
 						yield value
 					} finally {
@@ -210,9 +218,10 @@ class ArchitectureAuditor extends AuditorModel {
 					}
 				}
 
-				const data = resValue?.data || resValue || { success: true }
+				const data = resValue?.data || resValue || { ok: true }
 				scores[config.key] = data
-				if (data.success === false) overallSuccess = false
+				const isOk = data.ok !== undefined ? data.ok : data.success
+				if (isOk === false) overallSuccess = false
 
 				// Ensure progress is cleared after each auditor
 				if (lastStep?.type === 'progress') {
@@ -225,7 +234,7 @@ class ArchitectureAuditor extends AuditorModel {
 					children: error.message,
 					variant: 'error',
 				})
-				scores[config.key] = { success: false, crashed: true, error: error.message }
+				scores[config.key] = { ok: false, crashed: true, error: error.message }
 				overallSuccess = false
 				yield progress('')
 			}
@@ -233,7 +242,7 @@ class ArchitectureAuditor extends AuditorModel {
 
 		// Build Summary Table
 		const totalCount = Object.keys(scores).length
-		const passedCount = Object.values(scores).filter((s) => s.success).length
+		const passedCount = Object.values(scores).filter((s) => s.ok !== undefined ? s.ok : s.success).length
 		const pct = totalCount > 0 ? Math.round((passedCount / totalCount) * 100) : 100
 
 		const allErrors = Object.entries(scores).flatMap(([key, s]) =>
@@ -243,7 +252,7 @@ class ArchitectureAuditor extends AuditorModel {
 		if (!overallSuccess) {
 			yield progress(t(ArchitectureAuditor.UI.writing_report))
 			const failedAuditors = Object.entries(scores)
-				.filter(([_, s]) => !s.success)
+				.filter(([_, s]) => !(s.ok !== undefined ? s.ok : s.success))
 				.map(([key]) => key)
 			const healCmds = failedAuditors.map((key) => `nan0inspect ${key} --fix`)
 
@@ -348,9 +357,10 @@ class ArchitectureAuditor extends AuditorModel {
 		}
 
 		const summaryRows = auditorsConfig.map((config) => {
-			const score = scores[config.key] || { success: false }
-			const status = score.success ? 'OK' : 'FAIL'
-			const details = score.crashed ? 'Crashed' : score.success ? 'Done' : 'Issues found'
+			const score = scores[config.key] || { ok: false }
+			const isOk = score.ok !== undefined ? score.ok : score.success
+			const status = isOk ? 'OK' : 'FAIL'
+			const details = score.crashed ? 'Crashed' : isOk ? 'Done' : 'Issues found'
 			return `| ${config.title} | ${status} | ${details} |`
 		})
 
@@ -362,10 +372,11 @@ class ArchitectureAuditor extends AuditorModel {
 			...summaryRows,
 		].join('\n')
 
-		yield progress(t(ArchitectureAuditor.UI.done))
-		yield show(summaryMd)
+		yield progress(t(ArchitectureAuditor.UI.done), 1, { stop: 'success' })
+		yield render('Markdown', { content: summaryMd })
 		return result(
 			{
+				ok: overallSuccess,
 				success: overallSuccess,
 				score: pct,
 				metrics: { passed: passedCount, total: totalCount, pct },

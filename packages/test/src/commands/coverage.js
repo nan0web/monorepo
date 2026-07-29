@@ -138,13 +138,13 @@ export default class CoverageCommand extends CLI {
 		yield new OutputMessage(cmd + ' ' + args.join(' ') + '\n'.repeat(7))
 
 		if (result.code !== 0) {
-			this.logger.error('❌ Coverage run failed with exit code:', result.code)
+			/** @type {any} */ (this).logger.error('❌ Coverage run failed with exit code:', result.code)
 			process.exit(result.code)
 		}
 
 		const map = this.extractCoverage(result.text)
 		if (!map.size) {
-			this.logger.warn('⚠️ No coverage report found in output.')
+			/** @type {any} */ (this).logger.warn('⚠️ No coverage report found in output.')
 		}
 		// Save to .coverage/test.json
 		await fs.saveDocument('.coverage/test.json', map)

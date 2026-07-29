@@ -8,6 +8,9 @@ export function bootstrapApp(AppModel?: typeof import("@nan0web/types").Model, c
     success: boolean;
     data: any;
     cancelled: boolean;
+} | {
+    success: boolean;
+    data: string;
 } | undefined>;
 export type BootstrapAppConfig = {
     /**

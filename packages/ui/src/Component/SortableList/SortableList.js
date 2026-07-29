@@ -89,6 +89,44 @@ class SortableList {
 	}
 
 	/**
+	 * Adds an item at the specified index.
+	 * If index is omitted or out of bounds, appends to the end.
+	 * @param {any} item
+	 * @param {number} [index]
+	 */
+	addItem(item, index) {
+		let targetIdx = typeof index === 'number' ? index : this.#items.length
+		if (targetIdx < 0 || targetIdx > this.#items.length) {
+			targetIdx = this.#items.length
+		}
+		this.#items.splice(targetIdx, 0, item)
+		this.#onChange?.(this.getItems())
+	}
+
+	/**
+	 * Removes the item at the specified index.
+	 * No-op if index is out of bounds.
+	 * @param {number} index
+	 */
+	removeItem(index) {
+		if (index < 0 || index >= this.#items.length) return
+		this.#items.splice(index, 1)
+		this.#onChange?.(this.getItems())
+	}
+
+	/**
+	 * Updates the item at the specified index.
+	 * No-op if index is out of bounds.
+	 * @param {number} index
+	 * @param {any} item
+	 */
+	updateItem(index, item) {
+		if (index < 0 || index >= this.#items.length) return
+		this.#items[index] = item
+		this.#onChange?.(this.getItems())
+	}
+
+	/**
 	 * Restores the initial order.
 	 */
 	reset() {

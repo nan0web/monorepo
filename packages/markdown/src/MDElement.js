@@ -264,10 +264,10 @@ export default class MDElement extends ContainerObject {
 
 	/**
 	 * Create an element from a props object or string.
-	 * @param {MDElement | object | string} input
+	 * @param {MDElement | object | string} [input]
 	 * @returns {MDElement}
 	 */
-	static from(input) {
+	static from(input = {}) {
 		if (input instanceof MDElement) return input
 		return new this(input)
 	}

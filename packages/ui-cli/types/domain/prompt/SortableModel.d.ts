@@ -34,6 +34,7 @@ export class SortableModel extends Model {
     /** @type {string} Grab instructions. */ UI_GRAB: string;
     /** @type {string} Confirm message. */ UI_CONFIRM: string;
     /** @type {Array<any>} Items to sort. */ items: Array<any>;
+    /** @type {Function} [selectFn] Selection function. */ selectFn: Function;
     /**
      * Map a predefined comma-separated answer to a sortable result.
      *

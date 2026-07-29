@@ -154,7 +154,7 @@ export class SearchSourcesIntent extends ModelAsApp {
 					if (r.file) {
 						const absPath = path.join(
 							/** @type {any} */ (this._).workspaceRoot || process.cwd(),
-							r.file,
+							r.file
 						)
 						const fullText = await fs.readFile(absPath, 'utf8')
 						const idx = fullText.indexOf(r.content)

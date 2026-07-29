@@ -13,9 +13,9 @@
  * Abstract input adapter for UI implementations.
  *
  * @class InputAdapter
- * @extends Event
+ * @extends BaseEvent
  */
-export class InputAdapter extends Event {
+export class InputAdapter extends BaseEvent {
     static CancelError: typeof CancelError;
     /** @returns {typeof CancelError} */
     get CancelError(): typeof CancelError;
@@ -86,5 +86,5 @@ export type AskOptions = {
     component?: string | undefined;
 };
 export type AskResponse = import("./index.js").AskResponse;
-import Event from '@nan0web/event/oop';
+import BaseEvent from '@nan0web/event/oop';
 import CancelError from './Error/CancelError.js';

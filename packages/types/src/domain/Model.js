@@ -56,6 +56,16 @@ export class Model {
 	}
 
 	/**
+	 * Create model instance from plain object or return as-is if already an instance.
+	 * @param {any} input
+	 * @returns {this}
+	 */
+	static from(input) {
+		if (input instanceof this) return input
+		return new this(input)
+	}
+
+	/**
 	 * Update instance data with alias resolution support.
 	 * @param {object} data
 	 * @returns {this}

@@ -96,7 +96,7 @@ export class ModelProvider {
     flatten(raw: any[], name: AvailableProvider): ModelInfo[];
     #private;
 }
-export type AvailableProvider = "cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq";
+export type AvailableProvider = "cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral";
 export type HuggingFaceProviderInfo = {
     provider: string;
     status: string;
@@ -109,7 +109,7 @@ export type HuggingFaceProviderInfo = {
     supports_structured_output: boolean;
     is_model_author: boolean;
 };
-/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq"} AvailableProvider */
+/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral"} AvailableProvider */
 /**
  * @typedef {Object} HuggingFaceProviderInfo
  * @property {string} provider

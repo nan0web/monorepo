@@ -1,5 +1,6 @@
 /**
  * Model-as-Schema for Toast notification.
+ * @extends {Model}
  */
 export class ToastModel extends Model {
     static $id: string;

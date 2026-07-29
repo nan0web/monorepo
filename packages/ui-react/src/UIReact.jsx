@@ -13,6 +13,7 @@ import Document from './models/Document.js'
 import Element from './Element.jsx'
 import { LogConsole } from '@nan0web/log'
 import { I18nDb } from '@nan0web/i18n'
+import { normalizeDocumentUrl } from '@nan0web/ui-web'
 
 /**
  * @param {Object} props
@@ -58,22 +59,8 @@ export default function UIReact({
 				setError(null)
 				console.log('UIReact: START LOADING DOCUMENT', uri)
 
-				// Improved URL normalization
-				let url = uri || 'index.json'
-				if (url === '/') url = 'index.json'
-
-				// Strip .html extension for data fetching
-				if (url.endsWith('.html')) {
-					url = url.slice(0, -5)
-				}
-
-				if (!url.includes('.')) {
-					const ext = (db.Directory?.DATA_EXTNAMES && db.Directory.DATA_EXTNAMES[0]) || '.json'
-					url = (url.endsWith('/') ? url + 'index' : url) + ext
-				}
-
-				// Strip leading slash so DB resolves relative to its root (e.g. "data/")
-				if (url.startsWith('/')) url = url.slice(1)
+				// Use shared web normalization logic
+				const url = normalizeDocumentUrl(uri, db)
 
 				console.debug('UIReact: normalized URL', url, 'for URI', uri)
 				console.log('UIReact: START LOADING DOCUMENT FROM URL:', url)

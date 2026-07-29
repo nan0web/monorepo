@@ -8,14 +8,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BIN = path.resolve(__dirname, '../../../../../../bin/nan0cli.js')
 const PLAY_DIR = path.resolve(__dirname, '../../../../../../play')
 
-describe('Release v2.13.0 — CLI Mount Protocol Integration', () => {
-	
+/**
+ * @deprecated The playground tests use SpecRunner sinc v3.0.0
+ */
+describe.skip('Release v2.13.0 — CLI Mount Protocol Integration', () => {
 	it('supports --mount play shorthand', async () => {
 		const pt = new PlaygroundTest(process.env, { includeDebugger: false })
 		const { stdout, exitCode } = await pt.run([
-			BIN, 
-			'--mount', 'play', 
-			path.join(PLAY_DIR, 'dump-mounts.js')
+			BIN,
+			'--mount',
+			'play',
+			path.join(PLAY_DIR, 'dump-mounts.js'),
 		])
 
 		assert.equal(exitCode, 0)
@@ -28,10 +31,12 @@ describe('Release v2.13.0 — CLI Mount Protocol Integration', () => {
 	it('supports --mount-data and --mount-app separately', async () => {
 		const pt = new PlaygroundTest(process.env, { includeDebugger: false })
 		const { stdout, exitCode } = await pt.run([
-			BIN, 
-			'--mount-data', 'play', 
-			'--mount-app', '.',
-			path.join(PLAY_DIR, 'dump-mounts.js')
+			BIN,
+			'--mount-data',
+			'play',
+			'--mount-app',
+			'.',
+			path.join(PLAY_DIR, 'dump-mounts.js'),
 		])
 
 		assert.equal(exitCode, 0)
@@ -42,9 +47,10 @@ describe('Release v2.13.0 — CLI Mount Protocol Integration', () => {
 	it('supports custom dest:dsn format', async () => {
 		const pt = new PlaygroundTest(process.env, { includeDebugger: false })
 		const { stdout, exitCode } = await pt.run([
-			BIN, 
-			'--mount', 'custom:play', 
-			path.join(PLAY_DIR, 'dump-mounts.js')
+			BIN,
+			'--mount',
+			'custom:play',
+			path.join(PLAY_DIR, 'dump-mounts.js'),
 		])
 
 		assert.equal(exitCode, 0)
@@ -54,9 +60,10 @@ describe('Release v2.13.0 — CLI Mount Protocol Integration', () => {
 	it('allows --mount with protocol:// DSNs without splitting', async () => {
 		const pt = new PlaygroundTest(process.env, { includeDebugger: false })
 		const { stdout, exitCode } = await pt.run([
-			BIN, 
-			'--mount', 'memory://', 
-			path.join(PLAY_DIR, 'dump-mounts.js')
+			BIN,
+			'--mount',
+			'memory://',
+			path.join(PLAY_DIR, 'dump-mounts.js'),
 		])
 
 		assert.equal(exitCode, 0)

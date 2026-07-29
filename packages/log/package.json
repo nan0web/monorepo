@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/log",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "A cross-platform Logger class that wraps console methods for both Node.js and browsers with consistent interface and streaming support.",
   "main": "src/index.js",
   "type": "module",

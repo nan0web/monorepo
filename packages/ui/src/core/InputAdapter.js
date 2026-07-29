@@ -1,4 +1,4 @@
-import Event from '@nan0web/event/oop'
+import BaseEvent from '@nan0web/event/oop'
 import CancelError from './Error/CancelError.js'
 
 /**
@@ -17,9 +17,9 @@ import CancelError from './Error/CancelError.js'
  * Abstract input adapter for UI implementations.
  *
  * @class InputAdapter
- * @extends Event
+ * @extends BaseEvent
  */
-export class InputAdapter extends Event {
+export class InputAdapter extends BaseEvent {
 	static CancelError = CancelError
 	/** @returns {typeof CancelError} */
 	get CancelError() {
@@ -51,8 +51,6 @@ export class InputAdapter extends Event {
 	isReady() {
 		return true
 	}
-
-
 
 	/**
 	 * Helper to ask a question.

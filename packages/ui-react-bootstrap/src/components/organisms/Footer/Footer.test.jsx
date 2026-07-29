@@ -5,9 +5,13 @@ import Footer from './Footer'
 import { useUI } from '@nan0web/ui-react'
 
 // Mock useUI
-vi.mock('@nan0web/ui-react', () => ({
-	useUI: vi.fn(),
-}))
+vi.mock('@nan0web/ui-react', async (importOriginal) => {
+	const actual = await importOriginal()
+	return {
+		...actual,
+		useUI: vi.fn(),
+	}
+})
 
 const mockSocial = {
 	facebook: 'https://fb.com',

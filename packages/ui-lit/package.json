@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui-lit",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Universal Web Components UI Kit on Lit — zero-dependency, data-driven, OLMUI-ready",
   "type": "module",
   "main": "packages/core/index.js",

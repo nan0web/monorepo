@@ -16,6 +16,12 @@
  */
 export class Model {
     /**
+     * Create model instance from plain object or return as-is if already an instance.
+     * @param {any} input
+     * @returns {this}
+     */
+    static from(input: any): this;
+    /**
      * @param {object | string} [data] Model's data (nan0, yaml, md-frontmatter, etc.)
      * @param {Partial<ModelOptions>} [options] Extended options `db`, `t`, `plugins`.
      */

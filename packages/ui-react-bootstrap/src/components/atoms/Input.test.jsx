@@ -1,13 +1,14 @@
 import { test, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import Input from './Input.jsx'
-import { useUI } from '../../index.jsx'
+
+const { mockUseUI } = vi.hoisted(() => ({
+	mockUseUI: vi.fn(() => ({ theme: { name: 'bootstrap' } })),
+}))
 
 // Mock useUI while preserving other exports
 vi.mock('../../index.jsx', async (importOriginal) => {
 	const actual = await importOriginal()
-	const mockUseUI = vi.fn()
-	mockUseUI.mockReturnValue({ theme: { name: 'bootstrap' } })
 	return {
 		...actual,
 		useUI: mockUseUI,
@@ -39,9 +40,7 @@ test('renders Textarea as Input', () => {
 })
 
 test('applies custom style in fallback mode', () => {
-	vi.doMock('@nan0web/ui-react', () => ({
-		useUI: () => ({ theme: { name: 'default' } }),
-	}))
+	mockUseUI.mockReturnValue({ theme: { name: 'default' } })
 	const customStyle = { border: '2px solid blue' }
 	render(<Input type="text" style={customStyle} />)
 	const input = screen.getByRole('textbox')

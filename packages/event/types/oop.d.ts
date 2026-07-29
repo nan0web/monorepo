@@ -10,7 +10,24 @@ export default class Event {
         emitter?: import("./types/index.js").EventBus | undefined;
     });
     emitter: import("./types/index.js").EventBus;
-    on(event: any, fn: any): void;
-    off(event: any, fn: any): void;
-    emit(event: any, data: any): Promise<import("./index.js").EventContext<any>>;
+    /**
+     * Listen to an event
+     * @param {string} event
+     * @param {import("./types/index.js").EventListener} fn
+     */
+    on(event: string, fn: import("./types/index.js").EventListener): void;
+    /**
+     * Unlisten to an event
+     * @param {string} event
+     * @param {import("./types/index.js").EventListener} fn
+     */
+    off(event: string, fn: import("./types/index.js").EventListener): void;
+    /**
+     * Emit an event
+     * @param {string} event
+     * @param {any} data
+     * @returns {Promise<EventContext>}
+     */
+    emit(event: string, data: any): Promise<EventContext<any>>;
 }
+import { EventContext } from './index.js';

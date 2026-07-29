@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"incremental": false,
 		"target": "esnext",
 		"module": "nodenext",
 		"lib": [
@@ -18,14 +19,7 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true,
-		"paths": {
-			"@nan0web/*": [
-				"../*/types",
-				"../*/types/index.d.ts",
-				"../*/types/index.js"
-			]
-		}
+		"checkJs": true
 	},
 	"include": [
 		"src/**/*"

@@ -49,6 +49,7 @@ export default class FormInput {
 		TOGGLE: 'toggle',
 		MULTISELECT: 'multiselect',
 		AUTOCOMPLETE: 'autocomplete',
+		SORTABLE: 'sortable',
 	}
 
 	/**

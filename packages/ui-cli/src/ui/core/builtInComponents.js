@@ -21,4 +21,5 @@ export const builtIns = {
 	Header: () => import('../view/DomainViews.js').then((m) => m.Header),
 	Footer: () => import('../view/DomainViews.js').then((m) => m.Footer),
 	Init: () => import('../prompt/Select.js').then((m) => m.Select),
+	Markdown: () => import('../view/Markdown.js').then((m) => m.Markdown),
 }

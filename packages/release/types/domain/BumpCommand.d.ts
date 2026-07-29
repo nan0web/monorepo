@@ -12,10 +12,16 @@ export default class BumpCommand extends ModelAsApp {
         default: string;
         positional: boolean;
     };
+    static dryRun: {
+        alias: string;
+        default: boolean;
+        help: string;
+    };
     static UI: {
         title: string;
         help: string;
         bumping: string;
+        skippingAlreadyAtVersion: string;
         foundChangedPackages: string;
         detectingChangedPackages: string;
         noChangesDetected: string;
@@ -28,5 +34,6 @@ export default class BumpCommand extends ModelAsApp {
     constructor(data?: Partial<BumpCommand>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
     /** @type {string} Target version */ version: string;
     /** @type {string} Since reference */ since: string;
+    /** @type {boolean} Dry run */ dryRun: boolean;
 }
 import { ModelAsApp } from '@nan0web/ui';

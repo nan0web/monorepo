@@ -21,4 +21,5 @@ export namespace builtIns {
     function Header(): Promise<typeof import("../view/DomainViews.js").Header>;
     function Footer(): Promise<typeof import("../view/DomainViews.js").Footer>;
     function Init(): Promise<typeof import("../prompt/Select.js").Select>;
+    function Markdown(): Promise<typeof import("../view/Markdown.js").Markdown>;
 }

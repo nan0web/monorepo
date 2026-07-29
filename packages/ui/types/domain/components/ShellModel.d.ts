@@ -2,7 +2,7 @@
  * ShellModel — OLMUI Component Model for CLI Orchestration
  * Canonical CLI entry that describes available operations as a schema.
  */
-export class ShellModel extends Model {
+export class ShellModel extends ModelAsApp {
     static $id: string;
     static command: {
         help: string;
@@ -34,7 +34,7 @@ export class ShellModel extends Model {
     static port: {
         help: string;
         type: string;
-        default: string;
+        default: null;
     };
     /**
      * @param {object} data
@@ -49,4 +49,4 @@ export class ShellModel extends Model {
     run(): AsyncGenerator<import("../../core/Intent.js").AskIntent | import("../../core/Intent.js").LogIntent, any, unknown>;
     #private;
 }
-import { Model } from '@nan0web/types';
+import { ModelAsApp } from '../ModelAsApp.js';

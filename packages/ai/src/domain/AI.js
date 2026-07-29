@@ -4,11 +4,8 @@ import { ModelInfo } from './ModelInfo.js'
 import { Usage } from './Usage.js'
 import { ModelError } from '@nan0web/types'
 import { AiStrategy } from './AiStrategy.js'
-import { exec } from 'node:child_process'
-import { promisify } from 'node:util'
+import { WhisperEngine } from './WhisperEngine.js'
 import path from 'node:path'
-
-const execAsync = promisify(exec)
 
 /** @typedef {"free" | "cheap" | "expensive"} AiStrategyFinance */
 /** @typedef {"low" | "mid" | "high"} AiStrategyVolume */
@@ -53,6 +50,9 @@ export class AI {
 
 	/** @type {Set<string>} */
 	#blacklistedModels = new Set()
+
+	/** @type {WhisperEngine?} */
+	#whisperEngine = null
 
 	/**
 	 * @param {Object} input
@@ -433,12 +433,16 @@ export class AI {
 			case 'google': {
 				const { createGoogleGenerativeAI } = await import('@ai-sdk/google')
 				return createGoogleGenerativeAI({
-					apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_API_KEY,
+					apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY,
 				})
 			}
 			case 'groq': {
 				const { createGroq } = await import('@ai-sdk/groq')
 				return createGroq({ apiKey: process.env.GROQ_API_KEY })
+			}
+			case 'mistral': {
+				const { createMistral } = await import('@ai-sdk/mistral')
+				return createMistral({ apiKey: process.env.MISTRAL_API_KEY })
 			}
 			default:
 				throw new ModelError({
@@ -476,6 +480,7 @@ export class AI {
 			tools,
 			maxSteps,
 			system,
+			allowSystemInMessages = true,
 		} = options
 
 		let currentModel = model
@@ -493,8 +498,10 @@ export class AI {
 					model: specific,
 					messages,
 					system,
+					allowSystemInMessages,
 					abortSignal,
 					tools,
+					maxRetries: 0,
 					// @ts-ignore
 					maxSteps: tools && Object.keys(tools).length > 0 ? maxSteps || 5 : undefined,
 					onChunk,
@@ -522,7 +529,7 @@ export class AI {
 
 				if (isRateLimit && attempts > 0) {
 					console.warn(
-						`\x1b[93m    ↻ Next Model: ${currentModel.id} (Rate limit 429, retry ${attempts})\x1b[0m`,
+						`\x1b[93m    ↻ Next Model: ${currentModel.id} (Rate limit 429, retry ${attempts})\x1b[0m`
 					)
 					attempts--
 					if (this.strategy.rateLimitDelayMs > 0) {
@@ -554,7 +561,7 @@ export class AI {
 					continue
 				}
 				console.warn(
-					`\x1b[93m    ↻ Next Model: ${currentModel.id} (Error: ${msg.split('\n')[0]})\x1b[0m`,
+					`\x1b[93m    ↻ Next Model: ${currentModel.id} (Error: ${msg.split('\n')[0]})\x1b[0m`
 				)
 				attempts = this.strategy.rateLimitRetries || 0
 			}
@@ -562,7 +569,7 @@ export class AI {
 	}
 
 	async generateText(model, messages, options = {}) {
-		const { tools, maxSteps, system } = options
+		const { tools, maxSteps, system, allowSystemInMessages = true } = options
 		let currentModel = model
 		let attempts = this.strategy.rateLimitRetries || 0
 		const triedModels = new Set()
@@ -576,7 +583,9 @@ export class AI {
 					model: provider(currentModel.id),
 					messages,
 					system,
+					allowSystemInMessages,
 					tools,
+					maxRetries: 0,
 					// @ts-ignore
 					maxSteps: tools && Object.keys(tools).length > 0 ? maxSteps || 5 : undefined,
 				})
@@ -598,7 +607,7 @@ export class AI {
 
 				if (isRateLimit && attempts > 0) {
 					console.warn(
-						`\x1b[93m    ↻ Next Model: ${currentModel.id} (Rate limit 429, retry ${attempts})\x1b[0m`,
+						`\x1b[93m    ↻ Next Model: ${currentModel.id} (Rate limit 429, retry ${attempts})\x1b[0m`
 					)
 					attempts--
 					if (this.strategy.rateLimitDelayMs > 0) {
@@ -630,7 +639,7 @@ export class AI {
 					continue
 				}
 				console.warn(
-					`\x1b[93m    ↻ Next Model: ${currentModel.id} (Error: ${msg.split('\n')[0]})\x1b[0m`,
+					`\x1b[93m    ↻ Next Model: ${currentModel.id} (Error: ${msg.split('\n')[0]})\x1b[0m`
 				)
 				attempts = this.strategy.rateLimitRetries || 0
 			}
@@ -668,39 +677,27 @@ export class AI {
 	 * @param {string} [options.outputDir] - Optional directory for temp files.
 	 * @returns {Promise<string>} Transcription text.
 	 */
+	/**
+	 * Transcribes audio file using best available local whisper backend.
+	 *
+	 * Supports multiple backends: mlx_whisper (Apple Silicon), openai-whisper
+	 * (CPU/GPU cross-platform), whisper-cli (whisper.cpp, CPU).
+	 *
+	 * Backend is auto-detected on first call and cached.
+	 * Returns file paths — caller reads the result file.
+	 *
+	 * @param {string} audioPath - Path to audio file on disk.
+	 * @param {Object} [options={}]
+	 * @param {string} [options.model='base'] - whisper model (tiny, base, small, medium, large, turbo)
+	 * @param {string} [options.language] - ISO-639-1 language code (omit for auto-detect)
+	 * @param {string} [options.format='txt'] - Output format: txt, srt, vtt, json, tsv
+	 * @param {string} [options.outputDir] - Directory for output files (defaults to audio dir)
+	 * @returns {Promise<{outputDir: string, baseName: string, format: string, filePaths: string[]}>}
+	 */
 	async transcribe(audioPath, options = {}) {
-		const { model = 'base', language = 'uk', outputDir = path.dirname(audioPath) } = options
-
-		const db = this._?.db
-		if (!db) {
-			throw new ModelError({
-				message: AI.UI.errorDbMissing,
-			})
+		if (!this.#whisperEngine) {
+			this.#whisperEngine = await WhisperEngine.detect(options)
 		}
-
-		if (!(await db.exists(audioPath))) {
-			throw new Error(`Audio file not found: ${audioPath}`)
-		}
-
-		// whisper CLI generates files with suffixes (.txt, .srt, .vtt)
-		// We use --output_dir to keep them together and --output_format txt
-		const baseName = path.basename(audioPath, path.extname(audioPath))
-		const cmd = `whisper "${audioPath}" --model ${model} --language ${language} --output_dir "${outputDir}" --output_format txt --verbose False`
-
-		try {
-			await execAsync(cmd)
-			const txtPath = path.join(outputDir, `${baseName}.txt`)
-
-			if (await db.exists(txtPath)) {
-				const content = (await db.loadDocument(txtPath, { raw: true })) || ''
-				// Cleanup temp txt file generated by whisper
-				await db.delete(txtPath)
-				return String(content).trim()
-			}
-
-			throw new Error(`Whisper failed to generate output at ${txtPath}`)
-		} catch (err) {
-			throw new Error(`Local whisper error: ${err.message}`)
-		}
+		return this.#whisperEngine.transcribe(audioPath, options)
 	}
 }

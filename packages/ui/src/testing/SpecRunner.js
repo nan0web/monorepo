@@ -37,18 +37,18 @@ export class SpecRunner extends ModelAsApp {
 
 	/**
 	 * Convenience method to load a .nan0 file and run a specific scenario.
-	 * 
+	 *
 	 * 💡 Note on Expectations:
-	 * You do NOT need to write manual assertions when using this method. 
+	 * You do NOT need to write manual assertions when using this method.
 	 * The `for await (const _ of runner.run()) {}` loop drives the generator,
 	 * but ALL assertions are handled automatically inside `SpecAdapter.js`.
-	 * 
+	 *
 	 * Whenever the App yields an intent (`ask`, `show`, `result`), `SpecAdapter`
 	 * intercepts it and compares it strictly against the next step in the `.nan0` file.
 	 * - If it matches, the test continues (and `$value` is injected back into the App).
 	 * - If it mismatches, it throws an `assert.fail()` which fails the Node.js test immediately.
 	 * - If the App finishes early, it throws an `unhandledSteps` error.
-	 * 
+	 *
 	 * @param {string} fileDir The directory containing the file (e.g., import.meta.dirname)
 	 * @param {string} fileName The name of the .nan0 file
 	 * @param {string} scenarioName The name of the scenario to run
@@ -114,9 +114,10 @@ export class SpecRunner extends ModelAsApp {
 			throw new Error(t(SpecRunner.UI.invalidGenerator, { app: appName }))
 		}
 
+		let resVal = null
 		try {
 			yield progress(t(SpecRunner.UI.running, { app: appName }))
-			await runGenerator(generator, {
+			resVal = await runGenerator(generator, {
 				ask: adapter.ask.bind(adapter),
 				show: adapter.show.bind(adapter),
 				log: adapter.log.bind(adapter),
@@ -135,7 +136,7 @@ export class SpecRunner extends ModelAsApp {
 			assert.fail(t(SpecRunner.UI.unhandledSteps, { count: localStream.length }))
 		}
 
-		return result({ success: true, appName })
+		return result(resVal)
 	}
 
 	/**
@@ -144,9 +145,10 @@ export class SpecRunner extends ModelAsApp {
 	 * @param {Array<object>} stream The .nan0 intent stream array
 	 * @param {Record<string, any>} registry A registry of Model Classes that can be mounted
 	 * @param {typeof import('node:assert/strict')} [asserter] Custom assertion library
+	 * @param {Partial<import('../index.js').ModelAsAppOptions>} [options={}] Additional runner options
 	 */
-	static async execute(stream, registry, asserter = assert) {
-		const runner = new SpecRunner({ stream, registry }, { assert: asserter })
+	static async execute(stream, registry, asserter = assert, options = {}) {
+		const runner = new SpecRunner({ stream, registry }, { assert: asserter, ...options })
 		const it = runner.run()
 		while (true) {
 			const { value, done } = await it.next()

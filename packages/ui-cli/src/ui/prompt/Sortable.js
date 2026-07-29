@@ -10,12 +10,16 @@ export { SortableModel }
  */
 export function Sortable(props) {
 	const model = new SortableModel(props)
+	if (props && typeof props === 'object') {
+		model.selectFn = props.selectFn
+	}
 	return createPrompt('Sortable', model, async (p) => {
 		const t = p.t || ((k) => k)
 		return await sortable({
 			...p,
 			message: p.UI,
 			hint: t(p.UI_HINT),
+			selectFn: model.selectFn,
 			controls: {
 				nav: t(SortableModel.UI_NAV),
 				grab: t(SortableModel.UI_GRAB),

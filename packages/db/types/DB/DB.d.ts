@@ -291,6 +291,28 @@ export default class DB {
     _statFromMeta(abs: string): DocumentStat;
     isRoot(dir: any): boolean;
     /**
+     * Resolves the actual underlying URI for a path.
+     * In the base abstract DB, this simply normalizes the URI.
+     * Adapters like db-fs override this to resolve symlinks and firmlinks.
+     * @param {string} uri The URI to resolve
+     * @returns {string} The resolved real URI
+     */
+    realpath(uri: string): string;
+    /**
+     * Returns a list of mounted database instances.
+     * @returns {Array<{ prefix: string, db: DB }>} Array of mount records
+     */
+    getMounts(): Array<{
+        prefix: string;
+        db: DB;
+    }>;
+    /**
+     * Returns available system volumes/disks as URIs.
+     * Overridden by adapters that support physical drives.
+     * @returns {Promise<string[]>} Array of volume URIs (e.g., ['/'])
+     */
+    getVolumes(): Promise<string[]>;
+    /**
      * Mounts a database instance to a path prefix.
      * All requests to URIs starting with this prefix will be routed to the mounted DB.
      * @param {string} path - The virtual path prefix (e.g. '~', '@public')
@@ -618,7 +640,14 @@ export default class DB {
      * @returns {Promise<boolean>}
      */
     saveFile(uri: string, content: string | Buffer, context?: AuthContext | object): Promise<boolean>;
-    saveDocument(uri: any, document: any, context?: AuthContext): any;
+    /**
+     * Save the document.
+     * @param {string} uri - Document URI
+     * @param {any} document - Document to save
+     * @param {AuthContext | object} [context=this.context] - Auth context
+     * @returns {Promise<boolean>}
+     */
+    saveDocument(uri: string, document: any, context?: AuthContext | object): Promise<boolean>;
     /**
      * Reads statistics for a specific document.
      * Must be overwritten to have the proper file or database document stat operation.

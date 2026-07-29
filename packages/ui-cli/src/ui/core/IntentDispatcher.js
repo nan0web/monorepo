@@ -24,7 +24,7 @@ export default class IntentDispatcher {
 	 * @returns {Promise<{value: any, cancelled: boolean}>}
 	 */
 	async askIntent(intent) {
-		this.#clearActiveProgress()
+		this.clearActiveProgress()
 		const t = this.adapter.t.bind(this.adapter)
 
 		let message = t(intent.schema?.help || intent.field)
@@ -33,12 +33,27 @@ export default class IntentDispatcher {
 		const config = {
 			...intent.schema,
 			message,
-			initial: intent.schema?.default !== undefined ? intent.schema.default : intent.schema?.initial,
-			t
+			initial:
+				intent.schema?.default !== undefined ? intent.schema.default : intent.schema?.initial,
+			t,
 		}
 
 		// Remove 'hint' from config if it's merely a structural directive
-		if (['select', 'multiselect', 'sortable', 'radio', 'autocomplete', 'tree', 'table', 'toggle', 'slider', 'mask', 'datetime'].includes(config.hint)) {
+		if (
+			[
+				'select',
+				'multiselect',
+				'sortable',
+				'radio',
+				'autocomplete',
+				'tree',
+				'table',
+				'toggle',
+				'slider',
+				'mask',
+				'datetime',
+			].includes(config.hint)
+		) {
 			delete config.hint
 		}
 
@@ -52,9 +67,10 @@ export default class IntentDispatcher {
 		}
 
 		if (Array.isArray(config.options)) {
-			config.options = config.options.map(opt =>
-				typeof opt === 'string' ? { label: t(opt), value: opt }
-				: { ...opt, label: t(opt.label || opt.title) }
+			config.options = config.options.map((opt) =>
+				typeof opt === 'string'
+					? { label: t(opt), value: opt }
+					: { ...opt, label: t(opt.label || opt.title) }
 			)
 		} else if (config.options instanceof Map) {
 			const translated = new Map()
@@ -65,17 +81,39 @@ export default class IntentDispatcher {
 		}
 
 		if (intent.model && !intent.component) {
-			let SchemaClass = typeof intent.schema === 'function' ? intent.schema : null;
+			let SchemaClass = typeof intent.schema === 'function' ? intent.schema : null
 			if (!SchemaClass && intent.schema && typeof intent.schema === 'object') {
 				// Reconstruct a pseudo-class for generateForm if it comes as a raw object from HTTP/JSON
-				const className = intent.schema.__className || "RemoteSchema";
-				SchemaClass = class {};
-				Object.defineProperty(SchemaClass, 'name', { value: className });
-				Object.assign(SchemaClass, intent.schema);
-				delete SchemaClass.__className;
+				const className = intent.schema.__className || 'RemoteSchema'
+				SchemaClass = class {}
+				Object.defineProperty(SchemaClass, 'name', { value: className })
+				Object.assign(SchemaClass, intent.schema)
+				delete SchemaClass.__className
 			}
 
 			const form = generateForm(SchemaClass, { t: this.adapter.t.bind(this.adapter) })
+
+			if (intent.options) {
+				for (const [fieldName, fieldOpts] of Object.entries(intent.options)) {
+					const field = form.fields.find((f) => f.name === fieldName)
+					if (field) {
+						if (Array.isArray(fieldOpts)) {
+							field.options = fieldOpts.map((opt, index) => {
+								if (typeof opt === 'string') return opt
+								const val = opt.value !== undefined ? opt.value : opt.name || index
+								return {
+									...opt,
+									label: opt.label || opt.title || opt.name || opt.value || String(val),
+									value: val,
+								}
+							})
+						} else if (fieldOpts && typeof fieldOpts === 'object') {
+							Object.assign(field, fieldOpts)
+						}
+					}
+				}
+			}
+
 			const result = await this.adapter.requestForm(form, { silent: false }) // ensure the title is printed
 			if (result.cancelled) {
 				return { value: undefined, cancelled: true }
@@ -122,7 +160,11 @@ export default class IntentDispatcher {
 				return await this.adapter.requestDateTime(config)
 			case 'Button':
 				// Buttons in CLI are essentially "Confirm to proceed" or simple triggers
-				return await this.adapter.requestConfirm({ ...config, active: t(intent.model?.content || ToggleModel.UI_YES), inactive: t(ToggleModel.UI_NO) })
+				return await this.adapter.requestConfirm({
+					...config,
+					active: t(intent.model?.content || ToggleModel.UI_YES),
+					inactive: t(ToggleModel.UI_NO),
+				})
 			case 'ContentViewer': {
 				return await ContentViewer(config).execute()
 			}
@@ -157,14 +199,13 @@ export default class IntentDispatcher {
 	}
 
 	/**
-	 * Handle OLMUI Log intents.
-	 * Multi-line messages are rendered via Alert box.
-	 * Supports basic markdown: **bold** → ANSI bold.
+	 * Handle OLMUI Show intents.
 	 *
 	 * @param {Object} intent
+	 * @returns {Promise<void>}
 	 */
-	async logIntent(intent) {
-		this.#hideActiveProgress()
+	async showIntent(intent) {
+		this.hideActiveProgress()
 		const t = this.adapter.t.bind(this.adapter)
 		const normalizedIntent = typeof intent === 'string' ? { message: intent } : intent
 		const { type, level, message, hint, component, format, raw, ...extra } = normalizedIntent
@@ -172,7 +213,8 @@ export default class IntentDispatcher {
 		delete extra.silent
 
 		if (component) {
-			const props = typeof message === 'object' ? { ...message, ...extra } : { content: message, ...extra }
+			const props =
+				typeof message === 'object' ? { ...message, ...extra } : { content: message, ...extra }
 			await this.adapter.render(component, props)
 			return
 		}
@@ -195,9 +237,14 @@ export default class IntentDispatcher {
 		// Multi-line content → render as Alert box (unless pure text or raw requested)
 		if (msg.includes('\n') && format !== 'text' && !isRaw) {
 			const { alert } = await import('../impl/alert.js')
-			const variant = level === 'error' ? 'error'
-				: level === 'warn' ? 'warning'
-					: level === 'success' ? 'success' : 'info'
+			const variant =
+				level === 'error'
+					? 'error'
+					: level === 'warn'
+						? 'warning'
+						: level === 'success'
+							? 'success'
+							: 'info'
 			// Extract first line as title if it starts with # (markdown heading)
 			let title = ''
 			let body = formatted
@@ -210,14 +257,37 @@ export default class IntentDispatcher {
 		} else if (format === 'text' || isRaw) {
 			this.adapter.console.info(formatted)
 		} else {
-			if (level === 'error') this.adapter.console.error(`\x1b[31m${iconChar(BsX)}\x1b[0m ${formatted}`)
-			else if (level === 'warn') this.adapter.console.warn(`\x1b[33m${iconChar(BsExclamationTriangle)}\x1b[0m ${formatted}`)
-			else if (level === 'success') this.adapter.console.info(`\x1b[32m${iconChar(BsCheck)}\x1b[0m ${formatted}`)
-			else this.adapter.console.info(`· ${formatted}`)
+			// Default: info level, Markdown formatted text
+			const { alert } = await import('../impl/alert.js')
+			this.adapter.console.info(alert(formatted, 'info'))
 		}
+	}
 
-		if (Object.keys(extra).length > 0) {
-			this.adapter.console.info(this.#toYaml(extra, 1))
+	/**
+	 * Handle OLMUI Log intents.
+	 * Multi-line messages are rendered via Alert box.
+	 * Supports basic markdown: **bold** → ANSI bold.
+	 * @param {Object} intent
+	 * @returns {Promise<void>}
+	 */
+	async logIntent(intent) {
+		this.hideActiveProgress()
+		const message = typeof intent === 'string' ? intent : intent.message
+		if (message === undefined) return
+
+		const level = intent.level || 'info'
+		const isRaw = intent.raw || message.includes('compdef') || message.includes('complete -F') || (level === 'info' && !message.includes('\n'))
+
+		if (isRaw) {
+			process.stdout.write(String(message) + '\n')
+		} else {
+			if (level === 'error') {
+				this.adapter.console.error(String(message))
+			} else if (level === 'warn') {
+				this.adapter.console.warn(String(message))
+			} else {
+				this.adapter.console.info(String(message))
+			}
 		}
 	}
 
@@ -230,13 +300,14 @@ export default class IntentDispatcher {
 	 */
 	static #markdownToAnsi(text) {
 		if (!text) return ''
-		return text
-			// **bold** → ANSI bold
-			.replace(/\*\*([^*]+)\*\*/g, '\x1b[1m$1\x1b[22m')
-			// ![alt](url) → 🖼  alt
-			.replace(/!\[([^\]]*)\]\([^)]+\)/g, '🖼  $1')
+		return (
+			text
+				// **bold** → ANSI bold
+				.replace(/\*\*([^*]+)\*\*/g, '\x1b[1m$1\x1b[22m')
+				// ![alt](url) → 🖼  alt
+				.replace(/!\[([^\]]*)\]\([^)]+\)/g, '🖼  $1')
+		)
 	}
-
 
 	/**
 	 * Convert object to YAML-like string with indentation.
@@ -252,14 +323,16 @@ export default class IntentDispatcher {
 
 		if (Array.isArray(obj)) {
 			if (obj.length === 0) return '[]'
-			return obj.map(val => {
-				if (val && typeof val === 'object') {
-					const yamlObj = this.#toYaml(val, indent + 1)
-					return `${pad}- ${yamlObj.trimStart()}`
-				}
-				const tVal = typeof val === 'string' ? t(val) : val
-				return `${pad}- ${tVal}`
-			}).join('\n')
+			return obj
+				.map((val) => {
+					if (val && typeof val === 'object') {
+						const yamlObj = this.#toYaml(val, indent + 1)
+						return `${pad}- ${yamlObj.trimStart()}`
+					}
+					const tVal = typeof val === 'string' ? t(val) : val
+					return `${pad}- ${tVal}`
+				})
+				.join('\n')
 		}
 
 		return Object.entries(obj)
@@ -281,7 +354,7 @@ export default class IntentDispatcher {
 	 * @param {Object} intent
 	 */
 	async resultIntent(intent) {
-		this.#clearActiveProgress()
+		this.clearActiveProgress()
 		if (intent.silent) return
 
 		const data = intent.data
@@ -328,9 +401,12 @@ export default class IntentDispatcher {
 			if (indicator.fps > fps) fps = indicator.fps
 		}
 
-		this.#progressInterval = setInterval(() => {
-			this.#renderAllProgresses()
-		}, Math.floor(1000 / fps))
+		this.#progressInterval = setInterval(
+			() => {
+				this.#renderAllProgresses()
+			},
+			Math.floor(1000 / fps)
+		)
 	}
 
 	#stopProgressManager() {
@@ -353,7 +429,7 @@ export default class IntentDispatcher {
 		clearSeq += '\x1b[J'
 
 		let allOutput = ''
-		
+
 		if (this.adapter.activeProgresses.size > 1) {
 			let totalPercent = 0
 			let countWithTotal = 0
@@ -361,7 +437,8 @@ export default class IntentDispatcher {
 			let minStartTime = Date.now()
 
 			for (const indicator of this.adapter.activeProgresses.values()) {
-				if (indicator.startTime && indicator.startTime < minStartTime) minStartTime = indicator.startTime
+				if (indicator.startTime && indicator.startTime < minStartTime)
+					minStartTime = indicator.startTime
 
 				if (indicator.total !== undefined && indicator.total > 0) {
 					const percent = Math.min(100, Math.max(0, (indicator.current / indicator.total) * 100))
@@ -391,14 +468,17 @@ export default class IntentDispatcher {
 			const width = 12
 			const filledWidth = Math.round((width * avgPercent) / 100)
 			const emptyWidth = width - filledWidth
-			const innerBar = '='.repeat(filledWidth) + (filledWidth < width ? '>' : '') + '-'.repeat(Math.max(0, emptyWidth - 1))
+			const innerBar =
+				'='.repeat(filledWidth) +
+				(filledWidth < width ? '>' : '') +
+				'-'.repeat(Math.max(0, emptyWidth - 1))
 			const barStr = `[\x1b[36m${innerBar}\x1b[0m]`
 
 			const titleText = this.adapter.t('OVERALL PROGRESS') || 'OVERALL PROGRESS'
 			const title = `\x1b[1m${titleText}\x1b[0m`
 			const percentStr = `${avgPercent.toFixed(0)}%`
 			const overallStr = `${timeStr} ${barStr} ${percentStr} ${title}`
-			
+
 			allOutput += overallStr + '\n'
 		}
 
@@ -411,7 +491,9 @@ export default class IntentDispatcher {
 			renderedCount++
 		}
 		if (this.adapter.activeProgresses.size > maxVisible) {
-			indicatorOutputs.push(`\x1b[90m... and ${this.adapter.activeProgresses.size - maxVisible} more tasks running\x1b[0m`)
+			indicatorOutputs.push(
+				`\x1b[90m... and ${this.adapter.activeProgresses.size - maxVisible} more tasks running\x1b[0m`
+			)
 		}
 		allOutput += indicatorOutputs.join('\n')
 
@@ -434,7 +516,9 @@ export default class IntentDispatcher {
 		let options = intent.options || {}
 		if (typeof options === 'string') options = { id: options }
 		const id = intent.id || options.id || 'default'
-		const isSpinner = options.type === 'spinner' || (intent.value === undefined && intent.total === undefined && options.total === undefined)
+		const isSpinner =
+			options.type === 'spinner' ||
+			(intent.value === undefined && intent.total === undefined && options.total === undefined)
 
 		if (!process.stdout.isTTY) {
 			// Pipeline / Non-TTY mode: skip interactive updates, log only stop events
@@ -457,7 +541,11 @@ export default class IntentDispatcher {
 
 		if (!indicator) {
 			if (!isSpinner) {
-				indicator = this.adapter.requestProgress({ title: msg || '', total: intent.total, ...options })
+				indicator = this.adapter.requestProgress({
+					title: msg || '',
+					total: intent.total,
+					...options,
+				})
 			} else {
 				indicator = this.adapter.requestSpinner({ message: msg || '', ...options })
 			}
@@ -477,7 +565,11 @@ export default class IntentDispatcher {
 		// Update
 		if (indicator.update) {
 			if (!isSpinner) {
-				indicator.update(intent.value, { ...options, title: msg, total: intent.total || options.total })
+				indicator.update(intent.value, {
+					...options,
+					title: msg,
+					total: intent.total || options.total,
+				})
 			} else {
 				indicator.update(msg, options)
 			}
@@ -488,7 +580,10 @@ export default class IntentDispatcher {
 				onData: (chunk) => {
 					if (!chunk) return
 					const str = typeof chunk === 'string' ? chunk : chunk.toString()
-					const cleanLines = str.trim().split('\n').filter(l => l.trim().length > 0)
+					const cleanLines = str
+						.trim()
+						.split('\n')
+						.filter((l) => l.trim().length > 0)
 
 					if (intent.stream === 'inline') {
 						if (cleanLines.length > 0) {
@@ -497,7 +592,7 @@ export default class IntentDispatcher {
 							else indicator.update(newText)
 						}
 					} else {
-						this.#hideActiveProgress()
+						this.hideActiveProgress()
 						for (const line of cleanLines) {
 							this.adapter.console.info(`\x1b[90m  | ${line.substring(0, 150)}\x1b[0m`)
 						}
@@ -505,7 +600,7 @@ export default class IntentDispatcher {
 				},
 				onEnd: () => {
 					this.#stopIndicator(id, indicator, options, msg)
-				}
+				},
 			}
 		}
 
@@ -518,19 +613,23 @@ export default class IntentDispatcher {
 		if (indicator.success && options.stop === 'success') indicator.success(msg)
 		else if (indicator.error && options.stop === 'error') indicator.error(msg)
 		else if (indicator.success) indicator.success(msg) // mark as done
-		
+
 		const finalStr = indicator.renderToString()
-		this.#hideActiveProgress()
+		this.hideActiveProgress()
 		this.adapter.console.info(finalStr)
-		
+
 		this.adapter.activeProgresses.delete(id)
 		if (this.adapter.activeProgresses.size === 0) {
 			this.#stopProgressManager()
 		}
 	}
 
-	#hideActiveProgress() {
-		if (process.stdout.isTTY && this.adapter.activeProgresses && this.adapter.activeProgresses.size > 0) {
+	hideActiveProgress() {
+		if (
+			process.stdout.isTTY &&
+			this.adapter.activeProgresses &&
+			this.adapter.activeProgresses.size > 0
+		) {
 			let clearSeq = '\r'
 			if (this.#lastTotalLines && this.#lastTotalLines > 1) {
 				clearSeq += `\x1b[${this.#lastTotalLines - 1}A`
@@ -541,8 +640,8 @@ export default class IntentDispatcher {
 		}
 	}
 
-	#clearActiveProgress() {
-		this.#hideActiveProgress()
+	clearActiveProgress() {
+		this.hideActiveProgress()
 		if (this.adapter.activeProgresses) {
 			for (const indicator of this.adapter.activeProgresses.values()) {
 				if (indicator.success) indicator.success()

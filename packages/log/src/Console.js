@@ -19,7 +19,7 @@ class LogConsole {
 		this.prefix = prefix
 
 		// In browser environment, ensure common methods exist
-		if (typeof window !== 'undefined') {
+		if (typeof globalThis !== 'undefined' && /** @type {any} */ (globalThis).window !== undefined) {
 			this.console.debug = this.console.debug || this.console.log
 			this.console.info = this.console.info || this.console.log
 			this.console.warn = this.console.warn || this.console.log

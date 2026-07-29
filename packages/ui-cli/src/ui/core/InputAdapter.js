@@ -6,7 +6,6 @@
 
 import { UiForm } from '@nan0web/ui'
 import { InputAdapter as BaseInputAdapter } from '@nan0web/ui/core'
-import { CancelError } from '@nan0web/ui/core'
 import { Form } from '../impl/form.js'
 import prompts from '../impl/prompts.js'
 import IntentDispatcher from './IntentDispatcher.js'
@@ -48,6 +47,7 @@ const DEFAULT_MAX_RETRIES = 100
 export default class CLiInputAdapter extends BaseInputAdapter {
 	/** @type {ConsoleLike} */
 	#console
+	/** @type {NodeJS.WriteStream} */
 	#stdout
 	/** @type {Map<string, () => Promise<any>>} */
 	#components = new Map()
@@ -61,7 +61,10 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 	constructor(options = {}) {
 		super()
 		const {
-			predefined = options.predefined ?? process.env.UI_ANSWERS ?? process.env.PLAY_DEMO_SEQUENCE ?? [],
+			predefined = options.predefined ??
+				process.env.UI_ANSWERS ??
+				process.env.PLAY_DEMO_SEQUENCE ??
+				[],
 			divider = options.divider ?? process.env.PLAY_DEMO_DIVIDER ?? ',',
 			console: initialConsole = options.console || console,
 			stdout = options.stdout || process.stdout,
@@ -104,6 +107,22 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 		return this.#stdout
 	}
 
+	/**
+	 * Overwrite the current terminal line.
+	 * @param {string} [str=""]
+	 */
+	overwriteLine(str = '') {
+		this.#stdout.write('\r\x1b[K' + str)
+	}
+
+	/**
+	 * Move the terminal cursor up by rows.
+	 * @param {number} [rows=1]
+	 */
+	cursorUp(rows = 1) {
+		this.#stdout.write(`\x1b[${rows}A`)
+	}
+
 	get json() {
 		return this._json || false
 	}
@@ -128,16 +147,32 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 	}
 
 	// Legacy test compatibility (brutal hacks support)
-	get _answers() { return this.answerQueue._answers }
-	set _answers(val) { this.answerQueue._answers = val }
-	get _cursor() { return this.answerQueue._cursor }
-	set _cursor(val) { this.answerQueue._cursor = val }
+	get _answers() {
+		return this.answerQueue._answers
+	}
+	set _answers(val) {
+		this.answerQueue._answers = val
+	}
+	get _cursor() {
+		return this.answerQueue._cursor
+	}
+	set _cursor(val) {
+		this.answerQueue._cursor = val
+	}
 
 	// Support for tests using #answers as string key
-	get '#answers'() { return this.answerQueue._answers }
-	set '#answers'(val) { this.answerQueue._answers = val }
-	get '#cursor'() { return this.answerQueue._cursor }
-	set '#cursor'(val) { this.answerQueue._cursor = val }
+	get '#answers'() {
+		return this.answerQueue._answers
+	}
+	set '#answers'(val) {
+		this.answerQueue._answers = val
+	}
+	get '#cursor'() {
+		return this.answerQueue._cursor
+	}
+	set '#cursor'(val) {
+		this.answerQueue._cursor = val
+	}
 
 	/**
 	 * Normalise a value that can be either a raw string or an {@link Input}
@@ -162,28 +197,29 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 	async executePrompt(component) {
 		const predefined = this.answerQueue.next()
 		const isSnapshot = !!process.env.UI_SNAPSHOT
-		
+
 		if (predefined !== null) {
 			if (predefined === '_cancel' || predefined === 'cancel' || predefined === 'exit') {
 				this.cancelled = true
 				return { value: undefined, cancelled: true }
 			}
-			
+
 			if (!isSnapshot) {
 				const model = component.model || component.props
 				const t = this.t || ((k) => k)
 				const title = model.UI || model.message || model.title || 'Input'
-				
+
 				// Log simulated result (masking passwords/secrets)
-				const isSecret = model.type === 'password' || model.type === 'secret' || component.type === 'Password'
+				const isSecret =
+					model.type === 'password' || model.type === 'secret' || component.type === 'Password'
 				const displayValue = isSecret ? '*'.repeat(String(predefined).length) : predefined
 				this.console.info(`✔ ${t(title)} ${displayValue}`)
-				
+
 				// If model has a specific automated mapper, use it
 				if (model.automatedInput && typeof model.automatedInput === 'function') {
 					return model.automatedInput(predefined)
 				}
-				
+
 				return { value: predefined, cancelled: false }
 			}
 		}
@@ -228,9 +264,9 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 	 */
 	createHandler(stops = []) {
 		return async (question) => {
-			const res = await this.requestInput({ 
-				message: typeof question === 'object' ? (question.message || '') : question, 
-				stops 
+			const res = await this.requestInput({
+				message: typeof question === 'object' ? question.message || '' : question,
+				stops,
 			})
 			return { value: res.value, cancelled: res.cancelled }
 		}
@@ -260,7 +296,6 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 		await prompts({ type: 'text', name: 'pause', message: '' })
 	}
 
-
 	/**
 	 * Prompt the user for a full form, handling navigation and validation.
 	 *
@@ -283,6 +318,8 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 			toggleFn: (cfg) => this.requestToggle(cfg),
 			sliderFn: (cfg) => this.requestSlider(cfg),
 			confirmFn: (cfg) => this.requestConfirm(cfg),
+			sortableFn: (cfg) => this.requestSortable(cfg),
+			tableSelectFn: (cfg) => this.requestTableSelect(cfg),
 			console: this.console,
 			maxRetries: this.#maxRetries,
 		})
@@ -339,6 +376,10 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 		if (component && typeof component === 'object' && component.type === 'render') {
 			props = component.props
 			component = component.component
+		}
+
+		if (this.dispatcher && typeof this.dispatcher.hideActiveProgress === 'function') {
+			this.dispatcher.hideActiveProgress()
 		}
 
 		if (this.json) {
@@ -460,7 +501,6 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 		return await this.executePrompt(Confirm({ ...config, t: this.t }))
 	}
 
-
 	/**
 	 * Requests multiple selection.
 	 *
@@ -548,6 +588,84 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 	}
 
 	/**
+	 * Prompt the user for an autocomplete selection rendered as a beautiful table.
+	 *
+	 * @param {Object} config - Configuration object.
+	 * @param {string} config.title - Prompt title.
+	 * @param {Array<Object>} config.options - List of choices with key-value data matching columns.
+	 * @param {Array<{key: string, label: string}>} config.columns - Column headers metadata.
+	 * @returns {Promise<AskResponse>} Selected option.
+	 */
+	async requestTableSelect(config) {
+		const { title = 'Select:', options = [], columns = [] } = config
+		const predefined = this.answerQueue.next()
+		if (predefined !== null) {
+			if (predefined === '_cancel') return { value: null, cancelled: true }
+			return { value: predefined, cancelled: false }
+		}
+
+		if (options.length === 0) {
+			return { value: null, cancelled: false }
+		}
+
+		// Import the prompts wrapper
+		const { default: prompts } = await import('../impl/prompts.js')
+
+		// Calculate column widths dynamically based on maximum lengths of headers and values
+		const colWidths = {}
+		columns.forEach((col) => {
+			let max = String(col.label).length
+			options.forEach((opt) => {
+				const val = String(opt[col.key] ?? '')
+				if (val.length > max) max = val.length
+			})
+			colWidths[col.key] = max
+		})
+
+		// Format a clean horizontal divider
+		const divider = columns.map((col) => '─'.repeat(colWidths[col.key])).join('─┼─')
+
+		// Format header row
+		const headerRow = columns
+			.map((col) => {
+				return String(col.label).padEnd(colWidths[col.key])
+			})
+			.join(' │ ')
+
+		// Print table header before running the prompt
+		this.console.info('\n' + headerRow + '\n' + divider)
+
+		// Map options to prompts choices, padding each column value to line up perfectly
+		const choices = options.map((opt) => {
+			const rowText = columns
+				.map((col) => {
+					return String(opt[col.key] ?? '').padEnd(colWidths[col.key])
+				})
+				.join(' │ ')
+			return {
+				title: rowText,
+				value: opt.value,
+			}
+		})
+
+		try {
+			const res = await prompts({
+				type: 'autocomplete',
+				name: 'value',
+				message: this.t(title),
+				choices,
+			})
+			return { value: res.value, cancelled: false }
+		} catch (err) {
+			const error = /** @type {any} */ (err)
+			if (error?.message?.includes('Cancel') || error?.name === 'CancelError') {
+				return { value: null, cancelled: true }
+			}
+			throw err
+		}
+	}
+
+	/**
 	 * Request a date or time from the user.
 	 * @param {Object} config
 	 * @returns {Promise<AskResponse>}
@@ -587,7 +705,17 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 	}
 
 	/**
-	 * Handle OLMUI Log / Show intents.
+	 * Handle OLMUI Show intents.
+	 *
+	 * @param {import('@nan0web/ui/core').Intent} intent
+	 * @returns {Promise<void>}
+	 */
+	async showIntent(intent) {
+		return this.dispatcher.showIntent(intent)
+	}
+
+	/**
+	 * Handle OLMUI Log intents.
 	 *
 	 * @param {import('@nan0web/ui/core').Intent} intent
 	 * @returns {Promise<void>}
@@ -616,9 +744,9 @@ export default class CLiInputAdapter extends BaseInputAdapter {
 		return this.dispatcher.progressIntent(intent)
 	}
 
-	/** 
-	 * @param {Object} cfg 
-	 * @returns {Promise<{ index?: number, value: string | null }>} 
+	/**
+	 * @param {Object} cfg
+	 * @returns {Promise<{ index?: number, value: string | null }>}
 	 */
 	async select(cfg) {
 		const predefined = this.answerQueue.next()

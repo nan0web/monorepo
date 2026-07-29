@@ -126,7 +126,7 @@ function testRender() {
 				context_length: 128000,
 				volume: 200e9,
 				pricing: { prompt: 1, completion: 1 },
-			}),
+			})
 		)
 		const found = ai.strategy.findModel(ai.getModelsMap(), 1000)
 		assert.ok(found)

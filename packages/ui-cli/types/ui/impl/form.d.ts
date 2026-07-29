@@ -39,6 +39,8 @@ export default class Form {
      * @param {(config: any) => Promise<any>} [options.confirmFn] - Custom confirm function.
      * @param {(config: any) => Promise<import('@nan0web/ui').AskResponse>} [options.sliderFn] - Custom slider function.
      * @param {(config: any) => Promise<import('@nan0web/ui').AskResponse>} [options.toggleFn] - Custom toggle function.
+     * @param {(config: any) => Promise<any>} [options.sortableFn] - Custom sortable function.
+     * @param {(config: any) => Promise<any>} [options.tableSelectFn] - Custom tableSelect function.
      * @param {Object} [options.adapter] - Optional input adapter for global cancellation state.
      * @param {Object} [options.console] - Optional console for logging.
      * @param {Function} [options.t] - Optional translation function.
@@ -56,6 +58,8 @@ export default class Form {
         confirmFn?: ((config: any) => Promise<any>) | undefined;
         sliderFn?: ((config: any) => Promise<import("@nan0web/ui").AskResponse>) | undefined;
         toggleFn?: ((config: any) => Promise<import("@nan0web/ui").AskResponse>) | undefined;
+        sortableFn?: ((config: any) => Promise<any>) | undefined;
+        tableSelectFn?: ((config: any) => Promise<any>) | undefined;
         adapter?: any;
         console?: any;
         t?: Function | undefined;
@@ -74,6 +78,8 @@ export default class Form {
         confirmFn?: ((config: any) => Promise<any>) | undefined;
         sliderFn?: ((config: any) => Promise<import("@nan0web/ui").AskResponse>) | undefined;
         toggleFn?: ((config: any) => Promise<import("@nan0web/ui").AskResponse>) | undefined;
+        sortableFn?: ((config: any) => Promise<any>) | undefined;
+        tableSelectFn?: ((config: any) => Promise<any>) | undefined;
         adapter?: any;
         console?: any;
         t?: Function | undefined;

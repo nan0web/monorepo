@@ -96,7 +96,7 @@ export class GetSourceIntent extends ModelAsApp {
 		if (!isText) {
 			yield show(
 				t('Retrieving {path} (version: {version})...', { path: filePath, version }),
-				'info',
+				'info'
 			)
 		}
 

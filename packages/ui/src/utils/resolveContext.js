@@ -20,7 +20,7 @@ export function resolveContext(context, value) {
 	// Handle data:* reference
 	if (value.startsWith('data:')) {
 		const path = value.slice(5)
-		return Data.find(path, context.data) ?? []
+		return /** @type {any} */ (Data).find(path, context.data) ?? []
 	}
 
 	// Handle action:* reference
@@ -49,7 +49,7 @@ export function resolveContext(context, value) {
 
 	// Handle template interpolation {{key}} using Data.find
 	return value.replace(/{{(.*?)}}/g, (_, path) => {
-		const result = Data.find(path, context.data)
+		const result = /** @type {any} */ (Data).find(path, context.data)
 		return result !== undefined ? result : `{{${path}}}`
 	})
 }
@@ -65,7 +65,7 @@ export function resolveContext(context, value) {
 export function resolveContextValue(ctx, value) {
 	if (typeof value !== 'string') return undefined
 	if (value.startsWith('data:')) {
-		return Data.find(value.slice(5), ctx.data) ?? []
+		return /** @type {any} */ (Data).find(value.slice(5), ctx.data) ?? []
 	}
 	if (value.startsWith('action:')) {
 		return ctx.actions?.[value.slice(7)]

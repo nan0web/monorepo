@@ -21,10 +21,1805 @@
 		"checkJs": true,
 		"baseUrl": ".",
 		"paths": {
-			"@nan0web/*": [
-				"../*/types",
-				"../*/types/index.d.ts",
-				"../*/types/index.js"
+			"@nan0web/ai": [
+				"../ai/types",
+				"../ai/types/index.d.ts",
+				"../ai/types/index.js"
+			],
+			"@nan0web/ai/oop": [
+				"../ai/types/oop.d.ts",
+				"../ai/types/oop.js"
+			],
+			"@nan0web/ai/command": [
+				"../ai/types/command.d.ts",
+				"../ai/types/command.js"
+			],
+			"@nan0web/ai/types": [
+				"../ai/types/types/index.d.ts",
+				"../ai/types/types/index.js"
+			],
+			"@nan0web/ai/core": [
+				"../ai/types/core/index.d.ts",
+				"../ai/types/core/index.js"
+			],
+			"@nan0web/ai/components": [
+				"../ai/types/Component/index.d.ts",
+				"../ai/types/Component/index.js"
+			],
+			"@nan0web/ai/domain": [
+				"../ai/types/domain/index.d.ts",
+				"../ai/types/domain/index.js"
+			],
+			"@nan0web/ai/models": [
+				"../ai/types/Model/index.d.ts",
+				"../ai/types/Model/index.js"
+			],
+			"@nan0web/ai/inspect": [
+				"../ai/types/inspect.d.ts",
+				"../ai/types/inspect.js"
+			],
+			"@nan0web/ai/testing": [
+				"../ai/types/testing/index.d.ts",
+				"../ai/types/testing/index.js"
+			],
+			"@nan0web/ai/builder": [
+				"../ai/types/domain/StoreBuilderApp.d.ts",
+				"../ai/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/auth": [
+				"../auth/types",
+				"../auth/types/index.d.ts",
+				"../auth/types/index.js"
+			],
+			"@nan0web/auth/oop": [
+				"../auth/types/oop.d.ts",
+				"../auth/types/oop.js"
+			],
+			"@nan0web/auth/command": [
+				"../auth/types/command.d.ts",
+				"../auth/types/command.js"
+			],
+			"@nan0web/auth/types": [
+				"../auth/types/types/index.d.ts",
+				"../auth/types/types/index.js"
+			],
+			"@nan0web/auth/core": [
+				"../auth/types/core/index.d.ts",
+				"../auth/types/core/index.js"
+			],
+			"@nan0web/auth/components": [
+				"../auth/types/Component/index.d.ts",
+				"../auth/types/Component/index.js"
+			],
+			"@nan0web/auth/domain": [
+				"../auth/types/domain/index.d.ts",
+				"../auth/types/domain/index.js"
+			],
+			"@nan0web/auth/models": [
+				"../auth/types/Model/index.d.ts",
+				"../auth/types/Model/index.js"
+			],
+			"@nan0web/auth/inspect": [
+				"../auth/types/inspect.d.ts",
+				"../auth/types/inspect.js"
+			],
+			"@nan0web/auth/testing": [
+				"../auth/types/testing/index.d.ts",
+				"../auth/types/testing/index.js"
+			],
+			"@nan0web/auth/builder": [
+				"../auth/types/domain/StoreBuilderApp.d.ts",
+				"../auth/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/auth-browser": [
+				"../auth-browser/types",
+				"../auth-browser/types/index.d.ts",
+				"../auth-browser/types/index.js"
+			],
+			"@nan0web/auth-browser/oop": [
+				"../auth-browser/types/oop.d.ts",
+				"../auth-browser/types/oop.js"
+			],
+			"@nan0web/auth-browser/command": [
+				"../auth-browser/types/command.d.ts",
+				"../auth-browser/types/command.js"
+			],
+			"@nan0web/auth-browser/types": [
+				"../auth-browser/types/types/index.d.ts",
+				"../auth-browser/types/types/index.js"
+			],
+			"@nan0web/auth-browser/core": [
+				"../auth-browser/types/core/index.d.ts",
+				"../auth-browser/types/core/index.js"
+			],
+			"@nan0web/auth-browser/components": [
+				"../auth-browser/types/Component/index.d.ts",
+				"../auth-browser/types/Component/index.js"
+			],
+			"@nan0web/auth-browser/domain": [
+				"../auth-browser/types/domain/index.d.ts",
+				"../auth-browser/types/domain/index.js"
+			],
+			"@nan0web/auth-browser/models": [
+				"../auth-browser/types/Model/index.d.ts",
+				"../auth-browser/types/Model/index.js"
+			],
+			"@nan0web/auth-browser/inspect": [
+				"../auth-browser/types/inspect.d.ts",
+				"../auth-browser/types/inspect.js"
+			],
+			"@nan0web/auth-browser/testing": [
+				"../auth-browser/types/testing/index.d.ts",
+				"../auth-browser/types/testing/index.js"
+			],
+			"@nan0web/auth-browser/builder": [
+				"../auth-browser/types/domain/StoreBuilderApp.d.ts",
+				"../auth-browser/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/auth-core": [
+				"../auth-core/types",
+				"../auth-core/types/index.d.ts",
+				"../auth-core/types/index.js"
+			],
+			"@nan0web/auth-core/oop": [
+				"../auth-core/types/oop.d.ts",
+				"../auth-core/types/oop.js"
+			],
+			"@nan0web/auth-core/command": [
+				"../auth-core/types/command.d.ts",
+				"../auth-core/types/command.js"
+			],
+			"@nan0web/auth-core/types": [
+				"../auth-core/types/types/index.d.ts",
+				"../auth-core/types/types/index.js"
+			],
+			"@nan0web/auth-core/core": [
+				"../auth-core/types/core/index.d.ts",
+				"../auth-core/types/core/index.js"
+			],
+			"@nan0web/auth-core/components": [
+				"../auth-core/types/Component/index.d.ts",
+				"../auth-core/types/Component/index.js"
+			],
+			"@nan0web/auth-core/domain": [
+				"../auth-core/types/domain/index.d.ts",
+				"../auth-core/types/domain/index.js"
+			],
+			"@nan0web/auth-core/models": [
+				"../auth-core/types/Model/index.d.ts",
+				"../auth-core/types/Model/index.js"
+			],
+			"@nan0web/auth-core/inspect": [
+				"../auth-core/types/inspect.d.ts",
+				"../auth-core/types/inspect.js"
+			],
+			"@nan0web/auth-core/testing": [
+				"../auth-core/types/testing/index.d.ts",
+				"../auth-core/types/testing/index.js"
+			],
+			"@nan0web/auth-core/builder": [
+				"../auth-core/types/domain/StoreBuilderApp.d.ts",
+				"../auth-core/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/auth-node": [
+				"../auth-node/types",
+				"../auth-node/types/index.d.ts",
+				"../auth-node/types/index.js"
+			],
+			"@nan0web/auth-node/oop": [
+				"../auth-node/types/oop.d.ts",
+				"../auth-node/types/oop.js"
+			],
+			"@nan0web/auth-node/command": [
+				"../auth-node/types/command.d.ts",
+				"../auth-node/types/command.js"
+			],
+			"@nan0web/auth-node/types": [
+				"../auth-node/types/types/index.d.ts",
+				"../auth-node/types/types/index.js"
+			],
+			"@nan0web/auth-node/core": [
+				"../auth-node/types/core/index.d.ts",
+				"../auth-node/types/core/index.js"
+			],
+			"@nan0web/auth-node/components": [
+				"../auth-node/types/Component/index.d.ts",
+				"../auth-node/types/Component/index.js"
+			],
+			"@nan0web/auth-node/domain": [
+				"../auth-node/types/domain/index.d.ts",
+				"../auth-node/types/domain/index.js"
+			],
+			"@nan0web/auth-node/models": [
+				"../auth-node/types/Model/index.d.ts",
+				"../auth-node/types/Model/index.js"
+			],
+			"@nan0web/auth-node/inspect": [
+				"../auth-node/types/inspect.d.ts",
+				"../auth-node/types/inspect.js"
+			],
+			"@nan0web/auth-node/testing": [
+				"../auth-node/types/testing/index.d.ts",
+				"../auth-node/types/testing/index.js"
+			],
+			"@nan0web/auth-node/builder": [
+				"../auth-node/types/domain/StoreBuilderApp.d.ts",
+				"../auth-node/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/catalog": [
+				"../catalog/types",
+				"../catalog/types/index.d.ts",
+				"../catalog/types/index.js"
+			],
+			"@nan0web/catalog/oop": [
+				"../catalog/types/oop.d.ts",
+				"../catalog/types/oop.js"
+			],
+			"@nan0web/catalog/command": [
+				"../catalog/types/command.d.ts",
+				"../catalog/types/command.js"
+			],
+			"@nan0web/catalog/types": [
+				"../catalog/types/types/index.d.ts",
+				"../catalog/types/types/index.js"
+			],
+			"@nan0web/catalog/core": [
+				"../catalog/types/core/index.d.ts",
+				"../catalog/types/core/index.js"
+			],
+			"@nan0web/catalog/components": [
+				"../catalog/types/Component/index.d.ts",
+				"../catalog/types/Component/index.js"
+			],
+			"@nan0web/catalog/domain": [
+				"../catalog/types/domain/index.d.ts",
+				"../catalog/types/domain/index.js"
+			],
+			"@nan0web/catalog/models": [
+				"../catalog/types/Model/index.d.ts",
+				"../catalog/types/Model/index.js"
+			],
+			"@nan0web/catalog/inspect": [
+				"../catalog/types/inspect.d.ts",
+				"../catalog/types/inspect.js"
+			],
+			"@nan0web/catalog/testing": [
+				"../catalog/types/testing/index.d.ts",
+				"../catalog/types/testing/index.js"
+			],
+			"@nan0web/catalog/builder": [
+				"../catalog/types/domain/StoreBuilderApp.d.ts",
+				"../catalog/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/changelog": [
+				"../changelog/types",
+				"../changelog/types/index.d.ts",
+				"../changelog/types/index.js"
+			],
+			"@nan0web/changelog/oop": [
+				"../changelog/types/oop.d.ts",
+				"../changelog/types/oop.js"
+			],
+			"@nan0web/changelog/command": [
+				"../changelog/types/command.d.ts",
+				"../changelog/types/command.js"
+			],
+			"@nan0web/changelog/types": [
+				"../changelog/types/types/index.d.ts",
+				"../changelog/types/types/index.js"
+			],
+			"@nan0web/changelog/core": [
+				"../changelog/types/core/index.d.ts",
+				"../changelog/types/core/index.js"
+			],
+			"@nan0web/changelog/components": [
+				"../changelog/types/Component/index.d.ts",
+				"../changelog/types/Component/index.js"
+			],
+			"@nan0web/changelog/domain": [
+				"../changelog/types/domain/index.d.ts",
+				"../changelog/types/domain/index.js"
+			],
+			"@nan0web/changelog/models": [
+				"../changelog/types/Model/index.d.ts",
+				"../changelog/types/Model/index.js"
+			],
+			"@nan0web/changelog/inspect": [
+				"../changelog/types/inspect.d.ts",
+				"../changelog/types/inspect.js"
+			],
+			"@nan0web/changelog/testing": [
+				"../changelog/types/testing/index.d.ts",
+				"../changelog/types/testing/index.js"
+			],
+			"@nan0web/changelog/builder": [
+				"../changelog/types/domain/StoreBuilderApp.d.ts",
+				"../changelog/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/co": [
+				"../co/types",
+				"../co/types/index.d.ts",
+				"../co/types/index.js"
+			],
+			"@nan0web/co/oop": [
+				"../co/types/oop.d.ts",
+				"../co/types/oop.js"
+			],
+			"@nan0web/co/command": [
+				"../co/types/command.d.ts",
+				"../co/types/command.js"
+			],
+			"@nan0web/co/types": [
+				"../co/types/types/index.d.ts",
+				"../co/types/types/index.js"
+			],
+			"@nan0web/co/core": [
+				"../co/types/core/index.d.ts",
+				"../co/types/core/index.js"
+			],
+			"@nan0web/co/components": [
+				"../co/types/Component/index.d.ts",
+				"../co/types/Component/index.js"
+			],
+			"@nan0web/co/domain": [
+				"../co/types/domain/index.d.ts",
+				"../co/types/domain/index.js"
+			],
+			"@nan0web/co/models": [
+				"../co/types/Model/index.d.ts",
+				"../co/types/Model/index.js"
+			],
+			"@nan0web/co/inspect": [
+				"../co/types/inspect.d.ts",
+				"../co/types/inspect.js"
+			],
+			"@nan0web/co/testing": [
+				"../co/types/testing/index.d.ts",
+				"../co/types/testing/index.js"
+			],
+			"@nan0web/co/builder": [
+				"../co/types/domain/StoreBuilderApp.d.ts",
+				"../co/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/comment": [
+				"../comment/types",
+				"../comment/types/index.d.ts",
+				"../comment/types/index.js"
+			],
+			"@nan0web/comment/oop": [
+				"../comment/types/oop.d.ts",
+				"../comment/types/oop.js"
+			],
+			"@nan0web/comment/command": [
+				"../comment/types/command.d.ts",
+				"../comment/types/command.js"
+			],
+			"@nan0web/comment/types": [
+				"../comment/types/types/index.d.ts",
+				"../comment/types/types/index.js"
+			],
+			"@nan0web/comment/core": [
+				"../comment/types/core/index.d.ts",
+				"../comment/types/core/index.js"
+			],
+			"@nan0web/comment/components": [
+				"../comment/types/Component/index.d.ts",
+				"../comment/types/Component/index.js"
+			],
+			"@nan0web/comment/domain": [
+				"../comment/types/domain/index.d.ts",
+				"../comment/types/domain/index.js"
+			],
+			"@nan0web/comment/models": [
+				"../comment/types/Model/index.d.ts",
+				"../comment/types/Model/index.js"
+			],
+			"@nan0web/comment/inspect": [
+				"../comment/types/inspect.d.ts",
+				"../comment/types/inspect.js"
+			],
+			"@nan0web/comment/testing": [
+				"../comment/types/testing/index.d.ts",
+				"../comment/types/testing/index.js"
+			],
+			"@nan0web/comment/builder": [
+				"../comment/types/domain/StoreBuilderApp.d.ts",
+				"../comment/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/core": [
+				"../core/types",
+				"../core/types/index.d.ts",
+				"../core/types/index.js"
+			],
+			"@nan0web/core/oop": [
+				"../core/types/oop.d.ts",
+				"../core/types/oop.js"
+			],
+			"@nan0web/core/command": [
+				"../core/types/command.d.ts",
+				"../core/types/command.js"
+			],
+			"@nan0web/core/types": [
+				"../core/types/types/index.d.ts",
+				"../core/types/types/index.js"
+			],
+			"@nan0web/core/core": [
+				"../core/types/core/index.d.ts",
+				"../core/types/core/index.js"
+			],
+			"@nan0web/core/components": [
+				"../core/types/Component/index.d.ts",
+				"../core/types/Component/index.js"
+			],
+			"@nan0web/core/domain": [
+				"../core/types/domain/index.d.ts",
+				"../core/types/domain/index.js"
+			],
+			"@nan0web/core/models": [
+				"../core/types/Model/index.d.ts",
+				"../core/types/Model/index.js"
+			],
+			"@nan0web/core/inspect": [
+				"../core/types/inspect.d.ts",
+				"../core/types/inspect.js"
+			],
+			"@nan0web/core/testing": [
+				"../core/types/testing/index.d.ts",
+				"../core/types/testing/index.js"
+			],
+			"@nan0web/core/builder": [
+				"../core/types/domain/StoreBuilderApp.d.ts",
+				"../core/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/csv0": [
+				"../csv0/types",
+				"../csv0/types/index.d.ts",
+				"../csv0/types/index.js"
+			],
+			"@nan0web/csv0/oop": [
+				"../csv0/types/oop.d.ts",
+				"../csv0/types/oop.js"
+			],
+			"@nan0web/csv0/command": [
+				"../csv0/types/command.d.ts",
+				"../csv0/types/command.js"
+			],
+			"@nan0web/csv0/types": [
+				"../csv0/types/types/index.d.ts",
+				"../csv0/types/types/index.js"
+			],
+			"@nan0web/csv0/core": [
+				"../csv0/types/core/index.d.ts",
+				"../csv0/types/core/index.js"
+			],
+			"@nan0web/csv0/components": [
+				"../csv0/types/Component/index.d.ts",
+				"../csv0/types/Component/index.js"
+			],
+			"@nan0web/csv0/domain": [
+				"../csv0/types/domain/index.d.ts",
+				"../csv0/types/domain/index.js"
+			],
+			"@nan0web/csv0/models": [
+				"../csv0/types/Model/index.d.ts",
+				"../csv0/types/Model/index.js"
+			],
+			"@nan0web/csv0/inspect": [
+				"../csv0/types/inspect.d.ts",
+				"../csv0/types/inspect.js"
+			],
+			"@nan0web/csv0/testing": [
+				"../csv0/types/testing/index.d.ts",
+				"../csv0/types/testing/index.js"
+			],
+			"@nan0web/csv0/builder": [
+				"../csv0/types/domain/StoreBuilderApp.d.ts",
+				"../csv0/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/db": [
+				"../db/types",
+				"../db/types/index.d.ts",
+				"../db/types/index.js"
+			],
+			"@nan0web/db/oop": [
+				"../db/types/oop.d.ts",
+				"../db/types/oop.js"
+			],
+			"@nan0web/db/command": [
+				"../db/types/command.d.ts",
+				"../db/types/command.js"
+			],
+			"@nan0web/db/types": [
+				"../db/types/types/index.d.ts",
+				"../db/types/types/index.js"
+			],
+			"@nan0web/db/core": [
+				"../db/types/core/index.d.ts",
+				"../db/types/core/index.js"
+			],
+			"@nan0web/db/components": [
+				"../db/types/Component/index.d.ts",
+				"../db/types/Component/index.js"
+			],
+			"@nan0web/db/domain": [
+				"../db/types/domain/index.d.ts",
+				"../db/types/domain/index.js"
+			],
+			"@nan0web/db/models": [
+				"../db/types/Model/index.d.ts",
+				"../db/types/Model/index.js"
+			],
+			"@nan0web/db/inspect": [
+				"../db/types/inspect.d.ts",
+				"../db/types/inspect.js"
+			],
+			"@nan0web/db/testing": [
+				"../db/types/testing/index.d.ts",
+				"../db/types/testing/index.js"
+			],
+			"@nan0web/db/builder": [
+				"../db/types/domain/StoreBuilderApp.d.ts",
+				"../db/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/db-browser": [
+				"../db-browser/types",
+				"../db-browser/types/index.d.ts",
+				"../db-browser/types/index.js"
+			],
+			"@nan0web/db-browser/oop": [
+				"../db-browser/types/oop.d.ts",
+				"../db-browser/types/oop.js"
+			],
+			"@nan0web/db-browser/command": [
+				"../db-browser/types/command.d.ts",
+				"../db-browser/types/command.js"
+			],
+			"@nan0web/db-browser/types": [
+				"../db-browser/types/types/index.d.ts",
+				"../db-browser/types/types/index.js"
+			],
+			"@nan0web/db-browser/core": [
+				"../db-browser/types/core/index.d.ts",
+				"../db-browser/types/core/index.js"
+			],
+			"@nan0web/db-browser/components": [
+				"../db-browser/types/Component/index.d.ts",
+				"../db-browser/types/Component/index.js"
+			],
+			"@nan0web/db-browser/domain": [
+				"../db-browser/types/domain/index.d.ts",
+				"../db-browser/types/domain/index.js"
+			],
+			"@nan0web/db-browser/models": [
+				"../db-browser/types/Model/index.d.ts",
+				"../db-browser/types/Model/index.js"
+			],
+			"@nan0web/db-browser/inspect": [
+				"../db-browser/types/inspect.d.ts",
+				"../db-browser/types/inspect.js"
+			],
+			"@nan0web/db-browser/testing": [
+				"../db-browser/types/testing/index.d.ts",
+				"../db-browser/types/testing/index.js"
+			],
+			"@nan0web/db-browser/builder": [
+				"../db-browser/types/domain/StoreBuilderApp.d.ts",
+				"../db-browser/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/db-fs": [
+				"../db-fs/types",
+				"../db-fs/types/index.d.ts",
+				"../db-fs/types/index.js"
+			],
+			"@nan0web/db-fs/oop": [
+				"../db-fs/types/oop.d.ts",
+				"../db-fs/types/oop.js"
+			],
+			"@nan0web/db-fs/command": [
+				"../db-fs/types/command.d.ts",
+				"../db-fs/types/command.js"
+			],
+			"@nan0web/db-fs/types": [
+				"../db-fs/types/types/index.d.ts",
+				"../db-fs/types/types/index.js"
+			],
+			"@nan0web/db-fs/core": [
+				"../db-fs/types/core/index.d.ts",
+				"../db-fs/types/core/index.js"
+			],
+			"@nan0web/db-fs/components": [
+				"../db-fs/types/Component/index.d.ts",
+				"../db-fs/types/Component/index.js"
+			],
+			"@nan0web/db-fs/domain": [
+				"../db-fs/types/domain/index.d.ts",
+				"../db-fs/types/domain/index.js"
+			],
+			"@nan0web/db-fs/models": [
+				"../db-fs/types/Model/index.d.ts",
+				"../db-fs/types/Model/index.js"
+			],
+			"@nan0web/db-fs/inspect": [
+				"../db-fs/types/inspect.d.ts",
+				"../db-fs/types/inspect.js"
+			],
+			"@nan0web/db-fs/testing": [
+				"../db-fs/types/testing/index.d.ts",
+				"../db-fs/types/testing/index.js"
+			],
+			"@nan0web/db-fs/builder": [
+				"../db-fs/types/domain/StoreBuilderApp.d.ts",
+				"../db-fs/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/editor": [
+				"../editor/types",
+				"../editor/types/index.d.ts",
+				"../editor/types/index.js"
+			],
+			"@nan0web/editor/oop": [
+				"../editor/types/oop.d.ts",
+				"../editor/types/oop.js"
+			],
+			"@nan0web/editor/command": [
+				"../editor/types/command.d.ts",
+				"../editor/types/command.js"
+			],
+			"@nan0web/editor/types": [
+				"../editor/types/types/index.d.ts",
+				"../editor/types/types/index.js"
+			],
+			"@nan0web/editor/core": [
+				"../editor/types/core/index.d.ts",
+				"../editor/types/core/index.js"
+			],
+			"@nan0web/editor/components": [
+				"../editor/types/Component/index.d.ts",
+				"../editor/types/Component/index.js"
+			],
+			"@nan0web/editor/domain": [
+				"../editor/types/domain/index.d.ts",
+				"../editor/types/domain/index.js"
+			],
+			"@nan0web/editor/models": [
+				"../editor/types/Model/index.d.ts",
+				"../editor/types/Model/index.js"
+			],
+			"@nan0web/editor/inspect": [
+				"../editor/types/inspect.d.ts",
+				"../editor/types/inspect.js"
+			],
+			"@nan0web/editor/testing": [
+				"../editor/types/testing/index.d.ts",
+				"../editor/types/testing/index.js"
+			],
+			"@nan0web/editor/builder": [
+				"../editor/types/domain/StoreBuilderApp.d.ts",
+				"../editor/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/event": [
+				"../event/types",
+				"../event/types/index.d.ts",
+				"../event/types/index.js"
+			],
+			"@nan0web/event/oop": [
+				"../event/types/oop.d.ts",
+				"../event/types/oop.js"
+			],
+			"@nan0web/event/command": [
+				"../event/types/command.d.ts",
+				"../event/types/command.js"
+			],
+			"@nan0web/event/types": [
+				"../event/types/types/index.d.ts",
+				"../event/types/types/index.js"
+			],
+			"@nan0web/event/core": [
+				"../event/types/core/index.d.ts",
+				"../event/types/core/index.js"
+			],
+			"@nan0web/event/components": [
+				"../event/types/Component/index.d.ts",
+				"../event/types/Component/index.js"
+			],
+			"@nan0web/event/domain": [
+				"../event/types/domain/index.d.ts",
+				"../event/types/domain/index.js"
+			],
+			"@nan0web/event/models": [
+				"../event/types/Model/index.d.ts",
+				"../event/types/Model/index.js"
+			],
+			"@nan0web/event/inspect": [
+				"../event/types/inspect.d.ts",
+				"../event/types/inspect.js"
+			],
+			"@nan0web/event/testing": [
+				"../event/types/testing/index.d.ts",
+				"../event/types/testing/index.js"
+			],
+			"@nan0web/event/builder": [
+				"../event/types/domain/StoreBuilderApp.d.ts",
+				"../event/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/finance": [
+				"../finance/types",
+				"../finance/types/index.d.ts",
+				"../finance/types/index.js"
+			],
+			"@nan0web/finance/oop": [
+				"../finance/types/oop.d.ts",
+				"../finance/types/oop.js"
+			],
+			"@nan0web/finance/command": [
+				"../finance/types/command.d.ts",
+				"../finance/types/command.js"
+			],
+			"@nan0web/finance/types": [
+				"../finance/types/types/index.d.ts",
+				"../finance/types/types/index.js"
+			],
+			"@nan0web/finance/core": [
+				"../finance/types/core/index.d.ts",
+				"../finance/types/core/index.js"
+			],
+			"@nan0web/finance/components": [
+				"../finance/types/Component/index.d.ts",
+				"../finance/types/Component/index.js"
+			],
+			"@nan0web/finance/domain": [
+				"../finance/types/domain/index.d.ts",
+				"../finance/types/domain/index.js"
+			],
+			"@nan0web/finance/models": [
+				"../finance/types/Model/index.d.ts",
+				"../finance/types/Model/index.js"
+			],
+			"@nan0web/finance/inspect": [
+				"../finance/types/inspect.d.ts",
+				"../finance/types/inspect.js"
+			],
+			"@nan0web/finance/testing": [
+				"../finance/types/testing/index.d.ts",
+				"../finance/types/testing/index.js"
+			],
+			"@nan0web/finance/builder": [
+				"../finance/types/domain/StoreBuilderApp.d.ts",
+				"../finance/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/http": [
+				"../http/types",
+				"../http/types/index.d.ts",
+				"../http/types/index.js"
+			],
+			"@nan0web/http/oop": [
+				"../http/types/oop.d.ts",
+				"../http/types/oop.js"
+			],
+			"@nan0web/http/command": [
+				"../http/types/command.d.ts",
+				"../http/types/command.js"
+			],
+			"@nan0web/http/types": [
+				"../http/types/types/index.d.ts",
+				"../http/types/types/index.js"
+			],
+			"@nan0web/http/core": [
+				"../http/types/core/index.d.ts",
+				"../http/types/core/index.js"
+			],
+			"@nan0web/http/components": [
+				"../http/types/Component/index.d.ts",
+				"../http/types/Component/index.js"
+			],
+			"@nan0web/http/domain": [
+				"../http/types/domain/index.d.ts",
+				"../http/types/domain/index.js"
+			],
+			"@nan0web/http/models": [
+				"../http/types/Model/index.d.ts",
+				"../http/types/Model/index.js"
+			],
+			"@nan0web/http/inspect": [
+				"../http/types/inspect.d.ts",
+				"../http/types/inspect.js"
+			],
+			"@nan0web/http/testing": [
+				"../http/types/testing/index.d.ts",
+				"../http/types/testing/index.js"
+			],
+			"@nan0web/http/builder": [
+				"../http/types/domain/StoreBuilderApp.d.ts",
+				"../http/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/http-node": [
+				"../http-node/types",
+				"../http-node/types/index.d.ts",
+				"../http-node/types/index.js"
+			],
+			"@nan0web/http-node/oop": [
+				"../http-node/types/oop.d.ts",
+				"../http-node/types/oop.js"
+			],
+			"@nan0web/http-node/command": [
+				"../http-node/types/command.d.ts",
+				"../http-node/types/command.js"
+			],
+			"@nan0web/http-node/types": [
+				"../http-node/types/types/index.d.ts",
+				"../http-node/types/types/index.js"
+			],
+			"@nan0web/http-node/core": [
+				"../http-node/types/core/index.d.ts",
+				"../http-node/types/core/index.js"
+			],
+			"@nan0web/http-node/components": [
+				"../http-node/types/Component/index.d.ts",
+				"../http-node/types/Component/index.js"
+			],
+			"@nan0web/http-node/domain": [
+				"../http-node/types/domain/index.d.ts",
+				"../http-node/types/domain/index.js"
+			],
+			"@nan0web/http-node/models": [
+				"../http-node/types/Model/index.d.ts",
+				"../http-node/types/Model/index.js"
+			],
+			"@nan0web/http-node/inspect": [
+				"../http-node/types/inspect.d.ts",
+				"../http-node/types/inspect.js"
+			],
+			"@nan0web/http-node/testing": [
+				"../http-node/types/testing/index.d.ts",
+				"../http-node/types/testing/index.js"
+			],
+			"@nan0web/http-node/builder": [
+				"../http-node/types/domain/StoreBuilderApp.d.ts",
+				"../http-node/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/i18n": [
+				"../i18n/types",
+				"../i18n/types/index.d.ts",
+				"../i18n/types/index.js"
+			],
+			"@nan0web/i18n/oop": [
+				"../i18n/types/oop.d.ts",
+				"../i18n/types/oop.js"
+			],
+			"@nan0web/i18n/command": [
+				"../i18n/types/command.d.ts",
+				"../i18n/types/command.js"
+			],
+			"@nan0web/i18n/types": [
+				"../i18n/types/types/index.d.ts",
+				"../i18n/types/types/index.js"
+			],
+			"@nan0web/i18n/core": [
+				"../i18n/types/core/index.d.ts",
+				"../i18n/types/core/index.js"
+			],
+			"@nan0web/i18n/components": [
+				"../i18n/types/Component/index.d.ts",
+				"../i18n/types/Component/index.js"
+			],
+			"@nan0web/i18n/domain": [
+				"../i18n/types/domain/index.d.ts",
+				"../i18n/types/domain/index.js"
+			],
+			"@nan0web/i18n/models": [
+				"../i18n/types/Model/index.d.ts",
+				"../i18n/types/Model/index.js"
+			],
+			"@nan0web/i18n/inspect": [
+				"../i18n/types/inspect.d.ts",
+				"../i18n/types/inspect.js"
+			],
+			"@nan0web/i18n/testing": [
+				"../i18n/types/testing/index.d.ts",
+				"../i18n/types/testing/index.js"
+			],
+			"@nan0web/i18n/builder": [
+				"../i18n/types/domain/StoreBuilderApp.d.ts",
+				"../i18n/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/inspect": [
+				"../inspect/types",
+				"../inspect/types/index.d.ts",
+				"../inspect/types/index.js"
+			],
+			"@nan0web/inspect/oop": [
+				"../inspect/types/oop.d.ts",
+				"../inspect/types/oop.js"
+			],
+			"@nan0web/inspect/command": [
+				"../inspect/types/command.d.ts",
+				"../inspect/types/command.js"
+			],
+			"@nan0web/inspect/types": [
+				"../inspect/types/types/index.d.ts",
+				"../inspect/types/types/index.js"
+			],
+			"@nan0web/inspect/core": [
+				"../inspect/types/core/index.d.ts",
+				"../inspect/types/core/index.js"
+			],
+			"@nan0web/inspect/components": [
+				"../inspect/types/Component/index.d.ts",
+				"../inspect/types/Component/index.js"
+			],
+			"@nan0web/inspect/domain": [
+				"../inspect/types/domain/index.d.ts",
+				"../inspect/types/domain/index.js"
+			],
+			"@nan0web/inspect/models": [
+				"../inspect/types/Model/index.d.ts",
+				"../inspect/types/Model/index.js"
+			],
+			"@nan0web/inspect/inspect": [
+				"../inspect/types/inspect.d.ts",
+				"../inspect/types/inspect.js"
+			],
+			"@nan0web/inspect/testing": [
+				"../inspect/types/testing/index.d.ts",
+				"../inspect/types/testing/index.js"
+			],
+			"@nan0web/inspect/builder": [
+				"../inspect/types/domain/StoreBuilderApp.d.ts",
+				"../inspect/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/log": [
+				"../log/types",
+				"../log/types/index.d.ts",
+				"../log/types/index.js"
+			],
+			"@nan0web/log/oop": [
+				"../log/types/oop.d.ts",
+				"../log/types/oop.js"
+			],
+			"@nan0web/log/command": [
+				"../log/types/command.d.ts",
+				"../log/types/command.js"
+			],
+			"@nan0web/log/types": [
+				"../log/types/types/index.d.ts",
+				"../log/types/types/index.js"
+			],
+			"@nan0web/log/core": [
+				"../log/types/core/index.d.ts",
+				"../log/types/core/index.js"
+			],
+			"@nan0web/log/components": [
+				"../log/types/Component/index.d.ts",
+				"../log/types/Component/index.js"
+			],
+			"@nan0web/log/domain": [
+				"../log/types/domain/index.d.ts",
+				"../log/types/domain/index.js"
+			],
+			"@nan0web/log/models": [
+				"../log/types/Model/index.d.ts",
+				"../log/types/Model/index.js"
+			],
+			"@nan0web/log/inspect": [
+				"../log/types/inspect.d.ts",
+				"../log/types/inspect.js"
+			],
+			"@nan0web/log/testing": [
+				"../log/types/testing/index.d.ts",
+				"../log/types/testing/index.js"
+			],
+			"@nan0web/log/builder": [
+				"../log/types/domain/StoreBuilderApp.d.ts",
+				"../log/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/logos": [
+				"../logos/types",
+				"../logos/types/index.d.ts",
+				"../logos/types/index.js"
+			],
+			"@nan0web/logos/oop": [
+				"../logos/types/oop.d.ts",
+				"../logos/types/oop.js"
+			],
+			"@nan0web/logos/command": [
+				"../logos/types/command.d.ts",
+				"../logos/types/command.js"
+			],
+			"@nan0web/logos/types": [
+				"../logos/types/types/index.d.ts",
+				"../logos/types/types/index.js"
+			],
+			"@nan0web/logos/core": [
+				"../logos/types/core/index.d.ts",
+				"../logos/types/core/index.js"
+			],
+			"@nan0web/logos/components": [
+				"../logos/types/Component/index.d.ts",
+				"../logos/types/Component/index.js"
+			],
+			"@nan0web/logos/domain": [
+				"../logos/types/domain/index.d.ts",
+				"../logos/types/domain/index.js"
+			],
+			"@nan0web/logos/models": [
+				"../logos/types/Model/index.d.ts",
+				"../logos/types/Model/index.js"
+			],
+			"@nan0web/logos/inspect": [
+				"../logos/types/inspect.d.ts",
+				"../logos/types/inspect.js"
+			],
+			"@nan0web/logos/testing": [
+				"../logos/types/testing/index.d.ts",
+				"../logos/types/testing/index.js"
+			],
+			"@nan0web/logos/builder": [
+				"../logos/types/domain/StoreBuilderApp.d.ts",
+				"../logos/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/mail": [
+				"../mail/types",
+				"../mail/types/index.d.ts",
+				"../mail/types/index.js"
+			],
+			"@nan0web/mail/oop": [
+				"../mail/types/oop.d.ts",
+				"../mail/types/oop.js"
+			],
+			"@nan0web/mail/command": [
+				"../mail/types/command.d.ts",
+				"../mail/types/command.js"
+			],
+			"@nan0web/mail/types": [
+				"../mail/types/types/index.d.ts",
+				"../mail/types/types/index.js"
+			],
+			"@nan0web/mail/core": [
+				"../mail/types/core/index.d.ts",
+				"../mail/types/core/index.js"
+			],
+			"@nan0web/mail/components": [
+				"../mail/types/Component/index.d.ts",
+				"../mail/types/Component/index.js"
+			],
+			"@nan0web/mail/domain": [
+				"../mail/types/domain/index.d.ts",
+				"../mail/types/domain/index.js"
+			],
+			"@nan0web/mail/models": [
+				"../mail/types/Model/index.d.ts",
+				"../mail/types/Model/index.js"
+			],
+			"@nan0web/mail/inspect": [
+				"../mail/types/inspect.d.ts",
+				"../mail/types/inspect.js"
+			],
+			"@nan0web/mail/testing": [
+				"../mail/types/testing/index.d.ts",
+				"../mail/types/testing/index.js"
+			],
+			"@nan0web/mail/builder": [
+				"../mail/types/domain/StoreBuilderApp.d.ts",
+				"../mail/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/markdown": [
+				"../markdown/types",
+				"../markdown/types/index.d.ts",
+				"../markdown/types/index.js"
+			],
+			"@nan0web/markdown/oop": [
+				"../markdown/types/oop.d.ts",
+				"../markdown/types/oop.js"
+			],
+			"@nan0web/markdown/command": [
+				"../markdown/types/command.d.ts",
+				"../markdown/types/command.js"
+			],
+			"@nan0web/markdown/types": [
+				"../markdown/types/types/index.d.ts",
+				"../markdown/types/types/index.js"
+			],
+			"@nan0web/markdown/core": [
+				"../markdown/types/core/index.d.ts",
+				"../markdown/types/core/index.js"
+			],
+			"@nan0web/markdown/components": [
+				"../markdown/types/Component/index.d.ts",
+				"../markdown/types/Component/index.js"
+			],
+			"@nan0web/markdown/domain": [
+				"../markdown/types/domain/index.d.ts",
+				"../markdown/types/domain/index.js"
+			],
+			"@nan0web/markdown/models": [
+				"../markdown/types/Model/index.d.ts",
+				"../markdown/types/Model/index.js"
+			],
+			"@nan0web/markdown/inspect": [
+				"../markdown/types/inspect.d.ts",
+				"../markdown/types/inspect.js"
+			],
+			"@nan0web/markdown/testing": [
+				"../markdown/types/testing/index.d.ts",
+				"../markdown/types/testing/index.js"
+			],
+			"@nan0web/markdown/builder": [
+				"../markdown/types/domain/StoreBuilderApp.d.ts",
+				"../markdown/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/release": [
+				"../release/types",
+				"../release/types/index.d.ts",
+				"../release/types/index.js"
+			],
+			"@nan0web/release/oop": [
+				"../release/types/oop.d.ts",
+				"../release/types/oop.js"
+			],
+			"@nan0web/release/command": [
+				"../release/types/command.d.ts",
+				"../release/types/command.js"
+			],
+			"@nan0web/release/types": [
+				"../release/types/types/index.d.ts",
+				"../release/types/types/index.js"
+			],
+			"@nan0web/release/core": [
+				"../release/types/core/index.d.ts",
+				"../release/types/core/index.js"
+			],
+			"@nan0web/release/components": [
+				"../release/types/Component/index.d.ts",
+				"../release/types/Component/index.js"
+			],
+			"@nan0web/release/domain": [
+				"../release/types/domain/index.d.ts",
+				"../release/types/domain/index.js"
+			],
+			"@nan0web/release/models": [
+				"../release/types/Model/index.d.ts",
+				"../release/types/Model/index.js"
+			],
+			"@nan0web/release/inspect": [
+				"../release/types/inspect.d.ts",
+				"../release/types/inspect.js"
+			],
+			"@nan0web/release/testing": [
+				"../release/types/testing/index.d.ts",
+				"../release/types/testing/index.js"
+			],
+			"@nan0web/release/builder": [
+				"../release/types/domain/StoreBuilderApp.d.ts",
+				"../release/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/store": [
+				"../store/types",
+				"../store/types/index.d.ts",
+				"../store/types/index.js"
+			],
+			"@nan0web/store/oop": [
+				"../store/types/oop.d.ts",
+				"../store/types/oop.js"
+			],
+			"@nan0web/store/command": [
+				"../store/types/command.d.ts",
+				"../store/types/command.js"
+			],
+			"@nan0web/store/types": [
+				"../store/types/types/index.d.ts",
+				"../store/types/types/index.js"
+			],
+			"@nan0web/store/core": [
+				"../store/types/core/index.d.ts",
+				"../store/types/core/index.js"
+			],
+			"@nan0web/store/components": [
+				"../store/types/Component/index.d.ts",
+				"../store/types/Component/index.js"
+			],
+			"@nan0web/store/domain": [
+				"../store/types/domain/index.d.ts",
+				"../store/types/domain/index.js"
+			],
+			"@nan0web/store/models": [
+				"../store/types/Model/index.d.ts",
+				"../store/types/Model/index.js"
+			],
+			"@nan0web/store/inspect": [
+				"../store/types/inspect.d.ts",
+				"../store/types/inspect.js"
+			],
+			"@nan0web/store/testing": [
+				"../store/types/testing/index.d.ts",
+				"../store/types/testing/index.js"
+			],
+			"@nan0web/store/builder": [
+				"../store/types/domain/StoreBuilderApp.d.ts",
+				"../store/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/sync": [
+				"../sync/types",
+				"../sync/types/index.d.ts",
+				"../sync/types/index.js"
+			],
+			"@nan0web/sync/oop": [
+				"../sync/types/oop.d.ts",
+				"../sync/types/oop.js"
+			],
+			"@nan0web/sync/command": [
+				"../sync/types/command.d.ts",
+				"../sync/types/command.js"
+			],
+			"@nan0web/sync/types": [
+				"../sync/types/types/index.d.ts",
+				"../sync/types/types/index.js"
+			],
+			"@nan0web/sync/core": [
+				"../sync/types/core/index.d.ts",
+				"../sync/types/core/index.js"
+			],
+			"@nan0web/sync/components": [
+				"../sync/types/Component/index.d.ts",
+				"../sync/types/Component/index.js"
+			],
+			"@nan0web/sync/domain": [
+				"../sync/types/domain/index.d.ts",
+				"../sync/types/domain/index.js"
+			],
+			"@nan0web/sync/models": [
+				"../sync/types/Model/index.d.ts",
+				"../sync/types/Model/index.js"
+			],
+			"@nan0web/sync/inspect": [
+				"../sync/types/inspect.d.ts",
+				"../sync/types/inspect.js"
+			],
+			"@nan0web/sync/testing": [
+				"../sync/types/testing/index.d.ts",
+				"../sync/types/testing/index.js"
+			],
+			"@nan0web/sync/builder": [
+				"../sync/types/domain/StoreBuilderApp.d.ts",
+				"../sync/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/telemetry": [
+				"../telemetry/types",
+				"../telemetry/types/index.d.ts",
+				"../telemetry/types/index.js"
+			],
+			"@nan0web/telemetry/oop": [
+				"../telemetry/types/oop.d.ts",
+				"../telemetry/types/oop.js"
+			],
+			"@nan0web/telemetry/command": [
+				"../telemetry/types/command.d.ts",
+				"../telemetry/types/command.js"
+			],
+			"@nan0web/telemetry/types": [
+				"../telemetry/types/types/index.d.ts",
+				"../telemetry/types/types/index.js"
+			],
+			"@nan0web/telemetry/core": [
+				"../telemetry/types/core/index.d.ts",
+				"../telemetry/types/core/index.js"
+			],
+			"@nan0web/telemetry/components": [
+				"../telemetry/types/Component/index.d.ts",
+				"../telemetry/types/Component/index.js"
+			],
+			"@nan0web/telemetry/domain": [
+				"../telemetry/types/domain/index.d.ts",
+				"../telemetry/types/domain/index.js"
+			],
+			"@nan0web/telemetry/models": [
+				"../telemetry/types/Model/index.d.ts",
+				"../telemetry/types/Model/index.js"
+			],
+			"@nan0web/telemetry/inspect": [
+				"../telemetry/types/inspect.d.ts",
+				"../telemetry/types/inspect.js"
+			],
+			"@nan0web/telemetry/testing": [
+				"../telemetry/types/testing/index.d.ts",
+				"../telemetry/types/testing/index.js"
+			],
+			"@nan0web/telemetry/builder": [
+				"../telemetry/types/domain/StoreBuilderApp.d.ts",
+				"../telemetry/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/test": [
+				"../test/types",
+				"../test/types/index.d.ts",
+				"../test/types/index.js"
+			],
+			"@nan0web/test/oop": [
+				"../test/types/oop.d.ts",
+				"../test/types/oop.js"
+			],
+			"@nan0web/test/command": [
+				"../test/types/command.d.ts",
+				"../test/types/command.js"
+			],
+			"@nan0web/test/types": [
+				"../test/types/types/index.d.ts",
+				"../test/types/types/index.js"
+			],
+			"@nan0web/test/core": [
+				"../test/types/core/index.d.ts",
+				"../test/types/core/index.js"
+			],
+			"@nan0web/test/components": [
+				"../test/types/Component/index.d.ts",
+				"../test/types/Component/index.js"
+			],
+			"@nan0web/test/domain": [
+				"../test/types/domain/index.d.ts",
+				"../test/types/domain/index.js"
+			],
+			"@nan0web/test/models": [
+				"../test/types/Model/index.d.ts",
+				"../test/types/Model/index.js"
+			],
+			"@nan0web/test/inspect": [
+				"../test/types/inspect.d.ts",
+				"../test/types/inspect.js"
+			],
+			"@nan0web/test/testing": [
+				"../test/types/testing/index.d.ts",
+				"../test/types/testing/index.js"
+			],
+			"@nan0web/test/builder": [
+				"../test/types/domain/StoreBuilderApp.d.ts",
+				"../test/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/transformer": [
+				"../transformer/types",
+				"../transformer/types/index.d.ts",
+				"../transformer/types/index.js"
+			],
+			"@nan0web/transformer/oop": [
+				"../transformer/types/oop.d.ts",
+				"../transformer/types/oop.js"
+			],
+			"@nan0web/transformer/command": [
+				"../transformer/types/command.d.ts",
+				"../transformer/types/command.js"
+			],
+			"@nan0web/transformer/types": [
+				"../transformer/types/types/index.d.ts",
+				"../transformer/types/types/index.js"
+			],
+			"@nan0web/transformer/core": [
+				"../transformer/types/core/index.d.ts",
+				"../transformer/types/core/index.js"
+			],
+			"@nan0web/transformer/components": [
+				"../transformer/types/Component/index.d.ts",
+				"../transformer/types/Component/index.js"
+			],
+			"@nan0web/transformer/domain": [
+				"../transformer/types/domain/index.d.ts",
+				"../transformer/types/domain/index.js"
+			],
+			"@nan0web/transformer/models": [
+				"../transformer/types/Model/index.d.ts",
+				"../transformer/types/Model/index.js"
+			],
+			"@nan0web/transformer/inspect": [
+				"../transformer/types/inspect.d.ts",
+				"../transformer/types/inspect.js"
+			],
+			"@nan0web/transformer/testing": [
+				"../transformer/types/testing/index.d.ts",
+				"../transformer/types/testing/index.js"
+			],
+			"@nan0web/transformer/builder": [
+				"../transformer/types/domain/StoreBuilderApp.d.ts",
+				"../transformer/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/types": [
+				"../types/types",
+				"../types/types/index.d.ts",
+				"../types/types/index.js"
+			],
+			"@nan0web/types/oop": [
+				"../types/types/oop.d.ts",
+				"../types/types/oop.js"
+			],
+			"@nan0web/types/command": [
+				"../types/types/command.d.ts",
+				"../types/types/command.js"
+			],
+			"@nan0web/types/types": [
+				"../types/types/types/index.d.ts",
+				"../types/types/types/index.js"
+			],
+			"@nan0web/types/core": [
+				"../types/types/core/index.d.ts",
+				"../types/types/core/index.js"
+			],
+			"@nan0web/types/components": [
+				"../types/types/Component/index.d.ts",
+				"../types/types/Component/index.js"
+			],
+			"@nan0web/types/domain": [
+				"../types/types/domain/index.d.ts",
+				"../types/types/domain/index.js"
+			],
+			"@nan0web/types/models": [
+				"../types/types/Model/index.d.ts",
+				"../types/types/Model/index.js"
+			],
+			"@nan0web/types/inspect": [
+				"../types/types/inspect.d.ts",
+				"../types/types/inspect.js"
+			],
+			"@nan0web/types/testing": [
+				"../types/types/testing/index.d.ts",
+				"../types/types/testing/index.js"
+			],
+			"@nan0web/types/builder": [
+				"../types/types/domain/StoreBuilderApp.d.ts",
+				"../types/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/ui": [
+				"../ui/types",
+				"../ui/types/index.d.ts",
+				"../ui/types/index.js"
+			],
+			"@nan0web/ui/oop": [
+				"../ui/types/oop.d.ts",
+				"../ui/types/oop.js"
+			],
+			"@nan0web/ui/command": [
+				"../ui/types/command.d.ts",
+				"../ui/types/command.js"
+			],
+			"@nan0web/ui/types": [
+				"../ui/types/types/index.d.ts",
+				"../ui/types/types/index.js"
+			],
+			"@nan0web/ui/core": [
+				"../ui/types/core/index.d.ts",
+				"../ui/types/core/index.js"
+			],
+			"@nan0web/ui/components": [
+				"../ui/types/Component/index.d.ts",
+				"../ui/types/Component/index.js"
+			],
+			"@nan0web/ui/domain": [
+				"../ui/types/domain/index.d.ts",
+				"../ui/types/domain/index.js"
+			],
+			"@nan0web/ui/models": [
+				"../ui/types/Model/index.d.ts",
+				"../ui/types/Model/index.js"
+			],
+			"@nan0web/ui/inspect": [
+				"../ui/types/inspect.d.ts",
+				"../ui/types/inspect.js"
+			],
+			"@nan0web/ui/testing": [
+				"../ui/types/testing/index.d.ts",
+				"../ui/types/testing/index.js"
+			],
+			"@nan0web/ui/builder": [
+				"../ui/types/domain/StoreBuilderApp.d.ts",
+				"../ui/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/ui-chat": [
+				"../ui-chat/types",
+				"../ui-chat/types/index.d.ts",
+				"../ui-chat/types/index.js"
+			],
+			"@nan0web/ui-chat/oop": [
+				"../ui-chat/types/oop.d.ts",
+				"../ui-chat/types/oop.js"
+			],
+			"@nan0web/ui-chat/command": [
+				"../ui-chat/types/command.d.ts",
+				"../ui-chat/types/command.js"
+			],
+			"@nan0web/ui-chat/types": [
+				"../ui-chat/types/types/index.d.ts",
+				"../ui-chat/types/types/index.js"
+			],
+			"@nan0web/ui-chat/core": [
+				"../ui-chat/types/core/index.d.ts",
+				"../ui-chat/types/core/index.js"
+			],
+			"@nan0web/ui-chat/components": [
+				"../ui-chat/types/Component/index.d.ts",
+				"../ui-chat/types/Component/index.js"
+			],
+			"@nan0web/ui-chat/domain": [
+				"../ui-chat/types/domain/index.d.ts",
+				"../ui-chat/types/domain/index.js"
+			],
+			"@nan0web/ui-chat/models": [
+				"../ui-chat/types/Model/index.d.ts",
+				"../ui-chat/types/Model/index.js"
+			],
+			"@nan0web/ui-chat/inspect": [
+				"../ui-chat/types/inspect.d.ts",
+				"../ui-chat/types/inspect.js"
+			],
+			"@nan0web/ui-chat/testing": [
+				"../ui-chat/types/testing/index.d.ts",
+				"../ui-chat/types/testing/index.js"
+			],
+			"@nan0web/ui-chat/builder": [
+				"../ui-chat/types/domain/StoreBuilderApp.d.ts",
+				"../ui-chat/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/ui-cli": [
+				"../ui-cli/types",
+				"../ui-cli/types/index.d.ts",
+				"../ui-cli/types/index.js"
+			],
+			"@nan0web/ui-cli/oop": [
+				"../ui-cli/types/oop.d.ts",
+				"../ui-cli/types/oop.js"
+			],
+			"@nan0web/ui-cli/command": [
+				"../ui-cli/types/command.d.ts",
+				"../ui-cli/types/command.js"
+			],
+			"@nan0web/ui-cli/types": [
+				"../ui-cli/types/types/index.d.ts",
+				"../ui-cli/types/types/index.js"
+			],
+			"@nan0web/ui-cli/core": [
+				"../ui-cli/types/core/index.d.ts",
+				"../ui-cli/types/core/index.js"
+			],
+			"@nan0web/ui-cli/components": [
+				"../ui-cli/types/Component/index.d.ts",
+				"../ui-cli/types/Component/index.js"
+			],
+			"@nan0web/ui-cli/domain": [
+				"../ui-cli/types/domain/index.d.ts",
+				"../ui-cli/types/domain/index.js"
+			],
+			"@nan0web/ui-cli/models": [
+				"../ui-cli/types/Model/index.d.ts",
+				"../ui-cli/types/Model/index.js"
+			],
+			"@nan0web/ui-cli/inspect": [
+				"../ui-cli/types/inspect.d.ts",
+				"../ui-cli/types/inspect.js"
+			],
+			"@nan0web/ui-cli/testing": [
+				"../ui-cli/types/testing/index.d.ts",
+				"../ui-cli/types/testing/index.js"
+			],
+			"@nan0web/ui-cli/builder": [
+				"../ui-cli/types/domain/StoreBuilderApp.d.ts",
+				"../ui-cli/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/ui-react": [
+				"../ui-react/types",
+				"../ui-react/types/index.d.ts",
+				"../ui-react/types/index.js"
+			],
+			"@nan0web/ui-react/oop": [
+				"../ui-react/types/oop.d.ts",
+				"../ui-react/types/oop.js"
+			],
+			"@nan0web/ui-react/command": [
+				"../ui-react/types/command.d.ts",
+				"../ui-react/types/command.js"
+			],
+			"@nan0web/ui-react/types": [
+				"../ui-react/types/types/index.d.ts",
+				"../ui-react/types/types/index.js"
+			],
+			"@nan0web/ui-react/core": [
+				"../ui-react/types/core/index.d.ts",
+				"../ui-react/types/core/index.js"
+			],
+			"@nan0web/ui-react/components": [
+				"../ui-react/types/Component/index.d.ts",
+				"../ui-react/types/Component/index.js"
+			],
+			"@nan0web/ui-react/domain": [
+				"../ui-react/types/domain/index.d.ts",
+				"../ui-react/types/domain/index.js"
+			],
+			"@nan0web/ui-react/models": [
+				"../ui-react/types/Model/index.d.ts",
+				"../ui-react/types/Model/index.js"
+			],
+			"@nan0web/ui-react/inspect": [
+				"../ui-react/types/inspect.d.ts",
+				"../ui-react/types/inspect.js"
+			],
+			"@nan0web/ui-react/testing": [
+				"../ui-react/types/testing/index.d.ts",
+				"../ui-react/types/testing/index.js"
+			],
+			"@nan0web/ui-react/builder": [
+				"../ui-react/types/domain/StoreBuilderApp.d.ts",
+				"../ui-react/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/ui-react-bootstrap": [
+				"../ui-react-bootstrap/types",
+				"../ui-react-bootstrap/types/index.d.ts",
+				"../ui-react-bootstrap/types/index.js"
+			],
+			"@nan0web/ui-react-bootstrap/oop": [
+				"../ui-react-bootstrap/types/oop.d.ts",
+				"../ui-react-bootstrap/types/oop.js"
+			],
+			"@nan0web/ui-react-bootstrap/command": [
+				"../ui-react-bootstrap/types/command.d.ts",
+				"../ui-react-bootstrap/types/command.js"
+			],
+			"@nan0web/ui-react-bootstrap/types": [
+				"../ui-react-bootstrap/types/types/index.d.ts",
+				"../ui-react-bootstrap/types/types/index.js"
+			],
+			"@nan0web/ui-react-bootstrap/core": [
+				"../ui-react-bootstrap/types/core/index.d.ts",
+				"../ui-react-bootstrap/types/core/index.js"
+			],
+			"@nan0web/ui-react-bootstrap/components": [
+				"../ui-react-bootstrap/types/Component/index.d.ts",
+				"../ui-react-bootstrap/types/Component/index.js"
+			],
+			"@nan0web/ui-react-bootstrap/domain": [
+				"../ui-react-bootstrap/types/domain/index.d.ts",
+				"../ui-react-bootstrap/types/domain/index.js"
+			],
+			"@nan0web/ui-react-bootstrap/models": [
+				"../ui-react-bootstrap/types/Model/index.d.ts",
+				"../ui-react-bootstrap/types/Model/index.js"
+			],
+			"@nan0web/ui-react-bootstrap/inspect": [
+				"../ui-react-bootstrap/types/inspect.d.ts",
+				"../ui-react-bootstrap/types/inspect.js"
+			],
+			"@nan0web/ui-react-bootstrap/testing": [
+				"../ui-react-bootstrap/types/testing/index.d.ts",
+				"../ui-react-bootstrap/types/testing/index.js"
+			],
+			"@nan0web/ui-react-bootstrap/builder": [
+				"../ui-react-bootstrap/types/domain/StoreBuilderApp.d.ts",
+				"../ui-react-bootstrap/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/ui-robo": [
+				"../ui-robo/types",
+				"../ui-robo/types/index.d.ts",
+				"../ui-robo/types/index.js"
+			],
+			"@nan0web/ui-robo/oop": [
+				"../ui-robo/types/oop.d.ts",
+				"../ui-robo/types/oop.js"
+			],
+			"@nan0web/ui-robo/command": [
+				"../ui-robo/types/command.d.ts",
+				"../ui-robo/types/command.js"
+			],
+			"@nan0web/ui-robo/types": [
+				"../ui-robo/types/types/index.d.ts",
+				"../ui-robo/types/types/index.js"
+			],
+			"@nan0web/ui-robo/core": [
+				"../ui-robo/types/core/index.d.ts",
+				"../ui-robo/types/core/index.js"
+			],
+			"@nan0web/ui-robo/components": [
+				"../ui-robo/types/Component/index.d.ts",
+				"../ui-robo/types/Component/index.js"
+			],
+			"@nan0web/ui-robo/domain": [
+				"../ui-robo/types/domain/index.d.ts",
+				"../ui-robo/types/domain/index.js"
+			],
+			"@nan0web/ui-robo/models": [
+				"../ui-robo/types/Model/index.d.ts",
+				"../ui-robo/types/Model/index.js"
+			],
+			"@nan0web/ui-robo/inspect": [
+				"../ui-robo/types/inspect.d.ts",
+				"../ui-robo/types/inspect.js"
+			],
+			"@nan0web/ui-robo/testing": [
+				"../ui-robo/types/testing/index.d.ts",
+				"../ui-robo/types/testing/index.js"
+			],
+			"@nan0web/ui-robo/builder": [
+				"../ui-robo/types/domain/StoreBuilderApp.d.ts",
+				"../ui-robo/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/ui-voice": [
+				"../ui-voice/types",
+				"../ui-voice/types/index.d.ts",
+				"../ui-voice/types/index.js"
+			],
+			"@nan0web/ui-voice/oop": [
+				"../ui-voice/types/oop.d.ts",
+				"../ui-voice/types/oop.js"
+			],
+			"@nan0web/ui-voice/command": [
+				"../ui-voice/types/command.d.ts",
+				"../ui-voice/types/command.js"
+			],
+			"@nan0web/ui-voice/types": [
+				"../ui-voice/types/types/index.d.ts",
+				"../ui-voice/types/types/index.js"
+			],
+			"@nan0web/ui-voice/core": [
+				"../ui-voice/types/core/index.d.ts",
+				"../ui-voice/types/core/index.js"
+			],
+			"@nan0web/ui-voice/components": [
+				"../ui-voice/types/Component/index.d.ts",
+				"../ui-voice/types/Component/index.js"
+			],
+			"@nan0web/ui-voice/domain": [
+				"../ui-voice/types/domain/index.d.ts",
+				"../ui-voice/types/domain/index.js"
+			],
+			"@nan0web/ui-voice/models": [
+				"../ui-voice/types/Model/index.d.ts",
+				"../ui-voice/types/Model/index.js"
+			],
+			"@nan0web/ui-voice/inspect": [
+				"../ui-voice/types/inspect.d.ts",
+				"../ui-voice/types/inspect.js"
+			],
+			"@nan0web/ui-voice/testing": [
+				"../ui-voice/types/testing/index.d.ts",
+				"../ui-voice/types/testing/index.js"
+			],
+			"@nan0web/ui-voice/builder": [
+				"../ui-voice/types/domain/StoreBuilderApp.d.ts",
+				"../ui-voice/types/domain/StoreBuilderApp.js"
+			],
+			"@nan0web/xml": [
+				"../xml/types",
+				"../xml/types/index.d.ts",
+				"../xml/types/index.js"
+			],
+			"@nan0web/xml/oop": [
+				"../xml/types/oop.d.ts",
+				"../xml/types/oop.js"
+			],
+			"@nan0web/xml/command": [
+				"../xml/types/command.d.ts",
+				"../xml/types/command.js"
+			],
+			"@nan0web/xml/types": [
+				"../xml/types/types/index.d.ts",
+				"../xml/types/types/index.js"
+			],
+			"@nan0web/xml/core": [
+				"../xml/types/core/index.d.ts",
+				"../xml/types/core/index.js"
+			],
+			"@nan0web/xml/components": [
+				"../xml/types/Component/index.d.ts",
+				"../xml/types/Component/index.js"
+			],
+			"@nan0web/xml/domain": [
+				"../xml/types/domain/index.d.ts",
+				"../xml/types/domain/index.js"
+			],
+			"@nan0web/xml/models": [
+				"../xml/types/Model/index.d.ts",
+				"../xml/types/Model/index.js"
+			],
+			"@nan0web/xml/inspect": [
+				"../xml/types/inspect.d.ts",
+				"../xml/types/inspect.js"
+			],
+			"@nan0web/xml/testing": [
+				"../xml/types/testing/index.d.ts",
+				"../xml/types/testing/index.js"
+			],
+			"@nan0web/xml/builder": [
+				"../xml/types/domain/StoreBuilderApp.d.ts",
+				"../xml/types/domain/StoreBuilderApp.js"
 			]
 		}
 	},

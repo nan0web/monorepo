@@ -4,30 +4,34 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { SortableList } from './SortableList.jsx'
 
 // Mock useSortableList from @nan0web/ui-react
-vi.mock('@nan0web/ui-react', () => ({
-	useSortableList: (items, options) => {
-		const [state, setState] = React.useState(items)
-		return {
-			items: state,
-			moveUp: (idx) => {
-				if (idx <= 0) return
-				const next = [...state]
-				;[next[idx - 1], next[idx]] = [next[idx], next[idx - 1]]
-				setState(next)
-				options?.onChange?.(next)
-			},
-			moveDown: (idx) => {
-				if (idx >= state.length - 1) return
-				const next = [...state]
-				;[next[idx], next[idx + 1]] = [next[idx + 1], next[idx]]
-				setState(next)
-				options?.onChange?.(next)
-			},
-			moveTo: vi.fn(),
-			reset: vi.fn(),
-		}
-	},
-}))
+vi.mock('@nan0web/ui-react', async (importOriginal) => {
+	const actual = await importOriginal()
+	return {
+		...actual,
+		useSortableList: (items, options) => {
+			const [state, setState] = React.useState(items)
+			return {
+				items: state,
+				moveUp: (idx) => {
+					if (idx <= 0) return
+					const next = [...state]
+					;[next[idx - 1], next[idx]] = [next[idx], next[idx - 1]]
+					setState(next)
+					options?.onChange?.(next)
+				},
+				moveDown: (idx) => {
+					if (idx >= state.length - 1) return
+					const next = [...state]
+					;[next[idx], next[idx + 1]] = [next[idx + 1], next[idx]]
+					setState(next)
+					options?.onChange?.(next)
+				},
+				moveTo: vi.fn(),
+				reset: vi.fn(),
+			}
+		},
+	}
+})
 
 const models = [
 	{ id: 'qwen-3-32b', size: '32B' },

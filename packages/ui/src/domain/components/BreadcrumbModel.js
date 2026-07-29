@@ -27,6 +27,7 @@ import { show, result } from '../../core/Intent.js'
  *
  * ESC/Back = pop() one item. Empty stack = app exit.
  * Ctrl+C   = always exit (adapter responsibility).
+ * @extends {Model}
  */
 export class BreadcrumbModel extends Model {
 	static $id = '@nan0web/ui/BreadcrumbModel'

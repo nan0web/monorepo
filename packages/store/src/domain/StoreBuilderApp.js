@@ -34,47 +34,78 @@ export class StoreBuilderApp extends Model {
 
 	async *run() {
 		const t = this._.t || ((k) => k)
-		const db = this._.db 
-		
+		const db = this._.db
+		if (!db) {
+			yield log('error', t(StoreBuilderApp.UI.error, { message: 'Database not initialized' }))
+			return result({ status: 'error', message: 'Database not initialized' })
+		}
+
 		yield progress(t(StoreBuilderApp.UI.scanning, { path: 'monorepo' }), 0)
 
 
 		const registry = []
-		const targets = ['apps', 'packages']
+		const targets = ['apps', 'packages', '.packages']
+		const defaultIgnore = [
+			'node_modules',
+			'dist',
+			'releases',
+			'__snapshots__',
+			'snapshots',
+			'playwright-report',
+			'test-results',
+			'coverage',
+			'.git',
+			'.next',
+			'.venv',
+			'.datasets',
+			'bin',
+			'build',
+			'out',
+			'.cache',
+			'play',
+		]
 
-		for (const target of targets) {
+		const scanDir = async (dir, workspaceName) => {
 			let entries = []
 			try {
-				entries = await db.listDir(target)
-				yield log('debug', `Listed ${target}: ${entries.length} entries`)
+				entries = await db.listDir(dir)
 			} catch (e) {
-				yield log('error', `List error [${target}]: ${e.message}`)
-				continue
+				return
 			}
-			
-			let count = 0
-			for (const entry of entries) {
-				const pkgPath = `${entry.path}/package.json`
-				const pkg = await db.get(pkgPath).catch((e) => {
-					return null
-				})
-				
+
+			const hasPkg = entries.some((e) => e.name === 'package.json')
+			if (hasPkg) {
+				const pkgPath = `${dir}/package.json`
+				const pkg = await db.get(pkgPath).catch(() => null)
 				if (pkg) {
 					const item = new StoreRegistryModel({
 						name: pkg.name,
-						workspace: target,
-						path: entry.path,
+						workspace: workspaceName,
+						path: dir,
 						version: pkg.version,
-						description: pkg.description,
-						tags: (pkg.keywords || []).join(';'),
+						description: pkg.description || '',
+						tags: Array.isArray(pkg.keywords) ? pkg.keywords.join(';') : '',
 					})
-
 					registry.push(item)
-					count++
-				} else {
-					yield log('debug', `No package.json at: ${pkgPath}`)
+					return
 				}
 			}
+
+			for (const entry of entries) {
+				if (entry.isDirectory) {
+					if (defaultIgnore.includes(entry.name) || entry.name.startsWith('.')) {
+						continue
+					}
+					await scanDir(entry.path, workspaceName)
+				}
+			}
+		}
+
+		for (const target of targets) {
+			const startCount = registry.length
+			yield log('debug', `Scanning workspace [${target}] recursively...`)
+			await scanDir(target, target)
+			const count = registry.length - startCount
 			yield log('info', t(StoreBuilderApp.UI.found, { count, project: target }))
 		}
 

@@ -542,13 +542,13 @@ files, test fixtures, and data exchange where minimal syntax noise is required.
 
 NaN0 closes the gap between the speed of native JSON and the readability of YAML/Markdown.
 
-|
-|
-|
-|
-|
-|
-|
+| Format          | Source     | Size (rel.) | Parse Speed (vs JSON) | Use Case |
+|-----------------|------------|-------------|-----------------------|-------------|
+| **JSON**        | Native V8  | 100%        | **1.0x**              | Machine-to-machine |
+| **NaN0**        | Core JS    | 101.1%      | **5.3x - 5.5x**       | **Fastest human format** |
+| **MD+N0**       | Hybrid     | 100.3%      | **5.0x - 5.1x**       | Articles with metadata |
+| **YAML**        | `yaml` lib | 105.7%      | **55.7x**             | Industry standard |
+| **MD (YAML)***  | `yaml` lib | 103.6%      | **62.3x**             | Old-school MD |
 
 > \* **Standard MD (YAML)** uses standard YAML frontmatter. By switching to **MD+NaN0**,
 > you get a **12x parsing speedup** for Markdown content.
@@ -570,8 +570,8 @@ NaN0 closes the gap between the speed of native JSON and the readability of YAML
 
 ### Primitive Types
 
-|
-|
+| Type      | Representation                               | Example                               |
+|----------|---------------------------------------------|---------------------------------------|
 | **String** | Plain text **unless** it contains whitespace,
 `:` or `#`, it must be quoted with double quotes. |
 `"escaped \" quote"` |
@@ -582,10 +582,10 @@ string (newlines are preserved). |
 Both integers and floats are supported. |
 `160_000_500.345` |
 
-|
+| **Boolean** | Literal `true` or `false`. |
 `true` |
 
-|
+| **Null** | Literal `null`. |
 `null` |
 | **Date / DateTime** | ISO‑8601 without timezone (`YYYY‑MM‑DD`) or with time
 (`YYYY‑MM‑DDTHH:MM:SS`). |

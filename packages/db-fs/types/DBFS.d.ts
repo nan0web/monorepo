@@ -88,7 +88,14 @@ declare class DBFS extends DB {
      * @param {any} document The document to save.
      * @returns {Promise<boolean>} True if saved successfully, false otherwise.
      */
-    saveDocument(uri: string, document: any): Promise<boolean>;
+    /**
+     * Saves raw file content directly to disk without registry savers/formatters.
+     * @param {string} uri The URI to save the file to.
+     * @param {string|Buffer} content The raw content to save.
+     * @returns {Promise<boolean>} True if saved successfully, false otherwise.
+     */
+    saveFile(uri: string, content: string | Buffer): Promise<boolean>;
+    saveDocument(uri: any, document: any): Promise<boolean>;
     /**
      * Appends a chunk of data to a document at the given URI.
      * @throws {Error} If the document cannot be written.
@@ -145,6 +152,19 @@ declare class DBFS extends DB {
         title: string;
         dir: string;
     }[]>;
+    /**
+     * Resolves the actual underlying URI for a path.
+     * Resolves firmlinks and symlinks back to a relative DB URI.
+     * @param {string} uri The URI to resolve
+     * @returns {string} The resolved real URI
+     */
+    realpath(uri: string): string;
+    /**
+     * Returns available system volumes/disks as URIs.
+     * Handles macOS (/Volumes), Windows (wmic), and Linux (/mnt, /media).
+     * @returns {Promise<string[]>} Array of volume URIs
+     */
+    getVolumes(): Promise<string[]>;
 }
 import DB from '@nan0web/db';
 import FS from './FSAdapter.js';

@@ -82,7 +82,7 @@ class IndexState {
 							scope: scopeName,
 							scopes: scopeName,
 						}),
-						'error',
+						'error'
 					)
 				} else if (terminalType === 'cached') {
 					yield show(t(UI.projectCached, { name: projectName, dir: details.dir || '' }), 'info')
@@ -93,14 +93,14 @@ class IndexState {
 							files: details.files,
 							dir: details.dir || '',
 						}),
-						'success',
+						'success'
 					)
 				} else if (terminalType === 'error') {
 					yield show(
 						projectName
 							? t(UI.projectError, { project: projectName, message: t(details.message) })
 							: t(details.message),
-						'error',
+						'error'
 					)
 				}
 			}
@@ -128,7 +128,7 @@ class IndexState {
 				if (agg.missingScopes.length > 0) {
 					yield show(
 						t(UI.projectNoFiles, { project: projectName, scopes: agg.missingScopes.join(', ') }),
-						'error',
+						'error'
 					)
 				}
 				if (agg.cachedScopes.length > 0) {
@@ -138,7 +138,7 @@ class IndexState {
 							dir: agg.projectDir,
 							scopes: agg.cachedScopes.join(', '),
 						}),
-						'info',
+						'info'
 					)
 				}
 				if (agg.indexedScopes.length > 0) {
@@ -148,7 +148,7 @@ class IndexState {
 							dir: agg.projectDir,
 							scopes: agg.indexedScopes.join(', '),
 						}),
-						'success',
+						'success'
 					)
 				}
 				for (const err of agg.otherErrors) {
@@ -259,7 +259,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 	/**
 	 * @param {Partial<IndexWorkspaceApp> | Record<string, any>} [data] Initial state
-	 * @param {import('@nan0web/types').ModelOptions} [options] Model options
+	 * @param {any} [options] Model options
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
@@ -290,7 +290,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 	}
 
 	/**
-	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
+	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}
 	 */
 	async *run() {
 		const { MarkdownIndexer } = await import('./MarkdownIndexer.js')
@@ -315,11 +315,11 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 	/**
 	 * @param {object} [deps]
-	 * @param {typeof import('./MarkdownIndexer.js').MarkdownIndexer} [deps.MarkdownIndexer]
-	 * @param {typeof import('./Embedder.js').Embedder} [deps.Embedder]
+	 * @param {any} [deps.MarkdownIndexer]
+	 * @param {any} [deps.Embedder]
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
 	 */
-	async *indexFull({ MarkdownIndexer, Embedder } = {}) {
+	async *indexFull(deps = {}) {
 		const { t } = this._
 
 		/**
@@ -330,7 +330,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		const process = await import('node:process')
 		const pathDb = new DBFS({ root: process.cwd() })
 		let workspaceRoot = pathDb.resolveSync(
-			/** @type {any} */ (this._).workspaceRoot || process.cwd(),
+			/** @type {any} */ (this._).workspaceRoot || process.cwd()
 		)
 		let current = workspaceRoot
 		while (current && current !== '/') {
@@ -361,10 +361,11 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			/** @type {any} */ (this._).embedderUrl ||
 			process.env.EMBEDDER_URL ||
 			'http://localhost:1234/v1'
-		const embedder = new Embedder({ baseURL: embedderUrl })
+		const EmbedderClass = deps.Embedder || (await import('./Embedder.js')).Embedder
+		const embedder = new EmbedderClass({ baseURL: embedderUrl })
 
 		const activeProjects = projects.filter((proj) =>
-			matchProject(proj.dir, this.project || undefined, nameToDir),
+			matchProject(proj.dir, this.project || undefined, nameToDir)
 		)
 		const totalScopes = activeProjects.length * this.scopes.length
 		const state = new IndexState(totalScopes, this.silent, this.scopes.length)
@@ -385,8 +386,10 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			}
 
 			const worker = async (proj) => {
+				const MarkdownIndexerClass =
+					deps.MarkdownIndexer || (await import('./MarkdownIndexer.js')).MarkdownIndexer
 				for (const scope of this.scopes) {
-					const indexer = new MarkdownIndexer(
+					const indexer = new MarkdownIndexerClass(
 						/** @type {any} */ ({
 							targetProject: proj.name,
 							targetDir: proj.dir,
@@ -394,7 +397,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 							ignore:
 								!proj.dir || proj.dir === '.' ? [...this.ignore, 'apps', 'packages'] : this.ignore,
 						}),
-						/** @type {any} */ ({ db: storeDb, workspaceDb, workspaceRoot }),
+						/** @type {any} */ ({ db: storeDb, workspaceDb, workspaceRoot })
 					)
 					try {
 						for await (const it of indexer.indexAll(embedder, { force: this.force })) {
@@ -439,9 +442,11 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				yield* this._handleEvent(it, state)
 			}
 		} else {
+			const MarkdownIndexerClass =
+				deps.MarkdownIndexer || (await import('./MarkdownIndexer.js')).MarkdownIndexer
 			for (const proj of activeProjects) {
 				for (const scope of this.scopes) {
-					const indexer = new MarkdownIndexer(
+					const indexer = new MarkdownIndexerClass(
 						/** @type {any} */ ({
 							targetProject: proj.name,
 							targetDir: proj.dir,
@@ -449,7 +454,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 							ignore:
 								!proj.dir || proj.dir === '.' ? [...this.ignore, 'apps', 'packages'] : this.ignore,
 						}),
-						/** @type {any} */ ({ db: storeDb, workspaceDb, workspaceRoot }),
+						/** @type {any} */ ({ db: storeDb, workspaceDb, workspaceRoot })
 					)
 
 					for await (const it of indexer.indexAll(embedder, { force: this.force })) {
@@ -468,10 +473,8 @@ export class IndexWorkspaceApp extends ModelAsApp {
 	/**
 	 * Shared event handler for indexing progress events
 	 * @param {any} it - indexing event
-	 * @param {object} deps
-	 * @param {TFunction} deps.t
-	 * @param {IndexState} state
-	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, void, unknown>}
+	 * @param {any} stateOrDeps
+	 * @returns {Generator<import('@nan0web/ui').Intent, void, unknown>}
 	 */
 	*_handleEvent(it, stateOrDeps) {
 		const { t } = this._
@@ -514,7 +517,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 					'missing',
 					sc,
 					{ totalScopesForProject: state.totalScopesForProject },
-					t,
+					t
 				)
 			} else {
 				yield* state.completeScope(
@@ -522,7 +525,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 					'error',
 					it.scope || '',
 					{ message: it.message, totalScopesForProject: state.totalScopesForProject },
-					t,
+					t
 				)
 			}
 			return
@@ -538,7 +541,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				'cached',
 				it.scope,
 				{ dir: it.dir, totalScopesForProject: state.totalScopesForProject },
-				t,
+				t
 			)
 			return
 		}
@@ -547,7 +550,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			if (isDeps) {
 				yield localShow(
 					localT(UI.projectIndexed, { name: projectName, files: it.files, dir: it.dir || '' }),
-					'success',
+					'success'
 				)
 				return
 			}
@@ -556,7 +559,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				'indexed',
 				it.scope,
 				{ dir: it.dir, files: it.files, totalScopesForProject: state.totalScopesForProject },
-				t,
+				t
 			)
 			return
 		}
@@ -593,7 +596,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				{
 					id: 'Mass_Index',
 					width: 30,
-				},
+				}
 			)
 		}
 	}
@@ -607,7 +610,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 
 		const pathDb = new DBFS({ root: process.cwd() })
 		let workspaceRoot = pathDb.resolveSync(
-			/** @type {any} */ (this._).workspaceRoot || process.cwd(),
+			/** @type {any} */ (this._).workspaceRoot || process.cwd()
 		)
 		let current = workspaceRoot
 		while (current && current !== '/') {
@@ -664,7 +667,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 				{
 					id: 'Agents_Index',
 					width: 30,
-				},
+				}
 			)
 		}
 
@@ -683,7 +686,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 					agents: allAgents.length,
 					projects: projects.length,
 				}),
-				'success',
+				'success'
 			)
 	}
 
@@ -756,8 +759,8 @@ function parseNAN0(content) {
 			currentAgent = {
 				id: trimmed.split(':')[1].replace(/['"]/g, '').trim(),
 				description: '',
-				workflows: [],
-				inspectors: [],
+				/** @type {string[]} */ workflows: [],
+				/** @type {string[]} */ inspectors: [],
 			}
 			agents.push(currentAgent)
 			inWorkflows = false

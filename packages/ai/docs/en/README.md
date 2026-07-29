@@ -49,13 +49,13 @@ How to use streamText API?
 
 ## Providers
 
-|
-|
-|
-|
-|
-|
-|
+| Provider | ENV Key | Status |
+|----------|---------|--------|
+| Cerebras | `CEREBRAS_API_KEY` | ✅ |
+| OpenAI | `OPENAI_API_KEY` | ✅ |
+| OpenRouter | `OPENROUTER_API_KEY` | ✅ |
+| HuggingFace | `HF_TOKEN` | ✅ |
+| LlamaCpp | `LLAMA_CPP_URL` | ✅ |
 
 How to get a provider?
 
@@ -86,7 +86,7 @@ ai.addModel(
 		context_length: 128000,
 		volume: 200e9,
 		pricing: { prompt: 1, completion: 1 },
-	}),
+	})
 )
 const found = ai.strategy.findModel(ai.getModelsMap(), 1000)
 ```

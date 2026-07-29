@@ -47,5 +47,3 @@ export {
 	BannerModel,
 	ProfileDropdownModel,
 } from './components/index.js'
-
-export { ShellModel } from './components/ShellModel.js'

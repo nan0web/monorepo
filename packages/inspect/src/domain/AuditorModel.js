@@ -104,4 +104,48 @@ export class AuditorModel extends ModelAsApp {
 		const s = await this._.db.statDocument(path.endsWith('/') ? path : path + '/').catch(() => null)
 		return s?.exists === true && s?.isDirectory === true
 	}
+
+	/**
+	 * Checks if this auditor is capped by the current step in the active session.
+	 * @returns {Promise<boolean>}
+	 */
+	async isCapped() {
+		if (!this._.db) return false
+		const sessionPath = '.agent/active_session.json'
+		const stat = await this._.db.statDocument(sessionPath).catch(() => null)
+		if (!stat || !stat.exists) return false
+
+		try {
+			const session = await this._.db.loadDocument(sessionPath)
+			if (session && Array.isArray(session.disabledInspectors)) {
+				const alias = String(/** @type {any} */(this.constructor).alias || '').toLowerCase()
+				
+				/** @type {Record<string, string>} Mapping of auditor aliases to session inspector keys */
+				const aliasMap = {
+					'jsdoc': 'jsdoc',
+					'models': 'models',
+					'welding': 'welding',
+					'verification': 'welding',
+					'export': 'adapters',
+					'exports': 'adapters',
+					'hygiene': 'adapters',
+					'domain': 'adapters',
+					'cli': 'ui-cli',
+					'chat': 'ui-chat',
+					'web': 'ui-web',
+					'snapshot': 'ui-web',
+					'theming': 'ui-web',
+					'qa': 'qa'
+				}
+
+				const inspectorName = aliasMap[alias] || alias
+				if (session.disabledInspectors.includes(inspectorName)) {
+					return true
+				}
+			}
+		} catch (e) {
+			// Fail-safe
+		}
+		return false
+	}
 }

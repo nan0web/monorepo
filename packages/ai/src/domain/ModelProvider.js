@@ -22,6 +22,7 @@ import { Pricing } from './Pricing.js'
 import llamacppInfo from '../providers/llamacpp.info.js'
 import GoogleInfo from '../providers/google.info.js'
 import GroqInfo from '../providers/groq.info.js'
+import MistralInfo from '../providers/mistral.info.js'
 
 const transformers = {
 	cerebras: CerebrasInfo.makeFlat,
@@ -30,9 +31,10 @@ const transformers = {
 	llamacpp: llamacppInfo.makeFlat,
 	google: GoogleInfo.makeFlat,
 	groq: GroqInfo.makeFlat,
+	mistral: MistralInfo.makeFlat,
 }
 
-/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq"} AvailableProvider */
+/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral"} AvailableProvider */
 /**
  * @typedef {Object} HuggingFaceProviderInfo
  * @property {string} provider
@@ -84,6 +86,7 @@ export class ModelProvider {
 		'llamacpp',
 		'google',
 		'groq',
+		'mistral',
 	]
 	/** @type {any} */
 	#fs
@@ -113,9 +116,11 @@ export class ModelProvider {
 			case 'huggingface':
 				return !!(process.env.HF_TOKEN || process.env.HUGGINGFACE_API_KEY)
 			case 'google':
-				return !!(process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_API_KEY)
+				return !!(process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY)
 			case 'groq':
 				return !!process.env.GROQ_API_KEY
+			case 'mistral':
+				return !!process.env.MISTRAL_API_KEY
 			case 'llamacpp':
 				return true
 			default:
@@ -166,6 +171,12 @@ export class ModelProvider {
 					api: ModelProvider.ui.errorApiKeyReq,
 					$provider: 'Groq',
 					$envVar: 'GROQ_API_KEY',
+				})
+			case 'mistral':
+				throw new ModelError({
+					api: ModelProvider.ui.errorApiKeyReq,
+					$provider: 'Mistral',
+					$envVar: 'MISTRAL_API_KEY',
 				})
 			case 'llamacpp':
 				// No API key needed for local llama.cpp
@@ -243,6 +254,7 @@ export class ModelProvider {
 		ModelProvider.validateApiKey(provider)
 		switch (provider) {
 			case 'cerebras':
+				return CerebrasInfo.freeModels
 				return await this.#jsonFetch(`https://api.cerebras.ai/v1/models`, {
 					Authorization: `Bearer ${process.env.CEREBRAS_API_KEY}`,
 				})
@@ -268,6 +280,10 @@ export class ModelProvider {
 			case 'groq':
 				return await this.#jsonFetch(`https://api.groq.com/openai/v1/models`, {
 					Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+				})
+			case 'mistral':
+				return await this.#jsonFetch(`https://api.mistral.ai/v1/models`, {
+					Authorization: `Bearer ${process.env.MISTRAL_API_KEY}`,
 				})
 			default:
 				return []

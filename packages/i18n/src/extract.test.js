@@ -48,12 +48,12 @@ describe('extract()', () => {
 		const content = `
     t("Don't worry")
     t('Say "hello"')
-    t(\`Backtick "\` and '\` quotes\`)
+    t(\`Backtick " and ' quotes\`)
   `
 		const keys = extract(content)
 		console.assert(keys.includes("Don't worry"))
 		console.assert(keys.includes('Say "hello"'))
-		console.assert(keys.includes('Backtick "` and \'` quotes'))
+		console.assert(keys.includes("Backtick \" and ' quotes"))
 	})
 
 	it('should ignore value inside options arrays but extract it elsewhere', () => {

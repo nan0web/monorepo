@@ -1,6 +1,7 @@
 /**
  * Model-as-Schema for the entire UI Sandbox Showcase.
  * Represents a complete User Journey demonstrating all components.
+ * @extends {Model}
  */
 export class ShowcaseAppModel extends Model {
     static $id: string;

@@ -29,6 +29,10 @@ export default class MDTableRow extends MDElement {
 		const { format = '.md' } = props
 		if ('.html' === format) return this.toHTML(props)
 		
+		if (this.children.length === 0 && this.content) {
+			return this.content.endsWith('\n') ? this.content : this.content + '\n'
+		}
+		
 		const childrenMd = this.children.map(child => child.toString(props)).join('')
 		return `|${childrenMd}\n`
 	}

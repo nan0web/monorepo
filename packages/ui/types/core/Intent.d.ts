@@ -15,15 +15,12 @@ export function validateIntent(intent: any): intent is Intent;
 /**
  * Create an ask intent.
  *
- * Two modes:
- *   ask('amount', { help: 'Enter amount', type: 'number' })  → single field
- *   ask('transfer', TransferMoneyModel)                       → full Model form
- *
  * @param {string} field - Field name or form name.
  * @param {object | Function} schema - Field descriptor or Model-as-Schema class.
+ * @param {object} [options={}] - Custom options overrides.
  * @returns {AskIntent}
  */
-export function ask(field: string, schema: object | Function): AskIntent;
+export function ask(field: string, schema: object | Function, options?: object): AskIntent;
 /**
  * @typedef {Object} ProgressOptions
  * @property {number} [total] - Absolute total steps.
@@ -34,6 +31,7 @@ export function ask(field: string, schema: object | Function): AskIntent;
  * @property {number} [columns] - Number of columns (terminal width).
  * @property {boolean} [forceOneLine] - Prevent wrapping and truncate instead.
  * @property {boolean|'success'|'error'} [stop] - Set to true to stop, or 'success'/'error' to stop with a status icon (for spinners).
+ * @property {'spinner'} [type] - Progress indicator type (e.g., 'spinner').
  */
 /**
  * Create a progress intent.
@@ -255,6 +253,10 @@ export type ProgressOptions = {
      * - Set to true to stop, or 'success'/'error' to stop with a status icon (for spinners).
      */
     stop?: boolean | "error" | "success" | undefined;
+    /**
+     * - Progress indicator type (e.g., 'spinner').
+     */
+    type?: "spinner" | undefined;
 };
 export type ShowData = {
     component?: any;

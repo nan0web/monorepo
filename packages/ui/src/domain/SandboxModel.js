@@ -5,6 +5,7 @@ import { show, result, ask } from '../core/Intent.js'
 /**
  * SandboxModel — OLMUI Model-as-Schema
  * Environment for testing and previewing UI components with dynamic property editing.
+ * @extends {Model}
  */
 export class SandboxModel extends Model {
 	static $id = '@nan0web/ui/SandboxModel'

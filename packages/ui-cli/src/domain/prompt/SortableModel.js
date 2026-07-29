@@ -24,6 +24,7 @@ export class SortableModel extends Model {
 		/** @type {string} Grab instructions. */ this.UI_GRAB
 		/** @type {string} Confirm message. */ this.UI_CONFIRM
 		/** @type {Array<any>} Items to sort. */ this.items
+		/** @type {Function} [selectFn] Selection function. */ this.selectFn
 	}
 
 	/**

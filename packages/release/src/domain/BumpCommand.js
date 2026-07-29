@@ -63,7 +63,7 @@ export default class BumpCommand extends ModelAsApp {
 			t(BumpCommand.UI.detectingChangedPackages, {
 				sinceRef,
 				targetVersion,
-			}),
+			})
 		)
 
 		const allFiles = new Set()
@@ -113,7 +113,7 @@ export default class BumpCommand extends ModelAsApp {
 							version: targetVersion,
 							dir: pkgDir,
 						}),
-						'info',
+						'info'
 					)
 					continue
 				}
@@ -128,7 +128,7 @@ export default class BumpCommand extends ModelAsApp {
 						targetVersion,
 						dir: pkgDir,
 					}),
-					this.dryRun ? 'warn' : 'success',
+					this.dryRun ? 'warn' : 'success'
 				)
 			}
 		}

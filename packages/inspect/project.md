@@ -1,5 +1,8 @@
 # @nan0web/inspect
 
+## Розширюваність (Custom Inspectors)
+Згідно з архітектурою `v3.2.0`, будь-який пакет або додаток (`nan0web` чи сторонній) може експортувати власних інспекторів. MCP-сервер (`src/ui/mcp.js`) та CLI автоматично їх підхоплюватимуть, якщо вони наслідують базовий `AuditorModel` і дотримуються концепції Model-as-Schema. Це гарантує, що специфічні бізнес-правила (наприклад, для банку чи агросфери) валідуються тією ж безкомпромісною екосистемою.
+
 Zero-Hallucination Architecture Auditor and Sovereign Healing pipeline for the NaN•Web ecosystem.
 
 ## Vision

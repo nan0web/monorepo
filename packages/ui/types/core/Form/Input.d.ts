@@ -37,6 +37,7 @@ export default class FormInput {
         TOGGLE: string;
         MULTISELECT: string;
         AUTOCOMPLETE: string;
+        SORTABLE: string;
     };
     /**
      * @param {*} input
