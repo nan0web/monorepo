@@ -1,0 +1,20 @@
+{
+  "name": "@nan0web/ui-web",
+  "version": "1.0.0",
+  "description": "Base web UI utilities for NaN0Web.",
+  "main": "src/index.js",
+  "type": "module",
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js"
+  ],
+  "scripts": {
+    "test": "node --test \"src/**/*.test.js\""
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "author": "YaRaSLove (ЯRаСлав) <support@yaro.page>",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.0"
+}
