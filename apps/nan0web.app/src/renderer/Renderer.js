@@ -39,7 +39,7 @@ function resolveData(data, path) {
 }
 export default class Renderer {
 	/** @type {object} */
-	state = {}
+	state
 	/** @type {Map<string, Function>} */
 	#registry = new Map()
 
@@ -167,6 +167,7 @@ export default class Renderer {
 		// 2. Fetch from external Document source
 		if (page.source) {
 			const doc = resolveData(this.state, page.source)
+			if (Array.isArray(doc)) return doc
 			if (doc && Array.isArray(doc.$content)) return doc.$content
 			if (doc && typeof doc.content === 'string' && doc.content.trim()) return this.#renderMarkdown(doc.content)
 

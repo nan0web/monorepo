@@ -11,7 +11,7 @@ import { generateSystemPrompt, parseSystemPrompt, mergeSystemPrompts } from "./s
 import { unpackAnswer } from "./unpack.js"
 import { GREEN, MAGENTA, RESET } from "../cli/ANSI.js"
 import { FileSystem } from "../utils/FileSystem.js"
-import { MarkdownProtocol } from "../utils/Markdown.js"
+import { FileProtocol } from "../FileProtocol.js"
 import { Ui } from "../cli/Ui.js"
 import { ModelInfo } from './ModelInfo.js'
 import ChatOptions from '../Chat/Options.js'
@@ -205,10 +205,10 @@ export async function packPrompt(packMarkdown, input, chat) {
  * @param {ModelInfo} model
  * @param {Chat} chat
  * @param {object} options Stream options
- * @returns {{stream: AsyncIterable<any>, result: any}}
+ * @returns {Promise<{stream: AsyncIterable<any>, result: any}>}
  */
-export function startStreaming(ai, model, chat, options) {
-	const result = ai.streamText(model, chat.messages, options)
+export async function startStreaming(ai, model, chat, options) {
+	const result = await ai.streamText(model, chat.messages, options)
 	const stream = result.textStream ?? result
 	return { stream, result }
 }
@@ -231,7 +231,7 @@ export async function decodeAnswer({ ui, chat, options }) {
 	/** @type {string} */
 	const fullResponse = String(answer.content)
 
-	const parsed = await MarkdownProtocol.parse(fullResponse)
+	const parsed = await FileProtocol.parseAdaptive(fullResponse)
 
 	content.push("#### llimo-unpack")
 	content.push("```bash")

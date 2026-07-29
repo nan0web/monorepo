@@ -4,20 +4,22 @@
  */
 export class TranslateCommand extends UiCommand {
     static name: string;
-    static help: string;
+    static description: string;
     /**
      * Factory method compatible with LLiMo command system.
      * @param {object} [input]
      * @param {string[]} [input.argv=[]]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
      * @returns {TranslateCommand}
      */
     static create(input?: {
         argv?: string[] | undefined;
-    }): TranslateCommand;
+    }, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>): TranslateCommand;
     /**
-     * @param {Partial<TranslateCommand>} input
+     * @param {Partial<TranslateCommand> | Record<string, any>} [data={}]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
      */
-    constructor(input?: Partial<TranslateCommand>);
+    constructor(data?: Partial<TranslateCommand> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
     /** @type {TranslateDocsModel} */
     model: TranslateDocsModel;
     /**
@@ -26,4 +28,4 @@ export class TranslateCommand extends UiCommand {
     run(): AsyncGenerator<import("../../cli/UiOutput.js").UiOutput | boolean>;
 }
 import { UiCommand } from '../../cli/Ui.js';
-import { TranslateDocsModel } from '../../domain/TranslateDocsModel.js';
+import { TranslateDocsModel } from '../../domain/app/TranslateDocsModel.js';

@@ -3,6 +3,7 @@ import { generateSystemPrompt } from '../llm/system.js'
 import { resolve } from 'node:path'
 
 export class SystemModel extends Model {
+	static alias = 'system'
 	static output = {
 		help: 'Output file path',
 		type: 'string',

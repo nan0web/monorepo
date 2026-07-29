@@ -1,9 +1,10 @@
 import { Model } from '@nan0web/types'
-import { MarkdownProtocol } from '../utils/Markdown.js'
+import { FileProtocol } from '../FileProtocol.js'
 import { unpackAnswer } from '../llm/unpack.js'
 import { resolve } from 'node:path'
 
 export class UnpackModel extends Model {
+	static alias = 'unpack'
 	static input = {
 		help: 'Input markdown file (or stdin if empty)',
 		type: 'string',
@@ -40,32 +41,23 @@ export class UnpackModel extends Model {
 		try {
 			yield { type: 'progress', message: t(UnpackModel.UI.started) }
 
-			let mdStream
+			let content = ''
 
 			if (this.input) {
-				const fs = await import('node:fs')
-				const readline = await import('node:readline')
-				mdStream = readline.createInterface({
-					input: fs.createReadStream(resolve(this.input)),
-					crlfDelay: Infinity,
-				})
+				const fs = await import('node:fs/promises')
+				content = await fs.readFile(resolve(this.input), 'utf-8')
 			} else if (!process.stdin.isTTY) {
-				const { Readable } = await import('node:stream')
-				const readline = await import('node:readline')
 				let stdinData = ''
 				for await (const chunk of process.stdin) {
 					stdinData += chunk
 				}
-				mdStream = readline.createInterface({
-					input: Readable.from([stdinData]),
-					crlfDelay: Infinity,
-				})
+				content = stdinData
 			} else {
 				yield { type: 'log', level: 'error', message: t(UnpackModel.UI.noInput) }
 				return { status: 'failed', reason: 'no_input' }
 			}
 
-			const parsed = await MarkdownProtocol.parseStream(mdStream)
+			const parsed = await FileProtocol.parseAdaptive(content)
 			const stream = unpackAnswer(parsed, this.dry, process.cwd())
 
 			for await (const str of stream) {

@@ -10,6 +10,7 @@
  * @property {string} system System prompt override
  */
 export class SubagentModel extends Model {
+    static alias: string;
     static model: {
         help: string;
         default: string;

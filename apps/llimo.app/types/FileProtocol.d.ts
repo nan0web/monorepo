@@ -27,6 +27,10 @@ export class FileEntry {
     content: string;
     /** @type {string} */
     encoding: string;
+    /** @type {number|undefined} */
+    startLine: number | undefined;
+    /** @type {number|undefined} */
+    lineCount: number | undefined;
 }
 export class FileError {
     /** @param {Partial<FileError>} input */
@@ -53,6 +57,12 @@ export class FileProtocol {
      * @returns {ValidateResult}
      */
     static validate(correct?: FileEntry[]): ValidateResult;
+    /**
+     * Parse dynamically detecting the format.
+     * @param {string} source
+     * @returns {Promise<ParsedFile>}
+     */
+    static parseAdaptive(source: string): Promise<ParsedFile>;
     /**
      * Parse the source into ParsedFile.
      * @param {any} source – a source of content

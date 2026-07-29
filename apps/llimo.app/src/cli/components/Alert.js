@@ -30,6 +30,15 @@ export class Alert extends UiOutput {
 					: "warn" === variant ? "warn"
 						: "info"
 	}
+	get type() {
+		return "show"
+	}
+	get level() {
+		return this.variant === "debug" ? "info" : this.variant
+	}
+	get message() {
+		return this.text
+	}
 	toString() {
 		return this.text
 	}

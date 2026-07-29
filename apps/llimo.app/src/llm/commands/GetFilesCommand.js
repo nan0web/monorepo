@@ -22,7 +22,7 @@ import { Alert } from "../../cli/components/index.js"
  */
 export default class GetFilesCommand extends Command {
 	static name = "get"
-	static help = "Get the files from the project one file or pattern per line (including micromatch patterns)"
+	static description = "Get the files from the project one file or pattern per line (including micromatch patterns)"
 	static example = "```\nsrc/index.js\ntypes/**\npackage.json\n```"
 
 	/**

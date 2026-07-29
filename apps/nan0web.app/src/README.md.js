@@ -46,7 +46,7 @@ function testRender() {
 		 * npm run start -- --dsn data/
 		 * ```
 		 */
-		assert.equal(pkg.name, 'nan0web.app')
+		assert.equal(pkg.name, '@nan0web/nan0web.app')
 	})
 
 	/**

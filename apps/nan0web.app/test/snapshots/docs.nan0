@@ -1,0 +1,7 @@
+- input:
+    command: docs
+    args: { path: "README" }
+- progress:
+    message: "Loading docs..."
+- result:
+    ok: true

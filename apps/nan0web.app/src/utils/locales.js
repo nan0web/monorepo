@@ -30,7 +30,8 @@ export async function detectLocales(db) {
 	
 	try {
 		const entries = await db.listDir('.')
-		for (const name of entries) {
+		for (const entry of entries) {
+			const name = typeof entry === 'string' ? entry : entry.name
 			if (name.length === 2 && LOCALE_REGISTRY[name]) {
 				const stat = await db.stat(name)
 				if (stat && stat.isDirectory) {

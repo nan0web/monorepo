@@ -15,10 +15,39 @@
         import DB from '@nan0web/db-browser'
         import { EditorModel } from './src/domain/EditorModel.js'
         import './src/ui/web/EditorWeb.js'
+        import { NewsItem } from '/Users/i/src/nan.web/apps/3rdparty/ipne.ws/news-analizer/src/domain/NewsItem.js'
 
         async function init() {
             const db = new DB()
             await db.connect()
+
+            // Register NewsItem under the news/ prefix
+            db.models.set('news/', NewsItem)
+
+            // Seed mock documents if they don't exist
+            const doc1 = await db.loadDocument('news/1.nan0').catch(() => null)
+            if (!doc1) {
+                await db.saveDocument('news/1.nan0', {
+                    title: 'Зустріч НАТО у Брюсселі',
+                    content: 'Сьогодні лідери країн НАТО зустрілися для обговорення важливих оборонних питань.',
+                    blocks: [
+                        { type: 'paragraph', content: 'Сьогодні лідери країн НАТО зустрілися для обговорення важливих оборонних питань.' },
+                        { type: 'header', content: 'Основні пункти порядку денного' },
+                        { type: 'paragraph', content: '1. Безпека східного флангу Альянсу.' }
+                    ],
+                    source: 'IP News',
+                    manual_import: true
+                })
+                await db.saveDocument('news/2.nan0', {
+                    title: 'Новий пакет військової допомоги',
+                    content: 'Україна отримає додаткове оборонне обладнання від союзників.',
+                    blocks: [
+                        { type: 'paragraph', content: 'Україна отримає додаткове оборонне обладнання...' }
+                    ],
+                    source: 'Euro-Atlantic',
+                    manual_import: false
+                })
+            }
 
             const model = new EditorModel({}, { db })
             const el = document.getElementById('app')

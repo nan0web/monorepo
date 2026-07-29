@@ -46,5 +46,18 @@ export default class LogConfig extends Model {
 		type: 'boolean',
 		default: false,
 	}
+
+	/**
+	 * @param {object} [data]
+	 * @param {object} [options]
+	 */
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		/** @type {boolean} */ this.enabled
+		/** @type {string} */ this.dir
+		/** @type {string} */ this.rotation
+		/** @type {number} */ this.maxSizeMb
+		/** @type {boolean} */ this.logBodies
+	}
 }
 

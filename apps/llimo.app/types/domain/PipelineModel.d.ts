@@ -1,4 +1,5 @@
 export class PipelineModel extends ModelAsApp {
+    static alias: string;
     static intent: {
         help: string;
         positional: boolean;
@@ -19,13 +20,23 @@ export class PipelineModel extends ModelAsApp {
     static from: {
         default: string;
     };
+    static task: {
+        help: string;
+        default: string;
+    };
+    static model: {
+        help: string;
+        default: string;
+    };
     constructor(data?: {});
     intent: any;
     dir: any;
     appName: any;
     quiet: any;
     from: any;
+    task: any;
+    model: any;
     inferName(): any;
-    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ShowIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent | undefined, unknown>;
+    run(): AsyncGenerator<any, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
 }
 import { ModelAsApp } from '@nan0web/ui-cli';

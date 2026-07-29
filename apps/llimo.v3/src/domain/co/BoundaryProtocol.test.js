@@ -211,4 +211,33 @@ const wrong = 'code block'
 		assert.strictEqual(paths3.length, 1)
 		assert.strictEqual(paths3[0].path, 'src/utils/Helper.test.js')
 	})
+
+	describe('validateFileContent', () => {
+		it('should validate valid and invalid JSON', () => {
+			assert.deepEqual(BoundaryProtocol.validateFileContent('file.json', '{"ok": true}'), { valid: true })
+			const res = BoundaryProtocol.validateFileContent('file.json', 'invalid json')
+			assert.strictEqual(res.valid, false)
+			assert.ok(res.error)
+		})
+
+		it('should validate valid and invalid YAML', () => {
+			assert.deepEqual(BoundaryProtocol.validateFileContent('file.yaml', 'foo: bar\nlist:\n  - item'), { valid: true })
+			assert.deepEqual(BoundaryProtocol.validateFileContent('file.yml', 'foo: bar'), { valid: true })
+			const res = BoundaryProtocol.validateFileContent('file.yaml', 'invalid: [yaml')
+			assert.strictEqual(res.valid, false)
+			assert.ok(res.error)
+		})
+
+		it('should validate valid and invalid JSONL', () => {
+			assert.deepEqual(BoundaryProtocol.validateFileContent('file.jsonl', '{"a":1}\n{"b":2}'), { valid: true })
+			const res = BoundaryProtocol.validateFileContent('file.jsonl', '{"a":1}\ninvalid')
+			assert.strictEqual(res.valid, false)
+			assert.ok(res.error)
+		})
+
+		it('should bypass validation for unhandled formats like JS', () => {
+			assert.deepEqual(BoundaryProtocol.validateFileContent('file.js', 'any invalid text here'), { valid: true })
+			assert.deepEqual(BoundaryProtocol.validateFileContent('file.txt', 'some text'), { valid: true })
+		})
+	})
 })

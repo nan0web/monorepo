@@ -4,24 +4,30 @@
  */
 export class InfoCommand extends UiCommand {
     static name: string;
-    static help: string;
+    static description: string;
     /**
      * @param {object} [input]
      * @param {string[]} [input.argv=[]]
      * @param {Chat} [input.chat]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
      * @returns {InfoCommand}
      */
     static create(input?: {
         argv?: string[] | undefined;
         chat?: Chat | undefined;
-    }): InfoCommand;
+    }, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>): InfoCommand;
     /**
-     * @param {Partial<InfoCommand>} input
+     * @param {Partial<InfoCommand> | Record<string, any>} [data={}]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
      */
-    constructor(input?: Partial<InfoCommand>);
+    constructor(data?: Partial<InfoCommand> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    /** @type {InfoOptions} */
     options: InfoOptions;
+    /** @type {Chat} */
     chat: Chat;
+    /** @type {Ui} */
     ui: Ui;
+    /** @type {FileSystem} */
     fs: FileSystem;
     /**
      * @throws

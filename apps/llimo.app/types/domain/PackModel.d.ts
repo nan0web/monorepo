@@ -2,6 +2,7 @@
  * Packs files into a single markdown string based on a checklist.
  */
 export class PackModel extends Model {
+    static alias: string;
     static input: {
         help: string;
         type: string;

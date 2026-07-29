@@ -2,127 +2,952 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <!-- Зверніть увагу: nonce використовується для безпеки CSP (Content-Security-Policy) -->
-    <!-- У реальному додатку CSP має бути налаштована суворіше, але тут ми допускаємо basic setup -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src var(--vscode-csp-nonce) 'unsafe-inline'; script-src 'nonce-{{CSP_NONCE}}' 'unsafe-eval'; connect-src 'self' ws: wss:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline' var(--vscode-csp-nonce); script-src 'nonce-{{CSP_NONCE}}' 'unsafe-eval'; connect-src 'self' ws: wss:;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LLiMo Universal Runner</title>
+    <title>LLiMo Universal Workspace</title>
     
-    <!-- Lightweight Webview (Zero-React) based on ui-lit / HTML -->
     <style>
         :root {
-            --bg-color: var(--vscode-editor-background);
-            --text-color: var(--vscode-editor-foreground);
-            --btn-bg: var(--vscode-button-background);
-            --btn-hover: var(--vscode-button-hoverBackground);
-            --btn-fg: var(--vscode-button-foreground);
-            --error-color: var(--vscode-errorForeground);
-            --border-color: var(--vscode-panel-border);
+            --bg-color: var(--vscode-editor-background, #1e1e1e);
+            --text-color: var(--vscode-editor-foreground, #d4d4d4);
+            --btn-bg: var(--vscode-button-background, #007acc);
+            --btn-hover: var(--vscode-button-hoverBackground, #0062a3);
+            --btn-fg: var(--vscode-button-foreground, #ffffff);
+            --border-color: var(--vscode-panel-border, #3c3c3c);
+            --input-bg: var(--vscode-input-background, #252526);
+            --input-fg: var(--vscode-input-foreground, #cccccc);
+            --accent-glow: 0 0 10px rgba(0, 122, 204, 0.4);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --active-glow: 0 0 12px rgba(76, 175, 80, 0.5);
+            --warn-glow: 0 0 12px rgba(255, 152, 0, 0.5);
         }
+
         body {
-            font-family: var(--vscode-font-family);
+            font-family: var(--vscode-font-family, 'Segoe UI', Roboto, sans-serif);
             background-color: var(--bg-color);
             color: var(--text-color);
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
             height: 100vh;
-            margin: 0;
-            padding: 20px;
+            overflow: hidden;
             box-sizing: border-box;
-            text-align: center;
         }
-        h2 {
-            margin-top: 0;
+
+        /* Top Header Grid */
+        header {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 15px;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-section h1 {
+            font-size: 16px;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-tag {
+            font-size: 10px;
+            background: var(--btn-bg);
+            color: var(--btn-fg);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .top-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        select, input {
+            background-color: var(--input-bg);
+            color: var(--input-fg);
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--btn-bg);
+            box-shadow: var(--accent-glow);
+        }
+
+        /* Real-time Telemetry Dashboard */
+        .telemetry-bar {
+            display: flex;
+            gap: 20px;
+            padding: 6px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 11px;
+            color: #8c8c8c;
+        }
+
+        .telemetry-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .telemetry-value {
+            color: var(--text-color);
             font-weight: 600;
         }
-        button {
+
+        /* Main Workspace Split Layout */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 240px 1fr 220px;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar: Context Selector */
+        .context-sidebar {
+            background: rgba(0, 0, 0, 0.1);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8c8c8c;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            padding: 4px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .file-item input[type="checkbox"] {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* Chat & Logs Panel */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-color);
+        }
+
+        .messages-canvas {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-sizing: border-box;
+        }
+
+        /* Premium Alert/Message Balloons */
+        .alert-balloon {
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 90%;
+            animation: slideIn 0.25s ease-out;
+            border-left: 4px solid #8c8c8c;
+            background: var(--card-bg);
+            box-sizing: border-box;
+        }
+
+        .alert-balloon.info {
+            border-left-color: #007acc;
+            background: rgba(0, 122, 204, 0.05);
+        }
+
+        .alert-balloon.success {
+            border-left-color: #4caf50;
+            background: rgba(76, 175, 80, 0.05);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.05);
+        }
+
+        .alert-balloon.warning {
+            border-left-color: #ff9800;
+            background: rgba(255, 152, 0, 0.05);
+        }
+
+        .alert-balloon.error {
+            border-left-color: #f44336;
+            background: rgba(244, 67, 54, 0.05);
+        }
+
+        .message-header {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8c8c8c;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        /* Code Block Styling */
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: var(--vscode-editor-font-family, monospace);
+            font-size: 12px;
+            margin: 8px 0 0 0;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Pipeline Steps Checklist */
+        .pipeline-sidebar {
+            background: rgba(0, 0, 0, 0.1);
+            border-left: 1px solid var(--border-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .pipeline-step.active {
+            background: rgba(0, 122, 204, 0.05);
+            border-color: var(--btn-bg);
+            box-shadow: var(--accent-glow);
+        }
+
+        .pipeline-step.completed {
+            background: rgba(76, 175, 80, 0.05);
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+
+        .step-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #8c8c8c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: 700;
+            box-sizing: border-box;
+        }
+
+        .pipeline-step.active .step-indicator {
+            border-color: var(--btn-bg);
+            background: var(--btn-bg);
+            box-shadow: var(--accent-glow);
+        }
+
+        .pipeline-step.completed .step-indicator {
+            border-color: #4caf50;
+            background: #4caf50;
+            color: white;
+        }
+
+        /* Input Controls Panel */
+        .input-panel {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            flex-grow: 1;
+            background-color: var(--input-bg);
+            color: var(--input-fg);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+            resize: none;
+            height: 48px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--btn-bg);
+            box-shadow: var(--accent-glow);
+        }
+
+        /* Autocomplete Suggestions Dropdown */
+        .autocomplete-dropdown {
+            position: absolute;
+            bottom: 75px;
+            left: 20px;
+            right: 20px;
+            max-height: 180px;
+            overflow-y: auto;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5), var(--accent-glow);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .autocomplete-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-color);
+        }
+
+        .autocomplete-item:hover, .autocomplete-item.selected {
+            background-color: var(--btn-bg);
+            color: var(--btn-fg);
+        }
+
+        .autocomplete-item .item-type {
+            font-size: 9px;
+            opacity: 0.6;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-left: 10px;
+        }
+
+        .action-btn {
             background-color: var(--btn-bg);
             color: var(--btn-fg);
             border: none;
-            padding: 12px 24px;
-            font-size: 16px;
+            padding: 0 20px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
             border-radius: 4px;
-            margin-top: 20px;
-            transition: background 0.2s;
-            display: inline-flex;
+            transition: background 0.15s, transform 0.1s;
+            display: flex;
             align-items: center;
             gap: 8px;
         }
-        button:hover {
+
+        .action-btn:hover {
             background-color: var(--btn-hover);
         }
-        button:disabled {
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        #status {
-            margin-top: 15px;
-            font-style: italic;
-            opacity: 0.8;
-            min-height: 24px;
-        }
-        #feedback {
-            margin-top: 20px;
-            padding: 15px;
-            border-top: 1px solid var(--border-color);
-            width: 100%;
-            max-width: 400px;
-            box-sizing: border-box;
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 4px;
-            display: none;
-        }
-        .mic-icon {
-            font-size: 1.2em;
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 <body>
-    <div id="app">
-        <h2>🤖 LLiMo Voice Runner</h2>
-        <p>Інтегрований OLMUI Webview адаптер. Натисніть кнопку нижче, щоб захопити голосовий намір для субагентів.</p>
+
+    <!-- Header Panel -->
+    <header>
+        <div class="logo-section">
+            <h1>🤖 LLiMo Universal Workspace</h1>
+            <span class="logo-tag">v3.3.0</span>
+        </div>
         
-        <button id="recordBtn">
-            <span class="mic-icon">🎤</span> 
-            <span id="btnText">Передати Намір (Voice-to-App)</span>
-        </button>
-        
-        <div id="status">Очікування наміру...</div>
-        <div id="feedback"></div>
+        <div class="top-controls">
+            <!-- Model Selection dropdown -->
+            <div class="control-group">
+                <label for="modelSelect">Модель:</label>
+                <select id="modelSelect">
+                    <option value="">Завантаження моделей...</option>
+                </select>
+            </div>
+
+            <!-- Budget Control input -->
+            <div class="control-group">
+                <label for="budgetInput">Бюджет:</label>
+                <input type="number" id="budgetInput" value="2.00" step="0.50" min="0.10" style="width: 60px;">
+            </div>
+        </div>
+    </header>
+
+    <!-- Telemetry Tracker Bar -->
+    <div class="telemetry-bar">
+        <div class="telemetry-item">
+            <span>Вартість сесії:</span>
+            <span class="telemetry-value" id="sessionCost">$0.0000</span>
+        </div>
+        <div class="telemetry-item">
+            <span>Ліміт бюджету:</span>
+            <span class="telemetry-value" id="budgetLimit">$2.0000</span>
+        </div>
+        <div class="telemetry-item">
+            <span>Токенів згенеровано:</span>
+            <span class="telemetry-value" id="tokensGenerated">0 T</span>
+        </div>
+        <div class="telemetry-item">
+            <span>Швидкість генерації:</span>
+            <span class="telemetry-value" id="generationSpeed">0 T/s</span>
+        </div>
     </div>
 
+    <!-- Main Grid Layout -->
+    <div class="workspace-grid">
+        <!-- Left Sidebar: Project Context Selection -->
+        <aside class="context-sidebar">
+            <h3 class="sidebar-title">📁 Контекст проекту</h3>
+            <ul class="file-list" id="fileListContainer">
+                <li style="font-size: 11px; opacity: 0.6;">Очікування завантаження файлів...</li>
+            </ul>
+        </aside>
+
+        <!-- Center Area: Chat & Logs Stream -->
+        <main class="chat-container">
+            <div class="messages-canvas" id="messagesCanvas">
+                <!-- Welcome greeting -->
+                <div class="alert-balloon info">
+                    <div class="message-header">Система</div>
+                    Вітаємо у LLiMo Developer Workspace! Оберіть модель, налаштуйте бюджет і запустіть один з кроків конвеєру зварювання інтерфейсів.
+                </div>
+            </div>
+
+            <!-- Input Controls Panel at bottom of chat -->
+            <div class="input-panel" style="position: relative;">
+                <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+                <div class="input-row">
+                    <div class="control-group" style="flex-shrink: 0;">
+                        <select id="commandSelect" style="height: 100%; font-size: 13px;">
+                            <option value="pipeline:seed">pipeline:seed</option>
+                            <option value="pipeline:model">pipeline:model</option>
+                            <option value="pipeline:contract">pipeline:contract</option>
+                            <option value="pipeline:adapter">pipeline:adapter</option>
+                            <option value="pipeline:cli">pipeline:cli</option>
+                            <option value="pipeline:chat">pipeline:chat</option>
+                            <option value="pipeline:web">pipeline:web</option>
+                            <option value="pipeline:qa">pipeline:qa</option>
+                        </select>
+                    </div>
+                    
+                    <textarea id="intentInput" placeholder="Введіть ваш намір (наприклад: Створи простий Todo App) або скористайтесь автодоповненням @file..."></textarea>
+                    
+                    <button class="action-btn" id="runBtn">
+                        <span>Запустити</span>
+                        <span>🚀</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar: Pipeline Checklist -->
+        <aside class="pipeline-sidebar">
+            <h3 class="sidebar-title">⚡ Етапи конвеєру</h3>
+            
+            <div class="pipeline-step" id="step-seed">
+                <div class="step-indicator">1</div>
+                <span>pipeline:seed</span>
+            </div>
+            <div class="pipeline-step" id="step-model">
+                <div class="step-indicator">2</div>
+                <span>pipeline:model</span>
+            </div>
+            <div class="pipeline-step" id="step-contract">
+                <div class="step-indicator">3</div>
+                <span>pipeline:contract</span>
+            </div>
+            <div class="pipeline-step" id="step-adapter">
+                <div class="step-indicator">4</div>
+                <span>pipeline:adapter</span>
+            </div>
+            <div class="pipeline-step" id="step-cli">
+                <div class="step-indicator">5</div>
+                <span>pipeline:cli</span>
+            </div>
+            <div class="pipeline-step" id="step-chat">
+                <div class="step-indicator">6</div>
+                <span>pipeline:chat</span>
+            </div>
+            <div class="pipeline-step" id="step-web">
+                <div class="step-indicator">7</div>
+                <span>pipeline:web</span>
+            </div>
+            <div class="pipeline-step" id="step-mobile">
+                <div class="step-indicator">8</div>
+                <span>pipeline:mobile</span>
+            </div>
+            <div class="pipeline-step" id="step-qa">
+                <div class="step-indicator">9</div>
+                <span>pipeline:qa</span>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Frontend controller scripting -->
     <script nonce="{{CSP_NONCE}}">
         const vscode = acquireVsCodeApi();
-        
-        const recordBtn = document.getElementById('recordBtn');
-        const btnText = document.getElementById('btnText');
-        const statusEl = document.getElementById('status');
-        const feedbackEl = document.getElementById('feedback');
-        const micIcon = document.querySelector('.mic-icon');
 
-        recordBtn.addEventListener('click', () => {
-            statusEl.textContent = 'Перехід до VSCode для вводу наміру...';
-            recordBtn.style.backgroundColor = 'var(--vscode-button-hoverBackground)';
-            
-            // VSCode Webview не підтримує мікрофон, тому делегуємо обробку розширенню
-            vscode.postMessage({ type: 'start-capture' });
-            
-            setTimeout(() => {
-                recordBtn.style.backgroundColor = 'var(--btn-bg)';
-            }, 1000);
+        const modelSelect = document.getElementById('modelSelect');
+        const budgetInput = document.getElementById('budgetInput');
+        const sessionCostEl = document.getElementById('sessionCost');
+        const budgetLimitEl = document.getElementById('budgetLimit');
+        const tokensGeneratedEl = document.getElementById('tokensGenerated');
+        const generationSpeedEl = document.getElementById('generationSpeed');
+        const fileListContainer = document.getElementById('fileListContainer');
+        const messagesCanvas = document.getElementById('messagesCanvas');
+        const commandSelect = document.getElementById('commandSelect');
+        const intentInput = document.getElementById('intentInput');
+        const runBtn = document.getElementById('runBtn');
+
+        // Autocomplete status variables
+        let workspaceFiles = [];
+        let aliasesData = {};
+        const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+        let selectedSuggestionIndex = -1;
+        let currentSuggestions = [];
+        let queryStartIndex = -1;
+
+        // Request initial list of models, files, telemetry, and aliases from backend
+        vscode.postMessage({ type: 'get-models' });
+        vscode.postMessage({ type: 'get-files' });
+        vscode.postMessage({ type: 'get-telemetry' });
+        vscode.postMessage({ type: 'get-aliases' });
+
+        // Update budget telemetry when limit changes
+        budgetInput.addEventListener('input', () => {
+            const val = parseFloat(budgetInput.value) || 2.0;
+            budgetLimitEl.textContent = `$${val.toFixed(4)}`;
         });
 
-        // Обробка зворотного зв'язку (Feedback) з Node.js
+        // Click handler to run the subagent pipeline
+        runBtn.addEventListener('click', () => {
+            const command = commandSelect.value;
+            const intent = intentInput.value.trim();
+            const selectedModel = modelSelect.value;
+
+            if (!intent) {
+                alert('Будь ласка, вкажіть ваш намір/завдання.');
+                return;
+            }
+
+            // Highlight current step in pipeline checklist
+            document.querySelectorAll('.pipeline-step').forEach(el => el.classList.remove('active'));
+            const stepId = `step-${command.split(':')[1]}`;
+            const activeStepEl = document.getElementById(stepId);
+            if (activeStepEl) activeStepEl.classList.add('active');
+
+            // Add request balloon to chat
+            appendMessage('user', `Запуск ${command} з моделлю ${selectedModel || 'за замовчуванням'}...\n\nНамір: ${intent}`, 'info');
+
+            runBtn.disabled = true;
+            vscode.postMessage({
+                type: 'run-command',
+                command: command,
+                intent: intent,
+                model: selectedModel
+            });
+        });
+
+        // Listen for IPC messages from the extension backend
         window.addEventListener('message', event => {
-            const message = event.data;
-            if (message.type === 'feedback') {
-                feedbackEl.style.display = 'block';
-                feedbackEl.textContent = `Субагент підтверджує: ${message.text}`;
+            const msg = event.data;
+
+            if (msg.type === 'models-list') {
+                populateModels(msg.list);
+            } else if (msg.type === 'files-list') {
+                populateFiles(msg.list);
+            } else if (msg.type === 'yield') {
+                handleYield(msg.value);
+            } else if (msg.type === 'aliases-list') {
+                aliasesData = msg.aliases || {};
+            } else if (msg.type === 'telemetry') {
+                updateTelemetryUI(msg.stats);
+            } else if (msg.type === 'complete') {
+                appendMessage('Система', 'Виконання успішно завершено! ✅', 'success');
+                const command = commandSelect.value;
+                const stepId = `step-${command.split(':')[1]}`;
+                const activeStepEl = document.getElementById(stepId);
+                if (activeStepEl) {
+                    activeStepEl.classList.remove('active');
+                    activeStepEl.classList.add('completed');
+                }
+                runBtn.disabled = false;
+            } else if (msg.type === 'error') {
+                appendMessage('Помилка', `Сталася помилка під час виконання: ${msg.error}`, 'error');
+                runBtn.disabled = false;
             }
         });
+
+        function updateTelemetryUI(stats) {
+            if (!stats) return;
+            if (stats.costUsd !== undefined) {
+                sessionCostEl.textContent = `$${stats.costUsd.toFixed(4)}`;
+            }
+            if (stats.tokensOutput !== undefined || stats.tokensInput !== undefined) {
+                const totalTokens = (stats.tokensInput || 0) + (stats.tokensOutput || 0);
+                tokensGeneratedEl.textContent = `${totalTokens} T`;
+            }
+            if (stats.speedTps !== undefined) {
+                generationSpeedEl.textContent = `${stats.speedTps.toFixed(1)} T/s`;
+            }
+        }
+
+        function populateModels(models) {
+            modelSelect.innerHTML = '';
+            // Sort models: prioritize gpt-oss-120b and cerebras
+            models.sort((a, b) => {
+                if (a.id.includes('gpt-oss')) return -1;
+                if (b.id.includes('gpt-oss')) return 1;
+                return a.id.localeCompare(b.id);
+            });
+
+            models.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                const ctx = m.context_length ? ` (${Math.round(m.context_length / 1000)}k ctx)` : '';
+                opt.textContent = `${m.id}@${m.provider}${ctx}`;
+                modelSelect.appendChild(opt);
+            });
+        }
+
+        function populateFiles(files) {
+            workspaceFiles = files;
+            fileListContainer.innerHTML = '';
+            if (files.length === 0) {
+                fileListContainer.innerHTML = '<li style="font-size: 11px; opacity: 0.6;">Проект порожній</li>';
+                return;
+            }
+
+            files.forEach(f => {
+                const li = document.createElement('li');
+                li.className = 'file-item';
+                
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.value = f;
+                cb.addEventListener('change', () => {
+                    updateContextReferences();
+                });
+
+                const span = document.createElement('span');
+                span.textContent = f;
+
+                li.appendChild(cb);
+                li.appendChild(span);
+                fileListContainer.appendChild(li);
+            });
+        }
+
+        // Auto-inject checked files as context references into the textarea
+        function updateContextReferences() {
+            const checked = Array.from(fileListContainer.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+            let val = intentInput.value;
+            // Remove previous references
+            val = val.replace(/\s*\[Контекст:.*?\]/g, '');
+            if (checked.length > 0) {
+                val += ` [Контекст: ${checked.map(f => `@${f}`).join(', ')}]`;
+            }
+            intentInput.value = val;
+        }
+
+        function handleYield(val) {
+            // Append progress alerts
+            if (val.type === 'show') {
+                const levelMap = {
+                    'info': 'info',
+                    'success': 'success',
+                    'warning': 'warning',
+                    'error': 'error',
+                    'warn': 'warning'
+                };
+                const lvl = levelMap[val.level] || 'info';
+                
+                // Expose cost metrics if present in message (e.g. step completes or progress logs)
+                parseProgressCost(val.message);
+
+                appendMessage(val.level || 'Крок', val.message, lvl);
+            }
+        }
+
+        function parseProgressCost(message) {
+            // Parse token counts and elapsed time metrics from step complete messages
+            // Example: "Step seed complete (0.8s, 120 output tokens)" or Price estimations
+            const priceRegex = /\$(\d+\.\d+)/;
+            const matchPrice = message.match(priceRegex);
+            if (matchPrice) {
+                sessionCostEl.textContent = `$${parseFloat(matchPrice[1]).toFixed(4)}`;
+            }
+
+            const tokensRegex = /(\d+)\s+output\s+tokens/;
+            const matchTokens = message.match(tokensRegex);
+            if (matchTokens) {
+                tokensGeneratedEl.textContent = `${matchTokens[1]} T`;
+            }
+        }
+
+        function appendMessage(sender, text, className) {
+            const balloon = document.createElement('div');
+            balloon.className = `alert-balloon ${className}`;
+
+            const header = document.createElement('div');
+            header.className = 'message-header';
+            header.textContent = sender;
+
+            const content = document.createElement('div');
+            // Basic markdown codeblock replacement
+            const codeBlockRegex = /```([\s\S]*?)```/g;
+            if (codeBlockRegex.test(text)) {
+                content.innerHTML = text.replace(codeBlockRegex, (match, code) => `<pre><code>${escapeHtml(code.trim())}</code></pre>`);
+            } else {
+                content.textContent = text;
+            }
+
+            balloon.appendChild(header);
+            balloon.appendChild(content);
+            messagesCanvas.appendChild(balloon);
+
+            // Auto scroll to bottom
+            messagesCanvas.scrollTop = messagesCanvas.scrollHeight;
+        }
+
+        // Autocomplete event listeners and functions
+        intentInput.addEventListener('input', () => {
+            const text = intentInput.value;
+            const caretPos = intentInput.selectionStart;
+            
+            const textBeforeCaret = text.slice(0, caretPos);
+            const words = textBeforeCaret.split(/[\s\n]/);
+            const currentWord = words[words.length - 1];
+            
+            if (currentWord.startsWith('@')) {
+                queryStartIndex = caretPos - currentWord.length;
+                const query = currentWord.slice(1).toLowerCase();
+                showSuggestions(query);
+            } else {
+                hideSuggestions();
+            }
+        });
+
+        intentInput.addEventListener('keydown', (e) => {
+            if (autocompleteDropdown.style.display === 'flex' && currentSuggestions.length > 0) {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedSuggestionIndex = (selectedSuggestionIndex + 1) % currentSuggestions.length;
+                    updateSelectedSuggestion();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedSuggestionIndex = (selectedSuggestionIndex - 1 + currentSuggestions.length) % currentSuggestions.length;
+                    updateSelectedSuggestion();
+                } else if (e.key === 'Enter' || e.key === 'Tab') {
+                    e.preventDefault();
+                    if (selectedSuggestionIndex !== -1) {
+                        selectSuggestion(currentSuggestions[selectedSuggestionIndex].text);
+                    }
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    hideSuggestions();
+                }
+            }
+        });
+
+        function showSuggestions(query) {
+            const matches = [];
+            const slashIndex = query.indexOf('/');
+            
+            if (slashIndex !== -1) {
+                const aliasName = '@' + query.slice(0, slashIndex);
+                const subQuery = query.slice(slashIndex + 1);
+                if (aliasesData[aliasName]) {
+                    const aliasFiles = aliasesData[aliasName].files || [];
+                    const subMatches = aliasFiles
+                        .filter(f => f.toLowerCase().includes(subQuery))
+                        .map(f => ({
+                            text: `${aliasName}/${f}`,
+                            type: 'workflow'
+                        }));
+                    renderSuggestions(subMatches);
+                    return;
+                }
+            }
+            
+            // Suggest aliases
+            for (const alias of Object.keys(aliasesData)) {
+                if (alias.toLowerCase().includes('@' + query) || alias.toLowerCase().includes(query)) {
+                    matches.push({
+                        text: alias,
+                        type: 'alias'
+                    });
+                }
+            }
+            
+            // Suggest workspace files
+            for (const file of workspaceFiles) {
+                if (file.toLowerCase().includes(query)) {
+                    matches.push({
+                        text: `@${file}`,
+                        type: 'file'
+                    });
+                }
+            }
+            
+            renderSuggestions(matches);
+        }
+
+        function renderSuggestions(suggestions) {
+            currentSuggestions = suggestions.slice(0, 15);
+            selectedSuggestionIndex = currentSuggestions.length > 0 ? 0 : -1;
+            
+            if (currentSuggestions.length === 0) {
+                hideSuggestions();
+                return;
+            }
+            
+            autocompleteDropdown.innerHTML = '';
+            currentSuggestions.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'autocomplete-item' + (index === 0 ? ' selected' : '');
+                
+                const label = document.createElement('span');
+                label.textContent = item.text;
+                
+                const type = document.createElement('span');
+                type.className = 'item-type';
+                type.textContent = item.type;
+                
+                div.appendChild(label);
+                div.appendChild(type);
+                
+                div.addEventListener('click', () => {
+                    selectSuggestion(item.text);
+                });
+                
+                autocompleteDropdown.appendChild(div);
+            });
+            
+            autocompleteDropdown.style.display = 'flex';
+        }
+
+        function hideSuggestions() {
+            autocompleteDropdown.style.display = 'none';
+            currentSuggestions = [];
+            selectedSuggestionIndex = -1;
+        }
+
+        function selectSuggestion(value) {
+            const text = intentInput.value;
+            const caretPos = intentInput.selectionStart;
+            
+            const before = text.slice(0, queryStartIndex);
+            const after = text.slice(caretPos);
+            
+            intentInput.value = before + value + ' ' + after;
+            intentInput.focus();
+            
+            const newCursorPos = queryStartIndex + value.length + 1;
+            intentInput.setSelectionRange(newCursorPos, newCursorPos);
+            
+            hideSuggestions();
+        }
+
+        function updateSelectedSuggestion() {
+            const items = autocompleteDropdown.querySelectorAll('.autocomplete-item');
+            items.forEach((item, index) => {
+                if (index === selectedSuggestionIndex) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
     </script>
 </body>
 </html>

@@ -163,9 +163,13 @@ export class UiConsole {
     stopFrame(): string;
     #private;
 }
-export class UiCommand {
+export class UiCommand extends ModelAsApp {
     /**
-     * Creates Alert instance for the Ui output.
+     * @param {Partial<UiCommand> | Record<string, any>} [data={}]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
+     */
+    constructor(data?: Partial<UiCommand> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    /**
      * @param {Partial<Alert>} input
      * @returns {Alert}
      */
@@ -181,6 +185,10 @@ export class UiCommand {
      * @returns {Table}
      */
     createTable(input: Partial<Table>): Table;
+    /**
+     * @returns {AsyncGenerator<any, any, any>}
+     */
+    run(): AsyncGenerator<any, any, any>;
 }
 /**
  * UI helper for CLI interactions.
@@ -315,6 +323,7 @@ export type ProgressFnInput = {
 };
 export type UiWeightType = "b" | "f" | "T";
 import { TableOptions } from "./components/Table.js";
+import { ModelAsApp } from '@nan0web/ui';
 import { Alert } from "./components/index.js";
 import { Table } from "./components/index.js";
 import readline from "node:readline";

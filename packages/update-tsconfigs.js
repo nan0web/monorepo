@@ -24,13 +24,61 @@ for (const dir of dirs) {
 	}
 
 	config.compilerOptions.baseUrl = '.'
-	config.compilerOptions.paths = {
-		'@nan0web/*': [
-			'../*/types',
-			'../*/types/index.d.ts',
-			'../*/types/index.js'
+
+	const paths = {}
+	for (const other of dirs) {
+		if (other === dir) continue
+		const otherTsconfig = path.join(packagesDir, other, 'tsconfig.json')
+		if (!fs.existsSync(otherTsconfig)) continue
+
+		paths[`@nan0web/${other}`] = [
+			`../${other}/types`,
+			`../${other}/types/index.d.ts`,
+			`../${other}/types/index.js`
+		]
+		paths[`@nan0web/${other}/oop`] = [
+			`../${other}/types/oop.d.ts`,
+			`../${other}/types/oop.js`
+		]
+		paths[`@nan0web/${other}/command`] = [
+			`../${other}/types/command.d.ts`,
+			`../${other}/types/command.js`
+		]
+		paths[`@nan0web/${other}/types`] = [
+			`../${other}/types/types/index.d.ts`,
+			`../${other}/types/types/index.js`
+		]
+		paths[`@nan0web/${other}/core`] = [
+			`../${other}/types/core/index.d.ts`,
+			`../${other}/types/core/index.js`
+		]
+		paths[`@nan0web/${other}/components`] = [
+			`../${other}/types/Component/index.d.ts`,
+			`../${other}/types/Component/index.js`
+		]
+		paths[`@nan0web/${other}/domain`] = [
+			`../${other}/types/domain/index.d.ts`,
+			`../${other}/types/domain/index.js`
+		]
+		paths[`@nan0web/${other}/models`] = [
+			`../${other}/types/Model/index.d.ts`,
+			`../${other}/types/Model/index.js`
+		]
+		paths[`@nan0web/${other}/inspect`] = [
+			`../${other}/types/inspect.d.ts`,
+			`../${other}/types/inspect.js`
+		]
+		paths[`@nan0web/${other}/testing`] = [
+			`../${other}/types/testing/index.d.ts`,
+			`../${other}/types/testing/index.js`
+		]
+		paths[`@nan0web/${other}/builder`] = [
+			`../${other}/types/domain/StoreBuilderApp.d.ts`,
+			`../${other}/types/domain/StoreBuilderApp.js`
 		]
 	}
+
+	config.compilerOptions.paths = paths
 
 	fs.writeFileSync(tsconfigPath, JSON.stringify(config, null, '\t') + '\n', 'utf8')
 }

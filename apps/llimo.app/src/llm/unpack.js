@@ -77,7 +77,7 @@ export async function* unpackAnswer(
 				yield `${RED}! Unknown command: ${filename}${RESET}`
 				yield "! Available commands:"
 				for (const [name, Cls] of commands.entries()) {
-					yield ` - ${name} - ${Cls.help}`
+					yield ` - ${name} - ${Cls.description || Cls.help}`
 				}
 			}
 			continue

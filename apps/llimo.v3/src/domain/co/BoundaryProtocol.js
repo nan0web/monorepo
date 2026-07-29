@@ -1,5 +1,6 @@
 import DB from '@nan0web/db'
 import Markdown from '@nan0web/markdown'
+import YAML from 'yaml'
 
 /**
  * @typedef {{ filename: string, content: string, startLine?: number, lineCount?: number }} FileSegment
@@ -37,6 +38,26 @@ export class CommunicationProtocol {
 	}
 }
 export class BoundaryProtocol extends CommunicationProtocol {
+	/**
+	 * Validates file content based on extension.
+	 * @param {string} filename
+	 * @param {string} content
+	 * @returns {{ valid: boolean, error?: string }}
+	 */
+	static validateFileContent(filename, content) {
+		const ext = filename.split('.').pop()?.toLowerCase()
+		try {
+			if (ext === 'json') JSON.parse(content)
+			if (ext === 'yaml' || ext === 'yml') YAML.parse(content)
+			if (ext === 'jsonl') {
+				content.split('\n').filter(Boolean).forEach(l => JSON.parse(l))
+			}
+			return { valid: true }
+		} catch (e) {
+			return { valid: false, error: /** @type {any} */ (e).message }
+		}
+	}
+
 	/**
 	 * @param {DB} db
 	 * @param {string} [locale='uk']

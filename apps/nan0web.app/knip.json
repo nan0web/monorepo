@@ -1,0 +1,22 @@
+{
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"entry": [
+		"src/index.js",
+		"bin/nan0web",
+		"src/cli.js",
+		"src/server/index.js",
+		"src/README.md.js"
+	],
+	"ignore": [
+		"releases/**/*.js",
+		"types/**"
+	],
+	"ignoreDependencies": [
+		"@nan0web/types",
+		"@nan0web/ui",
+		"@nan0web/ui-cli",
+		"lit",
+		"@nan0web/icons",
+		"vscode"
+	]
+}

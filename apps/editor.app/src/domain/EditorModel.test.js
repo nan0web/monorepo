@@ -328,4 +328,66 @@ describe('EditorModel (Integration)', { timeout: 3000 }, () => {
 		assert.equal(p.canEdit, false)
 		assert.equal(p.canDelete, false)
 	})
+
+	it('32. aggregates and prefixes files from attached micro-apps in listDirectory', async () => {
+		const mainDb = new DB({ predefined: [['main.nan0', { title: 'Main Doc' }]] })
+		await mainDb.connect()
+
+		const appDb = new DB({ predefined: [['app-doc.nan0', { title: 'App Doc' }]] })
+		await appDb.connect()
+
+		const appDbs = new Map([['willni', appDb]])
+		const model = new EditorModel({ config: new EditorConfig() }, { db: mainDb, appDbs })
+
+		const files = await model.listDirectory('.')
+		assert.ok(files.some(f => f.file.path === 'main.nan0'))
+		assert.ok(files.some(f => f.file.path === 'willni/app-doc.nan0'))
+	})
+
+	it('33. loads documents from corresponding micro-app DB when path is prefixed', async () => {
+		const mainDb = new DB({ predefined: [] })
+		await mainDb.connect()
+
+		const appDb = new DB({ predefined: [['cases/1.nan0', { title: 'Case 1' }]] })
+		await appDb.connect()
+
+		const appDbs = new Map([['willni', appDb]])
+		const model = new EditorModel({ config: new EditorConfig() }, { db: mainDb, appDbs })
+
+		const doc = await model.loadDocument('willni/cases/1.nan0')
+		assert.equal(doc.title, 'Case 1')
+	})
+
+	it('34. stages and commits micro-app documents to their original DBs', async () => {
+		const mainDb = new DB({ predefined: [] })
+		await mainDb.connect()
+
+		const appDb = new DB({ predefined: [['cases/1.nan0', { title: 'Case 1' }]] })
+		await appDb.connect()
+
+		const appDbs = new Map([['willni', appDb]])
+		const model = new EditorModel({ config: new EditorConfig() }, { db: mainDb, appDbs })
+
+		// Stage edit
+		await model.stageChange('willni/cases/1.nan0', { title: 'Modified Case 1' })
+
+		// Stage db contains staged change
+		const staged = await model.stageDb.loadDocument('_staged/willni/cases/1.nan0')
+		assert.equal(staged.title, 'Modified Case 1')
+
+		// Original app DB is not modified yet
+		const orig = await appDb.loadDocument('cases/1.nan0')
+		assert.equal(orig.title, 'Case 1')
+
+		// Commit
+		await model.commitChanges('Updated case 1')
+
+		// Original app DB is now updated
+		const updated = await appDb.loadDocument('cases/1.nan0')
+		assert.equal(updated.title, 'Modified Case 1')
+
+		// Stage is cleared
+		const stagedAfter = (await model.stageDb.loadDocument('_staged/willni/cases/1.nan0').catch(() => null)) ?? null
+		assert.equal(stagedAfter, null)
+	})
 })

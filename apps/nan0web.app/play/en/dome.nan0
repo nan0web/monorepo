@@ -1,0 +1,11 @@
+title: 'Geodesic Dome Calculator'
+description: 'Calculate dome volume, surface area, floor areas, and basement parameters'
+content:
+  - UI.Header:
+      brand: 'NaN•Web Sandbox'
+  - Play.DomeCalc:
+      radius: 4.5
+      floors: 2
+      hasBasement: true
+  - UI.Footer:
+      license: 'ISC License'

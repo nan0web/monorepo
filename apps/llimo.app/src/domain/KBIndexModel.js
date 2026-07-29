@@ -1,5 +1,4 @@
 import { Model } from '@nan0web/types'
-import { resolveDefaults, resolveAliases } from '@nan0web/types'
 
 /**
  * @typedef {'npm' | 'pip' | 'crates' | 'go' | 'maven' | 'composer' | 'gem' | 'pub' | 'hex' | 'github'} RegistryId
@@ -23,12 +22,6 @@ import { resolveDefaults, resolveAliases } from '@nan0web/types'
  * @property {RegistryId} registry Package registry (auto-detected from context when omitted)
  */
 export class KBIndexModel extends Model {
-
-
-
-
-
-
 	/**
 	 * @typedef {Object} KBIndexerIndexResult
 	 * @property {number} filesIndexed

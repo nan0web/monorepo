@@ -2,7 +2,7 @@ import { Alert, Table } from "../../cli/components/index.js"
 import { Ui, UiCommand } from "../../cli/Ui.js"
 import { parseArgv } from "../../cli/argvHelper.js"
 import { Chat } from "../../llm/Chat.js"
-import { MarkdownProtocol } from "../../utils/Markdown.js"
+import { FileProtocol } from "../../FileProtocol.js"
 import { UiOutput } from "../../cli/UiOutput.js"
 import { ModelInfo } from "../../llm/ModelInfo.js"
 import { FileSystem } from "../../utils/FileSystem.js"
@@ -31,26 +31,28 @@ class InfoOptions {
  */
 export class InfoCommand extends UiCommand {
 	static name = "info"
-	static help = "Show information of the chat: messages count, files attached, tokens, bytes size, cost and model/provider"
-	options = new InfoOptions()
-	chat = new Chat()
-	ui = new Ui()
-	fs = new FileSystem()
+	static description = "Show information of the chat: messages count, files attached, tokens, bytes size, cost and model/provider"
+	/** @type {InfoOptions} */
+	options
+	/** @type {Chat} */
+	chat
+	/** @type {Ui} */
+	ui
+	/** @type {FileSystem} */
+	fs
+
 	/**
-	 * @param {Partial<InfoCommand>} input
+	 * @param {Partial<InfoCommand> | Record<string, any>} [data={}]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
 	 */
-	constructor(input = {}) {
-		super()
-		const {
-			options = this.options,
-			chat = this.chat,
-			ui = this.ui,
-			fs = this.fs,
-		} = input
-		this.options = options
-		this.chat = new Chat({ ...chat, id: options.id })
-		this.ui = ui
-		this.fs = fs
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		const opts = /** @type {any} */ (options)
+		this.options = data.options || opts.options || new InfoOptions()
+		const baseChat = data.chat || opts.chat || new Chat()
+		this.chat = new Chat({ ...baseChat, id: this.options.id || baseChat.id })
+		this.ui = data.ui || opts.ui || new Ui()
+		this.fs = data.fs || opts.fs || new FileSystem()
 	}
 	/**
 	 * @throws
@@ -93,7 +95,7 @@ export class InfoCommand extends UiCommand {
 			const tokens = await this.chat.calcTokens(content)
 
 			// Count attached files (markdown checklist)
-			const parsed = await MarkdownProtocol.parse(content)
+			const parsed = await FileProtocol.parseAdaptive(content)
 			const files = parsed.files?.size ?? 0
 
 			// Load usage.json if present next to the message file
@@ -154,15 +156,16 @@ export class InfoCommand extends UiCommand {
 	 * @param {object} [input]
 	 * @param {string[]} [input.argv=[]]
 	 * @param {Chat} [input.chat]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
 	 * @returns {InfoCommand}
 	 */
-	static create(input = {}) {
+	static create(input = {}, options = {}) {
 		const {
 			argv = [],
 			chat = new Chat()
 		} = input
-		const options = parseArgv(argv, InfoOptions)
-		return new InfoCommand({ options, chat })
+		const opts = parseArgv(argv, InfoOptions)
+		return new InfoCommand({ options: opts, chat }, options)
 	}
 }
 

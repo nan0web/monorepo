@@ -1,4 +1,5 @@
 export class SystemModel extends Model {
+    static alias: string;
     static output: {
         help: string;
         type: string;

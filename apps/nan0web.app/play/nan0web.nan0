@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=../schemas/NaN0WebConfig.schema.json
+name: "Playground Dome House"
+dsn: "play/"
+locale: "uk"
+port: 3000
+ui:
+  - cli
+  - web
+apps:
+  - name: auth
+    src: "@nan0web/auth.app"
+  - name: editor
+    src: "@nan0web/editor.app"

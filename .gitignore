@@ -35,6 +35,9 @@ nan0web.json
 **/scratch/
 /play/
 .agent/
+.agents/
+.gemini/
+**/.gemini/
 **/.llimo/
 @current/
 export/
@@ -43,6 +46,8 @@ task*.md
 test_*.sh
 todo.app/
 needed_files.md
+next.md
+**/next.md
 
 # Logs and Cache
 logs/

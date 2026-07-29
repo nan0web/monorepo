@@ -1,0 +1,8 @@
+story:
+  - InspectPipelineModel:
+      auditors: phase
+  - progress: '*'
+  - progress: '*'
+  - progress: '*'
+  - show: '*'
+  - result: '*'

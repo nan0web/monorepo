@@ -35,13 +35,17 @@ export class GetCommand extends Command {
 				try {
 					const resolved = await this.chat.resolvePaths(pattern)
 					if (resolved.length > 0) {
-						for (const { path } of resolved) {
-							if (await os.exists(path)) {
-								const doc = await os.readFile(path)
-								const ext = path.split('.').pop() || 'txt'
-								resultText += `File: ${path}\n\`\`\`${ext}\n${doc}\n\`\`\`\n`
-							} else {
-								resultText += `File not found: ${path}\n`
+						if (resolved.length > 5) {
+							resultText += `Too many files matched the pattern "${pattern}" (${resolved.length} files). To avoid prompt context overflow, please specify files explicitly.\n`
+						} else {
+							for (const { path } of resolved) {
+								if (await os.exists(path)) {
+									const doc = await os.readFile(path)
+									const ext = path.split('.').pop() || 'txt'
+									resultText += `File: ${path}\n\`\`\`${ext}\n${doc}\n\`\`\`\n`
+								} else {
+									resultText += `File not found: ${path}\n`
+								}
 							}
 						}
 					} else {

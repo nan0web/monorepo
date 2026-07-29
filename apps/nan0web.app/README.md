@@ -12,9 +12,11 @@ One algorithm — many interfaces. The core engine for the NaN•Web ecosystem.
 - **Model-as-Schema**: Universal domain models from `@nan0web/ui`.
 - **SSR-First**: Server-Side Rendering capabilities out of the box.
 
+
 ## Installation
 
 How to install and run the engine?
+
 ```bash
 npm install nan0web.app
 npm run start -- --dsn data/
@@ -24,6 +26,7 @@ npm run start -- --dsn data/
 ### Booting the Engine
 
 How to boot the AppRunner programmatically?
+
 ```js
 import { AppRunner } from 'nan0web.app'
 const runner = new AppRunner({ dsn: 'data/', locale: 'uk' })
@@ -34,6 +37,7 @@ const firstStep = await iterator.next()
 Once the engine completes its boot phase, the registry is sealed.
 
 How does db.seal protect the registry?
+
 ```js
 import { AppRunner } from 'nan0web.app'
 const runner = new AppRunner({ dsn: 'data/' })
@@ -47,3 +51,5 @@ How to participate? – [see CONTRIBUTING.md]($pkgURL/blob/main/CONTRIBUTING.md)
 ## License
 
 ISC LICENSE – [see full text]($pkgURL/blob/main/LICENSE)
+
+

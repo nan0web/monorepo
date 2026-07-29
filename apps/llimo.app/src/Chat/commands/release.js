@@ -132,25 +132,31 @@ export class ReleaseCommand extends UiCommand {
 	static STAGE_DETAILS = STAGE_DETAILS
 	static STAGE_LABELS = STAGE_LABELS
 	static name = "release"
-	static help = "Process release tasks from NOTES.md using git worktrees and llimo chat"
-	options = new ReleaseOptions()
-	fs = new FileSystem()
-	chat = new Chat()
-	tasks = []
-	releaseDir = ""
+	static description = "Process release tasks from NOTES.md using git worktrees and llimo chat"
+	/** @type {ReleaseOptions} */
+	options
+	/** @type {FileSystem} */
+	fs
+	/** @type {Chat} */
+	chat
+	/** @type {Task[]} */
+	tasks
+	/** @type {string} */
+	releaseDir
+
 	/**
-	 * @param {Partial<ReleaseCommand>} input
+	 * @param {Partial<ReleaseCommand> | Record<string, any>} [data={}]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
 	 */
-	constructor(input = {}) {
-		super()
-		const {
-			options = this.options,
-			fs = this.fs,
-			chat = this.chat,
-		} = input
-		this.options = options instanceof ReleaseOptions ? options : new ReleaseOptions(options)
-		this.fs = fs
-		this.chat = chat
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		const o = /** @type {any} */ (options)
+		const opts = data.options || o.options || new ReleaseOptions()
+		this.options = opts instanceof ReleaseOptions ? opts : new ReleaseOptions(opts)
+		this.fs = data.fs || o.fs || new FileSystem()
+		this.chat = data.chat || o.chat || new Chat()
+		this.tasks = data.tasks || []
+		this.releaseDir = data.releaseDir || ""
 	}
 
 	/**
@@ -392,14 +398,15 @@ export class ReleaseCommand extends UiCommand {
 	 * @param {object} [input]
 	 * @param {string[]} [input.argv=[]]
 	 * @param {Chat} [input.chat]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
 	 * @returns {ReleaseCommand}
 	 */
-	static create(input = {}) {
+	static create(input = {}, options = {}) {
 		const {
 			argv = [],
 			chat = new Chat({})
 		} = input
-		const options = parseArgv(argv, ReleaseOptions)
-		return new ReleaseCommand({ options, chat })
+		const opts = parseArgv(argv, ReleaseOptions)
+		return new ReleaseCommand({ options: opts, chat }, options)
 	}
 }

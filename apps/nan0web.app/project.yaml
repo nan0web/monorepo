@@ -52,6 +52,27 @@ sections:
       - "4. **Видалення Hardcode UI:** Повністю очистити `willni` від захардкоджених `ui-mesh-feed.js` та `ui-court.js`."
       - "**Філософія:** Наш код має бути меншим, гнучкішим і тотально відв'язаним від домену. Ми пишемо не UI для \"Суду\", ми пишемо UI для обробки \"Типу: Колекція, Дія: Голосування\"."
     tasks: []
+  - title: "Команди"
+    content:
+      - "```bash"
+      - "nan0web build"
+      - "nan0web dev"
+      - "nan0web api"
+      - "nan0web test:unit"
+      - "nan0web test:cli"
+      - "nan0web cli:gallery"
+      - "nan0web test:ssg"
+      - "nan0web ssg:gallery"
+      - "nan0web test:web"
+      - "nan0web web:gallery"
+      - "nan0web test:e2e"
+      - "nan0web start --api --web"
+      - "nan0web --api --web"
+      - "nan0web cli"
+      - "nan0web cli --api"
+      - "nan0web cli uk/projects/willni"
+      - "```"
+    tasks: []
   - title: "📚 Архітектурна Документація"
     content:
       - "- [Routing Architecture](docs/ROUTING_ARCHITECTURE.md) — Data-Driven Routing, PagesRouter, OLMUI Renderer, resolveAliases."

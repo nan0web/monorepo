@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../schemas/Page.schema.json
+title: 'Демонстрація OLMUI'
+description: 'Приклад інтегрованих компонентів та моделей'
+content:
+  - UI.Header:
+      brand: 'Демо-Портал'
+  - h1: 'Демонстрація OLMUI'
+  - p: 'Це суверенна демонстраційна сторінка, яка використовує декларативні OLMUI блоки:'
+  - Demo.Counter:
+      title: 'Термінальний лічильник кліків'
+      startValue: 10
+  - Demo.UserProfile:
+      name: 'Олександр'
+      role: 'Адміністратор'
+      status: 'online'
+  - App.Editor:
+      url: '/editor'
+      debug: true
+  - UI.Footer:
+      license: 'ISC License'

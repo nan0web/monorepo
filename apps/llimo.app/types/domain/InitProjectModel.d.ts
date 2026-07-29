@@ -6,6 +6,7 @@
  * @property {boolean} quiet Quiet mode
  */
 export class InitProjectModel extends Model {
+    static alias: string;
     static dir: {
         help: string;
         default: string;

@@ -6,6 +6,7 @@
  * @property {boolean} quiet Quiet mode (suppress logs and progress)
  */
 export class TranslateDocsModel extends Model {
+    static alias: string;
     static source: {
         help: string;
         default: string;

@@ -2,9 +2,12 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import DB from '@nan0web/db'
 import { ChatSessionModel } from './ChatSessionModel.js'
+import { GetCommand, LsCommand, SearchCommand } from './commands/index.js'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { exec } from 'node:child_process'
+
+
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const tempStatsDir = path.resolve(__dirname, 'temp_stats_dir')
@@ -29,6 +32,24 @@ async function runGenerator(gen) {
 		if (done) break
 	}
 	return events
+}
+
+/**
+ * Helper to run a command and get its result
+ * @param {import('./commands/Command.js').Command} cmd
+ * @returns {Promise<import('@nan0web/ui').ResultIntent>}
+ */
+async function runCommand(cmd) {
+	const gen = cmd.run()
+	let res
+	while (true) {
+		const { value, done } = await gen.next()
+		if (done) {
+			res = value
+			break
+		}
+	}
+	return res
 }
 
 describe('ChatSessionModel Cascade & Boundary Execution', () => {
@@ -124,7 +145,7 @@ describe('ChatSessionModel Cascade & Boundary Execution', () => {
 		assert.ok(tryWorking)
 
 		// Verify files written
-		assert.strictEqual(writtenFiles['src/output.txt'], 'hello from agent')
+		assert.strictEqual(await db.loadDocument('src/output.txt'), 'hello from agent')
 
 		// Verify whitelisted command was run automatically without prompt
 		assert.strictEqual(executedCommand, 'pnpm test')
@@ -637,32 +658,49 @@ describe('ChatSessionModel Cascade & Boundary Execution', () => {
 				os: {
 					async exists(p) { return p === 'package.json' },
 					async readFile(p) { return '{"name": "test"}' }
-				}
+				},
+				workspaceRoot: process.cwd()
 			}
 		)
 
 		const utilsDir = path.join(__dirname, '../../utils')
 
-		// 1. Test @ls
-		const lsResult = await model.executeAgentCommand('@ls', `@data/uk/workflows\n${utilsDir}`)
-		assert.ok(lsResult.includes('### Command: @ls'))
-		assert.ok(lsResult.includes('@data/uk/workflows/wf1.md'))
-		assert.ok(lsResult.includes('- StrictBoundaryInterpreter.js'))
+		// 1. Test @ls - use LsCommand class
+		const lsCmd = new LsCommand(model, {
+			filename: '@ls',
+			content: `@data/uk/workflows\n${utilsDir}`
+		})
+		const lsResult = await runCommand(lsCmd)
+		assert.ok(lsResult.data.includes('### Command: ls'))
+		assert.ok(lsResult.data.includes('@data/uk/workflows/wf1.md'))
+		assert.ok(lsResult.data.includes('- StrictBoundaryInterpreter.js'))
 
 		// Test @ls glob matching
-		const globResult = await model.executeAgentCommand('@ls', `${utilsDir}/*.js`)
-		assert.ok(globResult.includes('StrictBoundaryInterpreter.js'))
+		const globCmd = new LsCommand(model, {
+			filename: '@ls',
+			content: `${utilsDir}/*.js`
+		})
+		const globResult = await runCommand(globCmd)
+		assert.ok(globResult.data.includes('StrictBoundaryInterpreter.js'))
 
-		// 2. Test @get
-		const getResult = await model.executeAgentCommand('@get', '@data/uk/workflows/wf1.md\npackage.json')
-		assert.ok(getResult.includes('### Command: @get'))
-		assert.ok(getResult.includes('wf1 content'))
-		assert.ok(getResult.includes('{"name": "test"}'))
+		// 2. Test @get - use GetCommand class
+		const getCmd = new GetCommand(model, {
+			filename: '@get',
+			content: '@data/uk/workflows/wf1.md\npackage.json'
+		})
+		const getResult = await runCommand(getCmd)
+		assert.ok(getResult.data.includes('### Command: get'))
+		assert.ok(getResult.data.includes('wf1 content'))
+		assert.ok(getResult.data.includes('{"name": "test"}'))
 
-		// 3. Test @search
-		const searchResult = await model.executeAgentCommand('@search', `StrictBoundaryInterpreter\n${utilsDir}`)
-		assert.ok(searchResult.includes('Search query: "StrictBoundaryInterpreter"'))
-		assert.ok(searchResult.includes('StrictBoundaryInterpreter.js'))
+		// 3. Test @search - use SearchCommand class
+		const searchCmd = new SearchCommand(model, {
+			filename: '@search',
+			content: `StrictBoundaryInterpreter\n${utilsDir}`
+		})
+		const searchResult = await runCommand(searchCmd)
+		assert.ok(searchResult.data.includes('Search query: "StrictBoundaryInterpreter"'))
+		assert.ok(searchResult.data.includes('StrictBoundaryInterpreter.js'))
 	})
 
 	it('should perform inline snippet replacement using startLine and lineCount', async () => {
@@ -728,7 +766,7 @@ describe('ChatSessionModel Cascade & Boundary Execution', () => {
 
 		const events = await runGenerator(model.run())
 
-		assert.strictEqual(writtenFiles['src/file.txt'], 'line 1\nnew line 2\nnew line 3\nline 4\nline 5')
+		assert.strictEqual(await db.loadDocument('src/file.txt'), 'line 1\nnew line 2\nnew line 3\nline 4\nline 5')
 	})
 
 	it('should apply diff patch fallback when startLine/lineCount are not specified', async () => {
@@ -794,7 +832,7 @@ describe('ChatSessionModel Cascade & Boundary Execution', () => {
 
 		await runGenerator(model.run())
 
-		assert.strictEqual(writtenFiles['src/file.txt'], 'line 1\npatched line 2\npatched line 3\nline 4\nline 5')
+		assert.strictEqual(await db.loadDocument('src/file.txt'), 'line 1\npatched line 2\npatched line 3\nline 4\nline 5')
 	})
 
 	it('should track injected files in injectedFiles map with their sizes', async () => {
@@ -1058,7 +1096,8 @@ ok 3 - another successful test
 		await currentDb.connect()
 
 		const model = new ChatSessionModel({}, { t: (k) => k })
-		await model.logTrace(currentDb, { type: 'test_event', status: 'ok' })
+		model._currentDb = currentDb
+		await model.logTrace({ type: 'test_event', status: 'ok' })
 
 		const traceContent = await currentDb.loadDocument('session_trace.jsonl')
 		const parsed = JSON.parse(traceContent.trim())
@@ -1216,7 +1255,7 @@ ok 3 - another successful test
 		assert.strictEqual(streamCalls[1][2].role, 'assistant')
 		assert.ok(streamCalls[1][2].content.includes('---boundary:@ls---'))
 		assert.strictEqual(streamCalls[1][3].role, 'user')
-		assert.ok(streamCalls[1][3].content.includes('### Command: @ls'))
+		assert.ok(streamCalls[1][3].content.includes('### Command: ls'))
 
 		// Verify loop was terminated with warning/error
 		const hasTerminated = events.some(e => e.type === 'show' && e.level === 'error' && e.message.includes('Max agent command iterations reached'))

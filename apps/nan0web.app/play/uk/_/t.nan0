@@ -1,0 +1,6 @@
+App.Title: Купольний Будинок
+App.Description: Пісочниця купольного калькулятора.
+App.Menu.Home: Головна
+App.Menu.Dome: Купольний Калькулятор
+App.Error.NotFound: Сторінку не знайдено.
+App.Error.InvalidData: Неправильний формат даних.

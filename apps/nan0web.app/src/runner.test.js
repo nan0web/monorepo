@@ -39,37 +39,25 @@ describe('AppRunner', () => {
 
 	// ── AC: Config Detection & Loading ──
 
-	it('detects and loads nan0 config format', async () => {
+	it('detects and loads nan0web.nan0 config file', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'Test App', dsn: 'data/', locale: 'en', port: 3000 }],
+			['nan0web.nan0', { name: 'Sovereign App', dsn: 'data/', locale: 'uk', port: 8080 }],
 		])
 		const runner = new AppRunner({ db })
 		const msgs = await collect(runner.run())
 
-		assert.ok(msgs.some(m => m.includes('Loaded config from: nan0')), 'must detect nan0 format')
-		assert.ok(runner.config instanceof NaN0WebConfig, 'config must be NaN0WebConfig instance')
-		assert.equal(runner.config.appName, 'Test App')
-		assert.equal(runner.config.port, 3000)
+		assert.ok(msgs.some(m => m.includes('Loaded config from DBFS')), 'must load config')
+		assert.equal(runner.config.appName, 'Sovereign App')
+		assert.equal(runner.config.locale, 'uk')
+		assert.equal(runner.config.port, 8080)
 	})
 
-	it('detects yaml format with priority over json', async () => {
-		const db = createMockDb([
-			// No .nan0 → falls through to .yaml
-			['nan0web.config.yaml', { name: 'YAML App', locale: 'uk' }],
-			['nan0web.config.json', { name: 'JSON App' }],
-		])
-		const runner = new AppRunner({ db })
-		const msgs = await collect(runner.run())
-
-		assert.ok(msgs.some(m => m.includes('Loaded config from: yaml')))
-		assert.equal(runner.config.appName, 'YAML App')
-	})
 
 	// ── AC: State Building ──
 
 	it('builds global state from index', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'State Test', locale: 'en' }],
+			['nan0web.nan0', { name: 'State Test', locale: 'en' }],
 			['data/index.yaml', { title: 'NaN0Web', version: '1.0' }],
 		])
 		const runner = new AppRunner({ db })
@@ -81,7 +69,7 @@ describe('AppRunner', () => {
 
 	it('loads i18n translations into state', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'i18n Test', locale: 'en' }],
+			['nan0web.nan0', { name: 'i18n Test', locale: 'en' }],
 			['data/index.yaml', {
 				t: { greeting: 'Hello', farewell: 'Goodbye' },
 				langs: { en: { id: 'en', icon: '🇬🇧' }, uk: { id: 'uk', icon: '🇺🇦' } },
@@ -100,7 +88,7 @@ describe('AppRunner', () => {
 
 	it('auto-detects locales from directory structure', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'Locale Test', locale: 'en' }],
+			['nan0web.nan0', { name: 'Locale Test', locale: 'en' }],
 			['data/en/index.yaml', {}],
 			['data/uk/index.yaml', {}],
 		])
@@ -129,7 +117,7 @@ describe('AppRunner', () => {
 
 	it('loads pages into router from state', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'Router Test', locale: 'en' }],
+			['nan0web.nan0', { name: 'Router Test', locale: 'en' }],
 			['data/index.yaml', {
 				pages: [
 					{ slug: '/', title: 'Home', layout: 'page' },
@@ -146,7 +134,7 @@ describe('AppRunner', () => {
 
 	it('auto-builds nav tree from directory if no pages given', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'Auto Route Test', locale: 'en' }],
+			['nan0web.nan0', { name: 'Auto Route Test', locale: 'en' }],
 			['data/index.yaml', {}], // no pages defined!
 		])
 		// Mock listDir, stat and fetch on extracted sub-DB
@@ -185,7 +173,7 @@ describe('AppRunner', () => {
 
 	it('supports README.md as directoryIndex for git repos', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'Git Docs', locale: 'en', directoryIndex: 'README' }],
+			['nan0web.nan0', { name: 'Git Docs', locale: 'en', directoryIndex: 'README' }],
 			['data/index.yaml', {}],
 		])
 		const origExtract = db.extract.bind(db)
@@ -228,7 +216,7 @@ describe('AppRunner', () => {
 
 	it('initializes OLMUI Renderer', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'Renderer Test', locale: 'en' }],
+			['nan0web.nan0', { name: 'Renderer Test', locale: 'en' }],
 			['data/index.yaml', {}],
 		])
 		const runner = new AppRunner({ db })
@@ -242,7 +230,7 @@ describe('AppRunner', () => {
 
 	it('renderPage returns 404 for unknown path', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'Page Test', locale: 'en' }],
+			['nan0web.nan0', { name: 'Page Test', locale: 'en' }],
 			['data/index.yaml', {
 				pages: [{ slug: '/', title: 'Home', layout: 'page' }],
 			}],
@@ -257,7 +245,7 @@ describe('AppRunner', () => {
 
 	it('renderPage returns blocks for valid path', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'Page Test', locale: 'en' }],
+			['nan0web.nan0', { name: 'Page Test', locale: 'en' }],
 			['data/index.yaml', {
 				pages: [{ slug: 'home', title: 'Home', layout: 'page', source: 'home-data' }],
 			}],
@@ -278,7 +266,7 @@ describe('AppRunner', () => {
 
 	it('renders markdown content into safe HTML blocks', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'MD Test' }],
+			['nan0web.nan0', { name: 'MD Test' }],
 			['data/index.yaml', {
 				pages: [{ slug: 'md', title: 'MD Page', layout: 'page', source: 'docs.test' }],
 				docs: {
@@ -304,7 +292,7 @@ describe('AppRunner', () => {
 
 	it('renders markdown with frontmatter stripping', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'FM Test' }],
+			['nan0web.nan0', { name: 'FM Test' }],
 			['data/index.yaml', {
 				pages: [{ slug: 'doc', title: 'Doc', layout: 'page', source: 'docs.fm' }],
 				docs: {
@@ -400,7 +388,7 @@ describe('AppRunner', () => {
 
 	it('yields Engine Ready on successful boot', async () => {
 		const db = createMockDb([
-			['nan0web.config.nan0', { name: 'Boot Test', locale: 'en' }],
+			['nan0web.nan0', { name: 'Boot Test', locale: 'en' }],
 			['data/index.yaml', {}],
 		])
 		const runner = new AppRunner({ db })

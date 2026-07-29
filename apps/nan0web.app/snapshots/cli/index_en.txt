@@ -1,4 +1,23 @@
 NaN0Web — EN Index
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🧩 [ui-header]
+     • brand: NaN•Web App
+     • github: https://github.com/nan0web/core
+     • platformLabel: NaN•Web
+     • platformUrl: https://nan0web.yaro.page
+  🧩 [ui-hero]
+     • badge: v1.0.0
+     • cta: Read Documentation
+     • ctaHref: /en/docs
+     • install: npm run start -- --dsn data/
+     • subtitle: One algorithm — many interfaces. Seamlessly run your applications in CLI, Web (Lit/React), or Chat from the exact same data model.
+     • title: Sovereign OLMUI Runner
 
-── 'Core Modules' ──────────────────────────────────────────
+── Core Modules ────────────────────────────────────────────
+  🧩 [ui-feature-grid]
+     • items: [{"description":"High-speed terminal interaction and data pipelines via @nan0web/ui-cli.","icon":"🚀","title":"UI CLI"},{"description":"Modern, reactive web interfaces running entirely in-browser or SSR.","icon":"🌐","title":"UI Web (Lit & React)"},{"description":"Conversational LLM or state-machine-driven interaction via @nan0web/ui-chat.","icon":"💬","title":"UI Chat"}]
+  🧩 [ui-footer]
+     • license: ISC License
+     • platform: NaN•Web Platform
+     • platformUrl: https://nan0web.yaro.page
+     • year: 2026

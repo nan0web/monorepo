@@ -1,10 +1,49 @@
 NaN0Web CLI — UK Pages
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Routes: 7
+Routes: 9
 
-┌─ 'NaN•Web Runner' (/en)
+┌─ NaN•Web Runner (/)
 │  Layout: page
-│  ── 'Core Modules' ──────────────────────────────────────────
+│    🧩 [UI.Header]
+│       • brand: NaN•Web <https://nan0web.yaro.page>
+│       • logo: logo-thin.svg
+│       • socials: [{"'GitHub <https":"//github.com/nan0web/core>'"}]
+│    🧩 [UI.Hero]
+│       • badge: v1.0.0
+│       • code: npm run start -- --dsn data/
+│       • cta: Читати Документацію </uk/docs>
+│       • subtitle: Один алгоритм — багато інтерфейсів. Запускайте ваші додатки в CLI, Web та Чатах.
+│       • title: Суверенний OLMUI Раннер
+│  ── Основні модулі ──────────────────────────────────────────
+│    🧩 [UI.Feature.Grid]
+│       • items: [{"description":"Термінальна взаємодія через @nan0web/ui-cli.","icon":"🚀","title":"UI CLI"},{"description":"Веб-інтерфейси (SSR та CSR) для найкращого UX.","icon":"🌐","title":"UI Web (Lit & React)"},{"description":"Діалогові інтерфейси (LLM та state-machine).","icon":"💬","title":"UI Chat"}]
+│    🧩 [UI.Footer]
+│       • license: ISC License
+│       • links: [{"'NaN•Web Platform <https":"//nan0web.yaro.page>'"}]
+└─ Blocks: 5
+
+┌─ NaN•Web Runner (/en)
+│  Layout: page
+│    🧩 [ui-header]
+│       • brand: NaN•Web App
+│       • github: https://github.com/nan0web/core
+│       • platformLabel: NaN•Web
+│       • platformUrl: https://nan0web.yaro.page
+│    🧩 [ui-hero]
+│       • badge: v1.0.0
+│       • cta: Read Documentation
+│       • ctaHref: /en/docs
+│       • install: npm run start -- --dsn data/
+│       • subtitle: One algorithm — many interfaces. Seamlessly run your applications in CLI, Web (Lit/React), or Chat from the exact same data model.
+│       • title: Sovereign OLMUI Runner
+│  ── Core Modules ────────────────────────────────────────────
+│    🧩 [ui-feature-grid]
+│       • items: [{"description":"High-speed terminal interaction and data pipelines via @nan0web/ui-cli.","icon":"🚀","title":"UI CLI"},{"description":"Modern, reactive web interfaces running entirely in-browser or SSR.","icon":"🌐","title":"UI Web (Lit & React)"},{"description":"Conversational LLM or state-machine-driven interaction via @nan0web/ui-chat.","icon":"💬","title":"UI Chat"}]
+│    🧩 [ui-footer]
+│       • license: ISC License
+│       • platform: NaN•Web Platform
+│       • platformUrl: https://nan0web.yaro.page
+│       • year: 2026
 └─ Blocks: 5
 
 ┌─ Docs (/en/docs)
@@ -15,9 +54,46 @@ Routes: 7
 │  Layout: page
 └─ Blocks: 1
 
-┌─ 'NaN•Web Runner' (/uk)
+┌─ OLMUI Demonstration (/en/demo)
 │  Layout: page
-│  ── 'Основні модулі' ────────────────────────────────────────
+│    🧩 [ui-header]
+│       • brand: Demo Portal
+│  ════════════════════════════════════════════════════════════
+│    OLMUI Demonstration
+│  ════════════════════════════════════════════════════════════
+│    This is a sovereign demo page utilizing declarative OLMUI blocks:
+│    🧩 [Demo.Counter]
+│       • startValue: 10
+│       • title: Terminal Click Counter
+│    🧩 [Demo.UserProfile]
+│       • name: Alexander
+│       • role: Administrator
+│       • status: online
+│    🧩 [App.Editor]
+│       • debug: true
+│       • url: /editor
+│    🧩 [ui-footer]
+│       • license: ISC License
+└─ Blocks: 7
+
+┌─ NaN•Web Runner (/uk)
+│  Layout: page
+│    🧩 [UI.Header]
+│       • brand: NaN•Web <https://nan0web.yaro.page>
+│       • logo: logo-thin.svg
+│       • socials: [{"'GitHub <https":"//github.com/nan0web/core>'"}]
+│    🧩 [UI.Hero]
+│       • badge: v1.0.0
+│       • code: npm run start -- --dsn data/
+│       • cta: Читати Документацію </uk/docs>
+│       • subtitle: Один алгоритм — багато інтерфейсів. Запускайте ваші додатки в CLI, Web та Чатах.
+│       • title: Суверенний OLMUI Раннер
+│  ── Основні модулі ──────────────────────────────────────────
+│    🧩 [UI.Feature.Grid]
+│       • items: [{"description":"Термінальна взаємодія через @nan0web/ui-cli.","icon":"🚀","title":"UI CLI"},{"description":"Веб-інтерфейси (SSR та CSR) для найкращого UX.","icon":"🌐","title":"UI Web (Lit & React)"},{"description":"Діалогові інтерфейси (LLM та state-machine).","icon":"💬","title":"UI Chat"}]
+│    🧩 [UI.Footer]
+│       • license: ISC License
+│       • links: [{"'NaN•Web Platform <https":"//nan0web.yaro.page>'"}]
 └─ Blocks: 5
 
 ┌─ Docs (/uk/docs)
@@ -28,9 +104,24 @@ Routes: 7
 │  Layout: page
 └─ Blocks: 1
 
-┌─ App.Welcome (/)
-│  Layout: Hero
-│    App.Description
-│    App.Welcome
-│    Hero
-└─ Blocks: 1
+┌─ Демонстрація OLMUI (/uk/demo)
+│  Layout: page
+│    🧩 [UI.Header]
+│       • brand: Демо-Портал
+│  ════════════════════════════════════════════════════════════
+│    Демонстрація OLMUI
+│  ════════════════════════════════════════════════════════════
+│    Це суверенна демонстраційна сторінка, яка використовує декларативні OLMUI блоки:
+│    🧩 [Demo.Counter]
+│       • startValue: 10
+│       • title: Термінальний лічильник кліків
+│    🧩 [Demo.UserProfile]
+│       • name: Олександр
+│       • role: Адміністратор
+│       • status: online
+│    🧩 [App.Editor]
+│       • debug: true
+│       • url: /editor
+│    🧩 [UI.Footer]
+│       • license: ISC License
+└─ Blocks: 7

@@ -1,0 +1,6 @@
+- href: /uk
+  title: App.Menu.Home
+  icon: home
+- href: /uk/dome
+  title: App.Menu.Dome
+  icon: layer

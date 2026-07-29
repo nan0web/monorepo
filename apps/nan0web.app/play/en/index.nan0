@@ -1,0 +1,13 @@
+title: 'NaN•Web Sandbox Home'
+description: 'Interactive sandbox application for Geodesic Dome House'
+content:
+  - UI.Header:
+      brand: 'NaN•Web Sandbox'
+      logo: 'logo-thin.svg'
+  - UI.Hero:
+      badge: 'Playground'
+      title: 'Geodesic Dome Sandbox'
+      subtitle: 'An interactive showcase of OLMUI components running across Web, CLI, and Chat.'
+      cta: 'Open Calculator </en/dome>'
+  - UI.Footer:
+      license: 'ISC License'

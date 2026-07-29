@@ -174,7 +174,8 @@ export class AppPipelineModel extends ModelAsApp {
 
 			const chatData = {
 				input: `${this.task || ''}\n\n[PHASE INSTRUCTIONS]\nYou are currently in Phase: ${currentPhase.toUpperCase()}.\n${phaseConfig.instructions}`,
-				_positionals: positionals
+				_positionals: positionals,
+				autoVerify: this.autoVerify
 			}
 
 			const chatOpts = {
@@ -211,7 +212,7 @@ export class AppPipelineModel extends ModelAsApp {
 						const InspectorApp = (await import('@nan0web/inspect/ui/cli')).default
 						const inspector = new InspectorApp(
 							// @ts-ignore
-							{ command: auditorName, dir: cwd },
+							{ command: auditorName, dir: '.' },
 							chatOpts
 						)
 						const res = yield* inspector.run()

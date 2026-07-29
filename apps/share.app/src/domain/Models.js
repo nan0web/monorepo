@@ -152,6 +152,7 @@ export function createLimits(overrides = {}) {
 
 export class SocialAdapterContent extends Model {
 	static text = { help: 'The main text body of the post', default: undefined }
+	static title = { help: 'Title/headline for the publication', default: undefined }
 	static photo = { help: 'URL or file path to a photo', default: undefined }
 	static video = { help: 'URL or file path to a video', default: undefined }
 	static document = { help: 'URL or file path to a document/file', default: undefined }
@@ -163,6 +164,8 @@ export class SocialAdapterContent extends Model {
 
 	/** @type {string|undefined} */
 	text
+	/** @type {string|undefined} */
+	title
 	/** @type {string|undefined} */
 	photo
 	/** @type {string|undefined} */
@@ -183,6 +186,7 @@ export class SocialAdapterContent extends Model {
 	constructor(raw = {}) {
 		super()
 		this.text = raw.text ?? SocialAdapterContent.text.default
+		this.title = raw.title ?? SocialAdapterContent.title.default
 		this.photo = raw.photo ?? SocialAdapterContent.photo.default
 		this.video = raw.video ?? SocialAdapterContent.video.default
 		this.document = raw.document ?? SocialAdapterContent.document.default

@@ -30,6 +30,10 @@ export class FileEntry {
 	content = ""
 	/** @type {string} */
 	encoding = "utf-8"
+	/** @type {number|undefined} */
+	startLine = undefined
+	/** @type {number|undefined} */
+	lineCount = undefined
 	/** @param {Partial<FileEntry>} [input={}] */
 	constructor(input = {}) {
 		const {
@@ -38,12 +42,16 @@ export class FileEntry {
 			type = this.type,
 			content = this.content,
 			encoding = this.encoding,
+			startLine = this.startLine,
+			lineCount = this.lineCount,
 		} = input
 		this.label = String(label)
 		this.filename = String(filename)
 		this.type = String(type)
 		this.content = String(content)
 		this.encoding = String(encoding)
+		this.startLine = startLine !== undefined ? Number(startLine) : undefined
+		this.lineCount = lineCount !== undefined ? Number(lineCount) : undefined
 	}
 }
 
@@ -107,6 +115,21 @@ export class FileProtocol {
 			isValid = JSON.stringify(a) === JSON.stringify(b)
 		}
 		return { isValid, validate, files: new Map(files), requested: new Map(requested) }
+	}
+
+	/**
+	 * Parse dynamically detecting the format.
+	 * @param {string} source
+	 * @returns {Promise<ParsedFile>}
+	 */
+	static async parseAdaptive(source) {
+		if (String(source).includes("---boundary:")) {
+			const { BoundaryProtocol } = await import("./utils/Boundary.js")
+			return await BoundaryProtocol.parse(source)
+		} else {
+			const { MarkdownProtocol } = await import("./utils/Markdown.js")
+			return await MarkdownProtocol.parse(source)
+		}
 	}
 
 	/**

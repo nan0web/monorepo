@@ -17,7 +17,7 @@ import Command from "./Command.js"
  */
 export default class SummaryCommand extends Command {
 	static name = "summary"
-	static help = "Show short message in the output to keep important context"
+	static description = "Show short message in the output to keep important context"
 	static example = "```txt\nKey changes made to the project:\n- Refactored utils\n- Added tests\n```"
 
 	/** @type {ParsedFile} */

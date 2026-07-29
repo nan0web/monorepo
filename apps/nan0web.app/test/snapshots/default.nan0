@@ -1,0 +1,6 @@
+- input:
+    command: default
+- progress:
+    message: "Loading default action..."
+- result:
+    ok: true

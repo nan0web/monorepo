@@ -6,6 +6,7 @@ import { resolve } from 'node:path'
  * Packs files into a single markdown string based on a checklist.
  */
 export class PackModel extends Model {
+	static alias = 'pack'
 	static input = {
 		help: 'Input markdown file with checklist (or stdin if empty)',
 		type: 'string',

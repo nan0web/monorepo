@@ -13,6 +13,18 @@ export function applyPatch(original: string, patchText: string): string;
  * @property {number | undefined} [lineCount]
  */
 /**
+ * @typedef {Object} Message
+ * @property {string} role
+ * @property {string} content
+ */
+/**
+ * @typedef {Object} ChatSessionContext
+ * @property {boolean} singleShot
+ * @property {Message[]} extraSystemMessages
+ * @property {number} agentIterations
+ * @property {Message[]} messages
+ */
+/**
  * ChatSessionModel for llimo.v3
  */
 export class ChatSessionModel extends AiModelAsApp {
@@ -37,6 +49,8 @@ export class ChatSessionModel extends AiModelAsApp {
         model_failed: string;
         file_changes_discarded: string;
         saved_file: string;
+        syntax_error: string;
+        files_not_saved: string;
         loading_workflow: string;
         workflow_loaded: string;
         workflow_not_found: string;
@@ -70,6 +84,9 @@ export class ChatSessionModel extends AiModelAsApp {
         auto_verify_failed: string;
         auto_verify_exhausted: string;
         auto_verify_progress: string;
+        auto_verify_degradation: string;
+        auto_verify_switching_model: string;
+        auto_verify_aborted_degradation: string;
         auto_verify_prompt: string;
         llmErrorFormatValidation: string;
     };
@@ -156,6 +173,18 @@ export class ChatSessionModel extends AiModelAsApp {
     /** @type {string[]} List of positional file paths */ _positionals: string[];
     /** @type {Map<string, number>} Map of injected files and sizes */ injectedFiles: Map<string, number>;
     /** @type {Map<string, typeof Command>} Map of command handlers */ commandsRegistry: Map<string, typeof Command>;
+    /** @type {string | undefined} */
+    statsBaseDir: string | undefined;
+    /** @type {string[]} */
+    savedFiles: string[];
+    /** @type {number} */
+    _currentModelIndex: number;
+    /** @type {number} */
+    _previousFailCount: number;
+    /** @type {number} */
+    _degradationCount: number;
+    /** @type {number} */
+    _tddAttempts: number;
     /**
      * Build the system prompt from data/{locale}/system.md.
      * Injects the list of available workflow files into <!--WORKFLOWS_INDEX-->.
@@ -184,12 +213,7 @@ export class ChatSessionModel extends AiModelAsApp {
         inspectors: {};
     } | undefined;
     /**
-     * Execute an agent-driven context command.
-     * @param {string} commandName E.g. '@ls', '@get', '@search'
-     * @param {string} content Command input text
-     * @returns {Promise<string>} Command output/result
-     */
-    executeAgentCommand(commandName: string, content: string): Promise<string>;
+
     /**
      * Format command output as a single summary line.
      * @param {string} stdoutText
@@ -217,7 +241,12 @@ export class ChatSessionModel extends AiModelAsApp {
      * @returns {AsyncGenerator<any, any, any>}
      */
     run(): AsyncGenerator<any, any, any>;
-    _currentDb: any;
+    _currentDb: import("@nan0web/db").default | DBFS | undefined;
+    /**
+     * @param {ChatSessionContext} ctx
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, boolean | string, any>} Result FALSE to break the chat loop, TRUE to continue the chat loop, "string" to set the answer to the session
+     */
+    processInput(ctx: ChatSessionContext): AsyncGenerator<import("@nan0web/ui").Intent, boolean | string, any>;
     /**
      * @param {{ files: Attachment[] }} parsed
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, boolean | number | string[], any>}
@@ -331,7 +360,18 @@ export type Attachment = {
     startLine?: number | undefined;
     lineCount?: number | undefined;
 };
+export type Message = {
+    role: string;
+    content: string;
+};
+export type ChatSessionContext = {
+    singleShot: boolean;
+    extraSystemMessages: Message[];
+    agentIterations: number;
+    messages: Message[];
+};
 import { AiModelAsApp } from './AiModelAsApp.js';
 import { Command } from './commands/index.js';
+import DBFS from '@nan0web/db-fs';
 import { GetCommand } from './commands/index.js';
 import { ModelAsApp } from '@nan0web/ui';

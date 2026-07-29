@@ -21,7 +21,7 @@ export async function generateSystemPrompt(outputPath) {
 
 	const list = Array.from(commands.keys()).join(", ")
 	const md = Array.from(commands.values()).map(
-		Command => `### ${Command.name}\n${Command.help}\n\n`
+		Command => `### ${Command.name}\n${Command.description || Command.help}\n\n`
 			+ `Example:\n#### [${Command.label || ""}](@${Command.name})\n${Command.example}`
 	).join("\n\n")
 

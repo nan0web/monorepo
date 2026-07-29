@@ -56,7 +56,7 @@ export class PipelineRunModel extends ModelAsApp {
 	static autoVerify = {
 		help: 'Enable automatic testing/verification loop',
 		type: 'boolean',
-		default: false,
+		default: true,
 	}
 
 	constructor(data = {}, options = {}) {

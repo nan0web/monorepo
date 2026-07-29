@@ -92,7 +92,8 @@ export default class IntentResolver {
 			// Case 3: Static module export (e.g. component registry)
 			yield { module: entry, adapter, app: appName }
 		} catch (err) {
-			yield { error: `Failed to load "${importPath}": ${err.message}` }
+			const msg = err instanceof Error ? err.message : String(err)
+			yield { error: `Failed to load "${importPath}": ${msg}` }
 		}
 	}
 

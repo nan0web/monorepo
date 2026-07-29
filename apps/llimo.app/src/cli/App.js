@@ -21,11 +21,12 @@ import { loadModels, ChatOptions } from "../Chat/index.js"
 import chatCommands from "../Chat/commands/index.js"
 import { runningProgress, testingStatus } from "./testing/progress.js"
 import { Suite } from "./testing/node.js"
-import { MarkdownProtocol } from "../utils/Markdown.js"
+
 import { UiOutput } from "./UiOutput.js"
 import commands from "../llm/commands/index.js"
 import { Alert, Progress } from "./components/index.js"
-import { FileError, FileSize } from "../FileProtocol.js"
+import { FileProtocol, FileError, FileSize } from "../FileProtocol.js"
+import { MarkdownProtocol } from "../utils/Markdown.js"
 import { parseArgv } from "./argvHelper.js"
 
 const DEFAULT_MODEL = "gpt-oss-120b"
@@ -299,7 +300,7 @@ export class ChatCLiApp {
 					yield new Alert(`${RED}! Unknown command: ${filename}${RESET}`)
 					yield new Alert("! Available commands:")
 					for (const [name, Cls] of commands.entries()) {
-						yield new Alert(` - ${name} - ${Cls.help}`)
+						yield new Alert(` - ${name} - ${Cls.description || Cls.help}`)
 					}
 				}
 
@@ -361,7 +362,7 @@ export class ChatCLiApp {
 		/** @type {string} */
 		const fullResponse = String(answer.content)
 
-		const parsed = await MarkdownProtocol.parse(fullResponse)
+		const parsed = await FileProtocol.parseAdaptive(fullResponse)
 
 		content.push("#### llimo-unpack")
 		content.push("```bash")

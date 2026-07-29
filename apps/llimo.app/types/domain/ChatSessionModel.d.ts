@@ -7,9 +7,23 @@
  * @property {function(string, any[], any=): import('ai').StreamTextResult<any>} streamText Stream text from AI
  */
 /**
+ * @typedef {import('@nan0web/ui').ModelAsAppOptions & {
+ *   ai?: AIEngineContract
+ * }} AiModelAsAppOptions
+ */
+export class AiModelAsApp extends ModelAsApp {
+    /**
+     *
+     * @param {Partial<AiModelAsApp>} [data]
+     * @param {Partial<AiModelAsAppOptions>} [options]
+     */
+    constructor(data?: Partial<AiModelAsApp>, options?: Partial<AiModelAsAppOptions>);
+}
+/**
  * Model-as-Schema for tracking metadata of an active LLiMo Engine execution or chat
  */
-export class ChatSessionModel extends Model {
+export class ChatSessionModel extends ModelAsApp {
+    static alias: string;
     static id: {
         help: string;
         default: null;
@@ -51,9 +65,9 @@ export class ChatSessionModel extends Model {
     };
     /**
      * @param {Partial<ChatSessionModel> | Record<string, any>} [data]
-     * @param {Partial<import('@nan0web/types').ModelOptions> & { ai?: AIEngineContract }} [options]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions> & { ai?: AIEngineContract }} [options]
      */
-    constructor(data?: Partial<ChatSessionModel> | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions> & {
+    constructor(data?: Partial<ChatSessionModel> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions> & {
         ai?: AIEngineContract;
     });
     /** @type {AIEngineContract | undefined} AI Provider instance */ ai: AIEngineContract | undefined;
@@ -89,4 +103,7 @@ export type AIEngineContract = {
      */
     streamText: (arg0: string, arg1: any[], arg2: any | undefined) => import("ai").StreamTextResult<any, any>;
 };
-import { Model } from '@nan0web/types';
+export type AiModelAsAppOptions = import("@nan0web/ui").ModelAsAppOptions & {
+    ai?: AIEngineContract;
+};
+import { ModelAsApp } from '@nan0web/ui';

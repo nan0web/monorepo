@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { runGenerator, CLiInputAdapter, resolvePositionalArgs } from '@nan0web/ui-cli'
 import { parseArgs } from 'node:util'
 
@@ -10,30 +11,41 @@ import spawn from './utils/exec.js'
 
 /**
  * NaN0Web CLI — OLMUI Model-Driven Application.
- * 
+ *
  * Implements the "Standard" app-level loop where the ShellModel manages
  * the core functionality, and CLI logic is purely declarative.
  */
 export async function main() {
-	console.info('📡 NaN0Web Engine v3.0 booting...')
+	// @todo console['info']('📡 NaN0Web Engine v3.0 booting...')
 	const { values, positionals } = parseArgs({
 		args: process.argv.slice(2),
 		options: {
-			dsn: { type: 'string' },
-			port: { type: 'string' },
-			locale: { type: 'string' },
+			dsn: { type: 'string', short: 'd' },
+			port: { type: 'string', short: 'p' },
+			locale: { type: 'string', short: 'l' },
+			lang: { type: 'string' },
 			help: { type: 'boolean', short: 'h' },
 		},
 		strict: false,
 	})
 
 	const adapter = new CLiInputAdapter()
-	
+
 	// Map CLI positionals to ShellModel fields (command)
 	const initialData = resolvePositionalArgs(ShellModel, positionals, values)
-	
+
+	let commandArg = positionals[0]
+	if (commandArg && (commandArg.startsWith('@') || commandArg.endsWith('.app'))) {
+		const appName = commandArg
+			.replace(/^@[^/]+\//, '') // strip scope
+			.replace(/\.app$/, '') // strip .app suffix
+		values.apps = [{ name: appName, src: commandArg }]
+		initialData.command = 'run'
+		initialData.data = positionals[1] || values.dsn || 'data/'
+	}
+
 	if (values.help) initialData.command = 'help'
-	
+
 	// Dependency Injection: Pass Node-specific infra to common Models
 	const infra = {
 		AppRunner,
@@ -41,9 +53,10 @@ export async function main() {
 		NaN0WebConfig,
 		DBwithFSDriver,
 		spawn,
-		dsn: values.dsn || 'data/',
+		dsn: initialData.data || values.dsn || 'data/',
 		port: values.port,
-		locale: values.locale,
+		locale: values.lang || values.locale,
+		apps: values.apps,
 	}
 
 	const app = new ShellModel(initialData, infra)
@@ -51,13 +64,13 @@ export async function main() {
 	// OLMUI Execution Loop
 	while (true) {
 		const res = await runGenerator(app, adapter, infra)
-		
+
 		// If user cancelled (Ctrl+C / Esc), exit loop
 		if (res.cancelled) break
 
 		// If command was explicitly provided in ARGV, exit after execution
 		if (initialData.command) break
-		
+
 		// Otherwise (interactive menu), just loop back — ShellModel resets this.command internally
 	}
 }

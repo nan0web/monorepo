@@ -1,7 +1,7 @@
 App.Title: NaN0Web Раннер
 App.Description: Універсальний раннер на базі даних для фреймворку 0HCnAI.
 App.Welcome: Ласкаво просимо у світ суверенних даних.
-App.Menu.Catalog: Каталог
+App.Menu.Catalog: Catalog
 App.Menu.Contact: Контакти
 App.Menu.Home: Головна
 App.Menu.Docs: Документація
@@ -15,3 +15,70 @@ App.Runner.Action: Спробувати в CLI
 App.Docs.Title: Документація API
 App.Docs.Subtitle: Вчимося розширювати Раннер через модулі.
 
+# Config and Page Schema Keys
+Project name: Назва проєкту
+my-app: мій-додаток
+Data Source Name (folder or connection string): Джерело даних (папка або рядок підключення)
+data/: data/
+Default locale: Локаль за замовчуванням
+en: en
+Server port: Порт сервера
+3000: 3000
+UI theme (light | dark | auto): Тема інтерфейсу (light | dark | auto)
+auto: auto
+Virtual URI aliases (source -> target): Віртуальні аліаси URI (source -> target)
+Directory index file name (index or README for git repos): Ім'я файлу індексу директорії (index або README для git-репозиторіїв)
+index: index
+TLS/SSL config for HTTPS — certificate and key paths: TLS/SSL конфіг для HTTPS — шляхи до сертифікату та ключа
+Configuration for access and error logs: Налаштування логів доступу та помилок
+Installed domain apps: Встановлені доменні додатки
+URL path segment: Сегмент шляху URL
+page: сторінка
+Display title (i18n key or raw string): Відображуваний заголовок (ключ i18n або звичайний рядок)
+Home: Головна
+Optional icon identifier: Необов'язковий ідентифікатор іконки
+⚖️: ⚖️
+Excluded from navigation: Виключено з навігації
+Rendering strategy: Стратегія рендерингу
+Data binding key in Global State (e.g. "court.cases"): Ключ прив'язки даних у Global State (наприклад, "court.cases")
+court.cases: court.cases
+Parsed OLMUI renderable blocks: Зібрані рендерингові блоки OLMUI
+Raw or Markdown content of the page: Сирий або Markdown вміст сторінки
+Court Cases: Судові Справи
+cases: cases
+
+# AppManifest and LogConfig Keys
+1.0.0: 1.0.0
+@nan0web/auth.app: @nan0web/auth.app
+Available UI adapters (auto-detected from package.json#exports): Доступні UI-адаптери (автовизначення з package.json#exports)
+Human-readable description: Зрозумілий опис додатка
+Package source (npm name or local path): Джерело пакета (ім'я npm або локальний шлях)
+Semantic version (from package.json#version): Семантична версія (з package.json#version)
+Unique app identifier (from package.json#name): Унікальний ідентифікатор додатка (з package.json#name)
+auth: auth
+Directory to store log files: Директорія для зберігання файлів логів
+Enable or disable logging system wide: Увімкнути або вимкнути логування в усій системі
+File rotation strategy: Стратегія ротації файлів
+Max file size in megabytes before rotation (only for size strategy): Максимальний розмір файлу в мегабайтах перед ротацією (тільки для стратегії за розміром)
+Whether to log request and response bodies (can blow up storage): Чи логувати тіла запитів та відповідей (може переповнити диск)
+
+# NaN0WebApp Keys
+Enable CLI UI (xterm/readline interactive interface): Увімкнути інтерфейс CLI (інтерактивний термінал xterm/readline)
+Enable Chat UI (WebSocket / Telegram AI chat): Увімкнути інтерфейс чату (WebSocket / Telegram AI чат)
+Enable REST/JSON API only mode: Увімкнути режим лише REST/JSON API
+Enable Voice UI assistant: Увімкнути голосовий інтерфейс
+Enable Web UI (HTTP SSR server / Lit / React SPA): Увімкнути інтерфейс Web (HTTP SSR сервер / Lit / React SPA)
+NaN0WebApp Sovereign Runner: NaN0WebApp Суверенний Раннер
+Output directory for build artifacts: Вихідна директорія для збірки
+Run Runtime: Запустити Раннер
+Select operation (run | build): Оберіть операцію (run | build)
+Static Build: Статична Збірка
+Target platform for static build (web | swift | kotlin | api | vscode | all): Цільова платформа для статичної збірки (web | swift | kotlin | api | vscode | all)
+
+# AppEntryConfig Keys
+@scope/app-name: @scope/app-name
+Data source (inherits parent if empty): Джерело даних (успадковує батьківське, якщо порожньо)
+Installation source — npm package or local path: Джерело встановлення — пакет npm або локальний шлях
+Isolate app state and data from others (default false): Ізолювати стан та дані додатка від інших (за замовчуванням false)
+Locale override (inherits parent if empty): Перевизначення локалі (успадковує батьківське, якщо порожньо)
+Unique app identifier (maps to App.{Name}.* in data): Унікальний ідентифікатор додатка (відповідає App.{Name}.* у даних)

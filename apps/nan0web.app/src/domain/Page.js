@@ -7,8 +7,6 @@ import { ContainerObject, resolveDefaults } from '@nan0web/types'
  * Extends ContainerObject for recursive tree operations.
  */
 export default class Page extends ContainerObject {
-	/** @type {string} */
-
 	static slug = {
 		help: 'URL path segment',
 		placeholder: 'cases',
@@ -63,6 +61,17 @@ export default class Page extends ContainerObject {
 	 */
 	constructor(input = {}) {
 		super(input)
+		/** @type {string} URL path segment */ this.slug
+		/** @type {string} Display title (i18n key or raw string) */ this.title
+		/** @type {string} Data binding key in Global State (e.g. "court.cases") */ this.source
+		/** @type {string} Rendering strategy */ this.layout
+		/** @type {string} Optional icon identifier */ this.icon
+		/** @type {boolean} Excluded from navigation */ this.hidden
+		/** @type {string} Raw or Markdown content of the page */ this.content
+		/** @type {Array<any>|null} Parsed OLMUI renderable blocks */ this.$content
+		/** @type {Page[]} Child pages */ this.children
+		/** @type {number} Navigation order (from __order.yaml) */ this._order
+
 		resolveDefaults(Page, this)
 		Object.assign(this, input)
 	}

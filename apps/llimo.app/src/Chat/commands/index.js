@@ -6,6 +6,7 @@ import { TranslateCommand } from './translate.js'
 import { InitCommand } from './init.js'
 import { ShopperCommand } from './shop.js'
 import { PipelineCommand } from './pipeline.js'
+import { StrategyCommand } from './strategy.js'
 
 export {
 	InfoCommand,
@@ -15,7 +16,8 @@ export {
 	TranslateCommand,
 	InitCommand,
 	ShopperCommand,
-	PipelineCommand
+	PipelineCommand,
+	StrategyCommand
 }
 
 export default {
@@ -27,4 +29,5 @@ export default {
 	init: InitCommand,
 	shop: ShopperCommand,
 	'pipeline': PipelineCommand,
+	strategy: StrategyCommand,
 }

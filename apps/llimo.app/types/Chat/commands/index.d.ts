@@ -7,6 +7,7 @@ declare namespace _default {
     export { InitCommand as init };
     export { ShopperCommand as shop };
     export { PipelineCommand as pipeline };
+    export { StrategyCommand as strategy };
 }
 export default _default;
 import { InfoCommand } from './info.js';
@@ -17,4 +18,5 @@ import { TranslateCommand } from './translate.js';
 import { InitCommand } from './init.js';
 import { ShopperCommand } from './shop.js';
 import { PipelineCommand } from './pipeline.js';
-export { InfoCommand, TestCommand, ReleaseCommand, ListCommand, TranslateCommand, InitCommand, ShopperCommand, PipelineCommand };
+import { StrategyCommand } from './strategy.js';
+export { InfoCommand, TestCommand, ReleaseCommand, ListCommand, TranslateCommand, InitCommand, ShopperCommand, PipelineCommand, StrategyCommand };

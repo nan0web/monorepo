@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../schemas/Page.schema.json
+title: 'OLMUI Demonstration'
+description: 'Example of integrated components and models'
+content:
+  - ui-header:
+      brand: 'Demo Portal'
+  - h1: 'OLMUI Demonstration'
+  - p: 'This is a sovereign demo page utilizing declarative OLMUI blocks:'
+  - Demo.Counter:
+      title: 'Terminal Click Counter'
+      startValue: 10
+  - Demo.UserProfile:
+      name: 'Alexander'
+      role: 'Administrator'
+      status: 'online'
+  - App.Editor:
+      url: '/editor'
+      debug: true
+  - ui-footer:
+      license: 'ISC License'

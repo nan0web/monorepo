@@ -1,5 +1,5 @@
 import { UiCommand } from '../../cli/Ui.js'
-import { TranslateDocsModel } from '../../domain/TranslateDocsModel.js'
+import { TranslateDocsModel } from '../../domain/app/TranslateDocsModel.js'
 import { modelFromArgv } from '@nan0web/ui-cli'
 
 /**
@@ -8,17 +8,18 @@ import { modelFromArgv } from '@nan0web/ui-cli'
  */
 export class TranslateCommand extends UiCommand {
 	static name = 'TranslateCommand'
-	static help = 'Translate markdown documentation using AI (e.g., llimo translate docs/uk/**/*.md docs/en --from uk --to en)'
+	static description = 'Translate markdown documentation using AI (e.g., llimo translate docs/uk/**/*.md docs/en --from uk --to en)'
 
 	/** @type {TranslateDocsModel} */
 	model
 
 	/**
-	 * @param {Partial<TranslateCommand>} input
+	 * @param {Partial<TranslateCommand> | Record<string, any>} [data={}]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
 	 */
-	constructor(input = {}) {
-		super()
-		this.model = input.model ?? new TranslateDocsModel()
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		this.model = data.model || /** @type {any} */ (options).model || new TranslateDocsModel()
 	}
 
 	/**
@@ -30,12 +31,12 @@ export class TranslateCommand extends UiCommand {
 			if (!intent || !intent.type) continue
 
 			switch (intent.type) {
-				case 'log': {
+				case 'show': {
 					const msg = intent.message ?? ''
 					switch (intent.level) {
 						case 'success': console.info(`\x1b[32m${msg}\x1b[0m`); break
 						case 'error':   console.error(`\x1b[31m${msg}\x1b[0m`); break
-						case 'warning': console.warn(`\x1b[33m${msg}\x1b[0m`); break
+						case 'warn':    console.warn(`\x1b[33m${msg}\x1b[0m`); break
 						default:        console.info(msg)
 					}
 					break
@@ -44,8 +45,6 @@ export class TranslateCommand extends UiCommand {
 					if (!this.model.quiet) {
 						console.info(`\x1b[2m ${intent.message}\x1b[0m`)
 					}
-					break
-				case 'result':
 					break
 			}
 		}
@@ -56,11 +55,12 @@ export class TranslateCommand extends UiCommand {
 	 * Factory method compatible with LLiMo command system.
 	 * @param {object} [input]
 	 * @param {string[]} [input.argv=[]]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
 	 * @returns {TranslateCommand}
 	 */
-	static create(input = {}) {
+	static create(input = {}, options = {}) {
 		const { argv = [] } = input
 		const model = modelFromArgv(TranslateDocsModel, argv)
-		return new TranslateCommand({ model })
+		return new TranslateCommand({ model }, options)
 	}
 }

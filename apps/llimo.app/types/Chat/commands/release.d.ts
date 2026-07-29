@@ -67,25 +67,32 @@ export class ReleaseCommand extends UiCommand {
     }[];
     static STAGE_LABELS: {};
     static name: string;
-    static help: string;
+    static description: string;
     /**
      * @param {object} [input]
      * @param {string[]} [input.argv=[]]
      * @param {Chat} [input.chat]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
      * @returns {ReleaseCommand}
      */
     static create(input?: {
         argv?: string[] | undefined;
         chat?: Chat | undefined;
-    }): ReleaseCommand;
+    }, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>): ReleaseCommand;
     /**
-     * @param {Partial<ReleaseCommand>} input
+     * @param {Partial<ReleaseCommand> | Record<string, any>} [data={}]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
      */
-    constructor(input?: Partial<ReleaseCommand>);
+    constructor(data?: Partial<ReleaseCommand> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    /** @type {ReleaseOptions} */
     options: ReleaseOptions;
+    /** @type {FileSystem} */
     fs: FileSystem;
+    /** @type {Chat} */
     chat: Chat;
-    tasks: any[];
+    /** @type {Task[]} */
+    tasks: Task[];
+    /** @type {string} */
     releaseDir: string;
     /**
      * @param {object} [options]

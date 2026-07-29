@@ -5,7 +5,7 @@ import Command from "./Command.js"
 
 export default class ListFilesCommand extends Command {
 	static name = "ls"
-	static help = "List the files inside project one directory or pattern per line (including micromatch patterns)"
+	static description = "List the files inside project one directory or pattern per line (including micromatch patterns)"
 	static example = "```\ntypes\nsrc/**/*.test.js\n```"
 
 	async * run() {

@@ -29,7 +29,7 @@ export class WebSocketBridge {
 		
 		this.wss.on('connection', (ws) => {
 			this.clients.add(ws)
-			console.info(`[WS] Client connected. Total: ${this.clients.size}`)
+			console['info'](`[WS] Client connected. Total: ${this.clients.size}`)
 
 			// Send initial state
 			this.#send(ws, { type: 'STATE_SYNC', payload: this.runner.state })
@@ -39,13 +39,13 @@ export class WebSocketBridge {
 					const message = JSON.parse(data.toString())
 					await this.#handleMessage(ws, message)
 				} catch (err) {
-					console.error('[WS] Failed to parse message:', err)
+					console['error']('[WS] Failed to parse message:', err)
 				}
 			})
 
 			ws.on('close', () => {
 				this.clients.delete(ws)
-				console.info(`[WS] Client disconnected. Total: ${this.clients.size}`)
+				console['info'](`[WS] Client disconnected. Total: ${this.clients.size}`)
 			})
 		})
 
@@ -88,7 +88,7 @@ export class WebSocketBridge {
 	async #handleMessage(ws, message) {
 		switch (message.type) {
 			case 'RESOLVE_INTENT': {
-				console.info(`[WS] Intent received: ${message.payload.src}`)
+				console['info'](`[WS] Intent received: ${message.payload.src}`)
 				const results = await this.runner.resolveIntent(message.payload)
 				this.#send(ws, { 
 					type: 'INTENT_RESOLVED', 
@@ -100,7 +100,7 @@ export class WebSocketBridge {
 				this.#send(ws, { type: 'PONG' })
 				break
 			default:
-				console.warn(`[WS] Unknown message type: ${message.type}`)
+				console['warn'](`[WS] Unknown message type: ${message.payload.type || message.type}`)
 		}
 	}
 

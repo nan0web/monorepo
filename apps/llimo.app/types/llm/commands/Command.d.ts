@@ -1,11 +1,12 @@
 export default class Command extends UiCommand {
-    static help: string;
+    static description: string;
     static label: string;
     static example: string;
     /**
-     * @param {Partial<Command>} input
+     * @param {Partial<Command> | Record<string, any>} [data={}]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
      */
-    constructor(input?: Partial<Command>);
+    constructor(data?: Partial<Command> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
     /** @type {string} */
     cwd: string;
     /** @type {FileSystem} */

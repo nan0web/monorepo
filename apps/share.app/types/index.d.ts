@@ -1,16 +1,16 @@
-export { MediaDownloadModel } from "./domain/MediaDownloadModel.js";
-export { YouTubeDownloader } from "./domain/YouTubeDownloader.js";
-export { AudioSplitter } from "./domain/AudioSplitter.js";
-export { DummyAdapter } from "./domain/DummyAdapter.js";
-export { VideoCompiler } from "./domain/VideoCompiler.js";
-export { ThumbnailGenerator } from "./domain/ThumbnailGenerator.js";
-export { ShortsGenerator } from "./domain/ShortsGenerator.js";
-export { TrendAnalyzer } from "./domain/TrendAnalyzer.js";
-export { TelegramAdapter } from "./adapters/TelegramAdapter.js";
-export { YouTubeAdapter } from "./adapters/YouTubeAdapter.js";
-export { MediumAdapter } from "./adapters/MediumAdapter.js";
-export { IPFSAdapter } from "./adapters/IPFSAdapter.js";
-export { ArweaveAdapter } from "./adapters/ArweaveAdapter.js";
-export { Model, SocialAdapterConfig, SocialAdapterLimits, SocialAdapterContent, SocialAdapterFeedback, SocialAdapterTarget, SocialAdapterValidationError, createConfig, createLimits, createContent, createFeedback, createTarget, ResultIntent, createResultIntent } from "./domain/Models.js";
-export { SocialAdapter, NotImplementedError } from "./domain/SocialAdapter.js";
-export { parseDelay, matchesConditions, evaluateRules, executeTasks } from "./domain/RulesEngine.js";
+export class ShareAppCLI extends ModelAsApp {
+    static alias: string;
+    static command: {
+        help: string;
+        options: (typeof DownloadWhisperCommand | typeof VideoCompileCommand | typeof ShortsGenerateCommand | typeof SubtitleGenerateCommand | typeof ScriptGenerateCommand | typeof PublishCommand)[];
+        positional: boolean;
+    };
+    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").Intent, void, any>;
+}
+import { ModelAsApp } from '@nan0web/ui-cli';
+import { DownloadWhisperCommand } from './domain/commands/DownloadWhisperCommand.js';
+import { VideoCompileCommand } from './domain/commands/VideoCompileCommand.js';
+import { ShortsGenerateCommand } from './domain/commands/ShortsGenerateCommand.js';
+import { SubtitleGenerateCommand } from './domain/commands/SubtitleGenerateCommand.js';
+import { ScriptGenerateCommand } from './domain/commands/ScriptGenerateCommand.js';
+import { PublishCommand } from './domain/commands/PublishCommand.js';

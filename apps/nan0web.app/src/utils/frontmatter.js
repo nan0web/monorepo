@@ -21,7 +21,7 @@ const FRONTMATTER_RE = /^---\n([\s\S]+?)\n---\n?([\s\S]*)$/
  * Tries NaN0 parse first, then YAML fallback.
  *
  * @param {string} raw - Raw file content (markdown with optional frontmatter).
- * @returns {{ meta: object, body: string }}
+ * @returns {Promise<{ meta: any, body: string }>}
  */
 export async function extractFrontmatter(raw) {
 	if (!raw || typeof raw !== 'string') {
@@ -90,7 +90,7 @@ export function extractFrontmatterSync(raw) {
 		if (colonIdx === -1) continue
 
 		const key = trimmed.slice(0, colonIdx).trim()
-		let value = trimmed.slice(colonIdx + 1).trim()
+		/** @type {any} */ let value = trimmed.slice(colonIdx + 1).trim()
 
 		// Type inference
 		if (value === 'true') value = true

@@ -20,10 +20,10 @@ export default class AppLogger {
 	baseDir
 
 	/** @type {fs.WriteStream | null} */
-	_accessStream = null
+	_accessStream
 
 	/** @type {fs.WriteStream | null} */
-	_errorStream = null
+	_errorStream
 
 	/** @type {string} Current access log file path */
 	#accessPath = ''
@@ -38,6 +38,8 @@ export default class AppLogger {
 	constructor(config, cwd = process.cwd()) {
 		this.config = config
 		this.baseDir = path.resolve(cwd, config.dir || 'logs/')
+		this._accessStream = null
+		this._errorStream = null
 	}
 
 	/**

@@ -60,8 +60,13 @@ export default class NaN0WebConfig extends Model {
 		placeholder: 'index',
 		default: 'index',
 	}
+	static ui = {
+		help: 'UI adapters to load',
+		type: 'string[]',
+		default: [],
+	}
 	static ssl = {
-		help: 'TLS/SSL config for HTTPS — { cert: "/path/cert.pem", key: "/path/key.pem" }',
+		help: 'TLS/SSL config for HTTPS — certificate and key paths',
 		type: 'object',
 		default: null,
 		hidden: true,
@@ -86,6 +91,18 @@ export default class NaN0WebConfig extends Model {
 	 */
 	constructor(input = {}) {
 		super(input)
+		/** @type {string} */ this.appName
+		/** @type {string} */ this.dsn
+		/** @type {string} */ this.locale
+		/** @type {number} */ this.port
+		/** @type {string} */ this.theme
+		/** @type {Record<string, string>} */ this.aliases
+		/** @type {string} */ this.directoryIndex
+		/** @type {string[]} */ this.ui
+		/** @type {{ cert: string, key: string }|null} */ this.ssl
+		/** @type {LogConfig} */ this.log
+		/** @type {AppEntryConfig[]} */ this.apps
+
 		// Hydrate nested models
 		if (this.log && !(this.log instanceof LogConfig)) {
 			this.log = new LogConfig(this.log)

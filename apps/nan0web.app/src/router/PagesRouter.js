@@ -13,10 +13,14 @@ import Page from '../domain/Page.js'
  */
 export default class PagesRouter {
 	/** @type {Page[]} */
-	pages = []
+	pages
 
 	/** @type {Map<string, Page>} */
 	#index = new Map()
+
+	constructor() {
+		this.pages = []
+	}
 
 	/**
 	 * Load pages from Global State.
@@ -53,7 +57,10 @@ export default class PagesRouter {
 	 * @returns {Page | null}
 	 */
 	resolve(path) {
-		const normalized = path.startsWith('/') ? path.slice(1) : path
+		let normalized = path.startsWith('/') ? path.slice(1) : path
+		if (normalized.endsWith('/') && normalized.length > 1) {
+			normalized = normalized.slice(0, -1)
+		}
 		return this.#index.get(normalized) || null
 	}
 
@@ -67,7 +74,11 @@ export default class PagesRouter {
 		const page = this.resolve(path)
 		if (!page) return { page: null, breadcrumbs: [] }
 
-		const segments = (path.startsWith('/') ? path.slice(1) : path).split('/')
+		let cleanPath = path.startsWith('/') ? path.slice(1) : path
+		if (cleanPath.endsWith('/') && cleanPath.length > 1) {
+			cleanPath = cleanPath.slice(0, -1)
+		}
+		const segments = cleanPath.split('/')
 		const breadcrumbs = []
 		let accumulated = ''
 		for (const seg of segments) {

@@ -382,7 +382,7 @@ export class AI {
 		const provider = this.getProvider(model.provider)
 		const specific = provider(model.id)
 
-		const stream = streamText({
+		const streamResult = streamText({
 			model: specific,
 			messages,
 			system,
@@ -399,7 +399,29 @@ export class AI {
 			onFinish,
 			onAbort,
 		})
-		return stream
+
+		// Wrap with a Proxy to safely intercept getter operations for textStream/fullStream/[Symbol.asyncIterator]
+		return new Proxy(streamResult, {
+			get(target, prop, receiver) {
+				if (prop === Symbol.asyncIterator) {
+					return function() {
+						const stream = target.textStream || makeAsyncIterable(target)
+						return makeAsyncIterable(stream)[Symbol.asyncIterator]()
+					}
+				}
+				if (prop === 'textStream') {
+					return makeAsyncIterable(target.textStream)
+				}
+				if (prop === 'fullStream') {
+					return makeAsyncIterable(target.fullStream)
+				}
+				const val = Reflect.get(target, prop, receiver)
+				if (typeof val === 'function') {
+					return val.bind(target)
+				}
+				return val
+			}
+		})
 	}
 
 	/**
@@ -437,3 +459,66 @@ export class AI {
 		return found
 	}
 }
+
+/**
+ * @template T
+ * @param {any} obj
+ * @returns {any}
+ */
+function makeAsyncIterable(obj) {
+	if (!obj) return obj
+	if (typeof obj[Symbol.asyncIterator] === 'function') {
+		return obj
+	}
+	// Web ReadableStream or similar
+	if (typeof obj.getReader === 'function') {
+		const asyncIterator = async function* () {
+			const reader = obj.getReader()
+			try {
+				while (true) {
+					const { done, value } = await reader.read()
+					if (done) break
+					yield value
+				}
+			} finally {
+				reader.releaseLock()
+			}
+		}
+		try {
+			Object.defineProperty(obj, Symbol.asyncIterator, {
+				value: asyncIterator,
+				writable: true,
+				configurable: true
+			})
+		} catch (e) {
+			return {
+				...obj,
+				[Symbol.asyncIterator]: asyncIterator
+			}
+		}
+		return obj
+	}
+	// Sync iterable
+	if (typeof obj[Symbol.iterator] === 'function') {
+		const asyncIterator = async function* () {
+			for (const item of obj) {
+				yield item
+			}
+		}
+		try {
+			Object.defineProperty(obj, Symbol.asyncIterator, {
+				value: asyncIterator,
+				writable: true,
+				configurable: true
+			})
+		} catch (e) {
+			return {
+				...obj,
+				[Symbol.asyncIterator]: asyncIterator
+			}
+		}
+		return obj
+	}
+	return obj
+}
+

@@ -40,13 +40,26 @@ export default class AppEntryConfig extends Model {
 		default: '',
 	}
 	static isolation = {
-		help: 'Isolate app state and data from others (Default: false)',
+		help: 'Isolate app state and data from others (default false)',
 		type: 'boolean',
 		default: false,
 	}
 
 	/** @returns {string} Alias accessor for appName */
 	get name() { return this.appName }
+
+	/**
+	 * @param {object} [data]
+	 * @param {object} [options]
+	 */
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		/** @type {string} */ this.appName
+		/** @type {string} */ this.src
+		/** @type {string} */ this.dsn
+		/** @type {string} */ this.locale
+		/** @type {boolean} */ this.isolation
+	}
 }
 
 

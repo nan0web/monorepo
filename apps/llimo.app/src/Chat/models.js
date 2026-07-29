@@ -12,14 +12,16 @@ export async function loadModels(opts = {}) {
 
 	let name = "", raw = "", models = [], pros = new Set()
 	let loading
-	if (ui) {
+	if (ui && process.env.NODE_ENV !== 'test') {
 		let str = "Loading models …"
 		ui.console.info(str)
-		loading = ui.createProgress(({ elapsed }) => {
-			let str = "Loading models …"
-			if (name) str = `Loading models @${name} (${models.length} in ${elapsed}ms)`
-			ui.overwriteLine(str)
-		})
+		if (typeof ui.createProgress === 'function') {
+			loading = ui.createProgress(({ elapsed }) => {
+				let str = "Loading models …"
+				if (name) str = `Loading models @${name} (${models.length} in ${elapsed}ms)`
+				if (typeof ui.overwriteLine === 'function') ui.overwriteLine(str)
+			})
+		}
 	}
 	const map = await provider.getAll({
 		onBefore: (n) => { name = n },
@@ -31,14 +33,18 @@ export async function loadModels(opts = {}) {
 		},
 		...opts
 	})
-	if (ui) {
-		ui.overwriteLine("")
-		ui.cursorUp(1)
+	if (ui && process.env.NODE_ENV !== 'test') {
+		if (typeof ui.overwriteLine === 'function') ui.overwriteLine("")
+		if (typeof ui.cursorUp === 'function') ui.cursorUp(1)
 		const arr = Array.from(pros).sort()
-		ui.overwriteLine(`@ Loaded ${map.size} inference models from ${pros.size} providers`)
+		if (typeof ui.overwriteLine === 'function') {
+			ui.overwriteLine(`@ Loaded ${map.size} inference models from ${pros.size} providers`)
+		} else {
+			ui.console.info(`@ Loaded ${map.size} inference models from ${pros.size} providers`)
+		}
 		ui.console.info("")
 		arr.forEach(pro => ui.console.info(`> ${pro}`))
-		clearInterval(loading)
+		if (loading) clearInterval(loading)
 	}
 	return map
 }

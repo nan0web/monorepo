@@ -1,5 +1,6 @@
-import { AppPipeline } from './pipelines/AppPipeline.js'
-import { LogicPipeline } from './pipelines/LogicPipeline.js'
+import { AppPipelineModel } from './pipelines/AppPipelineModel.js'
+import { LogicPipelineModel } from './pipelines/LogicPipelineModel.js'
+import { InspectPipelineModel } from './pipelines/InspectPipelineModel.js'
 
 export class PipelineRunner {
 	/**
@@ -9,8 +10,9 @@ export class PipelineRunner {
 		this.context = context
 		/** @type {Record<string, any>} */
 		this.drivers = {
-			app: AppPipeline,
-			logic: LogicPipeline
+			app: AppPipelineModel,
+			logic: LogicPipelineModel,
+			inspect: InspectPipelineModel
 		}
 	}
 
@@ -26,9 +28,9 @@ export class PipelineRunner {
 			return { ok: false, error: `Pipeline ${name} not found.` }
 		}
 
-		const driver = new DriverClass(this.context)
+		const driver = new DriverClass({ task, name, ...options }, this.context)
 		try {
-			return yield* driver.execute(task, options)
+			return yield* driver.run()
 		} catch (/** @type {any} */ e) {
 			return { ok: false, error: e.message }
 		}

@@ -5,6 +5,7 @@
  * @property {boolean} quiet Quiet mode
  */
 export class WebShopperModel extends Model {
+    static alias: string;
     static query: {
         help: string;
         default: string;

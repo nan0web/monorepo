@@ -83,7 +83,7 @@ export async function handleTestMode(options) {
 
 		usage.inputTokens = chat.getTokensCount()
 
-		const { stream, result } = startStreaming(ai, new ModelInfo({ id: "test-model" }), chat, opts)
+		const { stream, result } = await startStreaming(ai, new ModelInfo({ id: "test-model" }), chat, opts)
 
 		await chatDb.save("stream.md", "")
 		const parts = []

@@ -59,10 +59,22 @@ function renderBlocks(blocks) {
 				lines.push(`    → ${n.title || n.label}: ${n.href || ''}`)
 			}
 		} else {
-			// Generic: render first string value
 			const key = Object.keys(block)[0]
-			if (key && typeof block[key] === 'string') {
+			if (key && (key.includes('.') || key.startsWith('ui-'))) {
+				const props = block[key] || {}
+				lines.push(`  🧩 [${key}]`)
+				if (typeof props === 'object' && props !== null) {
+					for (const [k, v] of Object.entries(props)) {
+						if (k.startsWith('$')) continue
+						lines.push(`     • ${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
+					}
+				} else {
+					lines.push(`     • value: ${props}`)
+				}
+			} else if (key && typeof block[key] === 'string') {
 				lines.push(`  ${block[key]}`)
+			} else {
+				lines.push(`  ${JSON.stringify(block)}`)
 			}
 		}
 	}
@@ -110,11 +122,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
 	const run = async () => {
 		for await (const line of renderCli({ locale, page })) {
-			console.log(line)
+			console['log'](line)
 		}
 	}
 	run().catch(err => {
-		console.error(err)
+		console['error'](err)
 		process.exit(1)
 	})
 }

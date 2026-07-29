@@ -25,8 +25,9 @@ export class LsCommand extends Command {
 					const entries = []
 					if (db) {
 						for await (const entry of db.readDir(dirPath)) {
-							if (entry && (entry.path || entry.name)) {
-								entries.push(entry.path || entry.name)
+							const entryAny = /** @type {any} */ (entry)
+							if (entry && (entryAny.uri || entry.path || entry.name)) {
+								entries.push(entryAny.uri || entry.path || entry.name)
 							}
 						}
 					}

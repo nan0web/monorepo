@@ -10,7 +10,10 @@
 		"src/domain/LLiMoConfigModel.js",
 		"src/domain/SandboxModel.js",
 		"src/utils/kb/**",
+		"src/domain/tools/**",
 		"test-generation/**",
+		"releases/**",
+		"releases/**/*.spec.js",
 		"tmp/**"
 	],
 	"ignoreDependencies": [
@@ -20,5 +23,6 @@
 		"@nan0web/db-fs",
 		"@nan0web/types",
 		"vscode"
-	]
+	],
+	"ignoreExportsUsedInFile": true
 }

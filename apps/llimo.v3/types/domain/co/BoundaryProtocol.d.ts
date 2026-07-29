@@ -25,6 +25,16 @@ export class CommunicationProtocol {
 }
 export class BoundaryProtocol extends CommunicationProtocol {
     /**
+     * Validates file content based on extension.
+     * @param {string} filename
+     * @param {string} content
+     * @returns {{ valid: boolean, error?: string }}
+     */
+    static validateFileContent(filename: string, content: string): {
+        valid: boolean;
+        error?: string;
+    };
+    /**
      * @param {DB} db
      * @param {string} [locale='uk']
      */

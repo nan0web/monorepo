@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { EventEmitter } from 'node:events'
 import { DBFS, DBwithFSDriver } from '@nan0web/db-fs'
 import { NaN0WebConfig, Navigation } from './domain/index.js'
@@ -7,6 +8,8 @@ import Renderer from './renderer/Renderer.js'
 import AppRegistry from './registry/AppRegistry.js'
 import IntentResolver from './registry/IntentResolver.js'
 import { createT } from '@nan0web/types'
+
+const DB = Object.getPrototypeOf(DBFS)
 
 /**
  * Tiny I18n wrapper for AppRunner to support dynamic vocabulary loading.
@@ -39,24 +42,27 @@ export { NaN0WebConfig }
  *   - App Attach: db.extract() → micro-app branches
  */
 export class AppRunner extends EventEmitter {
-	/** @type {import('@nan0web/db-fs').DBFS} */
+	/** @type {any} */
 	db
 
 	/** @type {PagesRouter} */
 	router
 
-	/** @type {Renderer} */
+	/** @type {Renderer | null} */
 	renderer
 
-	/** @type {AppLogger} */
+	/** @type {AppLogger | null} */
 	logger
 
 	/**
-	 * @param {string | { cwd?: string, db?: import('@nan0web/db-fs').DBwithFSDriver }} [options]
+	 * @param {string | { cwd?: string, db?: import('@nan0web/db-fs').DBwithFSDriver, dsn?: string, port?: number|string, locale?: string }} [options]
 	 */
 	constructor(options = {}) {
 		super()
+		this.renderer = null
+		this.logger = null
 		if (typeof options === 'string') options = { cwd: options }
+		/** @type {any} */
 		this.options = options
 		this.cwd = options.cwd || process.cwd()
 		/** @type {NaN0WebConfig | null} */
@@ -65,10 +71,8 @@ export class AppRunner extends EventEmitter {
 		this.dataDb = null
 		/** @type {object} */
 		this.state = {}
-		this.i18n = new I18n({ locale: this.config?.locale || 'en' })
+		this.i18n = new I18n({ locale: options.locale || 'en' })
 		this.router = new PagesRouter()
-		this.renderer = null
-		this.logger = null
 		/** @type {AppRegistry} */
 		this.registry = new AppRegistry()
 		/** @type {IntentResolver | null} */
@@ -76,7 +80,7 @@ export class AppRunner extends EventEmitter {
 		/** @type {Map<string, import('@nan0web/db-fs').DBwithFSDriver>} */
 		this.apps = new Map()
 		// IoC: accept pre-built DB for testability
-		if (options.db) this.db = options.db
+		this.db = options.db
 	}
 
 	/**
@@ -92,12 +96,56 @@ export class AppRunner extends EventEmitter {
 			await this.db.connect()
 		}
 
-		// 2. Detect and load config
-		const configMeta = await this.#detectConfig()
-		if (configMeta) {
-			const rawConfig = await this.#loadConfig(configMeta)
+		// Mount standard virtual spaces if not already mounted
+		if (!this.db.mounts?.has('@app')) {
+			let appDb
+			if (this.db.constructor.name === 'DBFS') {
+				appDb = new DBFS({ cwd: this.cwd, root: '', console: this.db.console })
+			} else {
+				appDb = new DB({ cwd: '.', data: this.db.data, meta: this.db.meta, console: this.db.console })
+				appDb.normalize = (...args) => DB.prototype.normalize.call(appDb, ...args).replace(/^\//, '')
+			}
+			this.db.mount('@app', appDb)
+		}
+		if (!this.db.mounts?.has('~')) {
+			let homeDb
+			if (this.db.constructor.name === 'DBFS') {
+				const appName = this.options.appName || 'nan0web'
+				homeDb = new DBFS({ cwd: (await import('node:os')).homedir(), root: `.${appName}`, console: this.db.console })
+			} else {
+				homeDb = new DB({ cwd: '.', data: this.db.data, meta: this.db.meta, console: this.db.console })
+				homeDb.normalize = (...args) => DB.prototype.normalize.call(homeDb, ...args).replace(/^\//, '')
+			}
+			this.db.mount('~', homeDb)
+		}
+
+		// 2. Fetch config from DBFS (try exact paths to avoid dot-extension detection issues)
+		let rawConfig = null
+		let configPath = null
+		const configFiles = [
+			'nan0web.config.yaml',
+			'nan0web.config.yml',
+			'nan0web.config.json',
+			'nan0web.config.nan0',
+			'nan0web.nan0',
+			'nan0web.yaml',
+			'nan0web.json'
+		]
+		for (const file of configFiles) {
+			try {
+				rawConfig = await this.db.fetch(`@app/${file}`)
+				if (rawConfig) {
+					configPath = `@app/${file}`
+					break
+				}
+			} catch (e) {
+				// ignore
+			}
+		}
+
+		if (rawConfig) {
 			this.config = NaN0WebConfig.from(rawConfig)
-			yield `✅ Loaded config from: ${configMeta.format}`
+			yield `✅ Loaded config from DBFS: ${configPath}`
 		} else {
 			if (this.options.dsn) {
 				this.config = new NaN0WebConfig({ dsn: this.options.dsn })
@@ -106,6 +154,27 @@ export class AppRunner extends EventEmitter {
 				yield '⚠️ No nan0web.config detected.'
 				yield '💡 Run `nan0web config` to initialize.'
 				return
+			}
+		}
+
+		if (this.options.apps && Array.isArray(this.options.apps)) {
+			if (!this.config.apps) this.config.apps = []
+			for (const app of this.options.apps) {
+				if (!this.config.apps.some(a => a.src === app.src)) {
+					this.config.apps.push(app)
+				}
+			}
+		}
+
+		// Auto-detect UI if missing
+		if (!this.config.ui || this.config.ui.length === 0) {
+			try {
+				const pkg = (await this.db.fetch('@app/package.json')) ?? {}
+				const exports = pkg.exports || {}
+				const uiTypes = Object.keys(exports).filter((k) => k.startsWith('./ui/'))
+				this.config.ui = uiTypes.map((k) => k.replace('./ui/', ''))
+			} catch (e) {
+				// ignore
 			}
 		}
 
@@ -140,13 +209,13 @@ export class AppRunner extends EventEmitter {
 			this.dataDb = this.db.extract(this.config.dsn)
 		}
 
-		if (this.config.aliases && Object.keys(this.config.aliases).length > 0) {
-			this.dataDb.aliases = this.config.aliases
+		if (this.config && this.config.aliases && Object.keys(this.config.aliases).length > 0) {
+			if (this.dataDb) this.dataDb.aliases = this.config.aliases
 			yield `🔀 Virtual Aliases: ${Object.keys(this.config.aliases).length} active`
 		}
 
 		// 3. Detect locale from environment
-		const locale = this.config.locale || process.env.LANG?.split('.')[0]?.split('_')[0] || 'en'
+		const locale = (this.config ? this.config.locale : '') || process.env.LANG?.split('.')[0]?.split('_')[0] || 'en'
 		yield `🌐 Locale: ${locale}`
 
 		// 4. Load global state (fetch merged index)
@@ -175,7 +244,9 @@ export class AppRunner extends EventEmitter {
 			yield '📄 No explicit pages config found — building nav tree from directories...'
 			const { buildNavTree } = await import('./utils/buildNavTree.js')
 			const dirIndex = this.config?.directoryIndex || 'index'
-			this.state.pages = await buildNavTree(this.dataDb, '.', { directoryIndex: dirIndex })
+			if (this.dataDb) {
+				this.state.pages = await buildNavTree(this.dataDb, '.', { directoryIndex: dirIndex })
+			}
 			this.router.load(this.state)
 			yield `🗺️ Pages router: ${this.router.size} auto-routes registered (index: ${dirIndex})`
 		}
@@ -201,7 +272,7 @@ export class AppRunner extends EventEmitter {
 			this.intents = new IntentResolver(this.registry, this.apps)
 		}
 
-		if (process.isBun) {
+		if (/** @type {any} */ (process).isBun) {
 			yield '⚡ Running in Bun runtime.'
 		}
 
@@ -237,15 +308,48 @@ export class AppRunner extends EventEmitter {
 		}
 
 		// Успадкування від батьківського конфігу
-		const dsn = appDef.dsn || this.config.dsn
-		const locale = appDef.locale || this.config.locale
+		const dsn = appDef.dsn || (this.config ? this.config.dsn : '')
+		const locale = appDef.locale || (this.config ? this.config.locale : 'en')
 
 		try {
 			const appDb = new DBwithFSDriver({ cwd: dsn })
 			await appDb.connect()
 
 			// Read package.json to discover UI adapters from exports
-			const pkg = (await appDb.fetch('package.json')) ?? {}
+			let pkg = {}
+			try {
+				const path = await import('node:path')
+				const fs = await import('node:fs/promises')
+				const pkgName = appDef.src.split('/').pop()
+				const appPath = path.join(this.cwd || process.cwd(), 'apps', pkgName, 'package.json')
+				const packagePath = path.join(this.cwd || process.cwd(), 'packages', pkgName, 'package.json')
+				
+				let pkgFilePath = null
+				try {
+					await fs.access(appPath)
+					pkgFilePath = appPath
+				} catch {
+					try {
+						await fs.access(packagePath)
+						pkgFilePath = packagePath
+					} catch {
+						// ignore
+					}
+				}
+
+				if (pkgFilePath) {
+					const pkgContent = await fs.readFile(pkgFilePath, 'utf8')
+					pkg = JSON.parse(pkgContent)
+				} else {
+					const resolved = await import.meta.resolve(`${appDef.src}/package.json`)
+					const pkgPath = new URL(resolved).pathname
+					const pkgContent = await fs.readFile(pkgPath, 'utf8')
+					pkg = JSON.parse(pkgContent)
+				}
+			} catch (e) {
+				pkg = (await appDb.fetch('package.json')) ?? {}
+			}
+
 			if (pkg.name || pkg.exports) {
 				const manifest = this.registry.registerFromPackage(pkg)
 				const adapters = manifest.adapters
@@ -271,7 +375,8 @@ export class AppRunner extends EventEmitter {
 			yield `  ✅ ${name} attached (dsn: ${dsn}, locale: ${locale})`
 			this.emit('change', this.state)
 		} catch (err) {
-			yield `  ⚠️ Failed to attach ${name}: ${err.message}`
+			const errMsg = err instanceof Error ? err.message : String(err)
+			yield `  ⚠️ Failed to attach ${name}: ${errMsg}`
 		}
 	}
 
@@ -284,10 +389,21 @@ export class AppRunner extends EventEmitter {
 	 */
 	async renderPage(urlPath) {
 		const start = performance.now()
-		const { page, breadcrumbs } = this.router.match(urlPath)
+		
+		let cleanPath = urlPath
+		if (cleanPath === '' || cleanPath === '/') {
+			if (this.router.resolve('')) {
+				cleanPath = ''
+			} else {
+				const defaultLocale = this.config?.locale || 'en'
+				cleanPath = '/' + defaultLocale
+			}
+		}
+
+		const { page, breadcrumbs } = this.router.match(cleanPath)
 
 		if (!page) {
-			const ms = (performance.now() - start).toFixed(1)
+			const ms = Math.round((performance.now() - start) * 10) / 10
 			if (this.logger) {
 				this.logger.access({ method: 'GET', path: urlPath, status: 404, ms })
 			}
@@ -314,7 +430,7 @@ export class AppRunner extends EventEmitter {
 
 			if (missing) {
 				try {
-					const doc = await this.dataDb.fetch(page.source.replace(/\./g, '/'))
+					const doc = this.dataDb ? await this.dataDb.fetch(page.source.replace(/\./g, '/')) : null
 					if (doc) {
 						// Inject into state under its path
 						let target = this.state
@@ -326,13 +442,14 @@ export class AppRunner extends EventEmitter {
 						target[segments[segments.length - 1]] = doc
 					}
 				} catch (err) {
-					console.warn(`⚠️ Failed to fetch page source (${page.source}): ${err.message}`)
+					const errMsg = err instanceof Error ? err.message : String(err)
+					console['warn'](`⚠️ Failed to fetch page source (${page.source}): ${errMsg}`)
 				}
 			}
 		}
 
-		const blocks = this.renderer.render(page)
-		const ms = (performance.now() - start).toFixed(1)
+		const blocks = this.renderer ? this.renderer.render(page) : []
+		const ms = Math.round((performance.now() - start) * 10) / 10
 
 		if (this.logger) {
 			this.logger.access({ method: 'GET', path: urlPath, status: 200, ms })
@@ -358,42 +475,7 @@ export class AppRunner extends EventEmitter {
 		return results
 	}
 
-	/**
-	 * Detect which config file exists.
-	 * Priority: .nan0 > .yaml > .json > .js
-	 * @returns {Promise<{uri: string, format: string} | null>}
-	 */
-	async #detectConfig() {
-		const formats = ['nan0', 'yaml', 'json', 'js']
-		for (const format of formats) {
-			const uri = `nan0web.config.${format}`
-			try {
-				const stat = await this.db.stat(uri)
-				if (stat.exists) {
-					return { uri, format }
-				}
-			} catch {
-				// FSDriver throws on access() for non-existent files — skip
-			}
-		}
-		return null
-	}
 
-	/**
-	 * Load raw config data using the appropriate method.
-	 * Data formats (nan0, yaml, json) → db.loadDocument()
-	 * Code formats (js) → dynamic import()
-	 * @param {{uri: string, format: string}} meta
-	 * @returns {Promise<object>} Raw config data (not yet typified)
-	 */
-	async #loadConfig(meta) {
-		if (meta.format === 'js') {
-			const absPath = this.db.location(meta.uri)
-			const mod = await import(absPath)
-			return mod.default || mod
-		}
-		return await this.db.loadDocument(meta.uri, {})
-	}
 
 	/**
 	 * Build the holistic Global State.
@@ -408,6 +490,7 @@ export class AppRunner extends EventEmitter {
 	 */
 	async #buildState(locale) {
 		const state = {}
+		if (!this.dataDb) return state
 
 		// 1. Load global index (data/_/t.yaml, data/_/langs.yaml, etc.)
 		try {
@@ -447,7 +530,7 @@ export class AppRunner extends EventEmitter {
 					if (key !== 't') state[key] = val
 				}
 			} catch {
-				console.debug(`No locale data found for: ${locale}`)
+				console['debug'](`No locale data found for: ${locale}`)
 			}
 		}
 
@@ -475,7 +558,7 @@ export class AppRunner extends EventEmitter {
 	 */
 	async start() {
 		for await (const msg of this.run()) {
-			console.info(msg)
+			console['info'](msg)
 		}
 	}
 

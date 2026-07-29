@@ -2,6 +2,7 @@ import process from "node:process"
 import readline from "node:readline"
 import { appendFileSync, existsSync, mkdirSync } from "node:fs"
 import { dirname } from "node:path"
+import { ModelAsApp } from '@nan0web/ui'
 
 import { YELLOW, RED, RESET, GREEN, overwriteLine, DIM, stripANSI, ITALIC, CLEAR_LINE } from "./ANSI.js"
 import { UiOutput } from "./UiOutput.js"
@@ -347,9 +348,15 @@ export class UiConsole {
 	}
 }
 
-export class UiCommand {
+export class UiCommand extends ModelAsApp {
 	/**
-	 * Creates Alert instance for the Ui output.
+	 * @param {Partial<UiCommand> | Record<string, any>} [data={}]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
+	 */
+	constructor(data = {}, options = {}) {
+		super(data, options)
+	}
+	/**
 	 * @param {Partial<Alert>} input
 	 * @returns {Alert}
 	 */
@@ -375,6 +382,12 @@ export class UiCommand {
 	 */
 	createTable(input) {
 		return new Table(input)
+	}
+	/**
+	 * @returns {AsyncGenerator<any, any, any>}
+	 */
+	async *run() {
+		return yield* super.run()
 	}
 }
 

@@ -3,6 +3,7 @@
  * Orchestrates steps, enforces security, and detects environment registries.
  */
 export class WorkflowModel extends Model {
+    static alias: string;
     static filename: {
         help: string;
         default: string;
@@ -63,7 +64,7 @@ export class WorkflowModel extends Model {
     /** @type {number} Execution budget limit */ budget: number;
     /** @type {WorkflowStepModel[]} Execution steps */ steps: WorkflowStepModel[];
     /** @type {string} Directory to store run history */ historyDir: string;
-    _detectRegistry(): Promise<"pnpm" | "npm" | "go" | "yarn" | "cargo" | "cmake">;
+    _detectRegistry(): Promise<"npm" | "pnpm" | "go" | "yarn" | "cargo" | "cmake">;
     _parseSteps(filepath: any): Promise<any>;
     run(): AsyncGenerator<{
         type: string;

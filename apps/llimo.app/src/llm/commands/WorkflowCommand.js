@@ -3,7 +3,7 @@ import { Alert } from "../../cli/components/index.js"
 
 export default class WorkflowCommand extends Command {
 	static name = "workflow"
-	static help = "Get the templates or workflows from the project to understand the context"
+	static description = "Get the templates or workflows from the project to understand the context"
 	static example = "```\ncode-style.md\n```"
 
 	async * run() {

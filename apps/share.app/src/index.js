@@ -1,47 +1,33 @@
-/**
- * @nan0web/share.app — Sovereign Social Distribution Layer
- *
- * Public API surface for the share.app engine.
- */
+// CLI Entry Point
+import { ModelAsApp } from '@nan0web/ui-cli'
+import { DownloadWhisperCommand } from './domain/commands/DownloadWhisperCommand.js'
+import { VideoCompileCommand } from './domain/commands/VideoCompileCommand.js'
+import { ShortsGenerateCommand } from './domain/commands/ShortsGenerateCommand.js'
+import { SubtitleGenerateCommand } from './domain/commands/SubtitleGenerateCommand.js'
+import { ScriptGenerateCommand } from './domain/commands/ScriptGenerateCommand.js'
+import { PublishCommand } from './domain/commands/PublishCommand.js'
 
-// Models (real classes with schema introspection)
-export {
-	Model,
-	SocialAdapterConfig,
-	SocialAdapterLimits,
-	SocialAdapterContent,
-	SocialAdapterFeedback,
-	SocialAdapterTarget,
-	SocialAdapterValidationError,
-	createConfig,
-	createLimits,
-	createContent,
-	createFeedback,
-	createTarget,
-	ResultIntent,
-	createResultIntent,
-} from './domain/Models.js'
-export { MediaDownloadModel } from './domain/MediaDownloadModel.js'
-export { YouTubeDownloader } from './domain/YouTubeDownloader.js'
-export { AudioSplitter } from './domain/AudioSplitter.js'
+export class ShareAppCLI extends ModelAsApp {
+	static alias = 'share'
 
-// Core Protocol
-export { SocialAdapter, NotImplementedError } from './domain/SocialAdapter.js'
-export { DummyAdapter } from './domain/DummyAdapter.js'
+	static command = {
+		help: 'Commands for managing social media content distribution.',
+		options: [
+			DownloadWhisperCommand,
+			VideoCompileCommand,
+			ShortsGenerateCommand,
+			SubtitleGenerateCommand,
+			ScriptGenerateCommand,
+			PublishCommand,
+		],
+		positional: true,
+	}
 
-// Rules Engine
-export { parseDelay, matchesConditions, evaluateRules, executeTasks } from './domain/RulesEngine.js'
+	async *run() {
+		yield* super.run()
+	}
+}
 
-// Domain Models
-export { VideoCompiler } from './domain/VideoCompiler.js'
-export { ThumbnailGenerator } from './domain/ThumbnailGenerator.js'
-export { ShortsGenerator } from './domain/ShortsGenerator.js'
-export { TrendAnalyzer } from './domain/TrendAnalyzer.js'
+// Export the CLI entry point
 
-// Adapters
-export { TelegramAdapter } from './adapters/TelegramAdapter.js'
-export { YouTubeAdapter } from './adapters/YouTubeAdapter.js'
-export { MediumAdapter } from './adapters/MediumAdapter.js'
-export { IPFSAdapter } from './adapters/IPFSAdapter.js'
-export { ArweaveAdapter } from './adapters/ArweaveAdapter.js'
 

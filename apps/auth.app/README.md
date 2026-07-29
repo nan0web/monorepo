@@ -22,26 +22,26 @@ graph TD
 
 ### AuthPolicy
 
-|
-|
-|
-|
-|
-|
+| Property | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| enabled | boolean | true | global auth toggle |
+| protectedPaths | string[] | ['/api/**'] | glob-patterns to guard |
+| publicPaths | string[] | ['/api/health'] | glob-overrides (public) |
+| strategy | enum | 'jwt' | jwt, session, or apikey |
 
-|
-|
-|
-|
-|
+| username | string | Unique login identifier |
+| email | string | Primary contact (validated) |
+| soulId | string | Sovereign identity bridge |
+| verified | boolean | Identity confirmed (email/did) |
+| approved | boolean | Authorized for community access |
 
 ### AuthConfig
 
-|
-|
-|
-|
-|
+| Property | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| verificationFlow | enum | 'email-only' | email-only, admin-only, email+admin |
+| clearTokensOnPasswordReset | boolean | true | security lifecycle |
+| passwordMinLength | number | 8 | validation rule |
 
 ## Installation
 ```bash
@@ -96,11 +96,11 @@ const user = new SunAccount({
 ### 🧩 Registration Strategies
 Configure how users join your community using the `verificationFlow` parameter.
 
-|
-|
-|
-|
-|
+| Strategy | Description | User State After Confirm |
+| :--- | :--- | :--- |
+| `email-only` | Standard auto-approval (Sovereign) | `verified: true`, `approved: true` |
+| `admin-only` | Manual approval by moderator | `verified: true`, `approved: false` |
+| `email+admin` | Dual verification (High Trust) | `verified: true`, `approved: false` |
 
 ### 🚀 Polymorphic Dispatcher (run)
 The `AuthApp` uses a generator-based pipeline to process any domain message.

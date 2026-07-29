@@ -6,6 +6,7 @@ import { StrategyApp } from '../strategy/AiStrategyModel.js'
 import { StatsReportModel } from '../stats/StatsReportModel.js'
 import { WorkflowApp } from '../workflow/WorkflowApp.js'
 import { PipelineApp } from '../pipeline/PipelineApp.js'
+import InspectorApp from '@nan0web/inspect/ui/cli'
 
 /**
  * LlimoApp — main domain model as app for llimo.v3
@@ -24,6 +25,7 @@ export class LlimoApp extends ModelAsApp {
 			StatsReportModel,
 			WorkflowApp,
 			PipelineApp,
+			InspectorApp,
 		],
 		positional: true,
 		default: ChatSessionModel,

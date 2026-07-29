@@ -1,4 +1,19 @@
 NaN0Web — UK Index
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🧩 [UI.Header]
+     • brand: NaN•Web <https://nan0web.yaro.page>
+     • logo: logo-thin.svg
+     • socials: [{"'GitHub <https":"//github.com/nan0web/core>'"}]
+  🧩 [UI.Hero]
+     • badge: v1.0.0
+     • code: npm run start -- --dsn data/
+     • cta: Читати Документацію </uk/docs>
+     • subtitle: Один алгоритм — багато інтерфейсів. Запускайте ваші додатки в CLI, Web та Чатах.
+     • title: Суверенний OLMUI Раннер
 
-── 'Основні модулі' ────────────────────────────────────────
+── Основні модулі ──────────────────────────────────────────
+  🧩 [UI.Feature.Grid]
+     • items: [{"description":"Термінальна взаємодія через @nan0web/ui-cli.","icon":"🚀","title":"UI CLI"},{"description":"Веб-інтерфейси (SSR та CSR) для найкращого UX.","icon":"🌐","title":"UI Web (Lit & React)"},{"description":"Діалогові інтерфейси (LLM та state-machine).","icon":"💬","title":"UI Chat"}]
+  🧩 [UI.Footer]
+     • license: ISC License
+     • links: [{"'NaN•Web Platform <https":"//nan0web.yaro.page>'"}]

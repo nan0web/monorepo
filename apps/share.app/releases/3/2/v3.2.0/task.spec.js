@@ -9,6 +9,12 @@ import { TrendAnalyzer } from '../../../../src/domain/TrendAnalyzer.js'
 import { MediumAdapter } from '../../../../src/adapters/MediumAdapter.js'
 import { IPFSAdapter } from '../../../../src/adapters/IPFSAdapter.js'
 import { ArweaveAdapter } from '../../../../src/adapters/ArweaveAdapter.js'
+// Import new commands
+import { DownloadWhisperCommand } from '../../../../src/domain/commands/DownloadWhisperCommand.js'
+import { VideoCompileCommand } from '../../../../src/domain/commands/VideoCompileCommand.js'
+import { ShortsGenerateCommand } from '../../../../src/domain/commands/ShortsGenerateCommand.js'
+import { SubtitleGenerateCommand } from '../../../../src/domain/commands/SubtitleGenerateCommand.js'
+import { PublishCommand } from '../../../../src/domain/commands/PublishCommand.js'
 
 describe('Release v3.2.0 - Unified Video & Thumbnail Pipeline Contract', () => {
 	describe('VideoCompiler', () => {
@@ -42,6 +48,31 @@ describe('Release v3.2.0 - Unified Video & Thumbnail Pipeline Contract', () => {
 			// Will verify frame insertion at the end of the short clip
 		})
 	})
+
+	// --- New Command Tests ---
+
+	describe('DownloadWhisperCommand', () => {
+		it('should download audio and generate transcript using Whisper', () => {
+			assert.ok(DownloadWhisperCommand)
+			// TODO: Add unit tests for audio download and transcription generation
+		})
+	})
+
+	describe('SubtitleGenerateCommand', () => {
+		it('should generate ASS subtitles from transcript JSON', () => {
+			assert.ok(SubtitleGenerateCommand)
+			// TODO: Add unit tests for subtitle generation logic
+		})
+	})
+
+	describe('PublishCommand', () => {
+		it('should publish video to specified platforms with title, description, and schedule', () => {
+			assert.ok(PublishCommand)
+			// TODO: Add unit tests for publishing logic, including mock adapters
+		})
+	})
+
+	// --- Existing Adapters ---
 
 	describe('YouTubeAdapter', () => {
 		it('should upload video streams using standard Google API Client oauth credentials', () => {

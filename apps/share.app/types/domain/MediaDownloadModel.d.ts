@@ -23,7 +23,19 @@ export class MediaDownloadModel extends Model {
         help: string;
         default: any[];
     };
-    constructor(raw?: {});
+    static quality: {
+        help: string;
+        default: string;
+    };
+    static format: {
+        help: string;
+        default: string;
+    };
+    static language: {
+        help: string;
+        default: string;
+    };
+    constructor(raw?: {}, options?: {});
     /** @type {string|undefined} */
     url: string | undefined;
     /** @type {string} */
@@ -34,6 +46,12 @@ export class MediaDownloadModel extends Model {
     title: string;
     /** @type {string[]} */
     chunks: string[];
+    /** @type {string} */
+    quality: string;
+    /** @type {string} */
+    format: string;
+    /** @type {string} */
+    language: string;
     /**
      * Runs the download and transcription process.
      * Yields partial results after each 5-minute chunk.

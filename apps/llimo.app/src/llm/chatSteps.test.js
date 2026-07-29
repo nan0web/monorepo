@@ -81,7 +81,7 @@ describe("chatSteps – startStreaming", () => {
 		mockChat.messages = []
 		mockChat.add = () => { }
 		mockChat.getTokensCount = () => 0
-		const { stream } = chatSteps.startStreaming(
+		const { stream } = await chatSteps.startStreaming(
 			ai,
 			new ModelInfo(),
 			mockChat,

@@ -90,6 +90,8 @@ export class EditorModel extends ModelAsApp {
 
 		/** @type {import('@nan0web/db').DB} Local base for staging */
 		this.stageDb = options.stageDb || this._.db || options.db
+		/** @type {Map<string, import('@nan0web/db').DB>} Map of attached micro-apps DBs */
+		this.appDbs = options.appDbs || options.apps || new Map()
 	}
 
 	/**
@@ -127,7 +129,7 @@ export class EditorModel extends ModelAsApp {
 	}
 
 	/**
-	 * List directory entries merging results from the main DB and the local staging.
+	 * List directory entries merging results from the main DB, micro-apps DBs, and the local staging.
 	 * @param {string} path 
 	 * @returns {Promise<object[]>}
 	 */
@@ -140,17 +142,39 @@ export class EditorModel extends ModelAsApp {
 				entries.set(entry.file.path, entry)
 			}
 		}
+		if (this.appDbs) {
+			for (const [appName, appDb] of this.appDbs.entries()) {
+				try {
+					for await (const entry of appDb.findStream(path, { limit: -1 })) {
+						const mergedPath = `${appName}/${entry.file.path}`
+						const mergedEntry = {
+							...entry,
+							file: {
+								...entry.file,
+								path: mergedPath
+							},
+							isStaged: false
+						}
+						entries.set(mergedPath, mergedEntry)
+					}
+				} catch {
+					// Ignore failures for specific app DBs
+				}
+			}
+		}
 		// Also include entries from staging
 		if (this.stageDb) {
 			for await (const entry of this.stageDb.findStream(
 				path === '.' ? '_staged' : `_staged/${path}`,
 				{ limit: -1 },
 			)) {
-				if (entry.file.path.startsWith('_staged/')) {
-					entry.file.path = entry.file.path.replace('_staged/', '')
+				let relativePath = entry.file.path
+				if (relativePath.startsWith('_staged/')) {
+					relativePath = relativePath.replace('_staged/', '')
 				}
+				entry.file.path = relativePath
 				entry.isStaged = true
-				entries.set(entry.file.path, entry)
+				entries.set(relativePath, entry)
 			}
 		}
 		return Array.from(entries.values())
@@ -201,13 +225,30 @@ export class EditorModel extends ModelAsApp {
 	}
 
 	/**
-	 * Load a document, merging main DB content with local staged changes.
+	 * Load a document, merging main DB or micro-app DB content with local staged changes.
 	 * @param {string} path 
 	 * @returns {Promise<object>}
 	 */
 	async loadDocument(path) {
-		// 1. Fetch base document from main DB
-		const base = (await this._.db.loadDocument(path).catch(() => ({}))) || {}
+		let base = null
+		let foundInApp = false
+
+		if (this.appDbs) {
+			for (const [appName, appDb] of this.appDbs.entries()) {
+				if (path.startsWith(`${appName}/`)) {
+					const appPath = path.substring(appName.length + 1)
+					base = (await appDb.loadDocument(appPath).catch(() => ({}))) || {}
+					foundInApp = true
+					break
+				}
+			}
+		}
+
+		if (!foundInApp && this._.db) {
+			base = (await this._.db.loadDocument(path).catch(() => ({}))) || {}
+		}
+
+		if (!base) base = {}
 
 		// 2. Search for uncommitted changes in Local Stage
 		const staged = await this.stageDb.loadDocument(`_staged/${path}`).catch(() => null)
@@ -275,7 +316,21 @@ export class EditorModel extends ModelAsApp {
 
 		// Conflict check (Scenario 3.2)
 		if (options.baseHash) {
-			const current = await this._.db.loadDocument(cleanPath).catch(() => ({}))
+			let current = {}
+			let foundInApp = false
+			if (this.appDbs) {
+				for (const [appName, appDb] of this.appDbs.entries()) {
+					if (cleanPath.startsWith(`${appName}/`)) {
+						const appPath = cleanPath.substring(appName.length + 1)
+						current = await appDb.loadDocument(appPath).catch(() => ({}))
+						foundInApp = true
+						break
+					}
+				}
+			}
+			if (!foundInApp && this._.db) {
+				current = await this._.db.loadDocument(cleanPath).catch(() => ({}))
+			}
 			const currentHash = JSON.stringify(current).length // Simplified hash for testing
 			if (currentHash !== options.baseHash) {
 				throw new Error('CONFLICT: Document has been modified externally')
@@ -285,29 +340,51 @@ export class EditorModel extends ModelAsApp {
 		await this.stageDb.saveDocument(`_staged/${cleanPath}`, document)
 	}
 
-	/**
-	 * Commit all staged changes to the main database.
-	 * @param {string} message 
-	 * @returns {Promise<{ success: boolean, message: string }>}
-	 */
 	async commitChanges(message) {
 		const stagedFiles = []
-		for await (const entry of this.stageDb.findStream('_staged/', { limit: -1 })) {
-			stagedFiles.push(entry.file.path)
+		if (this.stageDb.meta && typeof this.stageDb.meta.keys === 'function') {
+			for (const key of this.stageDb.meta.keys()) {
+				if (key.startsWith('_staged/') && !key.endsWith('index.txt') && !key.endsWith('index.txtl')) {
+					stagedFiles.push(key)
+				}
+			}
+		} else {
+			for await (const entry of this.stageDb.findStream('_staged/', { limit: -1 })) {
+				if (!entry.stat.isDirectory) {
+					stagedFiles.push(entry.file.path)
+				}
+			}
 		}
 
 		if (stagedFiles.length === 0) throw new Error('No changes to commit')
 
-		// Move files from Stage to main DB-FS
+		// Move files from Stage to main DB-FS or micro-app DB
 		for (const stagePath of stagedFiles) {
 			const doc = await this.stageDb.loadDocument(stagePath)
 			const realPath = stagePath.replace('_staged/', '')
 
-			// Save to main DB (which might route to Review Branch)
-			await this._.db.saveDocument(realPath, doc)
+			let committed = false
+			if (this.appDbs) {
+				for (const [appName, appDb] of this.appDbs.entries()) {
+					if (realPath.startsWith(`${appName}/`)) {
+						const appPath = realPath.substring(appName.length + 1)
+						await appDb.saveDocument(appPath, doc)
+						committed = true
+						break
+					}
+				}
+			}
+
+			if (!committed && this._.db) {
+				await this._.db.saveDocument(realPath, doc)
+			}
 
 			// Clear stage
-			await this.stageDb.deleteDocument(stagePath).catch(() => {})
+			if (typeof this.stageDb.dropDocument === 'function') {
+				await this.stageDb.dropDocument(stagePath).catch(() => {})
+			} else if (typeof this.stageDb.deleteDocument === 'function') {
+				await this.stageDb.deleteDocument(stagePath).catch(() => {})
+			}
 		}
 
 		return { success: true, message: `Committed ${stagedFiles.length} files: ${message}` }

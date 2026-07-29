@@ -12,6 +12,8 @@ export class Progress extends UiOutput {
     prefix: string;
     /** @type {string[]} */
     rows: string[];
+    get type(): string;
+    get message(): string;
     /**
      * @param {string} row
      */

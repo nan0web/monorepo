@@ -1,0 +1,13 @@
+title: 'NaN•Web Пісочниця'
+description: 'Інтерактивний тестовий додаток купольного будинку'
+content:
+  - UI.Header:
+      brand: 'NaN•Web Пісочниця'
+      logo: 'logo-thin.svg'
+  - UI.Hero:
+      badge: 'Пісочниця'
+      title: 'Купольний Будинок'
+      subtitle: 'Інтерактивна демонстрація компонентів OLMUI, що працюють у Web, CLI та Chat.'
+      cta: 'Відкрити Калькулятор </uk/dome>'
+  - UI.Footer:
+      license: 'ISC License'

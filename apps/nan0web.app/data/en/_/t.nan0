@@ -14,3 +14,71 @@ App.Structure.Description: One logic — many interfaces (CLI, Web, Chat).
 App.Runner.Action: Try in CLI
 App.Docs.Title: API Documentation
 App.Docs.Subtitle: Learning to extend the Runner via modules.
+
+# Config and Page Schema Keys
+Project name: Project name
+my-app: my-app
+Data Source Name (folder or connection string): Data Source Name (folder or connection string)
+data/: data/
+Default locale: Default locale
+en: en
+Server port: Server port
+3000: 3000
+UI theme (light | dark | auto): UI theme (light | dark | auto)
+auto: auto
+Virtual URI aliases (source -> target): Virtual URI aliases (source -> target)
+Directory index file name (index or README for git repos): Directory index file name (index or README for git repos)
+index: index
+TLS/SSL config for HTTPS — certificate and key paths: TLS/SSL config for HTTPS — certificate and key paths
+Configuration for access and error logs: Configuration for access and error logs
+Installed domain apps: Installed domain apps
+URL path segment: URL path segment
+page: page
+Display title (i18n key or raw string): Display title (i18n key or raw string)
+Home: Home
+Optional icon identifier: Optional icon identifier
+⚖️: ⚖️
+Excluded from navigation: Excluded from navigation
+Rendering strategy: Rendering strategy
+Data binding key in Global State (e.g. "court.cases"): Data binding key in Global State (e.g. "court.cases")
+court.cases: court.cases
+Parsed OLMUI renderable blocks: Parsed OLMUI renderable blocks
+Raw or Markdown content of the page: Raw or Markdown content of the page
+Court Cases: Court Cases
+cases: cases
+
+# AppManifest and LogConfig Keys
+1.0.0: 1.0.0
+@nan0web/auth.app: @nan0web/auth.app
+Available UI adapters (auto-detected from package.json#exports): Available UI adapters (auto-detected from package.json#exports)
+Human-readable description: Human-readable description
+Package source (npm name or local path): Package source (npm name or local path)
+Semantic version (from package.json#version): Semantic version (from package.json#version)
+Unique app identifier (from package.json#name): Unique app identifier (from package.json#name)
+auth: auth
+Directory to store log files: Directory to store log files
+Enable or disable logging system wide: Enable or disable logging system wide
+File rotation strategy: File rotation strategy
+Max file size in megabytes before rotation (only for size strategy): Max file size in megabytes before rotation (only for size strategy)
+Whether to log request and response bodies (can blow up storage): Whether to log request and response bodies (can blow up storage)
+
+# NaN0WebApp Keys
+Enable CLI UI (xterm/readline interactive interface): Enable CLI UI (xterm/readline interactive interface)
+Enable Chat UI (WebSocket / Telegram AI chat): Enable Chat UI (WebSocket / Telegram AI chat)
+Enable REST/JSON API only mode: Enable REST/JSON API only mode
+Enable Voice UI assistant: Enable Voice UI assistant
+Enable Web UI (HTTP SSR server / Lit / React SPA): Enable Web UI (HTTP SSR server / Lit / React SPA)
+NaN0WebApp Sovereign Runner: NaN0WebApp Sovereign Runner
+Output directory for build artifacts: Output directory for build artifacts
+Run Runtime: Run Runtime
+Select operation (run | build): Select operation (run | build)
+Static Build: Static Build
+Target platform for static build (web | swift | kotlin | api | vscode | all): Target platform for static build (web | swift | kotlin | api | vscode | all)
+
+# AppEntryConfig Keys
+@scope/app-name: @scope/app-name
+Data source (inherits parent if empty): Data source (inherits parent if empty)
+Installation source — npm package or local path: Installation source — npm package or local path
+Isolate app state and data from others (default false): Isolate app state and data from others (default false)
+Locale override (inherits parent if empty): Locale override (inherits parent if empty)
+Unique app identifier (maps to App.{Name}.* in data): Unique app identifier (maps to App.{Name}.* in data)

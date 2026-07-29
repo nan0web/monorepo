@@ -19,7 +19,7 @@ export class EditorBridge {
 		if (this.#vscode) {
 			this.#vscode.postMessage({ type, code: payload })
 		} else {
-			console.log('VSCode.postMessage:', type, payload)
+			console['log']('VSCode.postMessage:', type, payload)
 		}
 	}
 

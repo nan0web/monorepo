@@ -7,7 +7,7 @@ import Command from "./Command.js"
 export default class ValidateCommand extends Command {
 	static name = "validate"
 	static label = "2 file(s), 1 command(s)"
-	static help = "Validate of the response by comparing provided (parsed) files and commands to expected list of files and commands. Label is amount of files provided in the response and commands besides @validate provided in the response."
+	static description = "Validate of the response by comparing provided (parsed) files and commands to expected list of files and commands. Label is amount of files provided in the response and commands besides @validate provided in the response."
 	static example = "  ```markdown\n  - [](system.md)\n  - [Updated](play/main.js)\n  - [Setting up the project](@bash)\n  ```"
 
 	/** @type {ParsedFile} */
@@ -43,7 +43,8 @@ export default class ValidateCommand extends Command {
 		})
 		const requested = Array.from(this.parsed.requested ?? []).map(([file]) => file)
 		const debug = this.createAlerter("debug")
-		if (JSON.stringify(realLabel) !== JSON.stringify(validateLabel)) {
+		const isBoundaryValidate = this.parsed.validate?.label === "@validate"
+		if (!isBoundaryValidate && JSON.stringify(realLabel) !== JSON.stringify(validateLabel)) {
 			yield `! LLiMo following format errors ------------------------------`
 			yield `  Unexpected response "${this.parsed.validate?.label}"`
 			yield `  but provided (parsed response): ${realLabel.files} file(s), ${realLabel.commands} command(s)`

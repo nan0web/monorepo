@@ -1,0 +1,11 @@
+title: 'Купольний Калькулятор'
+description: 'Розрахунок обʼєму, площі поверхні купола, площ поверхів та параметрів підвалу'
+content:
+  - UI.Header:
+      brand: 'NaN•Web Пісочниця'
+  - Play.DomeCalc:
+      radius: 4.5
+      floors: 2
+      hasBasement: true
+  - UI.Footer:
+      license: 'ISC License'

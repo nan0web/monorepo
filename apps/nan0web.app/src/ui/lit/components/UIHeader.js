@@ -390,13 +390,19 @@ export class UIHeader extends LitElement {
 			locales: this.locales
 		})
 
-		const parts = model.brand.text.split('•')
+		const brandText = typeof model.brand === 'string' 
+			? model.brand 
+			: (typeof model.brand === 'object' && model.brand !== null 
+				? (model.brand.text || model.brand.title || 'NaN•Web') 
+				: 'NaN•Web')
+		const brandHref = (typeof model.brand === 'object' && model.brand !== null) ? (model.brand.href || '#') : '#'
+		const parts = brandText.split('•')
 
 		return html`
 			<!-- Top bar -->
 			<div class="bar">
 				<div class="brand-group">
-					<a href="${model.brand.href}" class="brand-logo" target="_blank" rel="noopener">
+					<a href="${brandHref}" class="brand-logo" target="_blank" rel="noopener">
 						${model.logo ? html`
 						<img
 							src="${import.meta.env.BASE_URL || '/'}${model.logo}"

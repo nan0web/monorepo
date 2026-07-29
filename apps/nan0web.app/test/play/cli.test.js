@@ -38,6 +38,16 @@ function renderBlocks(blocks) {
 					if (card.description) lines.push(`    ${card.description}`)
 					if (card.status) lines.push(`    Status: ${card.status}`)
 				}
+			} else if (key && (key.includes('.') || key.startsWith('ui-'))) {
+				lines.push(`  🧩 [${key}]`)
+				if (typeof val === 'object' && val !== null) {
+					for (const [k, v] of Object.entries(val)) {
+						if (k.startsWith('$')) continue
+						lines.push(`     • ${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
+					}
+				} else {
+					lines.push(`     • value: ${val}`)
+				}
 			} else if (typeof val === 'string') {
 				lines.push(`  ${stripHtml(val)}`)
 			}

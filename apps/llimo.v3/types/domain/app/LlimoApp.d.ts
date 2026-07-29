@@ -8,7 +8,7 @@ export class LlimoApp extends ModelAsApp {
     };
     static command: {
         help: string;
-        options: (typeof StrategyApp | typeof ChatSessionModel | typeof StatsReportModel | typeof WorkflowApp | typeof PipelineApp)[];
+        options: (typeof StrategyApp | typeof ChatSessionModel | typeof StatsReportModel | typeof WorkflowApp | typeof InspectorApp | typeof PipelineApp)[];
         positional: boolean;
         default: typeof ChatSessionModel;
     };
@@ -25,4 +25,5 @@ import { StrategyApp } from '../strategy/AiStrategyModel.js';
 import { ChatSessionModel } from './ChatSessionModel.js';
 import { StatsReportModel } from '../stats/StatsReportModel.js';
 import { WorkflowApp } from '../workflow/WorkflowApp.js';
+import InspectorApp from '@nan0web/inspect/ui/cli';
 import { PipelineApp } from '../pipeline/PipelineApp.js';

@@ -70,12 +70,12 @@ export function packPrompt(packMarkdown: Function, input: string, chat: Chat): P
  * @param {ModelInfo} model
  * @param {Chat} chat
  * @param {object} options Stream options
- * @returns {{stream: AsyncIterable<any>, result: any}}
+ * @returns {Promise<{stream: AsyncIterable<any>, result: any}>}
  */
-export function startStreaming(ai: AI, model: ModelInfo, chat: Chat, options: object): {
+export function startStreaming(ai: AI, model: ModelInfo, chat: Chat, options: object): Promise<{
     stream: AsyncIterable<any>;
     result: any;
-};
+}>;
 /**
  * Decodes the answer and return the next prompt
  * @deprecated use ChatCliApp.decodeAnswer

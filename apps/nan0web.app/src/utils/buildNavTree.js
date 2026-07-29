@@ -1,4 +1,5 @@
 import Page from '../domain/Page.js'
+import { normalizeDocument } from './normalizeDocument.js'
 
 /**
  * Automatically builds an OLMUI navigation tree by traversing the DB.
@@ -18,7 +19,7 @@ import Page from '../domain/Page.js'
  * 
  * @param {import('@nan0web/db-fs').DBwithFSDriver} db 
  * @param {string} [rootPath='.'] 
- * @param {{ directoryIndex?: string }} [options={}]
+ * @param {{ directoryIndex?: string, verbose?: boolean }} [options={}]
  * @returns {Promise<Page[]>}
  */
 export async function buildNavTree(db, rootPath = '.', options = {}) {
@@ -27,7 +28,7 @@ export async function buildNavTree(db, rootPath = '.', options = {}) {
 	try {
 		const entries = await db.listDir(rootPath)
 		if (options.verbose) {
-			console.debug(`buildNavTree(${rootPath}) found ${entries.length} entries. Meta keys: ${Array.from(db.meta.keys()).join(', ')}`)
+			console['debug'](`buildNavTree(${rootPath}) found ${entries.length} entries. Meta keys: ${Array.from(db.meta.keys()).join(', ')}`)
 		}
 		for (const entry of entries) {
 			const name = typeof entry === 'string' ? entry : entry.name

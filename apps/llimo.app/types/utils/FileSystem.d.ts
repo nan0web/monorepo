@@ -132,6 +132,21 @@ export class FileSystem {
      */
     _jsonSaver(path: string, data?: any, options?: any): Promise<void>;
     /**
+     * JSON loader for .nan0 files.
+     * @param {string} path
+     * @param {BufferEncoding} [encoding="utf-8"]
+     * @returns {Promise<any>}
+     */
+    _nan0Loader(path: string, encoding?: BufferEncoding): Promise<any>;
+    /**
+     * JSON saver for .nan0 files.
+     * @param {string} path
+     * @param {any} data
+     * @param {any} [options]
+     * @returns {Promise<void>}
+     */
+    _nan0Saver(path: string, data?: any, options?: any): Promise<void>;
+    /**
      * Relative proxy of mkdir() & writeFile().
      * @param {string} path
      * @param {any} [data]

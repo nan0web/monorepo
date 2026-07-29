@@ -24,7 +24,8 @@
     "build": "tsc",
     "clean:modules": "rm -rf node_modules/",
     "test": "node --test --test-timeout=3333 'src/**/*.test.js'",
-    "test:all": "npm run test && npm run build"
+    "test:stories": "node --test --test-timeout=5000 'test/stories.test.js'",
+    "test:all": "npm run test && npm run test:stories && npm run build"
   },
   "keywords": [
     "llm",

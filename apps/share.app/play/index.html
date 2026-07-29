@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>share.app · медіа пайплайн</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #14141f;
+    --border: #2a2a3f;
+    --text: #d4d4e8;
+    --text-dim: #7a7a9a;
+    --accent: #7c6ff7;
+    --accent-dim: #5a4fd8;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --radius: 10px;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+  header h1 span { color: var(--accent); }
+  header .info { font-size: 12px; color: var(--text-dim); }
+  .main {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 53px);
+  }
+  /* Sidebar — список команд */
+  .sidebar {
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 16px 0;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .sidebar .cmd {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    font-size: 13px;
+    color: var(--text-dim);
+    transition: all 0.15s;
+  }
+  .sidebar .cmd:hover { background: rgba(124, 111, 247, 0.06); color: var(--text); }
+  .sidebar .cmd.active {
+    border-left-color: var(--accent);
+    color: var(--text);
+    background: rgba(124, 111, 247, 0.1);
+  }
+  .sidebar .cmd .badge {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 99px;
+    background: rgba(124, 111, 247, 0.15);
+    color: var(--accent);
+    margin-left: auto;
+  }
+  /* Контент */
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .form-area {
+    padding: 20px 24px 12px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    max-height: 55%;
+  }
+  .form-area h2 { font-size: 16px; margin-bottom: 4px; }
+  .form-area .desc { font-size: 12px; color: var(--text-dim); margin-bottom: 16px; }
+  .field { margin-bottom: 10px; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-dim);
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .field label .req { color: var(--red); }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 7px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--font);
+    outline: none;
+    transition: border 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--accent);
+  }
+  .field textarea { resize: vertical; min-height: 60px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .field .hint { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .field.checkbox { display: flex; align-items: center; gap: 8px; }
+  .field.checkbox label { margin: 0; text-transform: none; letter-spacing: 0; }
+  .field.checkbox input { width: auto; }
+  .btn-browse {
+    background: none; border: none; cursor: pointer; padding: 0 2px; font-size: 13px;
+    vertical-align: middle; line-height: 1;
+  }
+  .btn-browse:hover { opacity: 0.7; }
+  .field input[type="text"] { padding-right: 32px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: var(--font);
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--accent-dim); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-secondary {
+    background: var(--border);
+    color: var(--text);
+  }
+  .btn-secondary:hover { background: #3a3a5f; }
+  .btn-danger {
+    background: rgba(248, 113, 113, 0.15);
+    color: var(--red);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+  }
+  .btn-danger:hover { background: rgba(248, 113, 113, 0.25); }
+  /* Вивід */
+  .output-area {
+    flex: 1;
+    background: #06060b;
+    border-top: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    min-height: 120px;
+  }
+  .output-area .line { padding: 1px 0; white-space: pre-wrap; word-break: break-word; }
+  .output-area .line.info { color: #94a3b8; }
+  .output-area .line.success { color: var(--green); }
+  .output-area .line.error { color: var(--red); }
+  .output-area .line.warn { color: var(--yellow); }
+  .output-area .line.progress { color: var(--accent); }
+  .output-area .line.result { color: #60a5fa; }
+  .output-area .line-sep { border-top: 1px solid var(--border); margin: 6px 0; }
+  .empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-dim);
+    font-size: 13px;
+    text-align: center;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .empty-state kbd {
+    background: var(--surface);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    border: 1px solid var(--border);
+  }
+  /* File Browser Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 90%; max-width: 700px; max-height: 80vh;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-head h3 { font-size: 14px; font-weight: 600; }
+  .modal-head .close-btn {
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 18px; padding: 4px 8px; border-radius: 4px;
+  }
+  .modal-head .close-btn:hover { background: var(--border); color: var(--text); }
+  .modal-path {
+    padding: 8px 18px;
+    font-size: 12px; color: var(--text-dim);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+  }
+  .modal-path:hover { color: var(--accent); }
+  .modal-body {
+    flex: 1; overflow-y: auto; padding: 4px 0;
+    min-height: 200px;
+  }
+  .modal-file {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.1s;
+    border: none; background: none; color: var(--text); width: 100%; text-align: left;
+    font-family: var(--font);
+  }
+  .modal-file:hover { background: rgba(124, 111, 247, 0.08); }
+  .modal-file .icon { flex-shrink: 0; font-size: 14px; }
+  .modal-file .icon.dir { color: var(--yellow); }
+  .modal-file .icon.file { color: var(--text-dim); }
+  .modal-file .fname { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .modal-file .fext { font-size: 10px; color: var(--text-dim); background: var(--border); padding: 1px 6px; border-radius: 4px; }
+  .modal-empty { padding: 40px; text-align: center; color: var(--text-dim); font-size: 13px; }
+  .modal-up { border-bottom: 1px solid var(--border); color: var(--accent); }
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+  @media (max-width: 768px) {
+    .main { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; max-height: 180px; border-right: none; border-bottom: 1px solid var(--border); }
+    .row2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1><span>share</span>.app</h1>
+  <div class="info">медіа пайплайн · <span id="status">завантаження…</span></div>
+</header>
+<div class="main">
+  <nav class="sidebar" id="sidebar"></nav>
+  <div class="content">
+    <div class="pane">
+      <div class="form-area" id="formArea">
+        <h2 id="cmdTitle">Виберіть команду</h2>
+        <div class="desc" id="cmdDesc">Оберіть команду зі списку ліворуч</div>
+        <div id="fields"></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="runBtn" disabled>▶ Запустити</button>
+          <button class="btn btn-danger" id="clearBtn">✕ Очистити</button>
+        </div>
+      </div>
+      <div class="output-area" id="output">
+        <div class="empty-state">
+          <span>⬤ Оберіть команду і натисніть <kbd>▶ Запустити</kbd></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- File Browser Modal -->
+<div class="modal-overlay" id="fileModal" style="display:none">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Оберіть файл</h3>
+      <button class="close-btn" id="modalClose">&times;</button>
+    </div>
+    <div class="modal-path" id="modalPath">.</div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ─── Стан ────────────────────────────────────────────────────
+let commands = []
+let activeCmd = null
+let outputEl = document.getElementById('output')
+let sidebarEl = document.getElementById('sidebar')
+let fieldsEl = document.getElementById('fields')
+let runBtn = document.getElementById('runBtn')
+let clearBtn = document.getElementById('clearBtn')
+let cmdTitle = document.getElementById('cmdTitle')
+let cmdDesc = document.getElementById('cmdDesc')
+
+// ─── Завантаження команд ─────────────────────────────────────
+
+async function loadCommands() {
+  try {
+    const r = await fetch('/api/commands')
+    commands = await r.json()
+    renderSidebar()
+    document.getElementById('status').textContent = `✓ ${commands.length} команд`
+  } catch (e) {
+    document.getElementById('status').textContent = `✘ помилка з'єднання`
+  }
+}
+
+function renderSidebar() {
+  sidebarEl.innerHTML = commands.map(c => `
+    <div class="cmd${activeCmd?.alias === c.alias ? ' active' : ''}" data-cmd="${c.alias}">
+      <span>${c.alias}</span>
+      <span class="badge">${c.options.filter(o => o.required).length} req</span>
+    </div>
+  `).join('')
+  sidebarEl.querySelectorAll('.cmd').forEach(el => {
+    el.addEventListener('click', () => selectCommand(el.dataset.cmd))
+  })
+}
+
+// ─── Вибір команди ──────────────────────────────────────────
+
+function selectCommand(alias) {
+  const cmd = commands.find(c => c.alias === alias)
+  if (!cmd) return
+  activeCmd = cmd
+  activeCmd.args = {}
+  renderSidebar()
+  cmdTitle.textContent = cmd.alias
+  cmdDesc.textContent = cmd.options.find(o => o.name === 'help')?.help || ''
+  renderFields(cmd)
+  runBtn.disabled = false
+}
+
+function renderFields(cmd) {
+  // Restore from sessionStorage
+  const prefix = `share_cmd_${cmd.alias}_`
+
+  const opts = cmd.options.filter(o => o.name !== 'help' && o.name !== 'raw')
+  let html = ''
+  let i = 0
+  while (i < opts.length) {
+    const a = opts[i]
+    const b = i + 1 < opts.length ? opts[i + 1] : null
+    // Try to pair booleans with something else, or numbers with numbers
+    if (b && (a.type === 'number' || a.type === 'string') && (b.type === 'number' || b.type === 'string') && !a.name.includes('Path') === !b.name.includes('Path')) {
+      html += `<div class="row2">${fieldHtml(a)}${fieldHtml(b)}</div>`
+      i += 2
+    } else {
+      html += fieldHtml(a)
+      i++
+    }
+  }
+  fieldsEl.innerHTML = html
+
+  // Bind events
+  fieldsEl.querySelectorAll('input, select, textarea').forEach(el => {
+    const name = el.dataset.name
+    const type = el.dataset.type
+    // Set default
+    // Restore from sessionStorage, else use default
+    const saved = sessionStorage.getItem(prefix + name)
+    if (saved !== null) {
+      if (type === 'boolean') el.checked = saved === 'true'
+      else el.value = saved
+    } else if (el.dataset.default !== undefined && el.dataset.default !== '') {
+      if (type === 'boolean') el.checked = el.dataset.default === 'true'
+      else el.value = String(el.dataset.default)
+    }
+    // Sync args + save to sessionStorage on change
+    const sync = () => {
+      if (type === 'boolean') {
+        activeCmd.args[name] = el.checked
+        sessionStorage.setItem(prefix + name, String(el.checked))
+      } else if (type === 'number') {
+        activeCmd.args[name] = el.value ? Number(el.value) : undefined
+        sessionStorage.setItem(prefix + name, el.value)
+      } else {
+        activeCmd.args[name] = el.value || undefined
+        sessionStorage.setItem(prefix + name, el.value)
+      }
+    }
+    if (type === 'boolean') {
+      el.addEventListener('change', sync)
+    } else {
+      el.addEventListener('input', sync)
+    }
+    sync()
+  })
+}
+
+function fieldHtml(opt) {
+  const name = opt.name
+  const label = name.charAt(0).toUpperCase() + name.slice(1).replace(/([A-Z])/g, ' $1')
+  const req = opt.required ? ' <span class="req">*</span>' : ''
+  const hint = opt.help ? `<div class="hint">${opt.help}</div>` : ''
+  const isOutput = name === 'output' || name === 'outputPath'
+  const isPath = (name.toLowerCase().includes('path') && !isOutput) || name.toLowerCase().includes('yaml') || name.toLowerCase().includes('source') || name === 'url' || name === 'imgPath' || name === 'shortsYaml' || name === 'credentials'
+  const isDir = name.toLowerCase().includes('dir') || isOutput
+  const browseBtn = isDir
+    ? `<button class="btn-browse" onclick="openDirBrowser(document.getElementById('f_${name}'), '${name}')" title="Оберіть теку">📂</button>`
+    : isPath
+    ? `<button class="btn-browse" onclick="openFileBrowser(document.getElementById('f_${name}'), '${name}')" title="Оберіть файл">📁</button>`
+    : ''
+
+  if (opt.type === 'boolean') {
+    return `<div class="field checkbox"><input type="checkbox" id="f_${name}" data-name="${name}" data-type="boolean" data-default="${opt.default || false}"><label for="f_${name}">${label}${req}</label></div>`
+  }
+  if (opt.type === 'number') {
+    return `<div class="field"><label for="f_${name}">${label}${req}</label><input type="number" id="f_${name}" data-name="${name}" data-type="number" data-default="${opt.default ?? ''}" placeholder="${opt.default != null ? 'default: ' + opt.default : ''}">${hint}</div>`
+  }
+  // text/multiline
+  const isLong = name === 'topic' || name === 'description' || name === 'url'
+  if (isLong) {
+    return `<div class="field"><label for="f_${name}">${label}${req}</label><textarea id="f_${name}" data-name="${name}" data-type="string" data-default="${opt.default || ''}" placeholder="${opt.help || ''}"></textarea>${hint}</div>`
+  }
+  // Select for known option sets
+  if (name === 'style' || name === 'platform' || name === 'language' || name === 'quality' || name === 'format') {
+    const suggestions = {
+      style: ['storytelling', 'educational', 'promotional', 'hook', 'article'],
+      platform: ['youtube', 'tiktok', 'instagram', 'linkedin'],
+      language: [
+        'auto', 'af', 'am', 'ar', 'as', 'az', 'ba', 'be', 'bg', 'bn', 'bo',
+        'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dz', 'el', 'en', 'eo',
+        'es', 'et', 'eu', 'fa', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd',
+        'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'hr', 'ht', 'hu', 'hy',
+        'id', 'ig', 'is', 'it', 'iu', 'ja', 'ka', 'kk', 'km', 'kn', 'ko',
+        'ku', 'ky', 'la', 'lb', 'lo', 'lt', 'lv', 'mg', 'mi', 'mk', 'ml',
+        'mn', 'mr', 'ms', 'mt', 'my', 'nb', 'ne', 'nl', 'nn', 'no', 'oc',
+        'or', 'pa', 'pl', 'ps', 'pt', 'qu', 'rm', 'ro', 'ru', 'sa', 'sd',
+        'sk', 'sl', 'so', 'sq', 'sr', 'sv', 'sw', 'ta', 'te', 'tg', 'th',
+        'ti', 'tk', 'tl', 'tr', 'tt', 'ug', 'uk', 'ur', 'uz', 'vi', 'wo',
+        'xh', 'yi', 'yo', 'zh', 'zu',
+      ],
+      quality: ['tiny', 'base', 'small', 'medium', 'large', 'turbo'],
+      format: ['txt', 'json', 'srt', 'vtt'],
+    }
+    const opts = suggestions[name] || []
+    return `<div class="field"><label for="f_${name}">${label}${req}</label><select id="f_${name}" data-name="${name}" data-type="string" data-default="${opt.default || ''}">${opts.map(o => `<option value="${o}"${o === (opt.default || '') ? ' selected' : ''}>${o}</option>`).join('')}</select>${hint}</div>`
+  }
+  return `<div class="field"><label for="f_${name}">${label}${req} ${browseBtn}</label><input type="text" id="f_${name}" data-name="${name}" data-type="string" data-default="${opt.default || ''}" placeholder="${opt.help || ''}" style="padding-right: 32px;">${hint}</div>`
+}
+
+// ─── Запуск ──────────────────────────────────────────────────
+
+runBtn.addEventListener('click', runCommand)
+
+async function runCommand() {
+  if (!activeCmd) return
+  runBtn.disabled = true
+  runBtn.textContent = '⏳ Виконання…'
+
+  // Clear output
+  outputEl.innerHTML = ''
+  addLine('progress', `▶ ${activeCmd.alias} запуск...`)
+
+  try {
+    const r = await fetch('/api/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ command: activeCmd.alias, args: activeCmd.args }),
+    })
+
+    if (!r.ok) {
+      addLine('error', `HTTP ${r.status}: ${r.statusText}`)
+      runBtn.disabled = false
+      runBtn.textContent = '▶ Запустити'
+      return
+    }
+
+    const reader = r.body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+
+      // Parse SSE events
+      const events = buffer.split('\n\n')
+      buffer = events.pop() || ''
+
+      for (const event of events) {
+        const lines = event.split('\n')
+        let type = '', data = ''
+        for (const line of lines) {
+          if (line.startsWith('event: ')) type = line.slice(7).trim()
+          if (line.startsWith('data: ')) data = line.slice(6).trim()
+        }
+        if (data) {
+          try {
+            const parsed = JSON.parse(data)
+            handleEvent(type, parsed)
+          } catch { /* ignore parse errors */ }
+        }
+      }
+    }
+  } catch (err) {
+    addLine('error', `Помилка: ${err.message}`)
+  }
+
+  runBtn.disabled = false
+  runBtn.textContent = '▶ Запустити'
+}
+
+function handleEvent(type, data) {
+  switch (type) {
+    case 'log':
+      addLine(data.level || 'info', data.message)
+      break
+    case 'progress':
+      addLine('progress', data.message || '')
+      break
+    case 'result':
+      addLine('result', JSON.stringify(data, null, 2))
+      addLine('success', '✓ Завершено')
+      // Clear sessionStorage on success
+      if (activeCmd) {
+        const prefix = `share_cmd_${activeCmd.alias}_`
+        Object.keys(sessionStorage)
+          .filter(k => k.startsWith(prefix))
+          .forEach(k => sessionStorage.removeItem(k))
+      }
+      break
+    case 'error':
+      addLine('error', `✘ ${data.message}`)
+      break
+  }
+}
+
+function addLine(level, text) {
+  // Remove empty state
+  const empty = outputEl.querySelector('.empty-state')
+  if (empty) empty.remove()
+
+  // For progress lines, replace the last progress line in place (live update)
+  if (level === 'progress') {
+    const last = outputEl.querySelector('.line.progress:last-child')
+    if (last) {
+      last.textContent = text
+      return
+    }
+  }
+
+  const div = document.createElement('div')
+  div.className = `line ${level}`
+  div.textContent = text
+  outputEl.appendChild(div)
+  outputEl.scrollTop = outputEl.scrollHeight
+}
+
+// ─── Очищення ────────────────────────────────────────────────
+
+clearBtn.addEventListener('click', () => {
+  outputEl.innerHTML = `<div class="empty-state"><span>⬤ Очищено. Оберіть команду.</span></div>`
+})
+
+// ─── Старт ──────────────────────────────────────────────────
+
+loadCommands()
+
+// ─── Файловий браузер ───────────────────────────────────────
+
+let browseTarget = null // { input, fieldName }
+
+function openFileBrowser(inputEl, fieldName) {
+  browseTarget = { input: inputEl, fieldName, mode: 'file' }
+  document.getElementById('fileModal').style.display = 'flex'
+  loadDir('.')
+}
+
+function openDirBrowser(inputEl, fieldName) {
+  browseTarget = { input: inputEl, fieldName, mode: 'dir' }
+  document.getElementById('fileModal').style.display = 'flex'
+  loadDir('.')
+}
+
+document.getElementById('modalClose').addEventListener('click', () => {
+  document.getElementById('fileModal').style.display = 'none'
+})
+
+document.getElementById('fileModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    document.getElementById('fileModal').style.display = 'none'
+  }
+})
+
+async function loadDir(dir) {
+  const body = document.getElementById('modalBody')
+  const pathEl = document.getElementById('modalPath')
+  body.innerHTML = '<div class="modal-empty">⏳ Завантаження...</div>'
+  pathEl.textContent = dir
+
+  try {
+    const r = await fetch(`/api/browse?dir=${encodeURIComponent(dir)}`)
+    const data = await r.json()
+    if (data.error) { body.innerHTML = `<div class="modal-empty">✘ ${data.error}</div>`; return }
+
+    pathEl.textContent = data.relDir || '.'
+    let html = ''
+
+    if (data.canGoUp) {
+      const parent = dir.split('/').slice(0, -1).join('/') || '.'
+      html += `<button class="modal-file modal-up" data-dir="${parent}"><span class="icon">↑</span><span class="fname">.. (назад)</span></button>`
+    }
+
+    // Кнопка "Вибрати поточну теку" в режимі dir (навіть для кореня)
+    if (browseTarget?.mode === 'dir') {
+      html += `<button class="modal-file modal-up" onclick="selectDir('${data.relDir || '.'}')" style="color: var(--green);"><span class="icon">✓</span><span class="fname">Вибрати теку: ${data.relDir || '.'}</span></button>`
+    }
+
+    for (const f of data.files) {
+      if (f.isDir) {
+        html += `<button class="modal-file" onclick="loadDir('${f.relPath}')"><span class="icon dir">📁</span><span class="fname">${f.name}</span></button>`
+      } else {
+        const ext = f.ext || ''
+        html += `<button class="modal-file" data-file="${f.relPath}" data-ext="${ext}"><span class="icon file">📄</span><span class="fname">${f.name}</span><span class="fext">${ext}</span></button>`
+      }
+    }
+
+    if (!html) html = '<div class="modal-empty">(порожня тека)</div>'
+    body.innerHTML = html
+
+    // Click handlers
+    body.querySelectorAll('[data-dir]').forEach(el => {
+      el.addEventListener('click', () => loadDir(el.dataset.dir))
+    })
+    body.querySelectorAll('[data-file]').forEach(el => {
+      el.addEventListener('click', () => selectFile(el.dataset.file))
+    })
+  } catch (err) {
+    body.innerHTML = `<div class="modal-empty">✘ ${err.message}</div>`
+  }
+}
+
+function selectFile(relPath) {
+  if (browseTarget && browseTarget.input) {
+    browseTarget.input.value = relPath
+    browseTarget.input.dispatchEvent(new Event('input'))
+  }
+  document.getElementById('fileModal').style.display = 'none'
+}
+
+function selectDir(relPath) {
+  if (browseTarget && browseTarget.input) {
+    browseTarget.input.value = relPath
+    browseTarget.input.dispatchEvent(new Event('input'))
+  }
+  document.getElementById('fileModal').style.display = 'none'
+}
+</script>
+</body>
+</html>

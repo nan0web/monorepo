@@ -37,11 +37,13 @@ export class FileSystem {
 		this.loaders = new Map([
 			[".jsonl", this._jsonlLoader.bind(this)],
 			[".json", this._jsonLoader.bind(this)],   // JSON loader
+			[".nan0", this._nan0Loader.bind(this)],   // Fast .nan0 loader
 		])
 		/** @type {Map<string, (path: string, data: any, options: any) => Promise<void>>} */
 		this.savers = new Map([
 			[".jsonl", this._jsonlSaver.bind(this)],
 			[".json", this._jsonSaver.bind(this)],   // JSON saver
+			[".nan0", this._nan0Saver.bind(this)],   // Fast .nan0 saver
 		])
 	}
 	get path() {
@@ -333,6 +335,27 @@ export class FileSystem {
 			return
 		}
 		const payload = "string" === typeof data ? data : JSON.stringify(data, null, 2)
+		await fs.writeFile(path, payload, options)
+	}
+	/**
+	 * JSON loader for .nan0 files.
+	 * @param {string} path
+	 * @param {BufferEncoding} [encoding="utf-8"]
+	 * @returns {Promise<any>}
+	 */
+	async _nan0Loader(path, encoding = "utf-8") {
+		const raw = await this.readFile(path, encoding)
+		return JSON.parse(raw)
+	}
+	/**
+	 * JSON saver for .nan0 files.
+	 * @param {string} path
+	 * @param {any} data
+	 * @param {any} [options]
+	 * @returns {Promise<void>}
+	 */
+	async _nan0Saver(path, data = {}, options = {}) {
+		const payload = JSON.stringify(data)
 		await fs.writeFile(path, payload, options)
 	}
 	/**

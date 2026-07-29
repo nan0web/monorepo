@@ -16,6 +16,9 @@ export class Alert extends UiOutput {
     text: string;
     /** @type {AlertVariant} */
     variant: AlertVariant;
+    get type(): string;
+    get level(): "error" | "info" | "success" | "warn";
+    get message(): string;
 }
 export type AlertVariant = "success" | "info" | "warn" | "error" | "debug";
 import { UiOutput } from "../UiOutput.js";

@@ -13,6 +13,14 @@ export class Progress extends UiOutput {
 	prefix = ""
 	/** @type {string[]} */
 	rows = []
+	get type() {
+		return "progress"
+	}
+
+	get message() {
+		return this.text
+	}
+
 	/** @param {Partial<Progress>} [input={}] */
 	constructor(input = {}) {
 		super()

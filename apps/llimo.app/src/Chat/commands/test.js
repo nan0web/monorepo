@@ -55,8 +55,18 @@ export class TestOptions {
  */
 export class TestCommand extends InfoCommand {
 	static name = "test"
-	static help = "Show information of the chat before tests run"
-	options = new TestOptions()
+	static description = "Show information of the chat before tests run"
+	/** @type {TestOptions} */
+	options
+
+	/**
+	 * @param {Partial<TestCommand> | Record<string, any>} [data={}]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
+	 */
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		this.options = data.options || /** @type {any} */ (options).options || new TestOptions()
+	}
 	async * run() {
 		await this.chat.init()
 		if (!this.chat.id) {
@@ -200,14 +210,15 @@ export class TestCommand extends InfoCommand {
 	 * @param {object} [input]
 	 * @param {string[]} [input.argv=[]]
 	 * @param {Chat} [input.chat]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
 	 * @returns {TestCommand}
 	 */
-	static create(input = {}) {
+	static create(input = {}, options = {}) {
 		const {
 			argv = [],
 			chat = new Chat()
 		} = input
-		const options = parseArgv(argv, TestOptions)
-		return new TestCommand({ options, chat })
+		const opts = parseArgv(argv, TestOptions)
+		return new TestCommand({ options: opts, chat }, options)
 	}
 }

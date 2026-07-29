@@ -14,6 +14,7 @@ import { AiStrategyModel } from '../strategy/AiStrategyModel.js'
 import { StrictBoundaryInterpreter } from '../../utils/StrictBoundaryInterpreter.js'
 import { StatsLogger } from '../../utils/StatsLogger.js'
 import { Command, GetCommand, LsCommand, SearchCommand, WorkflowCommand } from './commands/index.js'
+import { BoundaryProtocol } from '../co/BoundaryProtocol.js'
 
 /**
  * @typedef {Object} Attachment
@@ -63,6 +64,8 @@ export class ChatSessionModel extends AiModelAsApp {
 		model_failed: 'Model {modelId} failed: {error}',
 		file_changes_discarded: 'File changes discarded.',
 		saved_file: 'Saved file: {filename}',
+		syntax_error: 'Syntax error in file {filename}: {error}',
+		files_not_saved: '{count} file(s) with errors were not saved',
 		loading_workflow: 'Loading workflow: {name}',
 		workflow_loaded: 'Workflow loaded: {name}',
 		workflow_not_found: 'Workflow not found: {name}',
@@ -96,11 +99,17 @@ export class ChatSessionModel extends AiModelAsApp {
 		auto_verify_running: 'Auto-verify: running tests...',
 		auto_verify_passed: 'Auto-verify: tests passed on attempt {attempt}/{max}',
 		auto_verify_failed:
-			'Auto-verify: tests failed (attempt {attempt}/{max}). Sending errors back to model.',
+			'Auto-verify: tests failed (attempt {attempt}/{max}) with {failCount} error(s). Sending errors back to model.',
 		auto_verify_exhausted:
 			'Auto-verify: maximum retries ({max}) exhausted. Manual intervention required.',
 		auto_verify_progress:
 			'Progress detected: failures decreased from {prev} to {curr}. Extending retries.',
+		auto_verify_degradation:
+			'TDD degradation or stagnation: failures did not decrease (previous: {prev}, current: {curr}, degradation count: {degradationCount}/{maxDegradations}).',
+		auto_verify_switching_model:
+			'Switching active model in strategic cascade queue to: {modelId}',
+		auto_verify_aborted_degradation:
+			'TDD healing aborted due to continuous degradation/stagnation.',
 		auto_verify_prompt:
 			'Previous test run failed (attempt {attempt}/{max}):\n```\n{errors}\n```\nPlease fix the code based on the error output above.',
 		llmErrorFormatValidation:
@@ -206,6 +215,18 @@ export class ChatSessionModel extends AiModelAsApp {
 		for (const command of ChatSessionModel.commands) {
 			this.commandsRegistry.set(command.alias, command)
 		}
+		/** @type {string | undefined} */
+		this.statsBaseDir = /** @type {any} */ (options).statsBaseDir
+		/** @type {string[]} */
+		this.savedFiles = []
+		/** @type {number} */
+		this._currentModelIndex = 0
+		/** @type {number} */
+		this._previousFailCount = Infinity
+		/** @type {number} */
+		this._degradationCount = 0
+		/** @type {number} */
+		this._tddAttempts = 0
 	}
 
 	/**
@@ -637,265 +658,6 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 	}
 
 	/**
-	 * Execute an agent-driven context command.
-	 * @param {string} commandName E.g. '@ls', '@get', '@search'
-	 * @param {string} content Command input text
-	 * @returns {Promise<string>} Command output/result
-	 */
-	async executeAgentCommand(commandName, content) {
-		const { db, os } = /** @type {any} */ (this._)
-		const lines = content
-			.split('\n')
-			.map((l) => l.trim())
-			.filter(Boolean)
-		let resultText = `### Command: ${commandName}\n\n`
-
-		if (commandName === '@ls') {
-			for (const dirPath of lines) {
-				resultText += `#### Directory: ${dirPath}\n`
-				if (dirPath.startsWith('@')) {
-					// DB path
-					try {
-						const entries = []
-						if (db) {
-							for await (const entry of db.readDir(dirPath)) {
-								if (entry && (entry.uri || entry.path || entry.name)) {
-									entries.push(entry.uri || entry.path || entry.name)
-								}
-							}
-						}
-						resultText +=
-							entries.length > 0 ? entries.map((e) => `- ${e}`).join('\n') : 'Empty directory\n'
-					} catch (e) {
-						resultText += `Error listing DB directory: ${/** @type {any} */ (e).message}\n`
-					}
-				} else {
-					// Local directory or glob
-					try {
-						if (dirPath.includes('*') || dirPath.includes('?') || dirPath.includes('{')) {
-							const matches = []
-							if (db && typeof db.browse === 'function') {
-								const mm = (await import('micromatch')).default
-								let baseDir = '.'
-								let pattern = dirPath
-								if (dirPath.startsWith('@workflows/')) {
-									pattern = `@data/uk/workflows/${dirPath.substring(11)}`
-								}
-
-								const firstWildcard = pattern.search(/[\*\?\{]/)
-								if (firstWildcard !== -1) {
-									const lastSlash = pattern.lastIndexOf('/', firstWildcard)
-									if (lastSlash !== -1) {
-										baseDir = pattern.substring(0, lastSlash)
-									}
-								}
-
-								const ignoreList = pattern.startsWith('@')
-									? []
-									: ['.git', 'node_modules', 'dist', '.datasets', 'chat', 'releases']
-
-								for await (const entry of db.browse(baseDir, { depth: -1, ignore: ignoreList })) {
-									const entryPath = entry.uri || entry.path || entry.name
-									if (mm.isMatch(entryPath, pattern)) {
-										matches.push(entryPath)
-									} else {
-										const absPath = path.resolve(db.cwd || '.', entryPath)
-										if (mm.isMatch(absPath, pattern)) {
-											matches.push(absPath)
-										}
-									}
-								}
-							} else {
-								try {
-									const mm = (await import('micromatch')).default
-									const { readdir } = await import('node:fs/promises')
-									const globPattern = dirPath.replace(/\\/g, '/')
-									let baseDir = '.'
-									const firstWildcard = globPattern.search(/[\*\?\{]/)
-									if (firstWildcard !== -1) {
-										const lastSlash = globPattern.lastIndexOf('/', firstWildcard)
-										if (lastSlash !== -1) {
-											baseDir = globPattern.substring(0, lastSlash)
-										}
-									}
-
-									const walk = async (dir) => {
-										const entries = await readdir(dir, { withFileTypes: true }).catch(() => [])
-										for (const entry of entries) {
-											const fullPath = path.join(dir, entry.name).replace(/\\/g, '/')
-											if (entry.isDirectory()) {
-												if (entry.name !== 'node_modules' && entry.name !== '.git') {
-													await walk(fullPath)
-												}
-											} else {
-												if (mm.isMatch(fullPath, globPattern)) {
-													matches.push(fullPath)
-												}
-											}
-										}
-									}
-									await walk(baseDir)
-								} catch (e) {}
-							}
-							resultText +=
-								matches.length > 0 ? matches.map((m) => `- ${m}`).join('\n') : 'No matching files\n'
-						} else {
-							const { readdir } = await import('node:fs/promises')
-							const entries = await readdir(dirPath, { withFileTypes: true })
-							const formatted = entries.map((e) => `- ${e.name}${e.isDirectory() ? '/' : ''}`)
-							resultText += formatted.length > 0 ? formatted.join('\n') : 'Empty directory\n'
-						}
-					} catch (e) {
-						resultText += `Error listing directory: ${/** @type {any} */ (e).message}\n`
-					}
-				}
-				resultText += '\n\n'
-			}
-		} else if (commandName === '@get') {
-			for (const pattern of lines) {
-				resultText += `#### Get: ${pattern}\n`
-				if (pattern.startsWith('@')) {
-					// DB path
-					try {
-						if (db) {
-							const doc = await db.loadDocumentAs('.txt', pattern)
-							if (typeof doc === 'string') {
-								resultText += `\`\`\`\n${doc}\n\`\`\`\n`
-							} else {
-								resultText += 'Not found or not a text file\n'
-							}
-						}
-					} catch (e) {
-						resultText += `Error reading DB file: ${/** @type {any} */ (e).message}\n`
-					}
-				} else {
-					// Local path/glob
-					try {
-						const resolved = await this.resolvePaths(pattern)
-						if (resolved.length > 0) {
-							for (const { path } of resolved) {
-								if (await os.exists(path)) {
-									const doc = await os.readFile(path)
-									const ext = path.split('.').pop() || 'txt'
-									resultText += `File: ${path}\n\`\`\`${ext}\n${doc}\n\`\`\`\n`
-								} else {
-									resultText += `File not found: ${path}\n`
-								}
-							}
-						} else {
-							resultText += `No files matched pattern: ${pattern}\n`
-						}
-					} catch (e) {
-						resultText += `Error reading files: ${/** @type {any} */ (e).message}\n`
-					}
-				}
-				resultText += '\n'
-			}
-		} else if (commandName === '@search') {
-			const query = lines[0] || ''
-			const searchDir = lines[1] || '.'
-			let ragSuccess = false
-
-			const isTesting =
-				typeof globalThis.it === 'function' ||
-				process.env.NODE_ENV === 'test' ||
-				process.argv.some((arg) => arg.includes('test'))
-
-			if (query) {
-				if (!isTesting) {
-					try {
-						const searchApp = new SearchSourcesIntent(
-							{
-								query,
-								limit: 10,
-								json: true,
-							},
-							{
-								workspaceRoot: this._['workspaceRoot'] || process.cwd(),
-								db: this._.db,
-							}
-						)
-
-						let results = []
-						for await (const it of searchApp.run()) {
-							if (it.type === 'result') {
-								results = it.data
-							}
-						}
-
-						if (results && results.length > 0) {
-							resultText += `Search query: "${query}" (RAG Semantic Search results):\n\n`
-							for (const r of results) {
-								resultText += `File: ${r.file}\n`
-								resultText += `Score: ${r.score !== undefined ? r.score.toFixed(4) : 'N/A'}\n`
-								resultText += `Snippet:\n${r.content}\n`
-								resultText += `────────────────────────────────────────\n`
-							}
-							ragSuccess = true
-						}
-					} catch (e) {
-						// Fall through to fallback text search
-					}
-				}
-
-				if (!ragSuccess) {
-					resultText += `Search query: "${query}" in ${searchDir} (Fallback Text Search):\n\n`
-					try {
-						const { readdir, readFile } = await import('node:fs/promises')
-						const pathMod = await import('node:path')
-
-						const matches = []
-						const walk = async (dir) => {
-							const entries = await readdir(dir, { withFileTypes: true })
-							for (const entry of entries) {
-								const fullPath = pathMod.join(dir, entry.name)
-								if (fullPath.includes('node_modules') || fullPath.includes('.git')) continue
-								if (entry.isDirectory()) {
-									await walk(fullPath)
-								} else if (entry.isFile()) {
-									try {
-										const textContent = await readFile(fullPath, 'utf8')
-										if (textContent.includes(query)) {
-											const fileLines = textContent.split('\n')
-											const lineMatches = []
-											fileLines.forEach((lineText, idx) => {
-												if (lineText.includes(query)) {
-													lineMatches.push({ lineNum: idx + 1, content: lineText.trim() })
-												}
-											})
-											matches.push({ path: fullPath, lines: lineMatches.slice(0, 10) })
-										}
-									} catch (e) {
-										// Skip
-									}
-								}
-							}
-						}
-						await walk(searchDir)
-						if (matches.length > 0) {
-							for (const match of matches) {
-								resultText += `File: ${match.path}\n`
-								match.lines.forEach((lm) => {
-									resultText += `  Line ${lm.lineNum}: ${lm.content}\n`
-								})
-								resultText += '\n'
-							}
-						} else {
-							resultText += 'No matches found\n'
-						}
-					} catch (e) {
-						resultText += `Error performing search: ${/** @type {any} */ (e).message}\n`
-					}
-				}
-			} else {
-				resultText += 'Error: Empty search query\n'
-			}
-		} else {
-			resultText += `Unknown agent command: ${commandName}\n`
-		}
-
-		return resultText
-	}
 
 	/**
 	 * Format command output as a single summary line.
@@ -1307,94 +1069,167 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 				// skip file actions
 				this.input = ''
 				continue
-			} else if (0 === fileActions) {
-				// no files modfified - skipping auto-verify
 			}
 			let modifiedFiles = []
 			if (Array.isArray(fileActions)) {
 				modifiedFiles = fileActions
+				this.savedFiles = [...(this.savedFiles || []), ...fileActions]
+			}
+			if (modifiedFiles.length === 0) {
+				// no files modified - skipping auto-verify
 			}
 
 			// 2. Process commands and workflow requests
 			const requestsActions = yield* this.processRequests(parsed, modifiedFiles, ctx)
+			if (false === requestsActions) {
+				continue
+			}
+			if (requestsActions && typeof requestsActions === 'object' && requestsActions.type === 'result') {
+				return requestsActions
+			}
 
 			// 2.5 Auto-verify TDD loop
 			if (this.autoVerify && modifiedFiles.length > 0) {
-				let attempt = 0
 				let maxRetries = this.maxRetries || 3
-				let previousFailCount = Infinity
 				let verifySuccess = false
 
-				while (attempt < maxRetries) {
-					attempt++
-					yield show(t(ChatSessionModel.UI.auto_verify_running), 'info')
+				// Initialize state if needed
+				if (this._tddAttempts === undefined || this._tddAttempts === 0) {
+					this._tddAttempts = 0
+					this._previousFailCount = Infinity
+					this._degradationCount = 0
+				}
 
-					const testResult = await this.runShortestPathTests(modifiedFiles)
-					await this.logTrace({
-						type: 'auto_verify',
-						attempt,
-						max: maxRetries,
-						success: testResult.success,
-						failCount: testResult.failCount,
-					})
+				this._tddAttempts++
+				yield show(t(ChatSessionModel.UI.auto_verify_running), 'info')
 
-					if (testResult.success) {
-						yield show(
-							t(ChatSessionModel.UI.auto_verify_passed, {
-								attempt,
-								max: maxRetries,
-							}),
-							'success'
-						)
-						verifySuccess = true
-						break
-					}
+				const testResult = await this.runShortestPathTests(modifiedFiles)
+				await this.logTrace({
+					type: 'auto_verify',
+					attempt: this._tddAttempts,
+					max: maxRetries,
+					success: testResult.success,
+					failCount: testResult.failCount,
+				})
 
+				if (testResult.success) {
+					yield show(
+						t(ChatSessionModel.UI.auto_verify_passed, {
+							attempt: this._tddAttempts,
+							max: maxRetries,
+						}),
+						'success'
+					)
+					verifySuccess = true
+					
+					// Reset TDD state upon success
+					this._tddAttempts = 0
+					this._previousFailCount = Infinity
+					this._degradationCount = 0
+					this._currentModelIndex = 0
+				} else {
 					const errors = this.extractErrors(testResult.output)
 					const failCount = testResult.failCount || 1
 
 					yield show(
 						t(ChatSessionModel.UI.auto_verify_failed, {
-							attempt,
+							attempt: this._tddAttempts,
 							max: maxRetries,
+							failCount,
 						}),
 						'warn'
 					)
 
-					if (failCount < previousFailCount && previousFailCount !== Infinity) {
-						maxRetries++
-						yield show(
-							t(ChatSessionModel.UI.auto_verify_progress, {
-								prev: previousFailCount,
-								curr: failCount,
-							}),
-							'info'
-						)
-					}
-					previousFailCount = failCount
+					const maxDegradations = 2
+					let modelSwitched = false
 
-					if (attempt >= maxRetries) {
+					if (this._previousFailCount !== Infinity) {
+						if (failCount < this._previousFailCount) {
+							// Progress: Extend max retries
+							maxRetries++
+							this.maxRetries = maxRetries
+							this._degradationCount = 0
+							yield show(
+								t(ChatSessionModel.UI.auto_verify_progress, {
+									prev: this._previousFailCount,
+									curr: failCount,
+								}),
+								'info'
+							)
+							this._previousFailCount = failCount
+						} else {
+							// Stagnation or degradation
+							this._degradationCount++
+							yield show(
+								t(ChatSessionModel.UI.auto_verify_degradation, {
+									prev: this._previousFailCount,
+									curr: failCount,
+									degradationCount: this._degradationCount,
+									maxDegradations,
+								}),
+								'warn'
+							)
+
+							if (this._degradationCount >= maxDegradations) {
+								yield show(
+									t(ChatSessionModel.UI.auto_verify_aborted_degradation),
+									'error'
+								)
+								// Reset TDD state to prevent infinite loops and abort
+								this._tddAttempts = 0
+								this._previousFailCount = Infinity
+								this._degradationCount = 0
+								this._currentModelIndex = 0
+								break
+							}
+
+							// Try to switch to the next model in strategic cascade queue
+							const strategy = await AiStrategyModel.loadFromDb(db)
+							const queue = this.model ? [this.model] : strategy.cascadeQueue
+							
+							if (this._currentModelIndex + 1 < queue.length && !this.model) {
+								this._currentModelIndex++
+								const nextModelId = queue[this._currentModelIndex]
+								yield show(
+									t(ChatSessionModel.UI.auto_verify_switching_model, {
+										modelId: nextModelId,
+									}),
+									'info'
+								)
+								modelSwitched = true
+							}
+						}
+					} else {
+						// First failure recorded
+						this._previousFailCount = failCount
+					}
+
+					if (this._tddAttempts >= maxRetries && !modelSwitched) {
 						yield show(
 							t(ChatSessionModel.UI.auto_verify_exhausted, {
 								max: maxRetries,
 							}),
 							'error'
 						)
+						// Reset TDD state upon exhaustion
+						this._tddAttempts = 0
+						this._previousFailCount = Infinity
+						this._degradationCount = 0
+						this._currentModelIndex = 0
 						break
 					}
 
 					this.input = t(ChatSessionModel.UI.auto_verify_prompt, {
-						attempt,
+						attempt: this._tddAttempts,
 						max: maxRetries,
 						errors,
 					})
 					ctx.singleShot = false
-					break
 				}
 
 				if (verifySuccess) {
 					this.input = ''
-					if (ctx.singleShot) {
+					if (ctx.singleShot || this.autoVerify) {
 						break
 					}
 					continue
@@ -1486,7 +1321,7 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 			}
 		}
 
-		return result({ status: 'ok', id: this.id })
+		return result({ status: 'ok', id: this.id, savedFiles: this.savedFiles || [] })
 	}
 
 	/**
@@ -1511,6 +1346,11 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 			}
 			this.input = res.value
 			ctx.agentIterations = 0
+			// Reset TDD healing parameters on new manual input
+			this._tddAttempts = 0
+			this._previousFailCount = Infinity
+			this._degradationCount = 0
+			this._currentModelIndex = 0
 		}
 
 		await this.logTrace({ type: 'prompt', content: this.input })
@@ -1541,7 +1381,19 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 
 		// Cascade LLMs queue from strategy
 		const strategy = await AiStrategyModel.loadFromDb(db)
-		const queue = this.model ? [this.model] : strategy.cascadeQueue
+		let queue = this.model ? [this.model] : strategy.cascadeQueue
+
+		// Shift queue if we switched active model due to degradation in TDD loop
+		if (this._currentModelIndex > 0 && !this.model) {
+			queue = queue.slice(this._currentModelIndex)
+		}
+
+		if (queue.length === 0) {
+			const error = t(ChatSessionModel.UI.no_strategic_cascade)
+			yield show(error, 'error')
+			return false
+		}
+
 		let success = false
 		let answer = ''
 
@@ -1578,7 +1430,7 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 						}),
 						'warn'
 					)
-					return true
+					continue
 				}
 
 				const promptBytes = messages.reduce(
@@ -1623,7 +1475,7 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 				const elapsed = (Date.now() - start) / 1000
 
 				// Save response BEFORE validation (for --continue recovery)
-				await this._currentDb.saveDocument('response.md', tempAnswer)
+				await this._currentDb.saveFile('response.md', tempAnswer)
 
 				// Parse and validate with StrictBoundaryInterpreter
 				const parsed = StrictBoundaryInterpreter.parse(tempAnswer)
@@ -1666,7 +1518,7 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 					speed: Number(speed.toFixed(2)),
 					taskDuration: Number(elapsed.toFixed(2)),
 					cost,
-				})
+				}, this.statsBaseDir)
 
 				await this.logTrace({
 					type: 'llm_call',
@@ -1686,7 +1538,7 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 					})
 				)
 
-				return false
+				return answer
 			} catch (/** @type {any} */ err) {
 				let errMsg = err.message || String(err)
 				const statusCode =
@@ -1770,34 +1622,65 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 			}
 		}
 
+		const db = this._.db
+		if (!db) {
+			throw new Error('DB is required')
+		}
 		const modifiedFiles = []
+		const filesNotSaved = []
 		for (const file of filesToSave) {
-			if (file.startLine !== undefined && file.lineCount !== undefined) {
-				// Inline snippet replacement
-				const originalContent = (await os.exists(file.filename))
-					? await os.readFile(file.filename)
-					: ''
-				const key = `${file.filename}:${file.startLine}:${file.lineCount}`
-				const updated = applyBoundaries(
-					{ [file.filename]: originalContent },
-					{ [key]: file.content.trimEnd() }
-				)
-				await os.writeFile(file.filename, updated[file.filename])
-			} else {
-				// Full file replacement or diff-patch fallback
-				const originalContent = (await os.exists(file.filename))
-					? await os.readFile(file.filename)
-					: ''
-				const updatedContent = applyPatch(originalContent, file.content)
-				await os.writeFile(file.filename, updatedContent)
+			try {
+				let finalContent = ''
+				if (file.startLine !== undefined && file.lineCount !== undefined) {
+					// Inline snippet replacement
+					const originalContent = (await os.exists(file.filename))
+						? await os.readFile(file.filename)
+						: ''
+					const key = `${file.filename}:${file.startLine}:${file.lineCount}`
+					const updated = applyBoundaries(
+						{ [file.filename]: originalContent },
+						{ [key]: file.content.trimEnd() }
+					)
+					finalContent = updated[file.filename]
+				} else {
+					// Full file replacement or diff-patch fallback
+					const originalContent = (await os.exists(file.filename))
+						? await os.readFile(file.filename)
+						: ''
+					finalContent = applyPatch(originalContent, file.content)
+				}
+
+				const validation = BoundaryProtocol.validateFileContent(file.filename, finalContent)
+				if (!validation.valid) {
+					yield show(t(ChatSessionModel.UI.syntax_error, {
+						filename: file.filename,
+						error: validation.error
+					}), 'error')
+					filesNotSaved.push(file.filename)
+					continue
+				}
+
+				await db.saveFile(file.filename, finalContent)
+
+				modifiedFiles.push(file.filename)
+				yield show(t(ChatSessionModel.UI.saved_file, { filename: file.filename }), 'success')
+				await this.logTrace({
+					type: 'file_save',
+					path: file.filename,
+					bytes: finalContent.length,
+				})
+			} catch (e) {
+				yield show(t(ChatSessionModel.UI.syntax_error, {
+					filename: file.filename,
+					error: /** @type {any} */ (e).message
+				}), 'error')
+				filesNotSaved.push(file.filename)
+				continue
 			}
-			modifiedFiles.push(file.filename)
-			yield show(t(ChatSessionModel.UI.saved_file, { filename: file.filename }), 'success')
-			await this.logTrace({
-				type: 'file_save',
-				path: file.filename,
-				bytes: file.content.length,
-			})
+		}
+
+		if (filesNotSaved.length > 0) {
+			yield show(t(ChatSessionModel.UI.files_not_saved, { count: filesNotSaved.length }), 'error')
 		}
 
 		if (modifiedFiles.includes('package.json')) {
@@ -1818,7 +1701,7 @@ Ensure all generated files follow this architecture strictly. Do not generate a 
 				)
 			}
 		}
-		return modifiedFiles.length
+		return modifiedFiles
 	}
 
 	/**

@@ -1,0 +1,17 @@
+{
+  "name": "nan0web-calculator",
+  "version": "3.2.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-timeout=3333 'src/**/*.test.js'",
+    "test:all": "npm run test"
+  },
+  "dependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@nan0web/test": "workspace:*"
+  }
+}

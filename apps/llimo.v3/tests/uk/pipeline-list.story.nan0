@@ -1,0 +1,10 @@
+story:
+  - PipelineListModel: {}
+  - render: Alert
+  - result:
+      ok: true
+      pipelines:
+        - name: app
+          desc: "9-phase OLMUI development pipeline (Seed -> Model -> Contract -> UI -> QA)."
+        - name: logic
+          desc: "Processes text filtering through the 4 Laws of Logic."

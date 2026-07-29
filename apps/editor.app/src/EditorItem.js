@@ -241,6 +241,8 @@ export class EditorItem extends LitElement {
 	_renderField(key, field, value, tabIndex) {
 		const type = field.type || 'string'
 
+		if (type === 'boolean') return this._renderBooleanField(key, field, value, tabIndex)
+		if (type === 'array') return this._renderBlocksField(key, field, value, tabIndex)
 		if (type.startsWith('relation')) return this._renderReferenceField(key, field, value, tabIndex)
 		if (type === 'string[]' || type === 'list')
 			return this._renderListField(key, field, value, tabIndex * 10)
@@ -259,6 +261,86 @@ export class EditorItem extends LitElement {
 				/>
 			</div>
 		`
+	}
+
+	_renderBooleanField(key, field, value, tabIndex) {
+		return html`
+			<div class="field" style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.8rem;">
+				<input
+					type="checkbox"
+					style="width: auto; margin: 0;"
+					.checked=${!!value}
+					tabindex="${tabIndex}"
+					@change="${(e) => this._updateField(key, e.target.checked)}"
+				/>
+				<label style="margin: 0; font-size: 0.85rem; text-transform: none; font-weight: 500; color: var(--co-text, inherit);">${key}</label>
+			</div>
+		`
+	}
+
+	_renderBlocksField(key, field, value, tabIndex) {
+		const blocks = Array.isArray(value) ? value : []
+
+		return html`
+			<div class="field block-editor" style="margin-bottom: 1.8rem;">
+				<label style="display: block; font-size: 0.7rem; text-transform: uppercase; color: #888; margin-bottom: 0.6rem; font-weight: 700; letter-spacing: 0.05rem;">${key}</label>
+				<div class="blocks-list" style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1rem;">
+					${blocks.map((block, idx) => html`
+						<div class="block-row" style="display: flex; gap: 0.5rem; align-items: start; background: var(--ba-panel, #f8f9fa); padding: 0.5rem; border-radius: 6px; border: 1px solid var(--co-border, #dcdcdc);">
+							<select 
+								style="padding: 0.4rem; border-radius: 4px; border: 1px solid var(--co-border, #ccc); font-size: 0.8rem; background: var(--ba-input, #fff); color: var(--co-text, inherit);"
+								@change=${(e) => this._updateBlockType(key, blocks, idx, e.target.value)}
+							>
+								<option value="paragraph" ?selected=${block.type === 'paragraph'}>Paragraph</option>
+								<option value="header" ?selected=${block.type === 'header'}>Heading</option>
+								<option value="quote" ?selected=${block.type === 'quote'}>Quote</option>
+								<option value="image" ?selected=${block.type === 'image'}>Image</option>
+							</select>
+							
+							<textarea
+								style="flex: 1; min-height: 40px; padding: 0.4rem; border-radius: 4px; border: 1px solid var(--co-border, #ccc); font-size: 0.9rem; background: var(--ba-input, #fff); color: var(--co-text, inherit); outline: none;"
+								.value=${block.content || block.src || ''}
+								@input=${(e) => this._updateBlockContent(key, blocks, idx, e.target.value)}
+								placeholder=${block.type === 'image' ? 'Image Source URL...' : 'Block text content...'}
+							></textarea>
+							
+							<button 
+								class="close" 
+								style="padding: 0.4rem 0.6rem; background: #e11d48; color: #fff; border: none; border-radius: 4px; cursor: pointer;"
+								@click=${() => this._deleteBlock(key, blocks, idx)}
+							>❌</button>
+						</div>
+					`)}
+				</div>
+				<button @click=${() => this._addBlock(key, blocks)}>➕ Add Block</button>
+			</div>
+		`
+	}
+
+	_updateBlockType(key, blocks, idx, type) {
+		const newBlocks = [...blocks]
+		newBlocks[idx] = { ...newBlocks[idx], type }
+		this._updateField(key, newBlocks)
+	}
+
+	_updateBlockContent(key, blocks, idx, content) {
+		const newBlocks = [...blocks]
+		if (newBlocks[idx].type === 'image') {
+			newBlocks[idx] = { ...newBlocks[idx], src: content }
+		} else {
+			newBlocks[idx] = { ...newBlocks[idx], content }
+		}
+		this._updateField(key, newBlocks)
+	}
+
+	_deleteBlock(key, blocks, idx) {
+		const newBlocks = blocks.filter((_, i) => i !== idx)
+		this._updateField(key, newBlocks)
+	}
+
+	_addBlock(key, blocks) {
+		const newBlocks = [...blocks, { type: 'paragraph', content: '' }]
+		this._updateField(key, newBlocks)
 	}
 
 	_renderMarkdownField(key, field, value, tabIndex) {

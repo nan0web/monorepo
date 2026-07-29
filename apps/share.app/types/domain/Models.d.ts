@@ -111,6 +111,10 @@ export class SocialAdapterContent extends Model {
         help: string;
         default: any;
     };
+    static title: {
+        help: string;
+        default: any;
+    };
     static photo: {
         help: string;
         default: any;
@@ -156,6 +160,8 @@ export class SocialAdapterContent extends Model {
     constructor(raw?: {});
     /** @type {string|undefined} */
     text: string | undefined;
+    /** @type {string|undefined} */
+    title: string | undefined;
     /** @type {string|undefined} */
     photo: string | undefined;
     /** @type {string|undefined} */

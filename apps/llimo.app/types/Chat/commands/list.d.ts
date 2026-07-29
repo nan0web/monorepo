@@ -30,19 +30,25 @@ export class ListOptions {
  */
 export class ListCommand extends UiCommand {
     static name: string;
-    static help: string;
-    static create(input?: {}): ListCommand;
+    static description: string;
+    static UI: {
+        ERROR_DB: string;
+    };
     /**
-     * @param {Partial<ListCommand>} input
+     * @param {Record<string, any>} [input={}]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
+     * @returns {ListCommand}
      */
-    constructor(input?: Partial<ListCommand>);
+    static create(input?: Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>): ListCommand;
+    /**
+     * @param {Partial<ListCommand> | Record<string, any>} [data={}]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
+     */
+    constructor(data?: Partial<ListCommand> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    /** @type {ListOptions} */
     options: ListOptions;
-    ui: Ui;
-    fs: FileSystem;
-    run(): AsyncGenerator<boolean | Alert | Table, void, unknown>;
+    run(): AsyncGenerator<boolean | Alert | Table | import("@nan0web/ui/src/core/Intent.js").ShowIntent | import("@nan0web/ui/src/core/Intent.js").AskIntent, void, unknown>;
 }
 import { UiCommand } from "../../cli/Ui.js";
-import { Ui } from "../../cli/Ui.js";
-import { FileSystem } from "../../utils/FileSystem.js";
 import { Alert } from "../../cli/components/index.js";
 import { Table } from "../../cli/components/index.js";

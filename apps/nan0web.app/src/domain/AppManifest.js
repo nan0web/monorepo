@@ -63,6 +63,19 @@ export default class AppManifest extends Model {
 	get name() { return this.appName }
 
 	/**
+	 * @param {object} [data]
+	 * @param {object} [options]
+	 */
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		/** @type {string} */ this.appName
+		/** @type {string} */ this.version
+		/** @type {string} */ this.description
+		/** @type {string} */ this.src
+		/** @type {string[]} */ this.adapters
+	}
+
+	/**
 	 * Check if this app provides a specific UI adapter.
 	 * @param {string} adapter - e.g. 'cli', 'api', 'chat', 'lit', 'swift'
 	 * @returns {boolean}

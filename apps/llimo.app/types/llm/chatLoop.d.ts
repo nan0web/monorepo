@@ -19,6 +19,7 @@
  * @param {ModelInfo} options.model
  * @param {boolean} [options.isTiny=false] - If true, use one-line progress mode
  * @param {number} [options.fps=30]
+ * @param {AiStrategyModel} [options.strategy]
  * @returns {Promise<sendAndStreamOptions>}
  */
 export function sendAndStream(options: {
@@ -32,6 +33,7 @@ export function sendAndStream(options: {
     model: ModelInfo;
     isTiny?: boolean | undefined;
     fps?: number | undefined;
+    strategy?: AiStrategyModel | undefined;
 }): Promise<sendAndStreamOptions>;
 export type sendAndStreamOptions = {
     answer: string;
@@ -44,4 +46,5 @@ import { AI } from "./AI.js";
 import { Chat } from "./Chat.js";
 import { Ui } from "../cli/Ui.js";
 import { ModelInfo } from "./ModelInfo.js";
+import { AiStrategyModel } from "../domain/AiStrategyModel.js";
 import { Usage } from "./Usage.js";

@@ -61,39 +61,164 @@ class LLiMoViewProvider {
 
 // Міст: Webview -> Субагенти / Node.js
 async function handleWebviewMessage(message, webview) {
-    if (message.type === 'start-capture') {
-        const intent = await vscode.window.showInputBox({
-            prompt: "🎤 Ваш намір (Емуляція Voice-to-App, бо мікрофон у Webview обмежений)",
-            placeHolder: "Наприклад: Створи нову модель..."
-        });
-        
-        if (intent) {
-            webview.postMessage({ type: 'feedback', text: `Отримано намір: ${intent}` });
-            await processIntent(intent, webview);
-        } else {
-            webview.postMessage({ type: 'feedback', text: `Введення скасовано.` });
-        }
-    } else if (message.type === 'voice-command') {
-        await processIntent(message.text, webview);
+    if (message.type === 'get-models') {
+        const list = await getModelsList();
+        webview.postMessage({ type: 'models-list', list });
+    } else if (message.type === 'get-files') {
+        const list = await getWorkspaceFiles();
+        webview.postMessage({ type: 'files-list', list });
+    } else if (message.type === 'run-command') {
+        await runLlimoCommand(message.command, message.intent, message.model, webview);
+    } else if (message.type === 'get-telemetry') {
+        const stats = await getSessionTelemetry();
+        webview.postMessage({ type: 'telemetry', stats });
+    } else if (message.type === 'get-aliases') {
+        const aliases = await getAliasesAndFiles();
+        webview.postMessage({ type: 'aliases-list', aliases });
     }
 }
 
-async function processIntent(intent, webview) {
-    vscode.window.showInformationMessage(`LLiMo Intent Captured: "${intent}"`);
-    
+async function getSessionTelemetry() {
     try {
-        // Використовуємо доменну модель додатка llimo.app для розбору наміру (Zero-React)
-        const { WorkflowModel } = await import('../../domain/WorkflowModel.js');
-        const workflow = new WorkflowModel({ intent });
+        const { StatsCollector } = await import('../../utils/StatsCollector.js');
+        const stats = await StatsCollector.getTodayStats();
+        return stats;
+    } catch (err) {
+        console.error('Error fetching telemetry:', err);
+        return { costUsd: 0, tokensInput: 0, tokensOutput: 0, speedTps: 0 };
+    }
+}
+
+async function getAliasesAndFiles() {
+    try {
+        const { FileSystem } = await import('../../utils/FileSystem.js');
+        const { loadConfig } = await import('../../llm/pack.js');
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+        const rootPath = workspaceFolders && workspaceFolders.length > 0 ? workspaceFolders[0].uri.fsPath : process.cwd();
+        const fsHelper = new FileSystem({ cwd: rootPath });
+        const config = await loadConfig(fsHelper);
         
-        // Емуляція делегування оркестратору
-        webview.postMessage({ 
-            type: 'feedback', 
-            text: `Розібрано намір: [${/** @type {any} */(workflow).intent || intent}]. Очікування оркестратора...` 
+        const aliasesData = {};
+        for (const [alias, target] of Object.entries(config.aliases || {})) {
+            const targetPath = path.isAbsolute(target) ? target : path.resolve(rootPath, target);
+            const files = [];
+            try {
+                if (fs.existsSync(targetPath)) {
+                    const stat = fs.statSync(targetPath);
+                    if (stat.isDirectory()) {
+                        const entries = fs.readdirSync(targetPath);
+                        for (const entry of entries) {
+                            if (fs.statSync(path.join(targetPath, entry)).isFile()) {
+                                files.push(entry);
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+            aliasesData[alias] = {
+                path: target,
+                files
+            };
+        }
+        return aliasesData;
+    } catch (err) {
+        console.error('Error loading config/aliases:', err);
+        return {};
+    }
+}
+
+async function getModelsList() {
+    try {
+        const { loadModels } = await import('../../Chat/models.js');
+        const modelMap = await loadModels();
+        return Array.from(modelMap.values()).map(m => ({
+            id: m.id,
+            provider: m.provider,
+            context_length: m.context_length
+        }));
+    } catch (err) {
+        console.error('Error loading models:', err);
+        return [];
+    }
+}
+
+async function getWorkspaceFiles() {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders || workspaceFolders.length === 0) return [];
+    const rootPath = workspaceFolders[0].uri.fsPath;
+    try {
+        const { FileSystem } = await import('../../utils/FileSystem.js');
+        const fsHelper = new FileSystem({ cwd: rootPath });
+        const list = [];
+        await fsHelper.browse(rootPath, {
+            recursive: true,
+            ignore: ['.git', 'node_modules', '.agent', 'dist', 'out'],
+            onRead: async (dir, entries) => {
+                for (const entry of entries) {
+                    const full = path.join(dir, entry);
+                    const relative = path.relative(rootPath, full);
+                    try {
+                        const stat = fs.statSync(full);
+                        if (stat.isFile()) {
+                            list.push(relative);
+                        }
+                    } catch (e) {
+                        // ignore unreadable/broken symlinks
+                    }
+                }
+            }
         });
-    } catch (e) {
-        console.error("Помилка ізоляції домену (не вдалося завантажити модель):", e);
-        webview.postMessage({ type: 'feedback', text: `Intent: "${intent}" (Model load failed)` });
+        return list;
+    } catch (err) {
+        console.error('Error scanning workspace:', err);
+        return [];
+    }
+}
+
+async function runLlimoCommand(cmdName, intent, modelName, webview) {
+    try {
+        const { LlimoApp } = await import('../../domain/app/LlimoApp.js');
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+        const rootPath = workspaceFolders && workspaceFolders.length > 0 ? workspaceFolders[0].uri.fsPath : process.cwd();
+        
+        const app = new LlimoApp({
+            command: cmdName,
+            intent: intent,
+            model: modelName
+        }, {
+            // Setup CWD so that it operates inside the workspace folder
+            cwd: rootPath
+        });
+
+        const gen = app.run();
+        let next = await gen.next();
+        while (!next.done) {
+            const val = next.value;
+            if (val) {
+                webview.postMessage({
+                    type: 'yield',
+                    value: {
+                        type: val.type || 'show',
+                        level: val.level || val.variant || 'info',
+                        message: val.message || val.text || ''
+                    }
+                });
+            }
+            // Send periodic telemetry updates
+            const stats = await getSessionTelemetry();
+            webview.postMessage({ type: 'telemetry', stats });
+
+            next = await gen.next();
+        }
+        
+        // Final telemetry sync
+        const stats = await getSessionTelemetry();
+        webview.postMessage({ type: 'telemetry', stats });
+
+        webview.postMessage({ type: 'complete', result: next.value });
+    } catch (err) {
+        console.error('Error executing llimo command:', err);
+        webview.postMessage({ type: 'error', error: err.message });
     }
 }
 

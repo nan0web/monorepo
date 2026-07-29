@@ -16,7 +16,7 @@ import { resolve } from "node:path"
  */
 export default class RemoveCommand extends Command {
 	static name = "rm"
-	static help = "Remove files from the project (cwd)"
+	static description = "Remove files from the project (cwd)"
 	static example = "```txt\ndist/build.js\ntemp/cache.tmp\n```"
 
 	/** @type {ParsedFile} */

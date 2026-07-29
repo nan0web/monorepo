@@ -1,0 +1,6 @@
+App.Title: Play Dome House
+App.Description: Geodesic dome house calculator sandbox.
+App.Menu.Home: Home
+App.Menu.Dome: Dome Calculator
+App.Error.NotFound: Page not found.
+App.Error.InvalidData: Invalid data format.

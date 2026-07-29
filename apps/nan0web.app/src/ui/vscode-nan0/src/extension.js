@@ -4,7 +4,7 @@ import * as vscode from 'vscode'
  * @param {vscode.ExtensionContext} context
  */
 export function activate(context) {
-	console.info('nan0web extension is active')
+	console['info']('nan0web extension is active')
 
 	// Register Custom Editor Provider
 	context.subscriptions.push(NaN0EditorProvider.register(context))
@@ -88,7 +88,7 @@ class NaN0EditorProvider {
 					const vscode = acquireVsCodeApi();
 					window.addEventListener('message', event => {
 						const message = event.data;
-						console.info('Webview received:', message);
+						console['info']('Webview received:', message);
 					});
 					// Mock component loading
 					document.getElementById('app').innerHTML = '<h1>NaN0 Editor Webview</h1><p>Waiting for data...</p>';

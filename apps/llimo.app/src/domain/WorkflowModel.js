@@ -8,6 +8,7 @@ import { SecurityGateModel } from './SecurityGateModel.js'
  * Orchestrates steps, enforces security, and detects environment registries.
  */
 export class WorkflowModel extends Model {
+	static alias = 'workflow'
 	static filename = {
 		help: 'Path to .md workflow',
 		default: '',

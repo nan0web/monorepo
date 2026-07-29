@@ -4,36 +4,32 @@ import { FileSystem } from "../../utils/FileSystem.js"
 import { UiOutput } from "../../cli/UiOutput.js"
 
 export default class Command extends UiCommand {
-	static help = "Command description for user"
+	static description = "Command description for user"
 	static label = ""
 	static example = "The example of the content of the command response ```bash\npnpm install\n```"
 	/** @type {string} */
-	cwd = ""
+	cwd
 	/** @type {FileSystem} */
-	fs = new FileSystem()
+	fs
 	/** @type {number} */
-	timeout = 0
+	timeout
 	/** @type {FileEntry} */
-	file = new FileEntry()
+	file
 	/** @type {import("../../FileProtocol.js").ParsedFile} */
-	parsed = {}
+	parsed
+
 	/**
-	 * @param {Partial<Command>} input
+	 * @param {Partial<Command> | Record<string, any>} [data={}]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options={}]
 	 */
-	constructor(input = {}) {
-		super()
-		const {
-			cwd = this.cwd,
-			timeout = this.timeout,
-			file = this.file,
-			fs = this.fs,
-			parsed = this.parsed,
-		} = input
-		this.cwd = String(cwd)
-		this.timeout = Number(timeout)
-		this.file = new FileEntry(file)
-		this.fs = fs
-		this.parsed = parsed
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		const opts = /** @type {any} */ (options)
+		this.cwd = String(data.cwd || opts.cwd || "")
+		this.timeout = Number(data.timeout || opts.timeout || 0)
+		this.file = new FileEntry(data.file || opts.file || {})
+		this.fs = data.fs || opts.fs || new FileSystem()
+		this.parsed = data.parsed || opts.parsed || {}
 	}
 
 	/**
