@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/markdown",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Markdown parser for nan0web",
   "main": "src/index.js",
   "types": "types/index.d.ts",

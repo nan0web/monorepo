@@ -6,12 +6,11 @@ import Autocomplete from '../src/components/atoms/Autocomplete.jsx'
 import TreeView from '../src/components/atoms/TreeView.jsx'
 import Button from '../src/components/atoms/Button.jsx'
 import Typography from '../src/components/atoms/Typography.jsx'
-import { OlmuiInspector } from './components/OlmuiInspector.jsx'
-import yaml from 'js-yaml'
+import { dump as yamlDump } from 'js-yaml'
 
 function Example({ label, children, jsxCode, yamlCode }) {
 	const formattedYaml = yamlCode
-		? yaml.dump(yamlCode, { indent: 2, noRefs: true, flowLevel: -1 })
+		? yamlDump(yamlCode, { indent: 2, noRefs: true, flowLevel: -1 })
 		: null
 
 	return (

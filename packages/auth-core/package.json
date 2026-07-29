@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/auth-core",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Core auth primitives: User, Role, Membership, AccessControl, Password, Session",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -40,5 +40,13 @@
   },
   "dependencies": {
     "@nan0web/log": "workspace:*"
-  }
+  },
+  "files": [
+    "bin",
+    "src",
+    "types",
+    "data",
+    "LICENSE",
+    "README.md"
+  ]
 }

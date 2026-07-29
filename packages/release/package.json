@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/release",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Project Management as Code, Git-Native, GPG-Signed, Test-Driven",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -46,5 +46,13 @@
     "@types/node": "^25.6.0",
     "husky": "^9.1.7",
     "knip": "^5.86.0"
-  }
+  },
+  "files": [
+    "bin",
+    "src",
+    "types",
+    "data",
+    "LICENSE",
+    "README.md"
+  ]
 }

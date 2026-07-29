@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/finance",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Financial logic, formatting, and calculations for nan0web apps.",
   "type": "module",
   "main": "./src/index.js",

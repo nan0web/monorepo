@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui-robo",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Robotics Action Verification Adapter — OLMUI",
   "type": "module",
   "main": "src/index.js",

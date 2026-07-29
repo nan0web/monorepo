@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/icons",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Framework-agnostic SVG icons from react-icons sets — zero React dependency",
   "type": "module",
   "main": "src/index.js",
@@ -63,5 +63,13 @@
   },
   "dependencies": {
     "lit": "3.2.1"
-  }
+  },
+  "files": [
+    "bin",
+    "src",
+    "types",
+    "data",
+    "LICENSE",
+    "README.md"
+  ]
 }

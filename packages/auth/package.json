@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/auth",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Sovereign Identity and Authorization Protocol for nan•web Matrix",
   "type": "module",
   "main": "src/index.js",

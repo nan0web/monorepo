@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui-react-bootstrap",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "type": "module",
   "description": "Bootstrap integration for @nan0web/ui-react – declarative UI with React Bootstrap components and themes.",
   "main": "./src/index.jsx",

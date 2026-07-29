@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/auth-browser",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Authentication client with password and social sign-in support.",
   "main": "src/index.js",
   "type": "module",
@@ -38,5 +38,13 @@
     "@nan0web/auth-core": "workspace:*",
     "@nan0web/db-browser": "workspace:*",
     "@nan0web/http": "workspace:*"
-  }
+  },
+  "files": [
+    "bin",
+    "src",
+    "types",
+    "data",
+    "LICENSE",
+    "README.md"
+  ]
 }

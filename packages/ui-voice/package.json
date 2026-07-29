@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui-voice",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Voice Prompt Verification Adapter — OLMUI",
   "type": "module",
   "main": "src/index.js",
