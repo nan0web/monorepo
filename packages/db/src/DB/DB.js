@@ -583,6 +583,15 @@ export default class DB {
 	}
 
 	/**
+	 * Returns a mounted database instance by prefix.
+	 * @param {string} prefix The path prefix to find the mounted database for
+	 * @returns {DB | undefined} The mounted database instance or undefined if not found
+	 */
+	getMount(prefix) {
+		return this.getMounts().find((m) => m.prefix === prefix)?.db
+	}
+
+	/**
 	 * Returns available system volumes/disks as URIs.
 	 * Overridden by adapters that support physical drives.
 	 * @returns {Promise<string[]>} Array of volume URIs (e.g., ['/'])

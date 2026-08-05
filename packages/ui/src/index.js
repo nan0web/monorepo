@@ -3,6 +3,10 @@ import { Model } from '@nan0web/types'
 import Models from './Model/index.js'
 import Component from './Component/index.js'
 
+export { Attachment } from './domain/Attachment.js'
+export { Article } from './domain/Article.js'
+export { BlockRegistry, blockRegistry } from './core/BlockRegistry.js'
+
 export { Locale, Model, Models, Component }
 export { default as Element } from './Model/Element.js'
 export {

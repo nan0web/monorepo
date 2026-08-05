@@ -35,11 +35,17 @@ export default class ReferenceValidator {
         resolvedUri: string;
     }>>;
     /**
+     * @typedef {Object} Reference
+     * @property {string} path
+     * @property {string} ref
+     * @property {string} resolvedUri
+     */
+    /**
      * Scans the database (or a specific directory) for all broken references.
      * Returns a map of document URIs to their broken references.
      *
      * @param {string} [dirPath='.'] - The directory to scan
-     * @returns {Promise<Record<string, Array<{path: string, ref: string, resolvedUri: string}>>>}
+     * @returns {Promise<Record<string, Array<Reference>>>}
      */
     validateAll(dirPath?: string): Promise<Record<string, Array<{
         path: string;

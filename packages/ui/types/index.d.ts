@@ -1,3 +1,5 @@
+export { Attachment } from "./domain/Attachment.js";
+export { Article } from "./domain/Article.js";
 export { default as Element } from "./Model/Element.js";
 export { resolveContext } from "./utils/resolveContext.js";
 export { processI18n } from "./utils/processI18n.js";
@@ -41,6 +43,7 @@ import { Model } from '@nan0web/types';
 import Models from './Model/index.js';
 import Component from './Component/index.js';
 export { Locale, Model, Models, Component };
+export { BlockRegistry, blockRegistry } from "./core/BlockRegistry.js";
 export { default as Theme, getUserTheme, CustomTheme, DarkLightTheme, NightTheme, createTheme } from "./Theme/index.js";
 export { default as Error, CancelError } from "./core/Error/index.js";
 export { runFlow, flow, Prompt, Stream, Alert, Toast, Badge, Text, Table, Input, Select, Confirm, Multiselect, Mask, Password, Spinner, Progress, default as Flow } from "./core/Flow.js";

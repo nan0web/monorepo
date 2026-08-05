@@ -28,12 +28,15 @@ export default class ReferenceValidator {
 
 		const flat = flatten(data)
 		const refs = []
-		
+
 		for (const key in flat) {
 			if (
-				key.endsWith('/$ref') || key === '$ref' ||
-				key.endsWith('/href') || key === 'href' ||
-				key.endsWith('/$href') || key === '$href'
+				key.endsWith('/$ref') ||
+				key === '$ref' ||
+				key.endsWith('/href') ||
+				key === 'href' ||
+				key.endsWith('/$href') ||
+				key === '$href'
 			) {
 				const value = flat[key]
 				if (typeof value === 'string' && value.trim() !== '') {
@@ -73,7 +76,7 @@ export default class ReferenceValidator {
 		for (const { path, ref } of extracted) {
 			const resolvedUri = this.db.resolveSync(dir, ref)
 			const stat = await this.db.statDocument(resolvedUri)
-			
+
 			if (!stat.exists) {
 				broken.push({ path, ref, resolvedUri })
 			}
@@ -83,13 +86,21 @@ export default class ReferenceValidator {
 	}
 
 	/**
+	 * @typedef {Object} Reference
+	 * @property {string} path
+	 * @property {string} ref
+	 * @property {string} resolvedUri
+	 */
+
+	/**
 	 * Scans the database (or a specific directory) for all broken references.
 	 * Returns a map of document URIs to their broken references.
 	 *
 	 * @param {string} [dirPath='.'] - The directory to scan
-	 * @returns {Promise<Record<string, Array<{path: string, ref: string, resolvedUri: string}>>>}
+	 * @returns {Promise<Record<string, Array<Reference>>>}
 	 */
 	async validateAll(dirPath = '.') {
+		/** @type {Record<string, Array<Reference>>} */
 		const results = {}
 
 		// Load meta if not loaded to ensure statDocument is fast

@@ -2,9 +2,10 @@
 title: Documentation
 lang: en
 ---
+
 # @nan0web/ui
 
-🏴󠁧󠁢󠁥󠁮󠁧󠁿 [English](./README.md) | 🇺🇦 [Українською](./docs/uk/README.md)
+🏴󠁧󠁢󠁥󠁮󠁧󠁿 [English](./README.md) | 🇺🇦 [Українською](./uk/README.md)
 
 <!-- %PACKAGE_STATUS% -->
 
@@ -43,16 +44,19 @@ focusing on type safety, minimalism, and pure JavaScript design.
 ## Installation
 
 How to install with npm?
+
 ```bash
 npm install @nan0web/ui
 ```
 
 How to install with pnpm?
+
 ```bash
 pnpm add @nan0web/ui
 ```
 
 How to install with yarn?
+
 ```bash
 yarn add @nan0web/ui
 ```
@@ -64,6 +68,7 @@ yarn add @nan0web/ui
 UI communication is built around **Intents**. Application logic yields intents (ask, show, result) interpreted by environment adapters.
 
 For more details, see:
+
 - [Philosophy & Economy](./en/philosophy-economy.md)
 - [Architecture Guide](./en/architecture.md)
 - [Legacy v1 Documentation (UiMessage)](./en/legacy-v1.md)
@@ -83,6 +88,7 @@ Field types include:
 - `textarea`
 
 How to define and validate a UiForm?
+
 ```js
 import { UiForm } from '@nan0web/ui'
 const form = new UiForm({
@@ -105,6 +111,7 @@ const { isValid, errors } = form.validate()
 console.info(Object.keys(errors).length) // ← 1
 console.info(errors.email) // ← Invalid email format
 ```
+
 ### Components
 
 Components render data as frame-ready output.
@@ -113,12 +120,14 @@ Components render data as frame-ready output.
 - `Process` – shows progress bar and time
 
 How to render the Welcome component?
+
 ```js
 import { Welcome } from '@nan0web/ui'
 const frame = Welcome({ user: { name: 'Alice' } })
 const firstLine = frame[0].join('')
 console.info(firstLine) // ← Welcome Alice!
 ```
+
 ### View Manager
 
 `View` combines components and renders frames.
@@ -130,12 +139,14 @@ Every view has:
 - Frame – output buffer with visual properties
 
 How to render frame with View?
+
 ```js
 import { View } from '@nan0web/ui'
 const view = new View()
 view.render(1)(['Hello, world'])
 console.info(String(view.frame)) // ← "\rHello, world"
 ```
+
 ### Frame Rendering
 
 `Frame` manages visual rendering with width and height limits.
@@ -148,6 +159,7 @@ Render methods:
 - `VISIBLE` – renders only visible part of frame
 
 How to create a Frame with fixed size?
+
 ```js
 import { Frame } from '@nan0web/ui'
 const frame = new Frame({
@@ -159,23 +171,27 @@ const frame = new Frame({
 const rendered = frame.render()
 console.info(rendered.includes('Frame content')) // ← true
 ```
+
 ### Domain Models (v1.9.0)
 
 v1.9.0 introduces a comprehensive set of domain models for layout and components.
 These models follow the **Model-as-Schema** pattern.
 
 #### Layout Models
+
 - `HeaderModel` — title, logo, navigation actions
 - `FooterModel` — copyright, version, social links
 - `HeroModel` — prominent call-to-action
 
 #### Component Models
+
 - `PricingModel` — plans with features and prices
 - `CommentModel` & `TestimonialModel` — social proof
 - `StatsModel` — data visualizations
 - `TimelineModel` — event history
 
 How to use the new Header and Hero models?
+
 ```js
 import { Model } from '@nan0web/ui'
 const { HeaderModel, HeroModel } = Model
@@ -191,6 +207,7 @@ const hero = new HeroModel({
 console.info(header.title) // ← NaN•Web
 console.info(hero.actions[0].title) // ← Get Started
 ```
+
 ### Intent Generators (v1.11.0)
 
 From v1.11.0, Intent creators are standard named functions generating
@@ -203,12 +220,14 @@ strict interactions (ask, progress, show, render, result).
 - `result(data)` — ends the model execution cleanly.
 
 How to use Intent generators? (v1.11.0)
+
 ```js
 import { ask, show, result } from '@nan0web/ui'
 const nameIntent = ask('name', { help: 'Your name' })
 const msgIntent = show('Processing...', 'info')
 const endIntent = result({ ok: true })
 ```
+
 ### Testing UI
 
 Core unit-tested to ensure stability in different environments.
@@ -217,11 +236,13 @@ All components, adapters, and models are designed to be testable
 with minimal setup.
 
 How to test UI components with assertions?
+
 ```js
 import { Welcome } from '@nan0web/ui'
 const output = Welcome({ user: { name: 'Test' } })
 console.info(output) // ← Welcome Test!
 ```
+
 ### Master IDE (Component Sandbox)
 
 The Master IDE (OlmuiInspector) provides a unified environment for testing and documenting
@@ -233,7 +254,7 @@ web components across platforms. It supports:
 - **i18n UI** — fully localized interface (UK/EN) for global developers.
 - **Theme Editor** — Bootstrap-like CSS variable system with live preview.
 
-It follows the **Olmui** core pattern: *One Logic — Many UI* (same manifest powers both CLI and Web).
+It follows the **Olmui** core pattern: _One Logic — Many UI_ (same manifest powers both CLI and Web).
 
 #### Theme Editor (CSS Variables)
 
@@ -259,6 +280,7 @@ The IDE handles data transformation between YAML models and web components:
 Concise format for defining variations:
 
 How to define a component variation using NaN0 Spec?
+
 ```yaml
 - Button: Primary
   $variant: brand
@@ -276,6 +298,7 @@ HTML pages are generated from `ide.html` template via `generate-pages.js`:
 - i18n navbar with `data-i18n` attributes
 
 How to run the documentation site?
+
 ```bash
 npm run docs:dev
 ```
@@ -292,6 +315,7 @@ The library includes rich playground demos:
 Run to explore live functionality:
 
 How to run the playground?
+
 ```bash
 # Clone repository and run playground
 git clone https://github.com/nan0web/ui.git

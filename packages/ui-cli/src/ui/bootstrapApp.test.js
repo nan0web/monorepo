@@ -24,5 +24,8 @@ describe('bootstrapApp', () => {
 		const db = new DB()
 		const result = await bootstrapApp(SimpleApp, { db, noExit: true })
 		assert.deepStrictEqual(result, { success: true, data: undefined, cancelled: false })
+		assert.ok(db.mounts.has('@cwd'), '@cwd mount should be present')
+		assert.ok(db.mounts.has('@app'), '@app mount should be present')
+		assert.ok(db.mounts.has('~'), '~ mount should be present')
 	})
 })

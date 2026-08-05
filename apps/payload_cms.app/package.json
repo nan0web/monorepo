@@ -1,0 +1,24 @@
+{
+  "name": "@nan0web/payload-cms.app",
+  "version": "1.0.0",
+  "description": "Universal Model-as-App Model-as-Schema to Payload CMS Bridge & Generator Application",
+  "type": "module",
+  "bin": {
+    "payloadcms": "./bin/app.js"
+  },
+  "scripts": {
+    "start": "node bin/app.js",
+    "test": "node --test src/test/PayloadCmsApp.story.js"
+  },
+  "dependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "@nan0web/ui-payload": "workspace:*",
+    "typescript": "^5.9.3"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "payload": "3.86.0"
+  }
+}

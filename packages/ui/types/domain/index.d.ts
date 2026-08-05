@@ -4,6 +4,7 @@ export { Content } from "./Content.js";
 export { Document } from "./Document.js";
 export { ShowcaseAppModel } from "./ShowcaseAppModel.js";
 export { default as Navigation } from "./Navigation.js";
+export { CodeTemplate } from "./CodeTemplate.js";
 export { LayoutModel } from "./LayoutModel.js";
 export { HeaderModel } from "./HeaderModel.js";
 export { FooterModel } from "./FooterModel.js";

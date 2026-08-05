@@ -69,6 +69,12 @@ async function resolveDsn(dsn, appCwd, dbConsole) {
 	throw new Error(`Unknown DSN protocol: ${dsn}`)
 }
 
+/**
+ *
+ * @param {import('@nan0web/db').DB} db
+ * @param {Object} param1
+ * @returns
+ */
 async function readMounts(db, { argv, appCwd, pkg, dbConsole, isTestMode, config }) {
 	const path = await import('node:path')
 	const explicitMounts = []
@@ -81,6 +87,9 @@ async function readMounts(db, { argv, appCwd, pkg, dbConsole, isTestMode, config
 		} else if (arg === '--mount-data' || arg.startsWith('--mount-data=')) {
 			const val = arg.startsWith('--mount-data=') ? arg.slice(13) : argv[++i]
 			explicitMounts.push({ dest: '', dsn: val || 'data' })
+		} else if (arg === '--mount-cwd' || arg.startsWith('--mount-cwd=')) {
+			const val = arg.startsWith('--mount-cwd=') ? arg.slice(12) : argv[++i]
+			explicitMounts.push({ dest: '@cwd', dsn: val || '.' })
 		} else if (arg === '--mount-app' || arg.startsWith('--mount-app=')) {
 			const val = arg.startsWith('--mount-app=') ? arg.slice(12) : argv[++i]
 			explicitMounts.push({ dest: '@app', dsn: val || '.' })
@@ -137,6 +146,14 @@ async function readMounts(db, { argv, appCwd, pkg, dbConsole, isTestMode, config
 					root: isTestMode ? appCwd : config.root || 'data',
 					console: /** @type {any} */ (dbConsole),
 				})
+			)
+		)
+	}
+	if (!db.mounts?.has('@cwd')) {
+		db.mount(
+			'@cwd',
+			/** @type {any} */ (
+				new DBFS({ cwd: appCwd, root: '', console: /** @type {any} */ (dbConsole) })
 			)
 		)
 	}
@@ -233,6 +250,7 @@ class BootstrapApp {
 
 /**
  * Universal App Runner (Bootstrap) for standalone OLMUI CLI applications.
+ * Bootstrap application must be strictly defined on the agnostic highest level.
  *
  * @param {typeof import('@nan0web/types').Model} [AppModel]
  * @param {BootstrapAppConfig} [config={}]
@@ -287,21 +305,27 @@ export async function bootstrapApp(AppModel, config = {}) {
 	const FinalModel = await resolveModel(AppModel, { pkg, appCwd })
 
 	// Check for completion mode before creating model
-	const completionArgIndex = argv.findIndex(arg => arg === '--completion' || arg.startsWith('--completion='))
+	const completionArgIndex = argv.findIndex(
+		(arg) => arg === '--completion' || arg.startsWith('--completion=')
+	)
 	if (completionArgIndex !== -1) {
-		const completionType = argv[completionArgIndex].includes('=') 
-			? argv[completionArgIndex].split('=')[1] 
+		const completionType = argv[completionArgIndex].includes('=')
+			? argv[completionArgIndex].split('=')[1]
 			: argv[completionArgIndex + 1]
-		
+
 		if (completionType === 'zsh' || completionType === 'bash') {
 			const CompletionGenerator = (await import('./core/CompletionGenerator.js')).default
 			const appName = config.appName || pkg.name || 'app'
 			const commandStructure = CompletionGenerator.extractCommandStructure(FinalModel)
-			const completionScript = CompletionGenerator.generateCompletionScript(completionType, commandStructure, appName)
-			
+			const completionScript = CompletionGenerator.generateCompletionScript(
+				completionType,
+				commandStructure,
+				appName
+			)
+
 			process.stdout.write(completionScript)
 			if (config.noExit) return { success: true, data: completionScript }
-			
+
 			if (isTestMode && !process.env.UI_SNAPSHOT) {
 				process.exit(0)
 			} else {
@@ -311,7 +335,7 @@ export async function bootstrapApp(AppModel, config = {}) {
 		} else if (completionType) {
 			console.error(`Error: Unsupported shell type: ${completionType}. Use 'zsh' or 'bash'.`)
 			if (config.noExit) throw new Error(`Unsupported shell type: ${completionType}`)
-			
+
 			if (isTestMode && !process.env.UI_SNAPSHOT) {
 				process.exit(1)
 			} else {

@@ -8,6 +8,7 @@ export { Content } from './Content.js'
 export { Document } from './Document.js'
 export { ShowcaseAppModel } from './ShowcaseAppModel.js'
 export { default as Navigation } from './Navigation.js'
+export { CodeTemplate } from './CodeTemplate.js'
 
 // Layout Models (Phase 1)
 export { LayoutModel } from './LayoutModel.js'

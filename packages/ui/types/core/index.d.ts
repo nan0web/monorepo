@@ -20,4 +20,4 @@ import UIForm from './Form/Form.js';
 export { UIStream, UIStream as UiStream, StreamEntry, StreamEntry as UiStreamEntry, UIForm, UIForm as UiForm };
 export { default as Error, CancelError } from "./Error/index.js";
 export { runFlow, flow, View, Prompt, Stream, Alert, Toast, Badge, Text, Table, Input, Select, Confirm, Multiselect, Mask, Password, Spinner, Progress, default as Flow } from "./Flow.js";
-export { validateIntent, ask, progress, log, render, result, INTENT_TYPES, isModelSchema } from "./Intent.js";
+export { validateIntent, ask, show, progress, log, render, result, INTENT_TYPES, isModelSchema } from "./Intent.js";

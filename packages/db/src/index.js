@@ -24,6 +24,7 @@ import DocumentEntry from './DocumentEntry.js'
 import DocumentStat from './DocumentStat.js'
 import StreamEntry from './StreamEntry.js'
 import Data from './Data.js'
+import { HydratedModel } from './HydratedModel.js'
 import DBConfig from './domain/DBConfig.js'
 import RevisionInfo from './domain/RevisionInfo.js'
 import FormatRegistry from './FormatRegistry.js'
@@ -34,6 +35,7 @@ export {
 	DocumentStat,
 	StreamEntry,
 	Data,
+	HydratedModel,
 	DB,
 	DBDriverProtocol,
 	GetOptions,
