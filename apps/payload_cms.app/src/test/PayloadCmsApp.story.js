@@ -95,15 +95,13 @@ describe('PayloadCmsApp User Stories', () => {
 		assert.ok(intents.some((i) => i.type === 'show' || i.type === 'progress'))
 
 		// Verify transformed output stored in DB
-		const generatedFile = await db.get('src/collections/TestArticle.js')
+		const generatedFile = await db.get('@app/src/collections/collections/TestArticle.js') || await db.get('@app/src/collections/TestArticle.js')
 		assert.ok(generatedFile, 'Collection file should be generated in DB')
-		assert.ok(generatedFile.includes("slug: 'news'"), `Expected slug: 'news' in:\n${generatedFile}`)
+		assert.ok(generatedFile.includes("const collectionSlug = 'news'"), `Expected collectionSlug = 'news' in:\n${generatedFile}`)
 		assert.ok(generatedFile.includes('News Article'), `Expected 'News Article' in:\n${generatedFile}`)
 		assert.ok(generatedFile.includes('"localized": true'))
 
-
-
-		const indexFile = await db.get('src/collections/index.js')
+		const indexFile = await db.get('@app/src/collections/collections/index.js') || await db.get('@app/src/collections/index.js')
 		assert.ok(indexFile, 'Index file should be generated in DB')
 		assert.ok(indexFile.includes("export * from './TestArticle.js'"))
 	})
@@ -153,7 +151,7 @@ describe('PayloadCmsApp User Stories', () => {
 			// consume generator
 		}
 
-		const generatedGlobal = await db.get('src/globals/SiteConfig.js')
+		const generatedGlobal = await db.get('@app/src/collections/globals/SiteConfig.js') || await db.get('@app/src/globals/SiteConfig.js')
 		assert.ok(generatedGlobal, 'Global file should be generated in DB')
 		assert.ok(generatedGlobal.includes("slug: 'site_config'"))
 		assert.ok(generatedGlobal.includes('Site Settings'))

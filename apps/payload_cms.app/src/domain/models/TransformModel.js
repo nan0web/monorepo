@@ -1,6 +1,8 @@
-import { Model } from '@nan0web/types'
+import { Model, ROLES, DEFAULT_ACCESS } from '@nan0web/types'
 import { show, progress, result } from '@nan0web/ui'
 import { createT } from '@nan0web/i18n'
+import { PayloadCollectionTemplate } from '@nan0web/ui-payload'
+
 /**
  * @typedef {Object} FieldInfo
  * @property {string | function} [type]
@@ -25,7 +27,6 @@ import { createT } from '@nan0web/i18n'
  * @property {Record<string, FieldInfo>} staticFields
  */
 
-import fs from 'fs'
 import path from 'path'
 
 /**
@@ -64,6 +65,20 @@ export class TransformModel extends Model {
 		alias: 'f',
 	}
 
+	static include = {
+		help: 'Include filter for models (comma-separated names or substring, e.g. "Card,Deposit")',
+		type: 'string',
+		default: '*',
+		alias: 'i',
+	}
+
+	static exclude = {
+		help: 'Exclude filter for models (comma-separated names to skip)',
+		type: 'string',
+		default: '',
+		alias: 'e',
+	}
+
 	/**
 	 * @param {Partial<TransformModel>} [data]
 	 * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
@@ -73,6 +88,34 @@ export class TransformModel extends Model {
 		/** @type {string} Target directory */ this.target
 		/** @type {string} Output directory */ this.output
 		/** @type {boolean} Force flag */ this.force
+		/** @type {string} Include filter */ this.include
+		/** @type {string} Exclude filter */ this.exclude
+	}
+
+	/**
+	 * Filters models by include and exclude rules.
+	 * @param {Array<CMSClass>} modelsToProcess
+	 * @returns {Array<CMSClass>}
+	 */
+	filterModels(modelsToProcess) {
+		const inc = this.include || '*'
+		const exc = this.exclude || ''
+
+		const incList = inc !== '*' ? inc.split(',').map((s) => s.trim().toLowerCase()) : null
+		const excList = exc ? exc.split(',').map((s) => s.trim().toLowerCase()) : []
+
+		return modelsToProcess.filter((m) => {
+			const name = m.className.toLowerCase()
+			const cleanName = name.replace(/model$/i, '')
+
+			if (excList.length > 0 && excList.some((e) => name.includes(e) || cleanName.includes(e))) {
+				return false
+			}
+			if (incList) {
+				return incList.some((i) => name.includes(i) || cleanName.includes(i))
+			}
+			return true
+		})
 	}
 
 	/**
@@ -86,7 +129,7 @@ export class TransformModel extends Model {
 		/** @type {import('payload').Field | Record<string, any>} */
 		const payloadField = { name: fieldName }
 		let payloadType = 'text'
-		const type = fieldInfo.type
+		let type = fieldInfo.type
 
 		/** @todo: Визначити як описувати унікальний ключ для посилання на іншу модель */
 		if (typeof type === 'function' && Model.isPrototypeOf(type)) {
@@ -97,6 +140,9 @@ export class TransformModel extends Model {
 			payloadType = 'upload'
 			payloadField.relationTo = 'media'
 		} else {
+			if (!type && Array.isArray(fieldInfo.default)) {
+				type = 'array'
+			}
 			switch (type) {
 				case 'string':
 					payloadType = fieldInfo.hint === 'textarea' ? 'textarea' : 'text'
@@ -156,8 +202,8 @@ export class TransformModel extends Model {
 					}
 					break
 				case 'array':
+					payloadType = 'array'
 					if (typeof fieldInfo.model === 'function' && Model.isPrototypeOf(fieldInfo.model)) {
-						payloadType = 'array'
 						const relName =
 							fieldInfo.model.$collection ||
 							fieldInfo.model.$slug ||
@@ -170,7 +216,6 @@ export class TransformModel extends Model {
 							},
 						]
 					} else if (typeof fieldInfo.model === 'string') {
-						payloadType = 'array'
 						const relName = fieldInfo.model.toLowerCase() + 's'
 						payloadField.fields = [
 							{
@@ -180,10 +225,9 @@ export class TransformModel extends Model {
 							},
 						]
 					} else if (Array.isArray(fieldInfo.fields)) {
-						payloadType = 'array'
 						payloadField.fields = fieldInfo.fields
 					} else {
-						payloadType = 'json'
+						payloadField.fields = [{ name: 'item', type: 'text' }]
 					}
 					break
 
@@ -198,7 +242,10 @@ export class TransformModel extends Model {
 		payloadField.type = payloadType
 
 		if (fieldInfo.help) {
-			payloadField.label = fieldInfo.help
+			payloadField.label =
+				typeof fieldInfo.help === 'object'
+					? fieldInfo.help
+					: { uk: fieldInfo.help, en: fieldInfo.help }
 		}
 
 		if (fieldInfo.localized === true) {
@@ -313,7 +360,10 @@ export class TransformModel extends Model {
 	 * @returns {{outputCode: string, outputPath: string}}
 	 */
 	generateModel(model, supportedLangs, resolvedOutputDir = '', translators = {}) {
-		const db = this._.db
+		const { db, t } = this._
+		if (!db) {
+			throw new Error(t(TransformModel.UI.errorDb))
+		}
 		const { className, config, uiSingular, uiPlural, staticFields } = model
 		const cleanName = className.replace(/Model$/i, '')
 		const slug = config.slug || cleanName.toLowerCase()
@@ -322,7 +372,8 @@ export class TransformModel extends Model {
 		const singularMap = {}
 		/** @type {Record<string, string>} */
 		const pluralMap = {}
-		for (const lang of supportedLangs) {
+		const langs = supportedLangs.length > 0 ? supportedLangs : [{ locale: 'en', title: 'English' }]
+		for (const lang of langs) {
 			const locale = typeof lang === 'string' ? lang : lang?.locale || 'en'
 			const translate = translators[locale] || this._?.t || createT()
 			const sVal = translate(`${cleanName}`, { locale })
@@ -353,9 +404,6 @@ export class TransformModel extends Model {
 			if (fieldNames.includes(f)) defaultCols.push(f)
 		}
 
-		const defaultColsField =
-			defaultCols.length > 0 ? `    defaultColumns: ${JSON.stringify(defaultCols)},\n` : ''
-
 		let outputCode = ''
 		let outputPath = ''
 
@@ -381,38 +429,115 @@ export class TransformModel extends Model {
 				`}\n`
 
 			const globalsDir = resolvedOutputDir.replace(/collections\/?$/, 'globals')
-			outputPath = path.resolve(globalsDir, `${cleanName}.js`)
+			outputPath = db.resolveSync(globalsDir, `${cleanName}.js`)
 		} else {
-			outputCode =
-				`/**\n` +
-				` * ${cleanName} Collection\n` +
-				` * Auto-generated from Model-as-Schema\n` +
-				` *\n` +
-				` * @type {import('payload').CollectionConfig}\n` +
-				` */\n` +
-				`export const ${cleanName}Collection = {\n` +
-				`  slug: '${slug}',\n` +
-				`  labels: {\n` +
-				`    singular: ${singularJSON},\n` +
-				`    plural: ${pluralJSON},\n` +
-				`  },\n` +
-				`  admin: {\n` +
-				`    useAsTitle: '${staticFields.title ? 'title' : staticFields.name ? 'name' : 'id'}',\n` +
-				`${defaultColsField}` +
-				`${groupField}` +
-				`  },\n` +
-				`  access: {\n` +
-				`    read: () => true,\n` +
-				`    create: ({ req: { user } }) => Boolean(user),\n` +
-				`    update: ({ req: { user } }) => Boolean(user),\n` +
-				`    delete: ({ req: { user } }) => Boolean(user),\n` +
-				`  },\n` +
-				`  fields: ${fieldsJSON},\n` +
-				`}\n`
+			/** @type {Record<string, string>} */
+			const groupMap = {}
+			for (const lang of langs) {
+				const locale = typeof lang === 'string' ? lang : lang?.locale || 'en'
+				const translate = translators[locale] || this._?.t || createT()
+				const gVal = group ? translate(`$group.${group}`, { locale }) : ''
+				groupMap[locale] = gVal && !gVal.startsWith('$group.') ? gVal : group || 'Content'
+			}
 
-			outputPath = path.resolve(resolvedOutputDir, `${cleanName}.js`)
+			const useAsTitle = staticFields.title ? 'title' : staticFields.name ? 'name' : 'id'
+			const groupName = typeof group === 'string' ? group : groupMap['uk'] || groupMap['en'] || 'Content'
+			const collectionTemplate = new PayloadCollectionTemplate({
+				collectionSlug: slug,
+				useAsTitle,
+				labels: { singular: singularMap, plural: pluralMap },
+				group: groupName,
+				fields: fieldsList,
+			})
+			outputCode = collectionTemplate.compileSync()
+			outputPath = db.resolveSync(resolvedOutputDir, `${cleanName}.js`)
 		}
 		return { outputCode, outputPath }
+	}
+
+	/**
+	 * Reads context metadata (languages and vocabulary) via db.
+	 * @returns {Promise<{supportedLangs: import('@nan0web/i18n').Language[], vocab: Record<string, any>}>}
+	 */
+	async readContextData() {
+		const db = this._.db
+		if (!db)
+			return {
+				supportedLangs: [
+					{ locale: 'uk', title: 'Українська' },
+					{ locale: 'en', title: 'English' },
+				],
+				vocab: {},
+			}
+		let doc = (await db.fetch('@app/index')) ?? (await db.fetch('@app/package.json')) ?? {}
+		if (!doc.langs || !Array.isArray(doc.langs) || doc.langs.length === 0) {
+			doc =
+				(await db.fetch('@app/../bank/app/index')) ??
+				(await db.fetch('bank/app/index')) ??
+				(await db.fetch('../bank/app/index')) ??
+				doc
+		}
+		let supportedLangs = Array.isArray(doc.langs) ? doc.langs : []
+		if (supportedLangs.length === 0) {
+			supportedLangs = [
+				{ locale: 'uk', title: 'Українська' },
+				{ locale: 'en', title: 'English' },
+			]
+		}
+		const vocab = doc.t || {}
+		return { supportedLangs, vocab }
+	}
+
+	/**
+	 * Creates translator TFunctions per supported language locale.
+	 * @param {import('@nan0web/i18n').Language[]} supportedLangs
+	 * @param {Record<string, any>} vocab
+	 * @returns {Promise<Record<string, import('@nan0web/types').TFunction>>}
+	 */
+	async resolveSupportedLanguages(supportedLangs, vocab) {
+		const { createT } = await import('@nan0web/i18n')
+		/** @type {Record<string, import('@nan0web/types').TFunction>} */
+		const translators = {}
+		for (const lang of supportedLangs) {
+			const locale = typeof lang === 'string' ? lang : lang?.locale || 'en'
+			translators[locale] = createT(vocab, locale)
+		}
+		return translators
+	}
+
+	/**
+	 * Writes generated model definitions and index via database instance.
+	 * @param {Array<{cleanName: string, outputCode: string, isGlobal: boolean}>} definitions
+	 * @param {string} outputDir
+	 * @returns {AsyncGenerator<import('@nan0web/ui/core').Intent, number, any>}
+	 */
+	async *writeOutputs(definitions, outputDir) {
+		const db = this._.db
+		const t = this._.t
+		let count = 0
+		const generatedExports = []
+
+		for (const { cleanName, outputCode, isGlobal } of definitions) {
+			const subDir = isGlobal ? 'globals' : 'collections'
+			const uri = `@app/${outputDir}/${subDir}/${cleanName}.js`
+			if (db) {
+				await db.saveDocument(uri, outputCode)
+			}
+			generatedExports.push(`export { collectionConfig as ${cleanName} } from './${cleanName}.js'`)
+			count++
+			yield show(t(TransformModel.UI.generated, { className: cleanName, output: uri }), 'success')
+		}
+
+		if (generatedExports.length > 0 && db) {
+			const indexContent =
+				`// Auto-generated collections index by @nan0web/payload-cms.app\n` +
+				`// Do not edit manually\n\n` +
+				generatedExports.join('\n') +
+				'\n'
+			await db.saveDocument(`@app/${outputDir}/collections/index.js`, indexContent)
+		}
+
+		return count
 	}
 
 	/**
@@ -432,76 +557,29 @@ export class TransformModel extends Model {
 		}
 		yield progress(t(TransformModel.UI.scanning, { count: Object.keys(domainModule).length }))
 
-		const modelsToProcess = this.readDomainModels(domainModule)
-		let generatedCount = 0
+		const modelsToProcess = this.filterModels(this.readDomainModels(domainModule))
 
-		const resolvedOutputDir = path.resolve(process.cwd(), this.output)
-
-		const doc = (await db.fetch('@app/app/*/index')) ?? {}
-		const doc2 = (await db.fetch('@app/app/index')) ?? {}
-		console.log('[DEBUG] keys of doc (*):', Object.keys(doc))
-		console.log('[DEBUG] keys of doc2:', Object.keys(doc2))
-		if (doc.langs) console.log('[DEBUG] doc.langs:', doc.langs)
-		if (doc2.langs) console.log('[DEBUG] doc2.langs:', doc2.langs)
-		if (doc.t) console.log('[DEBUG] doc.t:', doc.t)
-		if (doc2.t) console.log('[DEBUG] doc2.t:', doc2.t)
-
-		/** @type {import('@nan0web/i18n').Language[]} */
-		let supportedLangs =
-			Array.isArray(doc.langs) && doc.langs.length > 0
-				? doc.langs
-				: Array.isArray(doc2.langs)
-					? doc2.langs
-					: []
-
-		const list = supportedLangs.map((l) => l.title).join(', ')
+		// 1. Read context metadata
+		const { supportedLangs, vocab } = await this.readContextData()
+		const list = supportedLangs
+			.map((l) => (typeof l === 'string' ? l : l.title || l.locale))
+			.join(', ')
 		yield show(t(TransformModel.UI.appLanguagesFound, { count: supportedLangs.length, list }))
 
-		const { createT } = await import('@nan0web/i18n')
-		/** @type {Record<string, import('@nan0web/types').TFunction>} */
-		const translators = {}
-		const vocab = doc.t || doc2.t || {}
+		// 2. Resolve translators
+		const translators = await this.resolveSupportedLanguages(supportedLangs, vocab)
 
-		for (const lang of supportedLangs) {
-			const locale = typeof lang === 'string' ? lang : lang?.locale || 'en'
-			translators[locale] = createT(vocab, locale)
-		}
-
-		const generatedExports = []
-
+		// 3. Generate model code definitions
+		const definitions = []
 		for (const model of modelsToProcess) {
 			if (Object.keys(model.staticFields).length === 0 && !model.config.isGlobal) continue
-
-			const { outputCode, outputPath } = this.generateModel(
-				model,
-				supportedLangs,
-				resolvedOutputDir,
-				translators
-			)
-
-			fs.mkdirSync(path.dirname(outputPath), { recursive: true })
-			fs.writeFileSync(outputPath, outputCode, 'utf-8')
-
+			const { outputCode } = this.generateModel(model, supportedLangs, this.output, translators)
 			const cleanName = model.className.replace(/Model$/i, '')
-			generatedExports.push(`export * from './${cleanName}.js'`)
-
-			generatedCount++
-
-			yield show(
-				t(TransformModel.UI.generated, { className: model.className, output: outputPath }),
-				'success'
-			)
+			definitions.push({ cleanName, outputCode, isGlobal: Boolean(model.config.isGlobal) })
 		}
 
-		if (generatedExports.length > 0) {
-			const indexContent =
-				`// Auto-generated collections index by @nan0web/payload-cms.app\n` +
-				`// Do not edit manually\n\n` +
-				generatedExports.join('\n') +
-				'\n'
-			const indexFile = path.resolve(resolvedOutputDir, 'index.js')
-			fs.writeFileSync(indexFile, indexContent, 'utf-8')
-		}
+		// 4. Write outputs agnostically
+		const generatedCount = yield* this.writeOutputs(definitions, this.output)
 
 		yield show(t(TransformModel.UI.done, { count: generatedCount }), 'success')
 		return result({ status: 'ok', count: generatedCount })

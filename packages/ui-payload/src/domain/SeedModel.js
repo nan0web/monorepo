@@ -1,10 +1,11 @@
-import { SeedModel as BaseSeedModel } from '@nan0web/ui-payload'
+import { PayloadApp } from './PayloadApp.js'
 import { show, progress, result } from '@nan0web/ui/core'
 
 /**
- * SeedModel - Subcommand to seed DB-FS data (YAML, NANO, JSON) into Payload CMS
+ * SeedModel - Universal Subcommand to seed DB-FS data into Payload CMS
+ * @extends {PayloadApp}
  */
-export class SeedModel extends BaseSeedModel {
+export class SeedModel extends PayloadApp {
 	static alias = 'seed'
 
 	static UI = {
@@ -24,14 +25,14 @@ export class SeedModel extends BaseSeedModel {
 	}
 
 	static output = {
-		help: 'Output bank-web directory containing payload.config.ts',
+		help: 'Output web directory containing payload.config.ts',
 		default: 'web',
 		alias: 'o',
 	}
 
 	/**
-	 * @param {Partial<SeedModel>} [data = {}]
-	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options = {}]
+	 * @param {Partial<SeedModel>} [data={}]
+	 * @param {Partial<import('./PayloadApp.js').PayloadAppOptions>} [options={}]
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
@@ -63,7 +64,7 @@ export class SeedModel extends BaseSeedModel {
 				}
 			}
 		} catch (e) {
-			// Fallback scanning
+			// Fallback
 		}
 		return items
 	}
@@ -85,7 +86,7 @@ export class SeedModel extends BaseSeedModel {
 
 	/**
 	 * Base default normalization for DB-FS records.
-	 * Can be overridden by domain-specific SeedModels (e.g. BankSeedModel).
+	 * Can be overridden by domain-specific SeedModels (e.g. CardSeedModel, BankSeedModel).
 	 * @param {any} rawRecord
 	 * @returns {Object}
 	 */
@@ -101,15 +102,16 @@ export class SeedModel extends BaseSeedModel {
 	}
 
 	/**
-	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+	 * @returns {AsyncGenerator<import('@nan0web/ui/core').Intent, import('@nan0web/ui/core').ResultIntent, any>}
 	 */
 	async *run() {
-		const { db, t, payload } = this._
+		const { db, t } = this._
 		if (!db) {
 			throw new Error(t(SeedModel.UI.errorDb))
 		}
 
-		const target = this.target || 'data'
+		const payload = await this.getPayloadInstance().catch(() => this._.payload)
+		const target = this.dataDir || 'data'
 
 		yield progress(t(SeedModel.UI.start))
 		yield progress(t(SeedModel.UI.scanning, { target }))
@@ -119,18 +121,12 @@ export class SeedModel extends BaseSeedModel {
 		let i = 0
 		for (const uri of items) {
 			yield progress(t(SeedModel.UI.loading, { uri }), i++, items.length)
-			// Use db.fetch if available to resolve full hydrated structure
 			const doc = await db.fetch(uri)
 			if (doc) {
 				const collection = this.resolveCollectionSlug(uri, doc)
 				if (payload && typeof payload.create === 'function') {
 					try {
-						const rawList =
-							doc.departments ||
-							doc.currencies ||
-							doc.metals ||
-							doc.news ||
-							(Array.isArray(doc) ? doc : [doc])
+						const rawList = doc.departments || doc.currencies || doc.metals || doc.news || (Array.isArray(doc) ? doc : [doc])
 						for (const rawRecord of rawList) {
 							const normalizedRecord = this.normalizeRecord(rawRecord)
 							await payload.create({ collection, data: normalizedRecord })
@@ -140,12 +136,7 @@ export class SeedModel extends BaseSeedModel {
 						// Skip fallback record
 					}
 				} else {
-					const rawList =
-						doc.departments ||
-						doc.currencies ||
-						doc.metals ||
-						doc.news ||
-						(Array.isArray(doc) ? doc : [doc])
+					const rawList = doc.departments || doc.currencies || doc.metals || doc.news || (Array.isArray(doc) ? doc : [doc])
 					count += rawList.length
 				}
 			}
