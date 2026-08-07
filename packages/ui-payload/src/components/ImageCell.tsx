@@ -36,7 +36,10 @@ export const ImageCell: React.FC<{ cellData: string }> = ({ cellData }) => {
         alt="Preview"
         style={{
           width: '192px',
+          minWidth: '192px',
           height: '108px',
+          minHeight: '108px',
+          display: 'block',
           objectFit: 'cover',
           borderRadius: '6px',
           border: '1px solid rgba(255, 255, 255, 0.25)',
