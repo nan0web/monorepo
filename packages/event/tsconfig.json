@@ -3,7 +3,8 @@
 		"target": "esnext",
 		"module": "nodenext",
 		"lib": [
-			"esnext"
+			"esnext",
+			"dom"
 		],
 		"declaration": true,
 		"declarationMap": false,
@@ -12,12 +13,16 @@
 		"rootDir": "./src",
 		"strict": true,
 		"esModuleInterop": true,
+		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"moduleResolution": "nodenext",
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
 		"checkJs": true,
+		"types": [
+			"node"
+		],
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",
@@ -1828,6 +1833,7 @@
 		"node_modules",
 		"**/*.test.js",
 		"**/*.story.js",
+		"**/README.md.js",
 		"src/test"
 	]
 }

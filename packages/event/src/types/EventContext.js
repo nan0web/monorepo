@@ -65,9 +65,9 @@ class EventContext {
 			defaultPrevented: this.defaultPrevented,
 		})
 		// Ensure preventDefault is bound to the clone, not referencing parent's method
-		cloned.preventDefault = function () {
-			this.defaultPrevented = true
-		}.bind(cloned)
+		cloned.preventDefault = () => {
+			cloned.defaultPrevented = true
+		}
 		return cloned
 	}
 
