@@ -1,4 +1,5 @@
-export class WorkspaceInspectorModel extends Model {
+import { Model } from '@nan0web/types';
+export declare class WorkspaceInspectorModel extends Model {
     static name: {
         help: string;
         default: string;
@@ -15,8 +16,4 @@ export class WorkspaceInspectorModel extends Model {
         type: string;
     };
     constructor(data?: {}, options?: {});
-    /** @type {string} */ name: string;
-    /** @type {string} */ type: string;
-    /** @type {string} */ command: string;
 }
-import { Model } from '@nan0web/types';

@@ -1,0 +1,5 @@
+# share.app (en)
+title: 'share.app — Universal Video Processing & Social Distribution Pipeline'
+description: 'Automated video slicing, subtitle generation, article compilation, and multi-platform social media distribution'
+locale: 'en'
+version: '3.2.0'

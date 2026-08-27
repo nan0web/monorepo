@@ -1,3 +1,4 @@
+import { Readable } from 'node:stream';
 /**
  * Minimal response implementation used by the test suite.
  *
@@ -14,27 +15,28 @@
  * @extends Readable
  */
 export default class ResponseMessage extends Readable {
+    #private;
+    /** @type {import('node:net').Socket|undefined} */
+    socket: import('node:net').Socket | undefined;
     /**
      * @param {any} bodyOrReq – In fetch mode this is the response body.
      * @param {Object} [options={}] Options for fetch mode.
      */
     constructor(bodyOrReq: any, options?: any);
-    /** @type {import('node:net').Socket|undefined} */
-    socket: import("node:net").Socket | undefined;
-    /** @type {number} */
-    set status(value: number);
     /** @type {number} */
     get status(): number;
-    /** @type {string} */
-    set statusText(value: string);
+    /** @type {number} */
+    set status(value: number);
     /** @type {string} */
     get statusText(): string;
+    /** @type {string} */
+    set statusText(value: string);
     /** @type {boolean} */
     get ok(): boolean;
     /** @type {boolean} */
-    set headersSent(v: boolean);
-    /** @type {boolean} */
     get headersSent(): boolean;
+    /** @type {boolean} */
+    set headersSent(v: boolean);
     /** Mimic ServerResponse.writeHead – set status and mark headers sent. */
     writeHead(statusCode: any, statusMessage: any, headers?: any[]): this;
     /** @type {Map<string,string|string[]>} */
@@ -66,7 +68,7 @@ export default class ResponseMessage extends Readable {
      * Assign socket to response (required by Node.js HTTP server)
      * @param {import('node:net').Socket} socket
      */
-    assignSocket(socket: import("node:net").Socket): void;
+    assignSocket(socket: import('node:net').Socket): void;
     /**
      * Write data to response
      * @param {string|Buffer} chunk
@@ -81,6 +83,4 @@ export default class ResponseMessage extends Readable {
      * @param {Function} [callback]
      */
     end(data?: string | Buffer, encoding?: string, callback?: Function): this;
-    #private;
 }
-import { Readable } from 'node:stream';

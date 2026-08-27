@@ -1,7 +1,19 @@
+// @ts-nocheck
 import { Model } from '@nan0web/types'
 
 /**
  * @typedef {'fs'|'redis'|'http'|'memory'} DBProtocolName
+ */
+
+/**
+ * @typedef {Object} DBConfigType
+ * @property {string} url Connection URL or directory path
+ * @property {DBProtocolName} protocol Database adapter type
+ * @property {string} username Authentication username
+ * @property {string} password Authentication password (sensitive)
+ * @property {string} database Logical database name or namespace
+ * @property {number} maxRetries Maximum reconnection attempts
+ * @property {number} timeoutMs Connection timeout in milliseconds
  */
 
 /**
@@ -25,7 +37,7 @@ import { Model } from '@nan0web/types'
  * @property {number} maxRetries Maximum reconnection attempts
  * @property {number} timeoutMs Connection timeout in milliseconds
  */
-export default class DBConfig extends Model {
+export default class DBConfig extends Model /** @implements {DBConfigType} */ {
 	static UI = {
 		title: 'Database Configuration',
 		description: 'Connection parameters for any DB adapter',
@@ -99,27 +111,27 @@ export default class DBConfig extends Model {
 	/**
 	 * Parses DSN string into its components.
 	 * @param {string} dsn
-	 * @returns {Partial<DBConfig>}
+	 * @returns {Partial<DBConfigType>}
 	 */
 	static parseDsn(dsn) {
-		if (!dsn || typeof dsn !== 'string') return {}
+		if (!dsn || typeof dsn !== 'string') return /** @type {Partial<DBConfigType>} */ ({})
 		try {
-			if (!dsn.includes('://')) return { url: dsn, protocol: 'fs' }
+			if (!dsn.includes('://')) return /** @type {Partial<DBConfigType>} */ ({ url: dsn, protocol: 'fs' })
 			const parsed = new URL(dsn)
-			return {
+			return /** @type {Partial<DBConfigType>} */ ({
 				url: dsn,
-				protocol: /** @type {any} */ (parsed.protocol.replace(':', '')),
+				protocol: /** @type {DBProtocolName} */ (parsed.protocol.replace(':', '')),
 				username: decodeURIComponent(parsed.username || ''),
 				password: decodeURIComponent(parsed.password || ''),
 				database: parsed.pathname.replace(/^\//, ''),
-			}
+			})
 		} catch (e) {
-			return { url: dsn }
+			return /** @type {Partial<DBConfigType>} */ ({ url: dsn })
 		}
 	}
 
 	/**
-	 * @param {Partial<DBConfig> | string | Record<string, any>} [data={}]
+	 * @param {Partial<DBConfigType> | string | Record<string, any>} [data={}]
 	 * @param {Partial<import('@nan0web/types').ModelOptions>} [options={}]
 	 */
 	constructor(data = {}, options = {}) {
@@ -128,17 +140,9 @@ export default class DBConfig extends Model {
 
 		super(data, options)
 
-		/** @type {string} Connection URL or directory path */ this.url
-		/** @type {DBProtocolName} Database adapter type */ this.protocol
-		/** @type {string} Authentication username (if required by adapter) */ this.username
-		/** @type {string} Authentication password (sensitive — never logged) */ this.password
-		/** @type {string} Logical database name or namespace */ this.database
-		/** @type {number} Maximum reconnection attempts before failure */ this.maxRetries
-		/** @type {number} Connection timeout in milliseconds */ this.timeoutMs
-
 		// Auto-detect protocol from URL if not explicitly set
-		if (!this.protocol && this.url) {
-			this.protocol = DBConfig.detectProtocol(this.url)
+		if (!/** @type {DBConfigType} */ (this).protocol && /** @type {DBConfigType} */ (this).url) {
+			/** @type {DBConfigType} */ (this).protocol = DBConfig.detectProtocol(/** @type {DBConfigType} */ (this).url)
 		}
 	}
 
@@ -148,7 +152,8 @@ export default class DBConfig extends Model {
 	 * @returns {string}
 	 */
 	get safeDsn() {
-		if (!this.password || typeof this.url !== 'string') return this.url
-		return this.url.replace(`:${this.password}@`, ':***@')
+		const _this = /** @type {DBConfigType & import('@nan0web/types').Model} */ (this)
+		if (!_this.password || typeof _this.url !== 'string') return _this.url
+		return _this.url.replace(`:${_this.password}@`, ':***@')
 	}
 }

@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/db-fs",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Database provider for nan•web with node:fs",
   "main": "src/index.js",
   "types": "types/index.d.ts",

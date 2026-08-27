@@ -21,4 +21,26 @@ describe('YouTubeDownloader', () => {
 		const r = YouTubeDownloader._parseProgress('[download]  50.0% of 2.50MiB')
 		assert.deepEqual(r, { percent: 50, speed: '', eta: '' })
 	})
+
+	it('_getCookiesArgs — resolves browser, file, and Netscape content', async () => {
+		const { YouTubeDownloaderPort } = await import('../ports/YouTubeDownloaderPort.js')
+
+		// 1. Browser name
+		assert.deepEqual(YouTubeDownloaderPort._getCookiesArgs({ cookies: 'chrome' }), ['--cookies-from-browser', 'chrome'])
+
+		// 2. Empty options
+		assert.deepEqual(YouTubeDownloaderPort._getCookiesArgs({}), [])
+
+		// 3. Local file path (existing file)
+		const tempFile = './package.json'
+		const args = YouTubeDownloaderPort._getCookiesArgs({ cookies: tempFile })
+		assert.equal(args[0], '--cookies')
+		assert.ok(args[1].endsWith('package.json'))
+
+		// 4. Netscape string content
+		const netscapeText = '.youtube.com\tTRUE\t/\tFALSE\t0\tPREF\tf1=50000000'
+		const netscapeArgs = YouTubeDownloaderPort._getCookiesArgs({ cookies: netscapeText })
+		assert.equal(netscapeArgs[0], '--cookies')
+		assert.ok(netscapeArgs[1].includes('temp_cookies.txt'))
+	})
 })

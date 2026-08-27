@@ -1,0 +1,16 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,1:05:41.84,1:05:49.28,Default,,0,0,0,,first docs okay
+Dialogue: 0,1:05:49.28,1:05:56.01,Default,,0,0,0,,open water okay
+Dialogue: 0,1:06:00.78,1:06:02.28,Default,,0,0,0,,learn how to
+Dialogue: 0,1:06:02.28,1:06:03.01,Default,,0,0,0,,use the reverse
+Dialogue: 0,1:06:03.01,1:06:04.36,Default,,0,0,0,,inference open order
+Dialogue: 0,1:06:04.36,1:06:05.53,Default,,0,0,0,,with Python chain
+Dialogue: 0,1:06:05.53,1:06:08.11,Default,,0,0,0,,on JavaScript okay

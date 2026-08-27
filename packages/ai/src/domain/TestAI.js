@@ -102,4 +102,29 @@ export class TestAI extends AI {
 			usedProvider: model?.provider,
 		}
 	}
+
+	/**
+	 * Async generator mock for streaming text tokens.
+	 * @param {any} model
+	 * @param {ModelMessage[]} messages
+	 * @param {object} [options]
+	 * @returns {AsyncGenerator<string, {text: string, usage: Usage, usedModel: any, usedProvider: any}>}
+	 */
+	async *streamTextGenerator(model, messages, options = {}) {
+		const result = await this.streamText(model, messages, options)
+		const chunks = result.text.split(/(\s+)/).filter(Boolean)
+		let fullText = ''
+
+		for (const chunk of chunks) {
+			fullText += chunk
+			yield chunk
+		}
+
+		return {
+			text: fullText,
+			usage: result.usage,
+			usedModel: model?.id,
+			usedProvider: model?.provider,
+		}
+	}
 }

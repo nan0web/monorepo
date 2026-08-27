@@ -225,7 +225,6 @@ Extends `@nan0web/db`.
 * **Methods**
   * `ensureAccess(uri, level)` – Validates access mode for a URI.
   * `fetchRemote(uri, requestInit)` – Performs remote fetch with timeout handling.
-  * `_fetchPrimary(uri)` – Primary fetch logic (v1.1.0: renamed from `fetch()`).
   * `load()` – Loads the root index.
   * `statDocument(uri)` – Fetches metadata via HEAD request.
   * `loadDocument(uri, defaultValue)` – Fetches and parses a document (JSON + text).

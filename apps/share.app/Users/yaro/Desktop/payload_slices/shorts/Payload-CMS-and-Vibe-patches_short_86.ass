@@ -1,0 +1,25 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,1:03:16.96,1:03:17.88,Default,,0,0,0,,checked the Git.
+Dialogue: 0,1:03:20.00,1:03:22.09,Default,,0,0,0,,So it creates
+Dialogue: 0,1:03:22.09,1:03:24.32,Default,,0,0,0,,in Ukraine. Okay,
+Dialogue: 0,1:03:25.65,1:03:26.36,Default,,0,0,0,,okay. If you
+Dialogue: 0,1:03:26.36,1:03:27.09,Default,,0,0,0,,need it in
+Dialogue: 0,1:03:27.09,1:03:27.90,Default,,0,0,0,,English, I will
+Dialogue: 0,1:03:27.90,1:03:28.50,Default,,0,0,0,,create it in
+Dialogue: 0,1:03:28.50,1:03:32.67,Default,,0,0,0,,English probably. Good.
+Dialogue: 0,1:03:32.69,1:03:33.88,Default,,0,0,0,,So it writes
+Dialogue: 0,1:03:33.88,1:03:38.69,Default,,0,0,0,,the correct... So
+Dialogue: 0,1:03:38.69,1:03:39.78,Default,,0,0,0,,this is what
+Dialogue: 0,1:03:39.78,1:03:41.76,Default,,0,0,0,,new file, as
+Dialogue: 0,1:03:41.76,1:03:43.38,Default,,0,0,0,,I understand. Yeah,
+Dialogue: 0,1:03:43.69,1:03:44.48,Default,,0,0,0,,but this one
+Dialogue: 0,1:03:44.48,1:03:50.32,Default,,0,0,0,,in English. Apply
+Dialogue: 0,1:03:50.32,1:03:56.19,Default,,0,0,0,,patches. Bash tool.

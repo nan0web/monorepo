@@ -1,3 +1,53 @@
+import LoggerFormat from './LoggerFormat.js';
+import Console from './Console.js';
+export type StyleOptions = {
+    bgColor?: string;
+    color?: string;
+    bold?: boolean;
+    stripped?: boolean;
+};
+export type LoggerOptions = {
+    /**
+     * - Minimum log level to output (debug|info|warn|error|silent)
+     */
+    level?: string;
+    /**
+     * - Console instance to use for output
+     */
+    console?: Console;
+    /**
+     * - Whether to show icons
+     */
+    icons?: boolean;
+    /**
+     * - Whether to use colors
+     */
+    chromo?: boolean;
+    /**
+     * - Time format for logs
+     */
+    time?: string | boolean;
+    /**
+     * - Whether to log spent time
+     */
+    spent?: boolean;
+    /**
+     * - Stream function for output
+     */
+    stream?: Function;
+    /**
+     * - Format map array for different levels with icons/colors config
+     */
+    formats?: any[];
+    /**
+     * - String to prepend to every log output (can contain ANSI styles)
+     */
+    prefix?: string;
+    /**
+     * - Desired frames‑per‑second rate. If omitted, FPS throttling is disabled.
+     */
+    fps?: number;
+};
 /**
  * @typedef {Object} StyleOptions
  * @property {string} [bgColor=""]
@@ -23,6 +73,7 @@
  * Added optional FPS throttling.
  */
 export default class Logger {
+    currentLevel: any;
     static LOGO: string;
     static LEVELS: {
         debug: number;
@@ -31,95 +82,6 @@ export default class Logger {
         error: number;
         silent: number;
     };
-    /** @returns {boolean} */
-    static get isTTY(): boolean;
-    static get DIM(): "" | "\u001B[2m";
-    static get BOLD(): "" | "\u001B[1m";
-    static get BLACK(): "" | "\u001B[30m";
-    static get RED(): "" | "\u001B[31m";
-    static get GREEN(): "" | "\u001B[32m";
-    static get YELLOW(): "" | "\u001B[33m";
-    static get BLUE(): "" | "\u001B[34m";
-    static get MAGENTA(): "" | "\u001B[35m";
-    static get CYAN(): "" | "\u001B[36m";
-    static get WHITE(): "" | "\u001B[37m";
-    static get BG_BLACK(): "" | "\u001B[40m";
-    static get BG_RED(): "" | "\u001B[41m";
-    static get BG_GREEN(): "" | "\u001B[42m";
-    static get BG_YELLOW(): "" | "\u001B[43m";
-    static get BG_BLUE(): "" | "\u001B[44m";
-    static get BG_MAGENTA(): "" | "\u001B[45m";
-    static get BG_CYAN(): "" | "\u001B[46m";
-    static get BG_WHITE(): "" | "\u001B[47m";
-    static get RESET(): "" | "\u001B[0m";
-    /**
-     * Create a Logger instance from input
-     * @param {Object|string} input
-     * @returns {Logger}
-     */
-    static from(input: any | string): Logger;
-    /**
-     * Detect log level from command line arguments
-     * @param {string[]} argv
-     * @returns {string|undefined}
-     */
-    static detectLevel(argv?: string[]): string | undefined;
-    /**
-     * Create a LoggerFormat instance from input
-     * @param {string|object} name
-     * @param {any|undefined} value
-     * @returns {LoggerFormat}
-     */
-    static createFormat(name: string | object, value: any | undefined): LoggerFormat;
-    /**
-     * Style a value with background and text colors
-     * @param {any} value
-     * @param {StyleOptions} styleOptions
-     * @returns {string}
-     */
-    static style(value: any, styleOptions?: StyleOptions): string;
-    /**
-     * Strip ANSI escape codes from a string
-     * @param {string} str
-     * @returns {string}
-     */
-    static stripANSI(str: string): string;
-    /**
-     * Calculate progress percentage
-     * @param {number} i
-     * @param {number} len
-     * @param {number} fixed
-     * @returns {string}
-     */
-    static progress(i: number, len: number, fixed?: number): string;
-    /**
-     * Calculate time elapsed since checkpoint
-     * @param {number} checkpoint
-     * @param {number} fixed
-     * @returns {string}
-     */
-    static spent(checkpoint: number, fixed?: number): string;
-    /**
-     * Format time duration
-     * @param {number} duration
-     * @param {string} format
-     * @returns {string}
-     */
-    static toTime(duration: number, format?: string): string;
-    /**
-     * Create a progress bar
-     * @param {number} i
-     * @param {number} len
-     * @param {number} width
-     * @param {string} char
-     * @param {string} space
-     * @returns {string}
-     */
-    static bar(i: number, len: number, width?: number, char?: string, space?: string): string;
-    /**
-     * @param {string|LoggerOptions} options
-     */
-    constructor(options?: string | LoggerOptions);
     /** @type {string} */
     level: string;
     /** @type {Console} */
@@ -146,9 +108,33 @@ export default class Logger {
     fps: number | null;
     /** @type {number} */
     prev: number;
-    currentLevel: any;
+    /**
+     * @param {string|LoggerOptions} options
+     */
+    constructor(options?: string | LoggerOptions);
     /** @returns {boolean} */
     get isTTY(): boolean;
+    /** @returns {boolean} */
+    static get isTTY(): boolean;
+    static get DIM(): "" | "\u001B[2m";
+    static get BOLD(): "" | "\u001B[1m";
+    static get BLACK(): "" | "\u001B[30m";
+    static get RED(): "" | "\u001B[31m";
+    static get GREEN(): "" | "\u001B[32m";
+    static get YELLOW(): "" | "\u001B[33m";
+    static get BLUE(): "" | "\u001B[34m";
+    static get MAGENTA(): "" | "\u001B[35m";
+    static get CYAN(): "" | "\u001B[36m";
+    static get WHITE(): "" | "\u001B[37m";
+    static get BG_BLACK(): "" | "\u001B[40m";
+    static get BG_RED(): "" | "\u001B[41m";
+    static get BG_GREEN(): "" | "\u001B[42m";
+    static get BG_YELLOW(): "" | "\u001B[43m";
+    static get BG_BLUE(): "" | "\u001B[44m";
+    static get BG_MAGENTA(): "" | "\u001B[45m";
+    static get BG_CYAN(): "" | "\u001B[46m";
+    static get BG_WHITE(): "" | "\u001B[47m";
+    static get RESET(): "" | "\u001B[0m";
     /**
      * FPS throttle – returns true when throttling is disabled (fps === null)
      * or when enough time has passed.
@@ -229,13 +215,77 @@ export default class Logger {
      */
     log(...args: any[]): number | undefined;
     /**
+     * Create a Logger instance from input
+     * @param {Object|string} input
+     * @returns {Logger}
+     */
+    static from(input: any | string): Logger;
+    /**
+     * Detect log level from command line arguments
+     * @param {string[]} argv
+     * @returns {string|undefined}
+     */
+    static detectLevel(argv?: string[]): string | undefined;
+    /**
+     * Create a LoggerFormat instance from input
+     * @param {string|object} name
+     * @param {any|undefined} value
+     * @returns {LoggerFormat}
+     */
+    static createFormat(name: string | object, value: any | undefined): LoggerFormat;
+    /**
+     * Style a value with background and text colors
+     * @param {any} value
+     * @param {StyleOptions} styleOptions
+     * @returns {string}
+     */
+    static style(value: any, styleOptions?: StyleOptions): string;
+    /**
+     * Strip ANSI escape codes from a string
+     * @param {string} str
+     * @returns {string}
+     */
+    static stripANSI(str: string): string;
+    /**
+     * Calculate progress percentage
+     * @param {number} i
+     * @param {number} len
+     * @param {number} fixed
+     * @returns {string}
+     */
+    static progress(i: number, len: number, fixed?: number): string;
+    /**
+     * Calculate time elapsed since checkpoint
+     * @param {number} checkpoint
+     * @param {number} fixed
+     * @returns {string}
+     */
+    static spent(checkpoint: number, fixed?: number): string;
+    /**
+     * Format time duration
+     * @param {number} duration
+     * @param {string} format
+     * @returns {string}
+     */
+    static toTime(duration: number, format?: string): string;
+    /**
      * Format table data
      * @param {Array<any>} data
      * @param {string[]} columns
-     * @param {object} options
+     * @param {{ widths?: number[], space?: string, padding?: number, aligns?: string, prefix?: string, silent?: boolean, border?: number, headBorder?: number, footBorder?: number }} options
      * @returns {string[]}
      */
-    table(data: Array<any>, columns: string[], options?: object): string[];
+    table(data: Array<any>, columns: string[], options?: {
+        widths?: number[];
+        space?: string;
+        padding?: number;
+        aligns?: string;
+        prefix?: string;
+        silent?: boolean;
+        border?: number;
+        headBorder?: number;
+        footBorder?: number;
+    }): string[];
     /**
      * Hide the cursor in the terminal.
      *
@@ -307,54 +357,14 @@ export default class Logger {
      * @private
      */
     private _storeLine;
+    /**
+     * Create a progress bar
+     * @param {number} i
+     * @param {number} len
+     * @param {number} width
+     * @param {string} char
+     * @param {string} space
+     * @returns {string}
+     */
+    static bar(i: number, len: number, width?: number, char?: string, space?: string): string;
 }
-export type StyleOptions = {
-    bgColor?: string | undefined;
-    color?: string | undefined;
-    bold?: boolean | undefined;
-    stripped?: boolean | undefined;
-};
-export type LoggerOptions = {
-    /**
-     * - Minimum log level to output (debug|info|warn|error|silent)
-     */
-    level?: string | undefined;
-    /**
-     * - Console instance to use for output
-     */
-    console?: Console | undefined;
-    /**
-     * - Whether to show icons
-     */
-    icons?: boolean | undefined;
-    /**
-     * - Whether to use colors
-     */
-    chromo?: boolean | undefined;
-    /**
-     * - Time format for logs
-     */
-    time?: string | boolean | undefined;
-    /**
-     * - Whether to log spent time
-     */
-    spent?: boolean | undefined;
-    /**
-     * - Stream function for output
-     */
-    stream?: Function | undefined;
-    /**
-     * - Format map array for different levels with icons/colors config
-     */
-    formats?: any[] | undefined;
-    /**
-     * - String to prepend to every log output (can contain ANSI styles)
-     */
-    prefix?: string | undefined;
-    /**
-     * - Desired frames‑per‑second rate. If omitted, FPS throttling is disabled.
-     */
-    fps?: number | undefined;
-};
-import Console from './Console.js';
-import LoggerFormat from './LoggerFormat.js';

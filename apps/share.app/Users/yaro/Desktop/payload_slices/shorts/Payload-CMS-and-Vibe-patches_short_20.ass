@@ -1,0 +1,32 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:14:09.81,0:14:12.84,Default,,0,0,0,,background because the
+Dialogue: 0,0:14:12.84,0:14:15.74,Default,,0,0,0,,login screen was
+Dialogue: 0,0:14:15.74,0:14:18.27,Default,,0,0,0,,not adapted due
+Dialogue: 0,0:14:18.27,0:14:20.53,Default,,0,0,0,,to dark theme
+Dialogue: 0,0:14:20.53,0:14:22.89,Default,,0,0,0,,it's maybe bug
+Dialogue: 0,0:14:22.89,0:14:24.29,Default,,0,0,0,,but I just
+Dialogue: 0,0:14:24.29,0:14:25.22,Default,,0,0,0,,made the simple
+Dialogue: 0,0:14:25.22,0:14:26.74,Default,,0,0,0,,plugin that just
+Dialogue: 0,0:14:26.74,0:14:28.96,Default,,0,0,0,,fixed this the
+Dialogue: 0,0:14:28.96,0:14:29.81,Default,,0,0,0,,next the fifth
+Dialogue: 0,0:14:29.81,0:14:32.68,Default,,0,0,0,,the last plugin
+Dialogue: 0,0:14:32.68,0:14:34.10,Default,,0,0,0,,is payload kubernetes
+Dialogue: 0,0:14:34.10,0:14:38.10,Default,,0,0,0,,accessibility is separate
+Dialogue: 0,0:14:38.10,0:14:39.37,Default,,0,0,0,,for the keyboards
+Dialogue: 0,0:14:40.96,0:14:43.12,Default,,0,0,0,,because using mouse
+Dialogue: 0,0:14:43.12,0:14:44.25,Default,,0,0,0,,is just slow
+Dialogue: 0,0:14:44.25,0:14:45.27,Default,,0,0,0,,when we use
+Dialogue: 0,0:14:45.27,0:14:46.96,Default,,0,0,0,,keyboard or our
+Dialogue: 0,0:14:46.96,0:14:48.03,Default,,0,0,0,,voice it's much
+Dialogue: 0,0:14:48.03,0:14:50.53,Default,,0,0,0,,faster and so
+Dialogue: 0,0:14:50.53,0:14:51.53,Default,,0,0,0,,I am using
+Dialogue: 0,0:14:51.53,0:14:52.53,Default,,0,0,0,,keyboard and as
+Dialogue: 0,0:14:52.53,0:14:53.00,Default,,0,0,0,,you can see

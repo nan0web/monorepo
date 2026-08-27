@@ -1101,4 +1101,52 @@ suite('DB', () => {
 		const db = new DB()
 		assert.ok(db.isRoot('/'))
 	})
+
+	describe('route', () => {
+		it('should compute route correctly for root index and nested documents', () => {
+			const db = new DB()
+			assert.strictEqual(db.route('index.md'), '/')
+			assert.strictEqual(db.route('index.yaml'), '/')
+			assert.strictEqual(db.route('README.md'), '/README')
+			assert.strictEqual(db.route('en/docs/architecture.yaml'), '/en/docs/architecture')
+			assert.strictEqual(db.route('en/docs/index.md'), '/en/docs/')
+			assert.strictEqual(db.route('en/docs/'), '/en/docs/')
+		})
+
+		it('should compute route with custom extension', () => {
+			const db = new DB()
+			assert.strictEqual(db.route('en/docs/architecture.yaml', 'html'), '/en/docs/architecture.html')
+			assert.strictEqual(db.route('en/docs/architecture.yaml', '.html'), '/en/docs/architecture.html')
+			assert.strictEqual(db.route('index.md', 'html'), '/index.html')
+			assert.strictEqual(db.route('en/docs/index.md', '.html'), '/en/docs/index.html')
+			assert.strictEqual(db.route('en/docs/', 'html'), '/en/docs/index.html')
+		})
+
+		it('should respect custom Directory.INDEX in derived class', () => {
+			class ReadmeDB extends DB {
+				static Directory = class extends DB.Directory {
+					static INDEX = 'README'
+				}
+			}
+			const readmeDb = new ReadmeDB()
+			assert.strictEqual(readmeDb.route('README.md'), '/')
+			assert.strictEqual(readmeDb.route('index.md'), '/index')
+			assert.strictEqual(readmeDb.route('en/README.md'), '/en/')
+		})
+
+		it('should return false for directory configs, globals, or unsupported file extensions', () => {
+			const db = new DB()
+			assert.strictEqual(db.route('_.nan0'), false)
+			assert.strictEqual(db.route('/_.nan0'), false)
+			assert.strictEqual(db.route('_.json'), false)
+			assert.strictEqual(db.route('en/_.yaml'), false)
+			assert.strictEqual(db.route('_/analytics.yaml'), false)
+			assert.strictEqual(db.route('/_/analytics.yaml'), false)
+			assert.strictEqual(db.route('_/t.yaml'), false)
+			assert.strictEqual(db.route('/_/t.yaml'), false)
+			assert.strictEqual(db.route('en/_/langs.json'), false)
+			assert.strictEqual(db.route('image.png'), false)
+			assert.strictEqual(db.route('archive.zip'), false)
+		})
+	})
 })

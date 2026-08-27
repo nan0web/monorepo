@@ -13,7 +13,7 @@ export default class ServerResponse extends HttpServerResponse {
 	/**
 	 *
 	 * @param {IncomingMessage} [req]
-	 * @param {object} [options]
+	 * @param {{ params?: object }} [options]
 	 */
 	constructor(req = new IncomingMessage(new Socket()), options = {}) {
 		super(req)
@@ -73,10 +73,16 @@ export default class ServerResponse extends HttpServerResponse {
 		return super.writeHead(statusCode, statusMessage)
 	}
 
+	/**
+	 * @param {any} [chunk]
+	 * @param {any} [encoding]
+	 * @param {any} [callback]
+	 */
 	end(chunk, encoding, callback) {
 		if (!this.headersSent) {
 			super.writeHead(this.statusCode, this.statusMessage, this.getHeaders())
 		}
+		// @ts-ignore
 		return super.end(chunk, encoding, callback)
 	}
 }

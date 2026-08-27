@@ -18,7 +18,6 @@
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
 		"noFallthroughCasesInSwitch": false,
-		"baseUrl": ".",
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",

@@ -4,9 +4,12 @@ import middlewares from './middlewares/index.js'
 import fetch, { APIRequest, get, post, put, patch, head, options, del } from './client/fetch.js'
 import IncomingMessage from './messages/IncomingMessage.js'
 import ResponseMessage from './messages/ResponseMessage.js'
+import ServerResponse from './messages/ServerResponse.js'
 
 import mockFetch from './test/mockFetch.js'
 import TestServer from './test/TestServer.js'
+
+/** @typedef {import("./server/Server.js").MiddlewareFn} MiddlewareFn */
 
 /**
  * Main exports for the nan0 web framework
@@ -26,6 +29,7 @@ export {
 	middlewares,
 	IncomingMessage,
 	ResponseMessage,
+	ServerResponse,
 	Router,
 	createServer,
 	Server,

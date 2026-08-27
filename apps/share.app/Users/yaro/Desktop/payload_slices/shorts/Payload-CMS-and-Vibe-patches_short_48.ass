@@ -1,0 +1,27 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:35:00.57,0:35:01.59,Default,,0,0,0,,just make this
+Dialogue: 0,0:35:08.61,0:35:12.71,Default,,0,0,0,,groups by folders.
+Dialogue: 0,0:35:13.32,0:35:14.34,Default,,0,0,0,,I can use
+Dialogue: 0,0:35:14.34,0:35:15.26,Default,,0,0,0,,groups by days,
+Dialogue: 0,0:35:15.61,0:35:16.57,Default,,0,0,0,,by months, by
+Dialogue: 0,0:35:16.57,0:35:18.19,Default,,0,0,0,,year. So for
+Dialogue: 0,0:35:18.19,0:35:19.36,Default,,0,0,0,,example and I
+Dialogue: 0,0:35:19.36,0:35:25.21,Default,,0,0,0,,can switch between
+Dialogue: 0,0:35:25.21,0:35:29.67,Default,,0,0,0,,between chats and
+Dialogue: 0,0:35:29.67,0:35:31.32,Default,,0,0,0,,I can scroll
+Dialogue: 0,0:35:31.32,0:35:33.00,Default,,0,0,0,,the chats here
+Dialogue: 0,0:35:33.00,0:35:34.23,Default,,0,0,0,,and read all
+Dialogue: 0,0:35:34.23,0:35:35.46,Default,,0,0,0,,the chat. Here
+Dialogue: 0,0:35:35.46,0:35:36.01,Default,,0,0,0,,I can see
+Dialogue: 0,0:35:36.01,0:35:38.46,Default,,0,0,0,,like tool. I
+Dialogue: 0,0:35:38.46,0:35:39.23,Default,,0,0,0,,can see not
+Dialogue: 0,0:35:39.23,0:35:41.13,Default,,0,0,0,,only my questions
+Dialogue: 0,0:35:41.13,0:35:42.30,Default,,0,0,0,,answers but also

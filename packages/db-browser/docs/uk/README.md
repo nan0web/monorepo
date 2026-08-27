@@ -249,7 +249,6 @@ console.info('Подій:', events.length) // ← Подій: 2
 - **Методи**
   - `ensureAccess(uri, level)` – Перевіряє режим доступу для URI.
   - `fetchRemote(uri, requestInit)` – Виконує віддалений fetch з обробкою тайм‑ауту.
-  - `_fetchPrimary(uri)` – Основна логіка fetch (v1.1.0: перейменовано з `fetch()`).
   - `load()` – Завантажує кореневий індекс.
   - `statDocument(uri)` – Отримує метадані через HEAD‑запит.
   - `loadDocument(uri, defaultValue)` – Завантажує та парсить документ (JSON + текст).

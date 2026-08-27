@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+import { bootstrapApp } from '@nan0web/ui-cli'
+import { NewsCollectorApp } from '../src/domain/index.js'
+
+bootstrapApp(NewsCollectorApp, { appName: 'nan0news' }).catch((err) => {
+	console.error('Fatal error:', err)
+	process.exit(1)
+})

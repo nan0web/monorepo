@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui-react",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "React UI components for nan0web with SSG and SSR support",
   "main": "./src/index.jsx",
   "types": "./types/index.d.ts",

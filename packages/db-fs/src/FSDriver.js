@@ -363,7 +363,7 @@ export default class FSDriver extends DBDriverProtocol {
 	async listDir(absoluteURI) {
 		try {
 			const entries = await readdir(absoluteURI, { withFileTypes: true })
-			return entries.map((entry) => entry.name)
+			return entries.map((entry) => entry.isDirectory() ? entry.name + '/' : entry.name)
 		} catch {
 			if (this.driver) {
 				return await this.driver.listDir(absoluteURI)

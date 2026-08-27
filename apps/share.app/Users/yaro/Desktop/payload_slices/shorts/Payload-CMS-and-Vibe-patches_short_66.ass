@@ -1,0 +1,16 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:48:23.50,0:48:25.65,Default,,0,0,0,,agent MD, and
+Dialogue: 0,0:48:25.65,0:48:28.46,Default,,0,0,0,,I can dictate,
+Dialogue: 0,0:48:32.57,0:48:33.34,Default,,0,0,0,,and let's see
+Dialogue: 0,0:48:33.34,0:48:34.23,Default,,0,0,0,,how it works.
+Dialogue: 0,0:48:39.86,0:48:41.09,Default,,0,0,0,,Let's see how
+Dialogue: 0,0:48:41.09,0:48:55.34,Default,,0,0,0,,it works. Create
+Dialogue: 0,0:48:55.34,0:49:05.98,Default,,0,0,0,,an, let's see,

@@ -12,7 +12,6 @@
 		"noEmit": false,
 		"skipLibCheck": true,
 		"outDir": "./types",
-		"baseUrl": ".",
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",

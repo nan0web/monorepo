@@ -1,0 +1,19 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:31:16.20,0:31:19.29,Default,,0,0,0,,the modified with
+Dialogue: 0,0:31:19.29,0:31:25.51,Default,,0,0,0,,message switched from
+Dialogue: 0,0:31:25.51,0:31:30.94,Default,,0,0,0,,file dependency workspace
+Dialogue: 0,0:31:30.94,0:31:36.64,Default,,0,0,0,,so I think
+Dialogue: 0,0:31:36.64,0:31:39.20,Default,,0,0,0,,it's good enough
+Dialogue: 0,0:31:39.20,0:31:43.25,Default,,0,0,0,,and I can
+Dialogue: 0,0:31:43.25,0:31:54.18,Default,,0,0,0,,push yeah okay
+Dialogue: 0,0:31:54.18,0:31:55.05,Default,,0,0,0,,it's on the
+Dialogue: 0,0:31:55.05,0:31:57.29,Default,,0,0,0,,server already on
+Dialogue: 0,0:31:57.29,0:31:59.20,Default,,0,0,0,,the github so

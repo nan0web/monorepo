@@ -1,0 +1,30 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:09:42.24,0:09:44.63,Default,,0,0,0,,api and so
+Dialogue: 0,0:09:44.63,0:09:45.96,Default,,0,0,0,,I will have
+Dialogue: 0,0:09:45.96,0:09:48.87,Default,,0,0,0,,my own separate
+Dialogue: 0,0:09:48.87,0:09:50.72,Default,,0,0,0,,service right but
+Dialogue: 0,0:09:50.72,0:09:52.01,Default,,0,0,0,,this this plugin
+Dialogue: 0,0:09:52.01,0:09:54.20,Default,,0,0,0,,is done to
+Dialogue: 0,0:09:54.20,0:09:55.57,Default,,0,0,0,,avoid using separate
+Dialogue: 0,0:09:55.57,0:09:57.74,Default,,0,0,0,,service that is
+Dialogue: 0,0:09:57.74,0:10:00.29,Default,,0,0,0,,uses ram memory
+Dialogue: 0,0:10:00.29,0:10:06.12,Default,,0,0,0,,and we So
+Dialogue: 0,0:10:06.12,0:10:07.37,Default,,0,0,0,,and also I
+Dialogue: 0,0:10:07.37,0:10:08.32,Default,,0,0,0,,need folders because
+Dialogue: 0,0:10:08.32,0:10:09.63,Default,,0,0,0,,the standard version
+Dialogue: 0,0:10:09.63,0:10:11.34,Default,,0,0,0,,of uploading and
+Dialogue: 0,0:10:11.34,0:10:15.34,Default,,0,0,0,,storing media in
+Dialogue: 0,0:10:15.34,0:10:17.67,Default,,0,0,0,,payload CMS stores
+Dialogue: 0,0:10:17.67,0:10:18.74,Default,,0,0,0,,all the media
+Dialogue: 0,0:10:18.74,0:10:21.01,Default,,0,0,0,,in one directory
+Dialogue: 0,0:10:21.01,0:10:22.25,Default,,0,0,0,,and if we
+Dialogue: 0,0:10:22.25,0:10:23.89,Default,,0,0,0,,have thousands and
+Dialogue: 0,0:10:23.89,0:10:24.77,Default,,0,0,0,,I have project

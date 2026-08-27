@@ -18,7 +18,6 @@
 		"noImplicitAny": false,
 		"allowJs": true,
 		"checkJs": true,
-		"baseUrl": ".",
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",

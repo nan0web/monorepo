@@ -19,7 +19,13 @@ async function scanDir(dirPath, registry) {
 		const fullPath = path.join(dirPath, entry.name)
 		if (entry.isDirectory()) {
 			// Skip common build and dependency folders
-			if (entry.name === 'node_modules' || entry.name === '.git' || entry.name === 'dist' || entry.name === 'build' || entry.name === 'tmp') {
+			if (
+				entry.name === 'node_modules' ||
+				entry.name === '.git' ||
+				entry.name === 'dist' ||
+				entry.name === 'build' ||
+				entry.name === 'tmp'
+			) {
 				continue
 			}
 			await scanDir(fullPath, registry)

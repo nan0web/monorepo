@@ -1,0 +1,26 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:58:49.63,0:58:51.09,Default,,0,0,0,,Yeah probably this
+Dialogue: 0,0:58:51.09,0:58:52.23,Default,,0,0,0,,time it's faster
+Dialogue: 0,0:58:52.23,0:58:53.28,Default,,0,0,0,,than I would
+Dialogue: 0,0:58:53.28,0:58:56.94,Default,,0,0,0,,do this. Yeah
+Dialogue: 0,0:58:56.94,0:59:05.00,Default,,0,0,0,,few times. If
+Dialogue: 0,0:59:05.00,0:59:05.90,Default,,0,0,0,,it would work
+Dialogue: 0,0:59:05.90,0:59:08.46,Default,,0,0,0,,no because sometimes
+Dialogue: 0,0:59:08.46,0:59:09.88,Default,,0,0,0,,it doesn't work
+Dialogue: 0,0:59:09.88,0:59:11.76,Default,,0,0,0,,and especially we
+Dialogue: 0,0:59:11.76,0:59:12.76,Default,,0,0,0,,are working on
+Dialogue: 0,0:59:12.76,0:59:15.82,Default,,0,0,0,,the already installed
+Dialogue: 0,0:59:15.82,0:59:18.13,Default,,0,0,0,,application so now
+Dialogue: 0,0:59:18.13,0:59:19.09,Default,,0,0,0,,we are changing
+Dialogue: 0,0:59:19.09,0:59:21.32,Default,,0,0,0,,the application that
+Dialogue: 0,0:59:21.32,0:59:22.59,Default,,0,0,0,,is installed in
+Dialogue: 0,0:59:22.59,0:59:27.51,Default,,0,0,0,,Python and we
+Dialogue: 0,0:59:27.51,0:59:28.46,Default,,0,0,0,,are not making

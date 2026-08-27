@@ -1,7 +1,7 @@
 import { Model, ROLES, DEFAULT_ACCESS } from '@nan0web/types'
 import { show, progress, result } from '@nan0web/ui'
 import { createT } from '@nan0web/i18n'
-import { PayloadCollectionTemplate } from '@nan0web/ui-payload'
+import { PayloadCollectionTemplate } from '@nan0web/ui-payload/templates'
 
 /**
  * @typedef {Object} FieldInfo
@@ -11,6 +11,7 @@ import { PayloadCollectionTemplate } from '@nan0web/ui-payload'
  * @property {string} [alias]
  * @property {boolean} [localized]
  * @property {boolean} [required]
+ * @property {{position?: string, width?: string}} [admin]
  * @property {Array<string | {label:string, value:string} | function>} [options=[]]
  * @property {any} [default]
  */
@@ -136,6 +137,20 @@ export class TransformModel extends Model {
 			payloadType = 'relationship'
 			payloadField.relationTo =
 				type.$collection || type.$slug || type.name.replace(/Model$/i, '').toLowerCase()
+			if (fieldInfo.hasMany || fieldInfo.array) {
+				payloadField.hasMany = true
+			}
+		} else if (type === 'relationship' || type === 'relation') {
+			payloadType = 'relationship'
+			if (fieldInfo.relationTo) {
+				payloadField.relationTo = fieldInfo.relationTo
+			} else if (typeof fieldInfo.model === 'function' && Model.isPrototypeOf(fieldInfo.model)) {
+				payloadField.relationTo =
+					fieldInfo.model.$collection || fieldInfo.model.$slug || fieldInfo.model.name.replace(/Model$/i, '').toLowerCase()
+			}
+			if (fieldInfo.hasMany || fieldInfo.array) {
+				payloadField.hasMany = true
+			}
 		} else if (fieldInfo.hint === 'upload' || fieldInfo.type === 'media') {
 			payloadType = 'upload'
 			payloadField.relationTo = 'media'
@@ -151,6 +166,13 @@ export class TransformModel extends Model {
 				case 'text/markdown':
 				case 'markdown':
 					payloadType = 'textarea'
+					break
+				case 'richtext':
+				case 'richText':
+					payloadType = 'richText'
+					payloadField.editor = lexicalEditor({
+						features: ({ defaultFeatures }) => [...defaultFeatures],
+					})
 					break
 				case 'number':
 				case 'integer':
@@ -232,6 +254,7 @@ export class TransformModel extends Model {
 					break
 
 				case 'object':
+				case 'json':
 					payloadType = 'json'
 					break
 				default:
@@ -250,6 +273,10 @@ export class TransformModel extends Model {
 
 		if (fieldInfo.localized === true) {
 			payloadField.localized = true
+		}
+
+		if (fieldInfo.admin && typeof fieldInfo.admin === 'object') {
+			payloadField.admin = { ...fieldInfo.admin }
 		}
 
 		if (fieldInfo.required) {
@@ -293,23 +320,82 @@ export class TransformModel extends Model {
 	 * @returns {Promise<Record<string, any> | null>}
 	 */
 	async requireDomainIndex() {
-		const packageFile = '@app/package.json'
-		if (!this._.db) return null
-		const stat = await this._.db.stat(packageFile)
-		if (!stat?.exists) return null
-		const pkg = (await this._.db.get(packageFile)) ?? null
-		if (!pkg) return null
+		const db = this._.db
+		let targetDir = this.target || '.'
+		if (targetDir.startsWith('--')) {
+			targetDir = '.'
+		}
+
+		// 1. Try loading from mounted DB instance first (for unit tests / mock DBs)
+		if (db) {
+			try {
+				const packageFile = '@app/package.json'
+				const stat = await db.stat(packageFile)
+				if (stat?.exists) {
+					const pkg = (await db.get(packageFile)) ?? null
+					if (pkg) {
+						const domain = pkg.exports?.domain || pkg.exports?.['./domain'] || null
+						if (domain) {
+							if (typeof domain === 'object' && !domain.import) {
+								return domain
+							}
+							let relPath = typeof domain === 'string' ? domain : domain.import || ''
+							if (relPath) {
+								const resolvedTarget = path.isAbsolute(targetDir)
+									? targetDir
+									: path.resolve(process.cwd(), targetDir)
+								const targetPath = relPath.startsWith('.')
+									? path.resolve(resolvedTarget, relPath)
+									: relPath
+								return await import(targetPath)
+							}
+						}
+					}
+				}
+			} catch (e) {
+				// Ignore DB read errors and fall back to filesystem
+			}
+		}
+
+		// 2. Fall back to node:fs resolution relative to target or monorepo root
+		let resolvedTarget = path.isAbsolute(targetDir)
+			? targetDir
+			: path.resolve(process.cwd(), targetDir)
+
+		let packagePath = path.resolve(resolvedTarget, 'package.json')
+		const { existsSync, readFileSync } = await import('node:fs')
+
+		if (!existsSync(packagePath)) {
+			const monorepoRootPath = path.resolve(process.cwd(), '../../', targetDir, 'package.json')
+			if (existsSync(monorepoRootPath)) {
+				packagePath = monorepoRootPath
+				resolvedTarget = path.dirname(monorepoRootPath)
+			}
+		}
+
+		if (!existsSync(packagePath)) return null
+
+		const pkg = JSON.parse(readFileSync(packagePath, 'utf8'))
 		const domain = pkg.exports?.domain || pkg.exports?.['./domain'] || null
 		if (!domain) return null
-		if (domain.import) {
-			const targetPath = domain.import.startsWith('.')
-				? `${process.cwd()}/${domain.import}`
-				: domain.import
-			return await import(targetPath)
+
+		let relPath = ''
+		if (typeof domain === 'string') {
+			relPath = domain
+		} else if (domain.import) {
+			relPath = domain.import
 		}
-		if ('string' === typeof domain) {
-			const targetPath = domain.startsWith('.') ? `${process.cwd()}/${domain}` : domain
-			return await import(targetPath)
+
+		if (relPath) {
+			const targetPath = relPath.startsWith('.')
+				? path.resolve(resolvedTarget, relPath)
+				: relPath
+			try {
+				return await import(targetPath)
+			} catch (err) {
+				console.error('[TransformModel] Failed to import domain index:', targetPath, err)
+				return null
+			}
 		}
 		return domain
 	}

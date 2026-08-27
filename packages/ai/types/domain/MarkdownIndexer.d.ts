@@ -1,5 +1,7 @@
+import { Model } from '@nan0web/types';
+export type IndexerScope = 'data' | 'docs' | 'source';
 /** @typedef {'data' | 'docs' | 'source'} IndexerScope */
-export class MarkdownIndexer extends Model {
+export declare class MarkdownIndexer extends Model {
     static maxChars: {
         default: number;
     };
@@ -16,7 +18,7 @@ export class MarkdownIndexer extends Model {
         default: string;
     };
     static ignore: {
-        default: any[];
+        default: undefined[];
         type: string;
     };
     static UI: {
@@ -26,11 +28,6 @@ export class MarkdownIndexer extends Model {
         errorLoadIndex: string;
         errorSearchIndex: string;
     };
-    /**
-     * @param {string} content
-     * @returns {string}
-     */
-    static hashContent(content: string): string;
     /**
      * @param {object} [data]
      * @param {IndexerScope} [data.scope='docs'] Indexing scope ('docs' or 'source')
@@ -42,13 +39,12 @@ export class MarkdownIndexer extends Model {
         scope?: IndexerScope;
         targetProject?: string;
         ignore?: string[];
-    }, options?: Partial<import("@nan0web/types").ModelOptions>);
-    /** @type {number} Maximum chars per chunk */ maxChars: number;
-    /** @type {number} Overlap length per chunk */ overlap: number;
-    /** @type {IndexerScope} Indexer scope */ scope: IndexerScope;
-    /** @type {string} Target project */ targetProject: string;
-    /** @type {string} Target directory  */ targetDir: string;
-    /** @type {string[]} Paths to ignore */ ignore: string[];
+    }, options?: Partial<import('@nan0web/types').ModelOptions>);
+    /**
+     * @param {string} content
+     * @returns {string}
+     */
+    static hashContent(content: string): string;
     /**
      * Рекурсивний обхід директорій з фільтрацією за областю видимості (docs/source)
      * @param {string} dir Поточна директорія
@@ -71,7 +67,7 @@ export class MarkdownIndexer extends Model {
      * Scans the workspace and indexes target markdown files.
      * @param {import('./Embedder.js').Embedder} embedder
      */
-    indexAll(embedder: import("./Embedder.js").Embedder, opts?: {
+    indexAll(embedder: import('./Embedder.js').Embedder, opts?: {
         force: boolean;
     }): AsyncGenerator<any, void, unknown>;
     /**
@@ -93,5 +89,3 @@ export class MarkdownIndexer extends Model {
         data: any;
     }, void, unknown>;
 }
-export type IndexerScope = "data" | "docs" | "source";
-import { Model } from '@nan0web/types';

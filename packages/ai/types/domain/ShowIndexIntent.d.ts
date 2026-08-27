@@ -1,7 +1,8 @@
+import { ModelAsApp } from '@nan0web/ui-cli';
 /**
  * ShowIndexIntent — Intent to display metadata about indexed workspace packages.
  */
-export class ShowIndexIntent extends ModelAsApp {
+export declare class ShowIndexIntent extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -31,12 +32,8 @@ export class ShowIndexIntent extends ModelAsApp {
      * @param {any} [options] Model options
      */
     constructor(data?: Partial<ShowIndexIntent> | Record<string, any>, options?: any);
-    /** @type {string|null} */ project: string | null;
-    /** @type {string|null} */ scope: string | null;
-    /** @type {boolean} */ json: boolean;
     /**
      * @returns {AsyncGenerator<any, any, any>}
      */
     run(): AsyncGenerator<any, any, any>;
 }
-import { ModelAsApp } from '@nan0web/ui-cli';

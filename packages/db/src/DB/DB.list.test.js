@@ -24,8 +24,11 @@ suite('DB', () => {
 					['dir1/file1.txt', 'content1'],
 					['dir1/file2.txt', 'content2'],
 					['dir2/index.json', '[]'],
+					['dir2/subdir/', {}],
 					['dir2/subdir/config.json', '{}'],
 					['other.txt', 'other'],
+					['dir1/', {}],
+					['dir2/', {}],
 				],
 			})
 
@@ -34,9 +37,9 @@ suite('DB', () => {
 			const r1 = (await db.listDir('dir1')).map((entry) => entry.path)
 			assert.deepStrictEqual(r1, ['dir1/file1.txt', 'dir1/file2.txt'])
 			const r2 = (await db.listDir('.')).map((entry) => entry.path)
-			assert.deepStrictEqual(r2, ['other.txt', 'dir1', 'dir2'])
+			assert.deepStrictEqual(r2, ['other.txt', 'dir1/', 'dir2/'])
 			const r3 = (await db.listDir('dir2')).map((entry) => entry.path)
-			assert.deepStrictEqual(r3, ['dir2/index.json', 'dir2/subdir'])
+			assert.deepStrictEqual(r3, ['dir2/index.json', 'dir2/subdir/'])
 		})
 	})
 

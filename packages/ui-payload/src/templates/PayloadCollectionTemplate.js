@@ -23,6 +23,7 @@ export class PayloadCollectionTemplate extends Model {
 	}
 	static group = {
 		help: 'Admin group configuration',
+		type: 'any',
 		default: 'Content',
 	}
 	static fields = {
@@ -68,6 +69,8 @@ const group = { uk: 'Content', en: 'Content' }
 const fields = []
 /** @replace */
 
+import { accessFor, publicAccess } from '@nan0web/ui-payload'
+
 /** @type {import('payload').CollectionConfig} */
 export const collectionConfig = {
 	slug: collectionSlug,
@@ -77,10 +80,10 @@ export const collectionConfig = {
 		group,
 	},
 	access: {
-		read: () => true,
-		create: (/** @type {any} */ { req: { user } }) => Boolean(user),
-		update: (/** @type {any} */ { req: { user } }) => Boolean(user),
-		delete: (/** @type {any} */ { req: { user } }) => Boolean(user),
+		read: publicAccess,
+		create: accessFor('admin', 'editor'),
+		update: accessFor('admin', 'editor'),
+		delete: accessFor('admin'),
 	},
 	fields,
 }
@@ -141,12 +144,13 @@ export const collectionConfig = {
 	 */
 	compileSync() {
 		const templateContent = PayloadCollectionTemplate.template.default
+		const groupVal = typeof this.group === 'string' ? `'${this.group}'` : JSON.stringify(this.group, null, 2)
 		/** @type {Record<string, string>} */
 		const input = {
 			collectionSlug: `const collectionSlug = '${this.collectionSlug}'`,
 			useAsTitle: `const useAsTitle = '${this.useAsTitle}'`,
 			labels: `const labels = ${JSON.stringify(this.labels, null, 2)}`,
-			group: `const group = ${JSON.stringify(this.group, null, 2)}`,
+			group: `const group = ${groupVal}`,
 			fields: `const fields = ${JSON.stringify(this.fields, null, 2)}`,
 			.../** @type {Record<string, string>} */ (this.snippets || {}),
 		}

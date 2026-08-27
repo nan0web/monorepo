@@ -1,65 +1,10 @@
-/**
- * @typedef {Object} ReleaseConfig
- * @property {string} [version] - Release version
- * @property {string | number | Date | undefined} [createdAt] -
- * @property {string | number | Date | undefined} [date] - Alias for createdAt
- * @property {string | number | Date | undefined} [startAt] -
- * @property {string | number | Date | undefined} [planAt] -
- * @property {string | number | Date | undefined} [completeAt] -
- * @property {string | ReleaseDocument} [document] -
- * @property {Map<string, Function>} [tasks] - Task map with test functions
- */
-/**
- * Release management class that coordinates task validation and release execution
- */
-export default class Release {
-    /**
-     * Creates a Release instance
-     * @param {ReleaseConfig} config - Release configuration
-     */
-    constructor(config?: ReleaseConfig);
-    /** @type {string} */
-    version: string;
-    /** @type {Date} */
-    createdAt: Date;
-    /** @type {Date?} */
-    startAt: Date | null;
-    /** @type {Date?} */
-    planAt: Date | null;
-    /** @type {Date?} */
-    completeAt: Date | null;
-    /** @type {Map<string, Function>} */
-    tasks: Map<string, Function>;
-    /** @type {ReleaseDocument} */
-    document: ReleaseDocument;
-    /** @type {Logger} */
-    logger: Logger;
-    get path(): string;
-    /**
-     * Validate release by running all task tests
-     * @returns {Promise<Object>} Validation results
-     */
-    validate(): Promise<any>;
-    /**
-     * Execute release process
-     * @param {Object} options - Release options
-     * @param {boolean} [options.ignoreFailTests=false] - Ignore failed tests
-     * @returns {Promise<boolean>} Release success status
-     */
-    execute(options?: {
-        ignoreFailTests?: boolean | undefined;
-    }): Promise<boolean>;
-    /**
-     * Get release progress statistics
-     * @returns {Promise<Object>} Progress statistics
-     */
-    getProgress(): Promise<any>;
-}
+import ReleaseDocument from './Release/Document.js';
+import Logger from '@nan0web/log';
 export type ReleaseConfig = {
     /**
      * - Release version
      */
-    version?: string | undefined;
+    version?: string;
     /**
      * -
      */
@@ -83,11 +28,66 @@ export type ReleaseConfig = {
     /**
      * -
      */
-    document?: string | ReleaseDocument | undefined;
+    document?: string | ReleaseDocument;
     /**
      * - Task map with test functions
      */
-    tasks?: Map<string, Function> | undefined;
+    tasks?: Map<string, Function>;
 };
-import ReleaseDocument from './Release/Document.js';
-import Logger from '@nan0web/log';
+/**
+ * @typedef {Object} ReleaseConfig
+ * @property {string} [version] - Release version
+ * @property {string | number | Date | undefined} [createdAt] -
+ * @property {string | number | Date | undefined} [date] - Alias for createdAt
+ * @property {string | number | Date | undefined} [startAt] -
+ * @property {string | number | Date | undefined} [planAt] -
+ * @property {string | number | Date | undefined} [completeAt] -
+ * @property {string | ReleaseDocument} [document] -
+ * @property {Map<string, Function>} [tasks] - Task map with test functions
+ */
+/**
+ * Release management class that coordinates task validation and release execution
+ */
+export default class Release {
+    /** @type {string} */
+    version: string;
+    /** @type {Date} */
+    createdAt: Date;
+    /** @type {Date?} */
+    startAt: Date | null;
+    /** @type {Date?} */
+    planAt: Date | null;
+    /** @type {Date?} */
+    completeAt: Date | null;
+    /** @type {Map<string, Function>} */
+    tasks: Map<string, Function>;
+    /** @type {ReleaseDocument} */
+    document: ReleaseDocument;
+    /** @type {Logger} */
+    logger: Logger;
+    /**
+     * Creates a Release instance
+     * @param {ReleaseConfig} config - Release configuration
+     */
+    constructor(config?: ReleaseConfig);
+    get path(): string;
+    /**
+     * Validate release by running all task tests
+     * @returns {Promise<Object>} Validation results
+     */
+    validate(): Promise<any>;
+    /**
+     * Execute release process
+     * @param {Object} options - Release options
+     * @param {boolean} [options.ignoreFailTests=false] - Ignore failed tests
+     * @returns {Promise<boolean>} Release success status
+     */
+    execute(options?: {
+        ignoreFailTests?: boolean;
+    }): Promise<boolean>;
+    /**
+     * Get release progress statistics
+     * @returns {Promise<Object>} Progress statistics
+     */
+    getProgress(): Promise<any>;
+}

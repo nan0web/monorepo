@@ -3,18 +3,19 @@
  * Every model is a real class: validates input, serializable, introspectable for auto-docs.
  */
 
-// ─── Base Model ──────────────────────────────────────────────
+import { ModelAsApp } from '@nan0web/ui'
 
 /**
- * Base class for all share.app models.
- * Provides serialization and instantiation from inputs.
+ * Base class for all share.app models (Model-as-App & Model-as-Schema).
+ * Provides serialization, introspection, and OLMUI execution.
  */
-export class Model {
+export class Model extends ModelAsApp {
 	/**
 	 * @param {any} [data]
 	 * @param {any} [options]
 	 */
 	constructor(data = {}, options = {}) {
+		super(data, options)
 		Object.defineProperty(this, '_', {
 			value: options,
 			enumerable: false,
@@ -46,7 +47,10 @@ export class Model {
 	 * @returns {Record<string, any>}
 	 */
 	toJSON() {
-		return { ...this }
+		const obj = { ...this }
+		if (obj.help === false) delete obj.help
+		if (obj.raw === false) delete obj.raw
+		return obj
 	}
 
 	/**

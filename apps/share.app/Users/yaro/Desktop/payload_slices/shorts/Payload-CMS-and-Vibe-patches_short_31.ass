@@ -1,0 +1,36 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:22:19.23,0:22:21.28,Default,,0,0,0,,snaps every invocating
+Dialogue: 0,0:22:21.28,0:22:23.00,Default,,0,0,0,,forces pin to
+Dialogue: 0,0:22:23.82,0:22:25.13,Default,,0,0,0,,re -resolve the
+Dialogue: 0,0:22:25.13,0:22:26.76,Default,,0,0,0,,entire dependency graph
+Dialogue: 0,0:22:26.76,0:22:29.97,Default,,0,0,0,,rebuild other that's
+Dialogue: 0,0:22:29.97,0:22:30.80,Default,,0,0,0,,why you see
+Dialogue: 0,0:22:30.80,0:22:33.45,Default,,0,0,0,,resolved okay nothing
+Dialogue: 0,0:22:33.45,0:22:35.41,Default,,0,0,0,,was cached because
+Dialogue: 0,0:22:35.41,0:22:35.97,Default,,0,0,0,,the log file
+Dialogue: 0,0:22:35.97,0:22:37.30,Default,,0,0,0,,changed it's not
+Dialogue: 0,0:22:37.30,0:22:38.17,Default,,0,0,0,,a bug per
+Dialogue: 0,0:22:38.17,0:22:40.17,Default,,0,0,0,,se it's just
+Dialogue: 0,0:22:40.17,0:22:41.75,Default,,0,0,0,,slow by design
+Dialogue: 0,0:22:41.75,0:22:42.86,Default,,0,0,0,,two ways to
+Dialogue: 0,0:22:42.86,0:22:44.19,Default,,0,0,0,,fix this option
+Dialogue: 0,0:22:44.19,0:22:45.49,Default,,0,0,0,,a quick skip
+Dialogue: 0,0:22:45.49,0:22:46.75,Default,,0,0,0,,the testing up
+Dialogue: 0,0:22:46.75,0:22:48.50,Default,,0,0,0,,install step just
+Dialogue: 0,0:22:48.50,0:22:49.50,Default,,0,0,0,,plug the plugins
+Dialogue: 0,0:22:49.50,0:22:51.50,Default,,0,0,0,,without auto installing
+Dialogue: 0,0:22:51.50,0:22:52.93,Default,,0,0,0,,into the sandbox
+Dialogue: 0,0:22:54.19,0:22:55.30,Default,,0,0,0,,and you would
+Dialogue: 0,0:22:55.30,0:22:56.67,Default,,0,0,0,,run pnpm add
+Dialogue: 0,0:22:56.67,0:22:57.88,Default,,0,0,0,,manually only when
+Dialogue: 0,0:22:57.88,0:22:59.93,Default,,0,0,0,,needed option b
+Dialogue: 0,0:22:59.93,0:23:01.19,Default,,0,0,0,,proper switch to
+Dialogue: 0,0:23:01.19,0:23:03.45,Default,,0,0,0,,pnpm workspace protocol

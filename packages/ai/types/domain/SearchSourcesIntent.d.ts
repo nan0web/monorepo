@@ -1,7 +1,8 @@
+import { ModelAsApp } from '@nan0web/ui-cli';
 /**
  * SearchSourcesIntent — OLMUI Intent for semantic search across workspace indices.
  */
-export class SearchSourcesIntent extends ModelAsApp {
+export declare class SearchSourcesIntent extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -58,16 +59,8 @@ export class SearchSourcesIntent extends ModelAsApp {
      * @param {any} [options] Model options
      */
     constructor(data?: Partial<SearchSourcesIntent> | Record<string, any>, options?: any);
-    /** @type {string} */ query: string;
-    /** @type {string|null} */ project: string | null;
-    /** @type {"docs"|"source"} */ scope: "docs" | "source";
-    /** @type {number} */ limit: number;
-    /** @type {number} */ maxDistance: number;
-    /** @type {boolean} */ strictSearch: boolean;
-    /** @type {boolean} */ json: boolean;
     /**
      * @returns {AsyncGenerator<any, any, any>}
      */
     run(): AsyncGenerator<any, any, any>;
 }
-import { ModelAsApp } from '@nan0web/ui-cli';

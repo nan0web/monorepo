@@ -218,6 +218,29 @@ async function handleCommands(req, res) {
 	res.end(JSON.stringify(list, null, 2))
 }
 
+// ─── API: накопичувачі та диски ──────────────────────────────
+
+async function handleDrives(req, res) {
+	try {
+		const { DriveModel } = await import('../src/domain/models/DriveModel.js')
+		const drives = [
+			new DriveModel({
+				id: 'drive_internal',
+				name: 'Main Workspace',
+				mountPoint: '.',
+				status: 'connected',
+				totalSpace: 500000000000,
+				freeSpace: 250000000000,
+			}),
+		]
+		res.writeHead(200, { 'Content-Type': 'application/json' })
+		res.end(JSON.stringify({ drives }))
+	} catch (err) {
+		res.writeHead(500, { 'Content-Type': 'application/json' })
+		res.end(JSON.stringify({ error: err.message }))
+	}
+}
+
 // ─── Сервер ──────────────────────────────────────────────────
 
 const server = http.createServer((req, res) => {
@@ -244,6 +267,10 @@ const server = http.createServer((req, res) => {
 
 	if (req.method === 'GET' && parsed.pathname === '/api/commands') {
 		return handleCommands(req, res)
+	}
+
+	if (req.method === 'GET' && parsed.pathname === '/api/drives') {
+		return handleDrives(req, res)
 	}
 
 	if (req.method === 'GET' && parsed.pathname === '/api/status') {
@@ -276,4 +303,4 @@ if (isMain) {
 	})
 }
 
-export { server, stripAnsi, serveStatic, handleRun, handleBrowse, handleCommands }
+export { server, stripAnsi, serveStatic, handleRun, handleBrowse, handleCommands, handleDrives }

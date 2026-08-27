@@ -94,6 +94,7 @@ suite('ReferenceValidator', () => {
 			const predefined = [
 				['a.json', { $ref: 'b.json' }], // OK
 				['b.json', { href: 'c.json' }], // Broken
+				['dir/', {}],
 				['dir/c.json', { $ref: '../a.json' }], // OK
 				['dir/d.json', { $href: 'e.json' }], // Broken (dir/e.json missing)
 			]

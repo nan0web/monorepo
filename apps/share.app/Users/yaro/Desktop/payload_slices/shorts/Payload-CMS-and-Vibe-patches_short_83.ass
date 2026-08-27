@@ -1,0 +1,36 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,1:01:01.44,1:01:02.51,Default,,0,0,0,,installed files. I
+Dialogue: 0,1:01:02.51,1:01:03.26,Default,,0,0,0,,can see both
+Dialogue: 0,1:01:03.26,1:01:05.82,Default,,0,0,0,,changes live. The
+Dialogue: 0,1:01:05.82,1:01:07.57,Default,,0,0,0,,patch applied successfully.
+Dialogue: 0,1:01:08.17,1:01:08.82,Default,,0,0,0,,You may need
+Dialogue: 0,1:01:08.82,1:01:09.78,Default,,0,0,0,,to start wipe
+Dialogue: 0,1:01:09.78,1:01:10.63,Default,,0,0,0,,for the changes
+Dialogue: 0,1:01:10.63,1:01:11.78,Default,,0,0,0,,to take effect.
+Dialogue: 0,1:01:11.78,1:01:13.51,Default,,0,0,0,,Byte and caches,
+Dialogue: 0,1:01:14.00,1:01:15.98,Default,,0,0,0,,PIC, bytecode. So
+Dialogue: 0,1:01:15.98,1:01:17.07,Default,,0,0,0,,the running process
+Dialogue: 0,1:01:17.07,1:01:18.11,Default,,0,0,0,,won't pick up
+Dialogue: 0,1:01:18.11,1:01:20.28,Default,,0,0,0,,the change until
+Dialogue: 0,1:01:20.28,1:01:21.32,Default,,0,0,0,,it restarts. Try
+Dialogue: 0,1:01:21.32,1:01:22.42,Default,,0,0,0,,restarting wipe, blah,
+Dialogue: 0,1:01:22.51,1:01:23.88,Default,,0,0,0,,blah, blah. Okay,
+Dialogue: 0,1:01:24.23,1:01:27.46,Default,,0,0,0,,so... We get
+Dialogue: 0,1:01:27.46,1:01:32.00,Default,,0,0,0,,out. Session cost,
+Dialogue: 0,1:01:32.11,1:01:32.84,Default,,0,0,0,,now I can
+Dialogue: 0,1:01:32.84,1:01:33.76,Default,,0,0,0,,see it. Good,
+Dialogue: 0,1:01:34.57,1:01:36.46,Default,,0,0,0,,good. So this
+Dialogue: 0,1:01:36.46,1:01:37.96,Default,,0,0,0,,one is working.
+Dialogue: 0,1:01:38.51,1:01:39.51,Default,,0,0,0,,So it's almost
+Dialogue: 0,1:01:39.51,1:01:40.40,Default,,0,0,0,,six cents for
+Dialogue: 0,1:01:40.40,1:01:41.51,Default,,0,0,0,,this patch. Okay,
+Dialogue: 0,1:01:41.51,1:01:44.84,Default,,0,0,0,,good. So now
+Dialogue: 0,1:01:44.84,1:01:45.92,Default,,0,0,0,,if I run

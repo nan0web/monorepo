@@ -60,7 +60,12 @@ export class WhisperEngine {
 	static async detect(options = {}) {
 		const backends = [
 			{ name: 'MlxWhisperBackend', type: 'mlx', check: 'mlx_whisper', cls: MlxWhisperBackend },
-			{ name: 'OpenaiWhisperBackend', type: 'whisper', check: 'whisper', cls: OpenaiWhisperBackend },
+			{
+				name: 'OpenaiWhisperBackend',
+				type: 'whisper',
+				check: 'whisper',
+				cls: OpenaiWhisperBackend,
+			},
 			{ name: 'WhisperCppBackend', type: 'cpp', check: 'whisper-cli', cls: WhisperCppBackend },
 		]
 
@@ -73,9 +78,9 @@ export class WhisperEngine {
 
 		throw new Error(
 			'No whisper backend found. Install one of:\n' +
-			'  macOS ARM:  pip install mlx-whisper\n' +
-			'  Any OS:     pip install openai-whisper\n' +
-			'  Any OS:     brew install whisper-cpp  (or build whisper.cpp)'
+				'  macOS ARM:  pip install mlx-whisper\n' +
+				'  Any OS:     pip install openai-whisper\n' +
+				'  Any OS:     brew install whisper-cpp  (or build whisper.cpp)'
 		)
 	}
 
@@ -105,7 +110,7 @@ function buildFilePaths(format, baseName, outputDir) {
 	const names = isJsonOrTsv
 		? [`${baseName}-transcript.${format}`, `${baseName}.${format}`]
 		: [`${baseName}.${format}`, `${baseName}-transcript.${format}`]
-	return names.map(f => path.join(outputDir, f))
+	return names.map((f) => path.join(outputDir, f))
 }
 
 // ── Backends ──────────────────────────────────────────────
@@ -114,21 +119,79 @@ class MlxWhisperBackend {
 	constructor() {}
 
 	async run(audioPath, options = {}) {
-		const { model = 'medium', language, format = 'txt', outputDir = path.dirname(audioPath) } = options
+		const { spawn } = await import('node:child_process')
+		const {
+			model = 'medium',
+			language,
+			format = 'txt',
+			outputDir = path.dirname(audioPath),
+			onProgress,
+		} = options
 		const mlxModel = MLX_MODEL_MAP[model] || model
 		const baseName = path.basename(audioPath, path.extname(audioPath))
-		const langFlag = language ? ` --language ${language}` : ''
-		const wordTs = format === 'json' || format === 'srt' || format === 'vtt' ? ' --word-timestamps True' : ''
+		const langFlag = language ? ['--language', language] : []
+		const wordTs =
+			format === 'json' || format === 'srt' || format === 'vtt' ? ['--word-timestamps', 'True'] : []
 		const absOutputDir = path.resolve(outputDir)
-		const cmd = `mlx_whisper "${audioPath}" --model ${mlxModel}${langFlag} --output-dir "${absOutputDir}" --output-format ${format}${wordTs} --verbose False`
 
-		const { stderr } = await execAsync(cmd, { timeout: 600000 })
-		if (stderr && stderr.toLowerCase().includes('error')) {
-			throw new Error(stderr.split('\n').find(l => l.toLowerCase().includes('error')) || stderr.trim())
-		}
+		const args = [
+			audioPath,
+			'--model',
+			mlxModel,
+			'--output-dir',
+			absOutputDir,
+			'--output-format',
+			format,
+			'--verbose',
+			'True', // Enable verbose to capture progress
+			...langFlag,
+			...wordTs,
+		]
 
-		const filePaths = buildFilePaths(format, baseName, absOutputDir)
-		return { outputDir: absOutputDir, baseName, format, filePaths }
+		return new Promise((resolve, reject) => {
+			const proc = spawn('mlx_whisper', args, {
+				stdio: ['ignore', 'pipe', 'pipe'],
+				env: { ...process.env, PYTHONUNBUFFERED: '1' },
+			})
+			let stderrBuf = ''
+
+			const handleData = (chunk) => {
+				stderrBuf += chunk.toString()
+				if (onProgress) {
+					const lines = stderrBuf.split(/\r?\n|\r/)
+					stderrBuf = lines.pop() || ''
+					for (const line of lines) {
+						// Look for [00:00.000 --> 00:03.000] to get progress inside 5-min chunk
+						const m = line.match(/-->\s+(\d{2}):(\d{2})\.(\d{3})\]/)
+						if (m) {
+							const mins = parseInt(m[1], 10)
+							const secs = parseInt(m[2], 10)
+							const ms = parseInt(m[3], 10)
+							const currentSeconds = mins * 60 + secs + ms / 1000
+							// Assuming max chunk is ~300 seconds + overlap
+							const pct = Math.min(100, Math.round((currentSeconds / 300) * 100))
+							onProgress({ percent: pct, currentTime: currentSeconds })
+						}
+					}
+				}
+			}
+
+			proc.stdout.on('data', handleData)
+			proc.stderr.on('data', handleData)
+
+			proc.on('close', (code) => {
+				if (code === 0) {
+					const filePaths = buildFilePaths(format, baseName, absOutputDir)
+					resolve({ outputDir: absOutputDir, baseName, format, filePaths })
+				} else {
+					const errStr =
+						stderrBuf.split('\n').find((l) => l.toLowerCase().includes('error')) ||
+						stderrBuf.slice(-500)
+					reject(new Error(errStr.trim() || `mlx_whisper exited with code ${code}`))
+				}
+			})
+			proc.on('error', reject)
+		})
 	}
 }
 
@@ -136,17 +199,25 @@ class OpenaiWhisperBackend {
 	constructor() {}
 
 	async run(audioPath, options = {}) {
-		const { model = 'medium', language, format = 'txt', outputDir = path.dirname(audioPath) } = options
+		const {
+			model = 'medium',
+			language,
+			format = 'txt',
+			outputDir = path.dirname(audioPath),
+		} = options
 		const baseName = path.basename(audioPath, path.extname(audioPath))
 		const absOutputDir = path.resolve(outputDir)
 		const langFlag = language ? ` --language ${language}` : ''
 		// openai-whisper uses --word_timestamps (underscore, no hyphen)
-		const wordTs = format === 'json' || format === 'srt' || format === 'vtt' ? ' --word_timestamps True' : ''
+		const wordTs =
+			format === 'json' || format === 'srt' || format === 'vtt' ? ' --word_timestamps True' : ''
 		const cmd = `whisper "${audioPath}" --model ${model}${langFlag} --output_dir "${absOutputDir}" --output_format ${format}${wordTs} --verbose False`
 
 		const { stderr } = await execAsync(cmd, { timeout: 600000 })
 		if (stderr && stderr.toLowerCase().includes('error')) {
-			throw new Error(stderr.split('\n').find(l => l.toLowerCase().includes('error')) || stderr.trim())
+			throw new Error(
+				stderr.split('\n').find((l) => l.toLowerCase().includes('error')) || stderr.trim()
+			)
 		}
 
 		const filePaths = buildFilePaths(format, baseName, absOutputDir)
@@ -160,7 +231,12 @@ class WhisperCppBackend {
 	}
 
 	async run(audioPath, options = {}) {
-		const { model = 'medium', language, format = 'txt', outputDir = path.dirname(audioPath) } = options
+		const {
+			model = 'medium',
+			language,
+			format = 'txt',
+			outputDir = path.dirname(audioPath),
+		} = options
 		const baseName = path.basename(audioPath, path.extname(audioPath))
 		const absOutputDir = path.resolve(outputDir)
 
@@ -169,8 +245,8 @@ class WhisperCppBackend {
 		if (!modelPath) {
 			throw new Error(
 				'whisper-cpp model not found. Download one:\n' +
-				`  whisper-cli --download-model ${model}\n` +
-				'  or set modelPath in WhisperEngine options'
+					`  whisper-cli --download-model ${model}\n` +
+					'  or set modelPath in WhisperEngine options'
 			)
 		}
 
@@ -207,8 +283,14 @@ class WhisperCppBackend {
 			path.join('/usr', 'local', 'share', 'whisper', name),
 			path.join('/usr', 'share', 'whisper', name),
 		]
-		return candidates.find(f => {
-			try { return fs.existsSync(f) } catch { return false }
-		}) || null
+		return (
+			candidates.find((f) => {
+				try {
+					return fs.existsSync(f)
+				} catch {
+					return false
+				}
+			}) || null
+		)
 	}
 }

@@ -1,0 +1,35 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:03:01.40,0:03:02.93,Default,,0,0,0,,models are available
+Dialogue: 0,0:03:02.93,0:03:04.28,Default,,0,0,0,,from the open
+Dialogue: 0,0:03:04.28,0:03:05.18,Default,,0,0,0,,rotor But but
+Dialogue: 0,0:03:05.18,0:03:06.09,Default,,0,0,0,,maybe here is
+Dialogue: 0,0:03:06.09,0:03:07.15,Default,,0,0,0,,not only open
+Dialogue: 0,0:03:07.15,0:03:08.36,Default,,0,0,0,,rotor here is
+Dialogue: 0,0:03:08.36,0:03:09.87,Default,,0,0,0,,also hugging face
+Dialogue: 0,0:03:09.87,0:03:11.06,Default,,0,0,0,,So I have
+Dialogue: 0,0:03:11.06,0:03:12.69,Default,,0,0,0,,few providers here
+Dialogue: 0,0:03:12.69,0:03:14.58,Default,,0,0,0,,with models, but
+Dialogue: 0,0:03:14.58,0:03:15.40,Default,,0,0,0,,I I can
+Dialogue: 0,0:03:15.40,0:03:16.59,Default,,0,0,0,,select only open
+Dialogue: 0,0:03:16.59,0:03:18.96,Default,,0,0,0,,rotor Models and
+Dialogue: 0,0:03:18.96,0:03:21.88,Default,,0,0,0,,there 413 models
+Dialogue: 0,0:03:21.88,0:03:23.75,Default,,0,0,0,,so here I
+Dialogue: 0,0:03:23.75,0:03:24.44,Default,,0,0,0,,can see the
+Dialogue: 0,0:03:24.44,0:03:25.75,Default,,0,0,0,,price in and
+Dialogue: 0,0:03:25.75,0:03:27.27,Default,,0,0,0,,price out for
+Dialogue: 0,0:03:27.27,0:03:29.00,Default,,0,0,0,,1 million tokens
+Dialogue: 0,0:03:30.12,0:03:32.05,Default,,0,0,0,,And also the
+Dialogue: 0,0:03:32.05,0:03:33.15,Default,,0,0,0,,modality. This is
+Dialogue: 0,0:03:33.15,0:03:34.94,Default,,0,0,0,,text image video
+Dialogue: 0,0:03:35.45,0:03:37.71,Default,,0,0,0,,whatever Provider and
+Dialogue: 0,0:03:37.71,0:03:39.11,Default,,0,0,0,,context the maximum
+Dialogue: 0,0:03:39.11,0:03:41.11,Default,,0,0,0,,context plan So
+Dialogue: 0,0:03:41.11,0:03:41.88,Default,,0,0,0,,here I can

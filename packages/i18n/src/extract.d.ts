@@ -1,0 +1,49 @@
+/**
+ * List of Model-as-Schema fields to extract.
+ * @type {string[]}
+ */
+export declare const EXTRACT_FIELDS: string[];
+/**
+ * Information about the extraction logic for external tools.
+ */
+export declare const extractInfo: {
+    fields: string[];
+    functions: string[];
+    comments: string[];
+    ignore: {
+        value: string[];
+    };
+};
+/**
+ * Extracts translation keys from source code.
+ * Supports:
+ * - t('key') calls
+ * - Static model properties: help: 'key', label: 'key', title: 'key', placeholder: 'key', message: 'key'
+ * - Comments: // t('key')
+ *
+ * @param {string} content - Source code content.
+ * @param {{ onlyCalls?: boolean }} [options={}] - Extraction options.
+ * @returns {string[]} Sorted array of unique keys.
+ */
+export declare function extract(content: string, options?: {
+    onlyCalls?: boolean;
+}): string[];
+/**
+ * Extracts translation keys directly from Model-as-Schema classes.
+ * This is the **primary** extraction method.
+ *
+ * Models must be exported classes with static properties containing
+ * fields like `help`, `label*`, `error*`, `placeholder*`, `title*`, `message*`, `value*`.
+ *
+ * @param {Record<string, Function>|Function[]} models - Object or array of Model classes.
+ * @returns {string[]} Sorted array of unique keys.
+ *
+ * @example
+ * import { Language } from './domain/Language.js'
+ * import { extractFromModels } from '@nan0web/i18n'
+ *
+ * const keys = extractFromModels({ Language })
+ * // → ['Invalid locale format', 'Language icon', 'Language title', 'Locale', 'Locale not found']
+ */
+export declare function extractFromModels(models: Record<string, Function> | Function[]): string[];
+export default extract;

@@ -12,14 +12,13 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
 		"checkJs": true,
-		"baseUrl": ".",
 		"paths": {
-			"@nan0web/*": ["packages/*/src"]
+			"@nan0web/*": ["./packages/*/src"]
 		}
 	},
 	"include": ["src/**/*"],

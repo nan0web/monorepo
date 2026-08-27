@@ -166,6 +166,7 @@ export function chunkTranscript(transcriptData, options = {}) {
 export function blocksToAss(blocks, options = {}) {
 	const playResX = options.playResX ?? 1920
 	const playResY = options.playResY ?? 1080
+	const offset = options.offset ?? 0
 
 	const style = options.style ?? `Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"`
 
@@ -180,12 +181,87 @@ ${style}
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`
 
 	for (const block of blocks) {
-		const start = formatTimeAss(block.start)
-		const end = formatTimeAss(block.end)
+		const start = formatTimeAss(Math.max(0, block.start - offset))
+		const end = formatTimeAss(Math.max(0, block.end - offset))
 		ass += `Dialogue: 0,${start},${end},Default,,0,0,0,,${block.text}\n`
 	}
 
 	return ass
+}
+
+/**
+ * Converts an array of SubtitleBlock to SRT format string.
+ * @param {Array<SubtitleBlock>} blocks
+ * @param {object} [options]
+ * @param {number} [options.offset=0] - Offset in seconds to subtract from timestamps
+ * @returns {string}
+ */
+export function blocksToSrt(blocks, options = {}) {
+	const offset = options.offset ?? 0
+	let srt = ''
+	let index = 1
+
+	for (const block of blocks) {
+		const startSec = Math.max(0, block.start - offset)
+		const endSec = Math.max(0, block.end - offset)
+		if (endSec <= startSec) continue
+
+		srt += `${index}\n`
+		srt += `${formatTimeSrt(startSec)} --> ${formatTimeSrt(endSec)}\n`
+		srt += `${block.text}\n\n`
+		index++
+	}
+
+	return srt.trim() + '\n'
+}
+
+/**
+ * Converts an array of SubtitleBlock to WebVTT (.vtt) format string.
+ * @param {Array<SubtitleBlock>} blocks
+ * @param {object} [options]
+ * @param {number} [options.offset=0] - Offset in seconds to subtract from timestamps
+ * @returns {string}
+ */
+export function blocksToVtt(blocks, options = {}) {
+	const offset = options.offset ?? 0
+	let vtt = 'WEBVTT\n\n'
+
+	for (const block of blocks) {
+		const startSec = Math.max(0, block.start - offset)
+		const endSec = Math.max(0, block.end - offset)
+		if (endSec <= startSec) continue
+
+		vtt += `${formatTimeVtt(startSec)} --> ${formatTimeVtt(endSec)}\n`
+		vtt += `${block.text}\n\n`
+	}
+
+	return vtt
+}
+
+/**
+ * Formats seconds to SRT time format (HH:MM:SS,mmm)
+ * @param {number} seconds
+ * @returns {string}
+ */
+export function formatTimeSrt(seconds) {
+	const h = Math.floor(seconds / 3600)
+	const m = Math.floor((seconds % 3600) / 60)
+	const s = Math.floor(seconds % 60)
+	const ms = Math.floor((seconds % 1) * 1000)
+	return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')},${String(ms).padStart(3, '0')}`
+}
+
+/**
+ * Formats seconds to WebVTT time format (HH:MM:SS.mmm)
+ * @param {number} seconds
+ * @returns {string}
+ */
+export function formatTimeVtt(seconds) {
+	const h = Math.floor(seconds / 3600)
+	const m = Math.floor((seconds % 3600) / 60)
+	const s = Math.floor(seconds % 60)
+	const ms = Math.floor((seconds % 1) * 1000)
+	return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padStart(3, '0')}`
 }
 
 /**

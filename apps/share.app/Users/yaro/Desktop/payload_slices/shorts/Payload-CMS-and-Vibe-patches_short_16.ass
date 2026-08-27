@@ -1,0 +1,30 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:11:10.81,0:11:13.31,Default,,0,0,0,,browsing so this
+Dialogue: 0,0:11:13.31,0:11:16.05,Default,,0,0,0,,is also going
+Dialogue: 0,0:11:16.05,0:11:18.05,Default,,0,0,0,,with the payload
+Dialogue: 0,0:11:18.05,0:11:19.18,Default,,0,0,0,,self -storage we
+Dialogue: 0,0:11:19.18,0:11:21.36,Default,,0,0,0,,can see also
+Dialogue: 0,0:11:21.36,0:11:25.46,Default,,0,0,0,,the folders like
+Dialogue: 0,0:11:25.46,0:11:29.87,Default,,0,0,0,,our desktop drive
+Dialogue: 0,0:11:29.87,0:11:32.01,Default,,0,0,0,,or even mobile
+Dialogue: 0,0:11:32.01,0:11:33.77,Default,,0,0,0,,drive or our
+Dialogue: 0,0:11:33.77,0:11:34.79,Default,,0,0,0,,vps drive so
+Dialogue: 0,0:11:34.79,0:11:35.72,Default,,0,0,0,,we have like
+Dialogue: 0,0:11:35.72,0:11:36.51,Default,,0,0,0,,just a folder
+Dialogue: 0,0:11:36.51,0:11:37.68,Default,,0,0,0,,and inside this
+Dialogue: 0,0:11:37.68,0:11:38.29,Default,,0,0,0,,folder we can
+Dialogue: 0,0:11:38.29,0:11:39.60,Default,,0,0,0,,create folders we
+Dialogue: 0,0:11:39.60,0:11:40.81,Default,,0,0,0,,can upload media
+Dialogue: 0,0:11:40.81,0:11:43.20,Default,,0,0,0,,so and it
+Dialogue: 0,0:11:43.20,0:11:44.24,Default,,0,0,0,,works through the
+Dialogue: 0,0:11:44.24,0:11:46.72,Default,,0,0,0,,API payload self
+Dialogue: 0,0:11:46.72,0:11:48.84,Default,,0,0,0,,-manual so for
+Dialogue: 0,0:11:48.84,0:11:52.31,Default,,0,0,0,,projects we need

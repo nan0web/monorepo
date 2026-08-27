@@ -1,15 +1,19 @@
+import { ServerResponse as HttpServerResponse } from 'node:http';
+import IncomingMessage from './IncomingMessage.js';
 /**
  * @extends {HttpServerResponse}
  */
-export default class ServerResponse extends HttpServerResponse<import("http").IncomingMessage> {
+export default class ServerResponse extends HttpServerResponse {
+    /** @type {Object} */
+    params: any;
     /**
      *
      * @param {IncomingMessage} [req]
-     * @param {object} [options]
+     * @param {{ params?: object }} [options]
      */
-    constructor(req?: IncomingMessage, options?: object);
-    /** @type {Object} */
-    params: any;
+    constructor(req?: IncomingMessage, options?: {
+        params?: object;
+    });
     /**
      * Set JSON response.
      * @param {any} data
@@ -28,7 +32,10 @@ export default class ServerResponse extends HttpServerResponse<import("http").In
      * @param {object|Array} [headersOrCallback]
      */
     writeHead(statusCode: number, statusMessageOrHeaders?: string | object | any[], headersOrCallback?: object | any[]): this;
-    end(chunk: any, encoding: any, callback: any): this;
+    /**
+     * @param {any} [chunk]
+     * @param {any} [encoding]
+     * @param {any} [callback]
+     */
+    end(chunk?: any, encoding?: any, callback?: any): this;
 }
-import { ServerResponse as HttpServerResponse } from 'node:http';
-import IncomingMessage from './IncomingMessage.js';

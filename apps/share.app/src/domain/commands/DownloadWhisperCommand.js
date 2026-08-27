@@ -1,6 +1,7 @@
 import { ModelAsApp } from '@nan0web/ui-cli'
 import { MediaDownloadModel } from '../MediaDownloadModel.js'
-import { ToolChecker } from '../ToolChecker.js'
+import { ToolCheckerPort } from '../../ports/ToolCheckerPort.js'
+import { progress, show, result, log } from '@nan0web/ui'
 
 /**
  * @typedef {object} DownloadWhisperCommandOptions
@@ -34,13 +35,25 @@ export class DownloadWhisperCommand extends ModelAsApp {
 	static format = {
 		type: 'string',
 		required: false,
-		help: 'Output format: txt (default), srt, vtt, json (auto-detected from --output extension)',
+		help: 'Output format: txt (default), srt, vtt, json, md (AI Notebook)',
 	}
 
 	static language = {
 		type: 'string',
 		required: false,
 		help: 'Language code: uk|en|auto (default: auto — Whisper detects from audio)',
+	}
+
+	static llmModel = {
+		type: 'string',
+		required: false,
+		help: 'LLM Model ID to use for formatting Markdown (default: auto selected)',
+	}
+
+	static cookies = {
+		type: 'string',
+		required: false,
+		help: 'Browser name (e.g. chrome, safari, firefox), path to local cookies file (e.g. ./cookies.txt), or COOKIES env var',
 	}
 
 	/**
@@ -54,36 +67,42 @@ export class DownloadWhisperCommand extends ModelAsApp {
 	/**
 	 * Detect output format from file extension.
 	 * @param {string} filePath
-	 * @returns {'txt'|'srt'|'vtt'|'json'|null}
+	 * @returns {'txt'|'srt'|'vtt'|'json'|'md'|null}
 	 */
 	static _detectFormat(filePath) {
 		const ext = filePath.split('.').pop()?.toLowerCase()
-		if (ext === 'srt' || ext === 'vtt' || ext === 'json') return ext
+		if (ext === 'srt' || ext === 'vtt' || ext === 'json' || ext === 'md') return ext
 		return null
 	}
 
 	async *run() {
+		const { AI } = await import('@nan0web/ai')
+		if (this.format === 'md' || (this.output && DownloadWhisperCommand._detectFormat(this.output) === 'md')) {
+			const ai = new AI({}, this._)
+			await ai.refreshModels()
+			if (ai.getModels().length === 0) {
+				yield show('Жодна LLM модель не налаштована. Будь ласка, налаштуйте хоча б одного провайдера для використання формату md.', 'error')
+				return result({ success: false, message: 'No LLM model configured for md format' })
+			}
+		}
+
 		// Check if URL is provided
 		if (!this.url) {
-			yield {
-				type: 'log',
-				level: 'error',
-				message: 'Usage: nan0ai download:whisper --url <YouTube URL or local file path> [--output <path>]',
-			}
-			return { type: 'result', data: { success: false, message: 'URL is required' } }
+			yield show('Usage: nan0ai download:whisper --url <YouTube URL or local file path> [--output <path>]', 'error')
+			return result({ success: false, message: 'URL is required' })
 		}
 
 		// Verify required CLI tools are installed
-		const missing = await ToolChecker.require({
+		const missing = await ToolCheckerPort.require({
 			'mlx_whisper': 'pip install mlx-whisper  (Apple Silicon required)',
 			'yt-dlp': 'pip install yt-dlp  or  brew install yt-dlp',
 			'ffmpeg': 'brew install ffmpeg  or  apt install ffmpeg',
 		})
 
 		if (missing.length > 0) {
-			const detail = missing.map(m => `  \x1b[1m${m.tool}\x1b[0m — ${m.hint}`).join('\n')
-			yield { type: 'log', level: 'error', message: `\x1b[1;31mMissing required tools:\x1b[0m\n${detail}` }
-			return { type: 'result', data: { success: false, message: 'Missing required CLI tools' } }
+			const detail = missing.map(m => `  ${m.tool} — ${m.hint}`).join('\n')
+			yield show(`Відсутні інструменти:\n${detail}`, 'error')
+			return result({ success: false, message: 'Missing required CLI tools' })
 		}
 
 		const model = new MediaDownloadModel({
@@ -91,114 +110,132 @@ export class DownloadWhisperCommand extends ModelAsApp {
 			quality: this.quality || 'medium',
 			format: this.format || (this.output && DownloadWhisperCommand._detectFormat(this.output)) || 'txt',
 			language: this.language || 'auto',
+			llmModel: this.llmModel,
+			cookies: this.cookies,
 		}, this._)
 
-		yield {
-			type: 'log',
-			level: 'info',
-			message: `\x1b[1m[MediaProcessor]\x1b[0m Starting for: ${this.url}`,
-		}
+		yield progress(`[MediaProcessor] Starting for: ${this.url}`, 0, { id: 'downloading', total: 100 })
 
 		try {
-			// The original script used 'for await...of model.run()'.
-			// We need to adapt this to yield intents.
-			// The 'model.run()' likely returns an async iterator.
 			const iterator = model.run()
 			let lastChunk = ''
+			let lastDownloadPercent = -1
+			let lastSegmentPercent = -1
+			let lastTranscribeChunk = 0
 
 			for await (const update of iterator) {
 				switch (update.status) {
 					case 'downloading':
-						yield {
-							type: 'progress',
-							message: `\x1b[94m·\x1b[0m Завантаження аудіо...${update.percent != null ? ` \x1b[1m${update.percent.toFixed(1)}%\x1b[0m` : ''}${update.speed ? ` (${update.speed})` : ''}`,
+						if (update.percent !== undefined && update.percent !== lastDownloadPercent) {
+							lastDownloadPercent = update.percent
+							yield progress(
+								`Завантаження аудіо...${update.speed ? ` (${update.speed})` : ''}${update.eta ? ` ETA: ${update.eta}` : ''}`,
+								update.percent,
+								{ id: 'downloading', total: 100 }
+							)
 						}
 						break
 					case 'segmenting':
-						yield {
-							type: 'progress',
-							message: `\x1b[94m·\x1b[0m Конвертація у аудіо...${update.percent != null ? ` \x1b[1m${update.percent.toFixed(1)}%\x1b[0m` : ''}`,
+						if (update.percent !== undefined && update.percent !== lastSegmentPercent) {
+							lastSegmentPercent = update.percent
+							yield progress(
+								`Сегментування (${update.title})...`,
+								update.percent,
+								{ id: 'segmenting', total: 100 }
+							)
 						}
 						break
 					case 'transcribing':
-						yield {
-							type: 'progress',
-							message: `\x1b[93m·\x1b[0m Конвертація у текст... ${update.chunk}/${update.total} (\x1b[2m${update.model}\x1b[0m)`,
+						if (update.chunk !== lastTranscribeChunk) {
+							lastTranscribeChunk = update.chunk
+							yield progress(
+								`Транскрибування чанку ${update.chunk}/${update.total}... (${update.model})`,
+								update.chunk,
+								{ id: 'transcribing', total: update.total }
+							)
+						}
+						break
+					case 'partial_progress':
+						if (update.percent !== undefined) {
+							// For fine-grained progress, we update the same chunk id but pass the percentage as the value
+							yield progress(
+								`Транскрибування чанку ${update.chunk}/${update.total}... (${update.model}) [${update.percent}%]`,
+								update.chunk - 1 + (update.percent / 100),
+								{ id: 'transcribing', total: update.total }
+							)
 						}
 						break
 					case 'partial':
 						lastChunk = update.text.substring(0, 150)
-						yield {
-							type: 'progress',
-							message: `\x1b[93m·\x1b[0m Чанк ${update.chunk}/${update.total} готово`,
-						}
+						yield progress(
+							`Чанк ${update.chunk}/${update.total} готово`,
+							update.chunk,
+							{ id: 'transcribing', total: update.total }
+						)
+						break
+					case 'llm_processing':
+						yield show('Початок обробки транскрипту за допомогою LLM (форматування Markdown)...', 'info')
+						break
+					case 'llm_progress':
+						// For stream progress we can just use progress bar or show spinning
+						yield progress(
+							`Генерація Markdown...`,
+							null, // indeterminate
+							{ id: 'llm_progress', total: 100 }
+						)
 						break
 					case 'done':
-						yield {
-							type: 'log',
-							level: 'success',
-							message: `\n\x1b[1;32m✓ Finished!\x1b[0m`,
-						}
-						yield {
-							type: 'log',
-							level: 'info',
-							message: `\x1b[1mTitle:\x1b[0m ${update.title}`,
-						}
-						yield {
-							type: 'log',
-							level: 'info',
-							message: `\x1b[1mModel:\x1b[0m ${update.model} (language: auto-detected)`,
-						}
+						yield show(`✓ Готово!`, 'success')
+						yield show(`Назва: ${update.title}`, 'info')
+						yield show(`Модель: ${update.model} (мова: авто-визначення)`, 'info')
 
 						const db = this._.db
-						const transcript = model.transcript || ''
+						const transcript = update.transcript || ''
 						const outputPath = this.output
-						const outputFormat = this.format || 'txt'
 
 						if (outputPath) {
-							await db.saveFile(`@app/${outputPath}`, transcript)
-							yield {
-								type: 'log',
-								level: 'info',
-								message: `\x1b[1mTranscript saved to:\x1b[0m ${outputPath}`,
+							if (this.format === 'md') {
+								// Save the markdown file
+								await db.saveFile(`@app/${outputPath}`, update.markdown || '')
+								yield show(`Markdown збережено: ${outputPath}`, 'info')
+								// Also save the original JSON
+								const jsonPath = outputPath.replace(/\.md$/i, '.json')
+								await db.saveFile(`@app/${jsonPath}`, transcript)
+								yield show(`Оригінальний JSON збережено: ${jsonPath}`, 'info')
+								// Also save original plain text (.txt)
+								try {
+									const parsedJson = JSON.parse(transcript)
+									if (parsedJson.text) {
+										const txtPath = outputPath.replace(/\.md$/i, '.txt')
+										await db.saveFile(`@app/${txtPath}`, parsedJson.text)
+										yield show(`Оригінальний текст збережено: ${txtPath}`, 'info')
+									}
+								} catch {}
+							} else {
+								await db.saveFile(`@app/${outputPath}`, transcript)
+								yield show(`Транскрипт збережено: ${outputPath}`, 'info')
 							}
 						} else {
-							yield { type: 'log', level: 'info', message: '' }
-							yield { type: 'log', level: 'info', message: `\x1b[1m─── Transcript ───\x1b[0m` }
-							yield { type: 'log', level: 'info', message: transcript }
-							yield { type: 'log', level: 'info', message: `\x1b[1m──────────────────\x1b[0m` }
+							yield show('─── Транскрипт ───', 'info')
+							yield show(this.format === 'md' ? (update.markdown || '') : transcript, 'info')
+							yield show('──────────────────', 'info')
 						}
 
-						return {
-							type: 'result',
-							data: {
-								success: true,
-								title: update.title,
-								transcript,
-								outputPath: this.output || null,
-							},
-						}
+						return result({
+							success: true,
+							title: update.title,
+							transcript: this.format === 'md' ? update.markdown : transcript,
+							originalJson: this.format === 'md' ? transcript : null,
+							outputPath: this.output || null,
+						})
 					case 'error':
-						yield {
-							type: 'log',
-							level: 'error',
-							message: `\n\x1b[1;31m✘ Error:\x1b[0m ${update.error}`,
-						}
-						// Return an error result
-						return {
-							type: 'result',
-							data: { success: false, message: update.error },
-						}
+						yield show(`✘ Помилка: ${update.error}`, 'error')
+						return result({ success: false, message: update.error })
 				}
 			}
 		} catch (err) {
-			yield {
-				type: 'log',
-				level: 'error',
-				message: `\x1b[1;31mCritical failure:\x1b[0m ${err.message}`,
-			}
-			// Return an error result
-			return { type: 'result', data: { success: false, message: err.message } }
+			yield show(`Критична помилка: ${err.message}`, 'error')
+			return result({ success: false, message: err.message })
 		}
 	}
 }

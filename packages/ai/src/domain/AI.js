@@ -433,7 +433,10 @@ export class AI {
 			case 'google': {
 				const { createGoogleGenerativeAI } = await import('@ai-sdk/google')
 				return createGoogleGenerativeAI({
-					apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY,
+					apiKey:
+						process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
+						process.env.GOOGLE_API_KEY ||
+						process.env.GEMINI_API_KEY,
 				})
 			}
 			case 'groq': {
@@ -565,6 +568,35 @@ export class AI {
 				)
 				attempts = this.strategy.rateLimitRetries || 0
 			}
+		}
+	}
+
+	/**
+	 * Async generator for streaming text tokens.
+	 * Yields text deltas as they arrive and returns full result on finish.
+	 * Supports automatic fallback via the underlying streamText() method.
+	 *
+	 * @param {ModelInfo} model
+	 * @param {import('ai').ModelMessage[]} messages
+	 * @param {StreamOptions & { tools?: import('ai').ToolSet, maxSteps?: number, system?: string }} [options]
+	 * @returns {AsyncGenerator<string, {text: string, usage: Usage, usedModel: string, usedProvider: string}>}
+	 */
+	async *streamTextGenerator(model, messages, options = {}) {
+		let fullText = ''
+		const streamResult = await this.streamText(model, messages, options)
+
+		for await (const textDelta of streamResult.textStream) {
+			fullText += textDelta
+			yield textDelta
+		}
+
+		const usage = await streamResult.usage
+
+		return {
+			text: fullText,
+			usage: new Usage(usage),
+			usedModel: model?.id,
+			usedProvider: model?.provider,
 		}
 	}
 

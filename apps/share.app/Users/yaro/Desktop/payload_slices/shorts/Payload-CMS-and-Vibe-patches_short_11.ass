@@ -1,0 +1,34 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:07:26.36,0:07:27.89,Default,,0,0,0,,report what I
+Dialogue: 0,0:07:27.89,0:07:29.74,Default,,0,0,0,,have done with
+Dialogue: 0,0:07:29.74,0:07:30.51,Default,,0,0,0,,the help of
+Dialogue: 0,0:07:30.51,0:07:31.91,Default,,0,0,0,,the models this
+Dialogue: 0,0:07:31.91,0:07:34.06,Default,,0,0,0,,week I have
+Dialogue: 0,0:07:34.06,0:07:35.86,Default,,0,0,0,,done with some
+Dialogue: 0,0:07:35.86,0:07:37.27,Default,,0,0,0,,plugins let's see
+Dialogue: 0,0:07:37.27,0:07:38.37,Default,,0,0,0,,the summary right
+Dialogue: 0,0:07:38.37,0:07:40.01,Default,,0,0,0,,so weekly report
+Dialogue: 0,0:07:40.01,0:07:41.91,Default,,0,0,0,,two comments were
+Dialogue: 0,0:07:41.91,0:07:43.10,Default,,0,0,0,,made this week
+Dialogue: 0,0:07:43.10,0:07:45.06,Default,,0,0,0,,by all by
+Dialogue: 0,0:07:45.06,0:07:46.68,Default,,0,0,0,,Yaroslav on August
+Dialogue: 0,0:07:46.68,0:07:49.18,Default,,0,0,0,,12 this was
+Dialogue: 0,0:07:49.18,0:07:50.80,Default,,0,0,0,,the initial setup
+Dialogue: 0,0:07:50.80,0:07:52.18,Default,,0,0,0,,and documentation path
+Dialogue: 0,0:07:52.18,0:07:53.81,Default,,0,0,0,,for the project
+Dialogue: 0,0:07:53.81,0:07:56.51,Default,,0,0,0,,monoreparin initialization this
+Dialogue: 0,0:07:56.51,0:07:58.46,Default,,0,0,0,,is the foundational
+Dialogue: 0,0:07:58.46,0:08:00.39,Default,,0,0,0,,commit that created
+Dialogue: 0,0:08:00.39,0:08:01.48,Default,,0,0,0,,the entire project
+Dialogue: 0,0:08:01.48,0:08:04.15,Default,,0,0,0,,structure monoreparin scaffolding
+Dialogue: 0,0:08:04.15,0:08:06.03,Default,,0,0,0,,run our root
+Dialogue: 0,0:08:06.03,0:08:08.34,Default,,0,0,0,,okay root pnpm
+Dialogue: 0,0:08:08.34,0:08:10.36,Default,,0,0,0,,workspace package json

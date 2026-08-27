@@ -1,0 +1,30 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:14:53.00,0:14:55.74,Default,,0,0,0,,console mostly so
+Dialogue: 0,0:14:55.74,0:14:58.29,Default,,0,0,0,,in payload CMS
+Dialogue: 0,0:14:58.29,0:15:00.51,Default,,0,0,0,,I cannot use
+Dialogue: 0,0:15:00.51,0:15:09.89,Default,,0,0,0,,my default submit
+Dialogue: 0,0:15:09.89,0:15:10.86,Default,,0,0,0,,button of the
+Dialogue: 0,0:15:10.86,0:15:12.53,Default,,0,0,0,,form and when
+Dialogue: 0,0:15:12.53,0:15:13.86,Default,,0,0,0,,I open some
+Dialogue: 0,0:15:13.86,0:15:14.74,Default,,0,0,0,,dialogs or when
+Dialogue: 0,0:15:14.74,0:15:16.72,Default,,0,0,0,,I open some
+Dialogue: 0,0:15:16.72,0:15:19.29,Default,,0,0,0,,edit forms the
+Dialogue: 0,0:15:19.29,0:15:21.55,Default,,0,0,0,,automated focus is
+Dialogue: 0,0:15:21.55,0:15:23.53,Default,,0,0,0,,now available so
+Dialogue: 0,0:15:23.53,0:15:25.55,Default,,0,0,0,,the first editable
+Dialogue: 0,0:15:25.55,0:15:27.63,Default,,0,0,0,,field is focused
+Dialogue: 0,0:15:27.63,0:15:28.58,Default,,0,0,0,,when I open
+Dialogue: 0,0:15:28.58,0:15:30.10,Default,,0,0,0,,the form or
+Dialogue: 0,0:15:30.10,0:15:31.27,Default,,0,0,0,,model dialog form
+Dialogue: 0,0:15:31.27,0:15:32.89,Default,,0,0,0,,because it was
+Dialogue: 0,0:15:32.89,0:15:34.05,Default,,0,0,0,,not and it
+Dialogue: 0,0:15:34.05,0:15:35.39,Default,,0,0,0,,saves so much
+Dialogue: 0,0:15:35.39,0:15:37.84,Default,,0,0,0,,time it's seconds

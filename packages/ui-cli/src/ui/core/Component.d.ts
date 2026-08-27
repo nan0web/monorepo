@@ -1,0 +1,35 @@
+/**
+ * Core Component logic.
+ *
+ * Defines the contract for View (static) and Prompt (interactive) components.
+ */
+export declare const ComponentSymbol: unique symbol;
+export declare const PromptSymbol: unique symbol;
+/**
+ * Creates a Static View Component.
+ * These components are synchronous and can be stringified directly.
+ *
+ * @param {string} displayName - Name of the component (e.g. 'Alert').
+ * @param {any} props - Props passed to the component.
+ * @param {Function} formatFn - Pure function (props) => string.
+ */
+export declare function createView(displayName: string, props: any, formatFn: Function): {
+    $$typeof: symbol;
+    type: string;
+    props: any;
+};
+/**
+ * Creates an Interactive Prompt Component.
+ * These components are asynchronous and require `execute()` or `await` handling.
+ *
+ * @param {string} displayName - Name of the component.
+ * @param {any} props - Props.
+ * @param {Function} executorFn - Async function (props) => Promise<result>.
+ */
+export declare function createPrompt(displayName: string, props: any, executorFn: Function): {
+    $$typeof: symbol;
+    type: string;
+    props: any;
+    model: any;
+    execute: () => any;
+};

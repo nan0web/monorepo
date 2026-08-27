@@ -1,0 +1,19 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:49.58,0:00:53.42,Default,,0,0,0,,Legacy of The
+Dialogue: 0,0:00:53.42,0:00:58.06,Default,,0,0,0,,humanity So that's
+Dialogue: 0,0:00:58.06,0:01:02.79,Default,,0,0,0,,humanity Knowledge that
+Dialogue: 0,0:01:02.79,0:01:04.70,Default,,0,0,0,,we collected during
+Dialogue: 0,0:01:04.70,0:01:07.21,Default,,0,0,0,,the hundreds of
+Dialogue: 0,0:01:07.21,0:01:17.01,Default,,0,0,0,,years Is What
+Dialogue: 0,0:01:17.01,0:01:19.85,Default,,0,0,0,,learned by artificial
+Dialogue: 0,0:01:19.85,0:01:22.45,Default,,0,0,0,,intelligence or large
+Dialogue: 0,0:01:22.45,0:01:25.37,Default,,0,0,0,,language models This
+Dialogue: 0,0:01:25.37,0:01:27.64,Default,,0,0,0,,is very important

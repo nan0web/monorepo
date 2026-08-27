@@ -1,0 +1,57 @@
+{
+  "name": "@nan0web/db-server",
+  "version": "3.3.0",
+  "description": "HTTP server that exposes @nan0web/db via REST API",
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
+  "type": "module",
+  "bin": {
+    "nan0db": "./bin/nan0db.js"
+  },
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "types/**/*.d.ts"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf types",
+    "build": "tsc",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "test": "node --test \"src/**/*.test.js\"",
+    "test:real": "node play/test-api.js",
+    "test:docs": "node --test src/README.md.js",
+    "knip": "knip --production || true",
+    "audit": "pnpm audit --prod || true",
+    "test:all": "npm run test && npm run build && npm run knip && npm run audit",
+    "play": "node play/main.js",
+    "release": "nan0release publish",
+    "precommit": "npm test",
+    "prepush": "npm test"
+  },
+  "keywords": [
+    "nanoweb",
+    "database",
+    "http",
+    "rest",
+    "api",
+    "server"
+  ],
+  "author": "ЯRаСлав YaRaSLove <support@yaro.page>",
+  "license": "ISC",
+  "devDependencies": {
+    "@nan0web/test": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@types/node": "^24.12.0",
+    "husky": "^9.1.7",
+    "knip": "^5.86.0"
+  },
+  "peerDependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/http-node": "workspace:*",
+    "@nan0web/types": "workspace:*"
+  },
+  "dependencies": {
+    "@nan0web/log": "workspace:*"
+  }
+}

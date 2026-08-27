@@ -1,0 +1,31 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:20:09.53,0:20:10.22,Default,,0,0,0,,see that we
+Dialogue: 0,0:20:10.22,0:20:12.79,Default,,0,0,0,,have steps 10
+Dialogue: 0,0:20:12.79,0:20:13.96,Default,,0,0,0,,a session prompt
+Dialogue: 0,0:20:13.96,0:20:16.94,Default,,0,0,0,,tokens only 63
+Dialogue: 0,0:20:16.94,0:20:19.20,Default,,0,0,0,,thousands of tokens
+Dialogue: 0,0:20:19.20,0:20:21.78,Default,,0,0,0,,already but we
+Dialogue: 0,0:20:21.78,0:20:22.21,Default,,0,0,0,,have not used
+Dialogue: 0,0:20:22.21,0:20:22.78,Default,,0,0,0,,the context window
+Dialogue: 0,0:20:22.78,0:20:25.26,Default,,0,0,0,,13 kilo tokens
+Dialogue: 0,0:20:25.26,0:20:27.39,Default,,0,0,0,,so 13 thousands
+Dialogue: 0,0:20:27.39,0:20:28.28,Default,,0,0,0,,how it happened
+Dialogue: 0,0:20:28.28,0:20:29.47,Default,,0,0,0,,it happened that
+Dialogue: 0,0:20:29.47,0:20:31.15,Default,,0,0,0,,last turn tokens
+Dialogue: 0,0:20:31.15,0:20:32.71,Default,,0,0,0,,is 13 but
+Dialogue: 0,0:20:32.71,0:20:35.00,Default,,0,0,0,,every next and
+Dialogue: 0,0:20:35.00,0:20:35.69,Default,,0,0,0,,turn when i
+Dialogue: 0,0:20:35.69,0:20:36.89,Default,,0,0,0,,sent the message
+Dialogue: 0,0:20:36.89,0:20:40.26,Default,,0,0,0,,it already sent
+Dialogue: 0,0:20:41.04,0:20:43.39,Default,,0,0,0,,uh all the
+Dialogue: 0,0:20:43.39,0:20:47.69,Default,,0,0,0,,message before this
+Dialogue: 0,0:20:47.69,0:20:48.78,Default,,0,0,0,,step and next
+Dialogue: 0,0:20:48.78,0:20:49.86,Default,,0,0,0,,step i sent

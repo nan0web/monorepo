@@ -1,0 +1,25 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:56:36.53,0:56:38.05,Default,,0,0,0,,think I would
+Dialogue: 0,0:56:38.05,0:56:39.03,Default,,0,0,0,,make it faster
+Dialogue: 0,0:56:39.03,0:56:41.55,Default,,0,0,0,,and now we
+Dialogue: 0,0:56:41.55,0:56:42.69,Default,,0,0,0,,can see that
+Dialogue: 0,0:56:42.98,0:56:46.09,Default,,0,0,0,,maybe it's hallucinating.
+Dialogue: 0,0:56:47.13,0:56:49.40,Default,,0,0,0,,It happens sometimes
+Dialogue: 0,0:56:49.40,0:56:51.28,Default,,0,0,0,,sometimes it just
+Dialogue: 0,0:56:51.28,0:56:54.07,Default,,0,0,0,,going into and
+Dialogue: 0,0:56:54.07,0:56:56.30,Default,,0,0,0,,for a long
+Dialogue: 0,0:56:56.30,0:56:56.98,Default,,0,0,0,,time and I
+Dialogue: 0,0:56:56.98,0:56:58.96,Default,,0,0,0,,stop it so
+Dialogue: 0,0:56:58.96,0:57:02.51,Default,,0,0,0,,I keep watching
+Dialogue: 0,0:57:02.51,0:57:08.65,Default,,0,0,0,,for it. It's
+Dialogue: 0,0:57:08.65,0:57:10.19,Default,,0,0,0,,already two cents
+Dialogue: 0,0:57:10.19,0:57:13.92,Default,,0,0,0,,it's already 39
+Dialogue: 0,0:57:13.92,0:57:15.94,Default,,0,0,0,,thousands of tokens

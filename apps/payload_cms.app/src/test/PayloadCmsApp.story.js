@@ -103,7 +103,10 @@ describe('PayloadCmsApp User Stories', () => {
 
 		const indexFile = await db.get('@app/src/collections/collections/index.js') || await db.get('@app/src/collections/index.js')
 		assert.ok(indexFile, 'Index file should be generated in DB')
-		assert.ok(indexFile.includes("export * from './TestArticle.js'"))
+		assert.ok(
+			indexFile.includes("export { collectionConfig as TestArticle } from './TestArticle.js'") ||
+				indexFile.includes("export * from './TestArticle.js'")
+		)
 	})
 
 	it('Story: TransformModel converts Global Model to Payload GlobalConfig', async () => {

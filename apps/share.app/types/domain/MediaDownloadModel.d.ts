@@ -1,8 +1,9 @@
 /**
- * MediaDownloadModel handles downloading from YouTube (or using local files),
+ * MediaDownloadModel (Model-as-App & Model-as-Schema) handles downloading from YouTube/TikTok,
  * splitting into 5-minute chunks, and transcribing each chunk locally via Whisper.
  */
 export class MediaDownloadModel extends Model {
+    static alias: string;
     static url: {
         help: string;
         default: any;
@@ -36,27 +37,22 @@ export class MediaDownloadModel extends Model {
         default: string;
     };
     constructor(raw?: {}, options?: {});
-    /** @type {string|undefined} */
-    url: string | undefined;
-    /** @type {string} */
-    status: string;
-    /** @type {string} */
-    transcript: string;
-    /** @type {string} */
-    title: string;
-    /** @type {string[]} */
-    chunks: string[];
-    /** @type {string} */
-    quality: string;
-    /** @type {string} */
-    format: string;
-    /** @type {string} */
-    language: string;
+    /** @type {string|undefined} */ url: string | undefined;
+    /** @type {string} */ status: string;
+    /** @type {string} */ transcript: string;
+    /** @type {string} */ title: string;
+    /** @type {string[]} */ chunks: string[];
+    /** @type {string} */ quality: string;
+    /** @type {string} */ format: string;
+    /** @type {string} */ language: string;
+    /** @type {string} */ llmModel: string;
+    /** @type {string} */ cookies: string;
     /**
      * Runs the download and transcription process.
      * Yields partial results after each 5-minute chunk.
      * @returns {AsyncGenerator<Object, void, unknown>}
      */
     run(): AsyncGenerator<any, void, unknown>;
+    markdown: string;
 }
 import { Model } from './Models.js';

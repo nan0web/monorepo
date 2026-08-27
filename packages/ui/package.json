@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "NaN•Web UI. One application logic (algorithm) and many UI.",
   "main": "src/index.js",
   "types": "types/index.d.ts",

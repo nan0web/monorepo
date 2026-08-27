@@ -1,0 +1,30 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:15:39.10,0:15:39.96,Default,,0,0,0,,day working with
+Dialogue: 0,0:15:39.96,0:15:41.15,Default,,0,0,0,,the CMS it's
+Dialogue: 0,0:15:41.15,0:15:43.82,Default,,0,0,0,,seconds multiplied by
+Dialogue: 0,0:15:43.82,0:15:45.05,Default,,0,0,0,,hundreds of times
+Dialogue: 0,0:15:45.05,0:15:46.86,Default,,0,0,0,,so it's hundreds
+Dialogue: 0,0:15:46.86,0:15:49.05,Default,,0,0,0,,of seconds testing
+Dialogue: 0,0:15:49.05,0:15:52.60,Default,,0,0,0,,sandbox testing up
+Dialogue: 0,0:15:52.60,0:15:55.25,Default,,0,0,0,,is next .js
+Dialogue: 0,0:15:55.25,0:15:57.46,Default,,0,0,0,,application with playwright
+Dialogue: 0,0:15:57.46,0:15:59.27,Default,,0,0,0,,integration test docker
+Dialogue: 0,0:15:59.27,0:16:01.84,Default,,0,0,0,,compost tailwind and
+Dialogue: 0,0:16:01.84,0:16:05.13,Default,,0,0,0,,utility scripts environment
+Dialogue: 0,0:16:05.13,0:16:07.44,Default,,0,0,0,,debug migration config
+Dialogue: 0,0:16:07.44,0:16:09.27,Default,,0,0,0,,verification so this
+Dialogue: 0,0:16:09.27,0:16:10.34,Default,,0,0,0,,is the package
+Dialogue: 0,0:16:10.34,0:16:11.29,Default,,0,0,0,,where I test
+Dialogue: 0,0:16:11.29,0:16:14.77,Default,,0,0,0,,all the and
+Dialogue: 0,0:16:14.77,0:16:16.48,Default,,0,0,0,,with this command
+Dialogue: 0,0:16:16.48,0:16:18.10,Default,,0,0,0,,pin pmpack all
+Dialogue: 0,0:16:18.10,0:16:20.00,Default,,0,0,0,,I can pack
+Dialogue: 0,0:16:20.00,0:16:21.01,Default,,0,0,0,,all the changes

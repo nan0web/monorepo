@@ -9,9 +9,7 @@ export class Pipeline {
 	edges = []
 
 	/**
-	 * @param {Object} config
-	 * @param {import('./Node.js').Node[]} config.nodes
-	 * @param {Array<{from: string, to: string, map: Object}>} [config.edges]
+	 * @param {Partial<Pipeline>} [config={}]
 	 */
 	constructor(config = {}) {
 		this.nodes = config.nodes || []
@@ -27,7 +25,7 @@ export class Pipeline {
 		const order = this.buildExecutionOrder()
 
 		for (const nodeId of order) {
-			const node = this.nodes.find(n => n.id === nodeId)
+			const node = this.nodes.find((n) => n.id === nodeId)
 			if (!node) continue
 
 			// 2. Map inputs from previous nodes' outputs based on edges
@@ -42,14 +40,18 @@ export class Pipeline {
 
 	/**
 	 * Maps outputs from source nodes to inputs of the target node.
-	 * @param {string} targetId 
+	 * @param {string} targetId
 	 */
 	mapInputs(targetId) {
-		const incoming = this.edges.filter(e => e.to === targetId)
-		const targetNode = this.nodes.find(n => n.id === targetId)
+		const incoming = this.edges.filter((e) => e.to === targetId)
+		const targetNode = this.nodes.find((n) => n.id === targetId)
+
+		if (!targetNode) {
+			throw new Error(`Target node with id: ${targetId} not found.`)
+		}
 
 		for (const edge of incoming) {
-			const sourceNode = this.nodes.find(n => n.id === edge.from)
+			const sourceNode = this.nodes.find((n) => n.id === edge.from)
 			if (!sourceNode) continue
 
 			for (const [sourceKey, targetKey] of Object.entries(edge.map)) {
@@ -74,9 +76,7 @@ export class Pipeline {
 			visiting.add(nodeId)
 
 			// Nodes that provide inputs to this node must be visited first
-			const dependencies = this.edges
-				.filter(e => e.to === nodeId)
-				.map(e => e.from)
+			const dependencies = this.edges.filter((e) => e.to === nodeId).map((e) => e.from)
 
 			for (const depId of dependencies) {
 				visit(depId)

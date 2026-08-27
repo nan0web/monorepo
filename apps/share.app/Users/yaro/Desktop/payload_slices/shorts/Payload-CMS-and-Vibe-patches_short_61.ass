@@ -1,0 +1,32 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:44:40.22,0:44:41.57,Default,,0,0,0,,I have a
+Dialogue: 0,0:44:41.57,0:44:43.82,Default,,0,0,0,,patched version now
+Dialogue: 0,0:44:43.82,0:44:46.00,Default,,0,0,0,,and I need
+Dialogue: 0,0:44:46.00,0:44:47.01,Default,,0,0,0,,to use it
+Dialogue: 0,0:44:47.01,0:44:49.48,Default,,0,0,0,,right so changes
+Dialogue: 0,0:44:49.48,0:44:50.82,Default,,0,0,0,,to app by
+Dialogue: 0,0:44:50.82,0:44:53.36,Default,,0,0,0,,refactor blah blah
+Dialogue: 0,0:44:53.36,0:44:54.50,Default,,0,0,0,,blah method when
+Dialogue: 0,0:44:54.50,0:44:55.82,Default,,0,0,0,,called with several
+Dialogue: 0,0:44:55.82,0:44:58.00,Default,,0,0,0,,params from okay
+Dialogue: 0,0:44:58.00,0:45:00.82,Default,,0,0,0,,how can how
+Dialogue: 0,0:45:00.82,0:45:01.98,Default,,0,0,0,,can I apply
+Dialogue: 0,0:45:05.23,0:45:06.96,Default,,0,0,0,,Question mark, I
+Dialogue: 0,0:45:06.96,0:45:10.03,Default,,0,0,0,,just lost it.
+Dialogue: 0,0:45:10.09,0:45:10.94,Default,,0,0,0,,Okay, just run
+Dialogue: 0,0:45:10.94,0:45:11.98,Default,,0,0,0,,the existing patch
+Dialogue: 0,0:45:11.98,0:45:13.05,Default,,0,0,0,,script, it picks
+Dialogue: 0,0:45:13.05,0:45:14.92,Default,,0,0,0,,up whatever in
+Dialogue: 0,0:45:14.92,0:45:15.76,Default,,0,0,0,,the patch files,
+Dialogue: 0,0:45:15.92,0:45:17.38,Default,,0,0,0,,including my edit,
+Dialogue: 0,0:45:17.76,0:45:19.55,Default,,0,0,0,,bash, context, yeah,
+Dialogue: 0,0:45:19.55,0:45:20.13,Default,,0,0,0,,yeah, yeah, yeah.
+Dialogue: 0,0:45:20.30,0:45:21.67,Default,,0,0,0,,Apply patch, buy

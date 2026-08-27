@@ -21,5 +21,7 @@ export * from './domain/IndexWorkspaceApp.js'
 export * from './domain/AiAppModel.js'
 export * from './domain/ChatSession.js'
 export * from './domain/TestAI.js'
+export * from './domain/PipelineApp.js'
+export * from './domain/CheckIntent.js'
 
 export const UI = ui

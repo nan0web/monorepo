@@ -1,0 +1,18 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:50:44.65,0:50:46.59,Default,,0,0,0,,must create an
+Dialogue: 0,0:50:46.59,0:50:48.96,Default,,0,0,0,,engines markdown file.
+Dialogue: 0,0:50:48.96,0:50:57.71,Default,,0,0,0,,Uh -huh. It
+Dialogue: 0,0:50:57.71,0:50:59.73,Default,,0,0,0,,checks for the
+Dialogue: 0,0:50:59.73,0:51:00.69,Default,,0,0,0,,git difference. Okay,
+Dialogue: 0,0:51:00.84,0:51:04.00,Default,,0,0,0,,update it. I
+Dialogue: 0,0:51:04.00,0:51:05.71,Default,,0,0,0,,couldn't see where
+Dialogue: 0,0:51:05.71,0:51:12.76,Default,,0,0,0,,it's updated. Okay.
+Dialogue: 0,0:51:12.76,0:51:17.90,Default,,0,0,0,,Let me check.

@@ -1,13 +1,13 @@
 /**
  * Resolves path segments to absolute URL synchronously
- * @param {object} context - Context with cwd and root properties
+ * @param {{ cwd?: string, root?: string }} context - Context with cwd and root properties
  * @param {...string} args - Path segments
  * @returns {string} Resolved absolute URL
  */
 export function resolveSync(context, ...args) {
 	// If no arguments, return the root URL
 	if (args.length === 0) {
-		return context.root
+		return context.root || '/'
 	}
 
 	// Filter out undefined/null values and coerce to strings
@@ -16,7 +16,7 @@ export function resolveSync(context, ...args) {
 
 	// If only an empty string was provided, return root
 	if (validArgs.length === 1 && validArgs[0] === '') {
-		return context.root
+		return context.root || '/'
 	}
 
 	// Ensure we have a valid base URL
@@ -113,20 +113,20 @@ function isRemote(uri) {
 
 /**
  * Simple path resolution fallback
- * @param {object} context - Context with cwd and root properties
+ * @param {{ cwd?: string, root?: string }} context - Context with cwd and root properties
  * @param {...string} args - Path segments
  * @returns {string} Resolved path
  */
 function resolveSyncSimple(context, ...args) {
 	// If no arguments, return root
-	if (args.length === 0) return context.root
+	if (args.length === 0) return context.root || '/'
 
 	// Filter out undefined/null values and coerce to strings
 	const validArgs = args.filter((arg) => arg != null).map(String)
 
 	// If only an empty string was provided, return root
 	if (validArgs.length === 1 && validArgs[0] === '') {
-		return context.root
+		return context.root || '/'
 	}
 
 	// If first argument is remote, return it as is

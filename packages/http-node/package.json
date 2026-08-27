@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/http-node",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Node.js HTTP client and server built on native modules with minimal dependencies.",
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
@@ -38,6 +38,7 @@
     }
   },
   "scripts": {
+    "prebuild": "rm -rf dist types",
     "build": "tsc",
     "test": "node --test \"src/**/*.test.js\"",
     "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
@@ -64,6 +65,7 @@
   "license": "ISC",
   "devDependencies": {
     "@nan0web/test": "workspace:*",
+    "@types/node": "^24.12.0",
     "knip": "^5.86.0"
   },
   "peerDependencies": {

@@ -1,12 +1,13 @@
+import { DBDriverProtocol, DocumentStat } from '@nan0web/db';
 export default class BrowserDriver extends DBDriverProtocol {
-    static DB_NAME: string;
-    static STORE_NAME: string;
-    static CACHE_STORE: string;
-    constructor(input?: {});
     db: IDBDatabase | null;
     connected: boolean;
     _cache: Map<any, any>;
     _metaCache: Map<any, any>;
+    static DB_NAME: string;
+    static STORE_NAME: string;
+    static CACHE_STORE: string;
+    constructor(input?: {});
     /** @returns {string} */
     get DB_NAME(): string;
     /** @returns {string} */
@@ -27,12 +28,12 @@ export default class BrowserDriver extends DBDriverProtocol {
      * @param {'readonly'|'readwrite'} [mode='readonly']
      * @returns {IDBObjectStore}
      */
-    _getStore(mode?: "readonly" | "readwrite"): IDBObjectStore;
+    _getStore(mode?: 'readonly' | 'readwrite'): IDBObjectStore;
     /**
      * @param {'readonly'|'readwrite'} [mode='readonly']
      * @returns {IDBObjectStore}
      */
-    _getCacheStore(mode?: "readonly" | "readwrite"): IDBObjectStore;
+    _getCacheStore(mode?: 'readonly' | 'readwrite'): IDBObjectStore;
     /**
      * Reads a document from the store (with in‑memory cache fallback).
      * @param {string} uri
@@ -64,6 +65,14 @@ export default class BrowserDriver extends DBDriverProtocol {
      * @returns {Promise<boolean>}
      */
     delete(uri: string): Promise<boolean>;
+    /**
+     * Lists child URIs under a directory.
+     *
+     * The base `DBDriverProtocol` expects `listDir` to return an array of string URIs.
+     * We therefore return just the absolute keys that start with the given `uri`.
+     *
+     * @param {string} uri
+     * @returns {Promise<string[]>}
+     */
+    listDir(uri: string): Promise<string[]>;
 }
-import { DBDriverProtocol } from '@nan0web/db';
-import { DocumentStat } from '@nan0web/db';

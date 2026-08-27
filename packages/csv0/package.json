@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/csv0",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "CSV with FrontMatter (nan0/yaml) parser",
   "main": "src/index.js",
   "types": "types/index.d.ts",

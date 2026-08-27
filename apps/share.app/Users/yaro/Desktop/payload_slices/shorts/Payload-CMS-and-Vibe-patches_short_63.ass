@@ -1,0 +1,26 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:46:13.69,0:46:16.23,Default,,0,0,0,,I want to
+Dialogue: 0,0:46:16.23,0:46:17.59,Default,,0,0,0,,add a cost
+Dialogue: 0,0:46:17.59,0:46:19.48,Default,,0,0,0,,to the summary
+Dialogue: 0,0:46:19.78,0:46:22.44,Default,,0,0,0,,when I quit
+Dialogue: 0,0:46:22.44,0:46:29.01,Default,,0,0,0,,the wipe. Okay,
+Dialogue: 0,0:46:29.01,0:46:32.21,Default,,0,0,0,,so, and I
+Dialogue: 0,0:46:32.21,0:46:32.86,Default,,0,0,0,,will show you
+Dialogue: 0,0:46:32.86,0:46:33.92,Default,,0,0,0,,how I use
+Dialogue: 0,0:46:33.92,0:46:35.36,Default,,0,0,0,,another model, for
+Dialogue: 0,0:46:35.36,0:46:38.50,Default,,0,0,0,,example, Luna, I
+Dialogue: 0,0:46:38.50,0:46:41.13,Default,,0,0,0,,just copied, model,
+Dialogue: 0,0:46:41.42,0:46:42.82,Default,,0,0,0,,let's select Luna.
+Dialogue: 0,0:46:43.46,0:46:44.46,Default,,0,0,0,,It's a bit,
+Dialogue: 0,0:46:45.15,0:46:46.23,Default,,0,0,0,,or four times
+Dialogue: 0,0:46:46.23,0:46:48.59,Default,,0,0,0,,more expensive for
+Dialogue: 0,0:46:48.59,0:46:51.21,Default,,0,0,0,,output, right? Aha,
+Dialogue: 0,0:46:51.40,0:46:52.51,Default,,0,0,0,,it's not updated.

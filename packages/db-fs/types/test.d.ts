@@ -1,9 +1,10 @@
-export class DBFS extends DBFSBase {
+import DBFSBase from './DBFS.js';
+export declare class DBFS extends DBFSBase {
+    disconnect(): Promise<void>;
 }
 export default class TestDir {
+    root: any;
     constructor(root: any);
-    root: string;
     erase(): void;
     join(dir: any): string;
 }
-import DBFSBase from './DBFS.js';

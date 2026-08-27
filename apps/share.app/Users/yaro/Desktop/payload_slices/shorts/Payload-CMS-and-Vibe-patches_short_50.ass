@@ -1,0 +1,26 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:36:29.17,0:36:31.51,Default,,0,0,0,,this is the
+Dialogue: 0,0:36:31.51,0:36:34.82,Default,,0,0,0,,oh okay so
+Dialogue: 0,0:36:34.82,0:36:36.19,Default,,0,0,0,,here is the
+Dialogue: 0,0:36:36.19,0:36:39.11,Default,,0,0,0,,problem I don't
+Dialogue: 0,0:36:39.11,0:36:40.30,Default,,0,0,0,,know why what
+Dialogue: 0,0:36:40.30,0:36:42.09,Default,,0,0,0,,did I do
+Dialogue: 0,0:36:42.09,0:36:46.67,Default,,0,0,0,,no okay I
+Dialogue: 0,0:36:46.67,0:36:47.92,Default,,0,0,0,,scrolled and then
+Dialogue: 0,0:36:47.92,0:36:49.23,Default,,0,0,0,,I don't know
+Dialogue: 0,0:36:49.23,0:36:50.09,Default,,0,0,0,,how it works
+Dialogue: 0,0:36:50.09,0:36:50.98,Default,,0,0,0,,why I have
+Dialogue: 0,0:36:50.98,0:36:57.07,Default,,0,0,0,,such error but
+Dialogue: 0,0:36:57.07,0:37:03.07,Default,,0,0,0,,it happened and
+Dialogue: 0,0:37:03.07,0:37:04.30,Default,,0,0,0,,I can click
+Dialogue: 0,0:37:04.30,0:37:06.53,Default,,0,0,0,,it and it
+Dialogue: 0,0:37:06.53,0:37:10.46,Default,,0,0,0,,will open this
+Dialogue: 0,0:37:10.46,0:37:11.92,Default,,0,0,0,,chat in the

@@ -1,0 +1,9 @@
+# share.app (root / default entry point)
+title: 'share.app'
+name: '@nan0web/share.app'
+description: 'Universal Video Processing & Multi-Platform Distribution Pipeline'
+version: '3.2.0'
+locales:
+  - uk
+  - en
+defaultLocale: 'uk'

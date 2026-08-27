@@ -1,0 +1,24 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:26:50.45,0:26:53.38,Default,,0,0,0,,So here we
+Dialogue: 0,0:26:53.38,0:26:54.75,Default,,0,0,0,,have already two
+Dialogue: 0,0:26:54.75,0:26:57.72,Default,,0,0,0,,sends, because every
+Dialogue: 0,0:26:57.72,0:26:59.98,Default,,0,0,0,,next iteration, not
+Dialogue: 0,0:26:59.98,0:27:01.70,Default,,0,0,0,,only my message,
+Dialogue: 0,0:27:02.20,0:27:04.18,Default,,0,0,0,,but also after
+Dialogue: 0,0:27:04.18,0:27:07.03,Default,,0,0,0,,every comment, it
+Dialogue: 0,0:27:07.03,0:27:08.29,Default,,0,0,0,,sends all the
+Dialogue: 0,0:27:08.29,0:27:12.31,Default,,0,0,0,,previous messages, including
+Dialogue: 0,0:27:12.31,0:27:13.68,Default,,0,0,0,,the current one
+Dialogue: 0,0:27:13.68,0:27:14.68,Default,,0,0,0,,with the comment
+Dialogue: 0,0:27:14.68,0:27:25.03,Default,,0,0,0,,result. And it
+Dialogue: 0,0:27:25.03,0:27:26.44,Default,,0,0,0,,increases the cost
+Dialogue: 0,0:27:26.44,0:27:27.96,Default,,0,0,0,,of the chat,
+Dialogue: 0,0:27:28.07,0:27:30.68,Default,,0,0,0,,the chatting every

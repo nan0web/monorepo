@@ -11,11 +11,14 @@ class Headers extends Map {
 	 * @param {*} entries
 	 */
 	constructor(entries = []) {
+		super()
 		if (!Array.isArray(entries)) {
 			entries = entries instanceof Map ? Array.from(entries.entries()) : Object.entries(entries)
 		}
 		const fixed = entries.map(([name, value]) => [name.toLowerCase(), value])
-		super(fixed)
+		for (const [name, value] of fixed) {
+			this.set(name, value)
+		}
 	}
 }
 
@@ -137,37 +140,6 @@ export default class DBBrowser extends DB {
 		}
 	}
 
-	/**
-	 * Primary fetch logic — override for browser HTTP fetching.
-	 * Base `DB.fetch()` delegates here, providing mount routing,
-	 * fallback chain, and model hydration around this method.
-	 *
-	 * @param {string} uri
-	 * @returns {Promise<any>}
-	 */
-	async _fetchPrimary(uri) {
-		try {
-			const response = await this.fetchRemote(uri)
-			if (!response.ok) {
-				const cached = await this.store.get(uri)
-				if (cached) return cached.data
-				return undefined
-			}
-			const text = await response.text()
-			let data
-			try {
-				data = JSON.parse(text)
-			} catch {
-				data = text
-			}
-			this.store.put(uri, data, { unsynced: false }).catch(() => {})
-			return data
-		} catch (/** @type {any} */ err) {
-			const cached = await this.store.get(uri)
-			if (cached) return cached.data
-			return undefined
-		}
-	}
 
 	/**
 	 * Performs fetch with timeout and fallback.

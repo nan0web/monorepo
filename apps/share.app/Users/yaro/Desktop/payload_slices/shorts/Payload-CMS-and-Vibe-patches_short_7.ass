@@ -1,0 +1,25 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:04:30.97,0:04:32.61,Default,,0,0,0,,go back the
+Dialogue: 0,0:04:32.61,0:04:34.05,Default,,0,0,0,,wipe I select
+Dialogue: 0,0:04:34.05,0:04:34.81,Default,,0,0,0,,for this task
+Dialogue: 0,0:04:34.81,0:04:36.23,Default,,0,0,0,,also here I
+Dialogue: 0,0:04:36.23,0:04:37.37,Default,,0,0,0,,can see from
+Dialogue: 0,0:04:37.37,0:04:38.56,Default,,0,0,0,,the configuration file
+Dialogue: 0,0:04:38.56,0:04:40.29,Default,,0,0,0,,I just Use
+Dialogue: 0,0:04:40.29,0:04:41.35,Default,,0,0,0,,as a title
+Dialogue: 0,0:04:41.35,0:04:43.12,Default,,0,0,0,,the price for
+Dialogue: 0,0:04:43.12,0:04:44.73,Default,,0,0,0,,input output so
+Dialogue: 0,0:04:44.73,0:04:47.55,Default,,0,0,0,,GPT Luna the
+Dialogue: 0,0:04:47.55,0:04:49.11,Default,,0,0,0,,latest version 5
+Dialogue: 0,0:04:49.11,0:04:52.81,Default,,0,0,0,,.6 is 10
+Dialogue: 0,0:04:52.81,0:04:54.50,Default,,0,0,0,,cents for 1
+Dialogue: 0,0:04:54.50,0:04:56.26,Default,,0,0,0,,million tokens input
+Dialogue: 0,0:04:56.26,0:04:58.47,Default,,0,0,0,,and 60 cents

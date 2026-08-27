@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/share.app",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Sovereign Social Distribution Layer (Rules Engine)",
   "type": "module",
   "main": "src/index.js",
@@ -26,7 +26,7 @@
     "nan0web"
   ],
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node bin/share.js",
     "prebuild": "rm -rf dist types",
     "build": "tsc",
     "test": "node --test \"src/**/*.spec.js\"",
@@ -38,7 +38,10 @@
     "test:all": "npm run build && npm run test && npm run test:docs && npm run test:integration && npm run knip",
     "knip": "knip --production",
     "play": "node play/main.js",
-    "download": "node bin/download-whisper.js",
+    "download": "pnpm start download:whisper",
+    "pipeline:video": "pnpm start pipeline:video",
+    "drive:index": "pnpm start drive:index",
+    "drive:dedup": "pnpm start drive:dedup",
     "stats:analyze": "node bin/stats-analyzer.js",
     "shorts:generate": "node bin/script-generator.js",
     "audit": "pnpm audit --prod || true"

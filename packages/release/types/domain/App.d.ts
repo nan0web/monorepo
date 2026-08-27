@@ -1,4 +1,7 @@
-export class ReleaseApp extends ModelAsApp {
+import { ModelAsApp } from "@nan0web/ui";
+import CheckCommand from './CheckCommand.js';
+import StatusCommand from './StatusCommand.js';
+export declare class ReleaseApp extends ModelAsApp {
     static command: {
         help: string;
         options: (typeof CheckCommand | typeof StatusCommand)[];
@@ -9,9 +12,5 @@ export class ReleaseApp extends ModelAsApp {
      * @param {Partial<ReleaseApp>} [data]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
-    constructor(data?: Partial<ReleaseApp>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
-    /** @type {ModelAsApp} Subcommand to run */ command: ModelAsApp;
+    constructor(data?: Partial<ReleaseApp>, options?: Partial<import('@nan0web/ui').ModelAsAppOptions>);
 }
-import { ModelAsApp } from "@nan0web/ui";
-import CheckCommand from './CheckCommand.js';
-import StatusCommand from './StatusCommand.js';

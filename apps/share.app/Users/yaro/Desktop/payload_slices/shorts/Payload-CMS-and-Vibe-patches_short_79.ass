@@ -1,0 +1,24 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:58:02.86,0:58:13.09,Default,,0,0,0,,model name why?
+Dialogue: 0,0:58:13.09,0:58:14.90,Default,,0,0,0,,It's it's very
+Dialogue: 0,0:58:14.90,0:58:18.17,Default,,0,0,0,,weird. Let's see
+Dialogue: 0,0:58:18.17,0:58:21.63,Default,,0,0,0,,the description. A
+Dialogue: 0,0:58:21.63,0:58:22.92,Default,,0,0,0,,model name is
+Dialogue: 0,0:58:22.92,0:58:24.42,Default,,0,0,0,,provided it's used
+Dialogue: 0,0:58:24.42,0:58:26.78,Default,,0,0,0,,directly instead of
+Dialogue: 0,0:58:26.78,0:58:28.42,Default,,0,0,0,,reading from self
+Dialogue: 0,0:58:28.42,0:58:30.40,Default,,0,0,0,,coding active model
+Dialogue: 0,0:58:30.40,0:58:31.86,Default,,0,0,0,,which may be
+Dialogue: 0,0:58:31.86,0:58:33.30,Default,,0,0,0,,stale due to
+Dialogue: 0,0:58:33.30,0:58:35.46,Default,,0,0,0,,assign reactive updates.
+Dialogue: 0,0:58:36.69,0:58:39.28,Default,,0,0,0,,Okay if model
+Dialogue: 0,0:58:39.28,0:58:40.90,Default,,0,0,0,,name is known
+Dialogue: 0,0:58:40.90,0:58:43.59,Default,,0,0,0,,model okay got

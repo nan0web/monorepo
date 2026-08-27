@@ -1,0 +1,27 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:05:57.10,0:05:57.98,Default,,0,0,0,,not visible right
+Dialogue: 0,0:05:57.98,0:05:58.81,Default,,0,0,0,,now but it
+Dialogue: 0,0:05:58.81,0:06:00.22,Default,,0,0,0,,will be okay
+Dialogue: 0,0:06:00.22,0:06:02.60,Default,,0,0,0,,what have been
+Dialogue: 0,0:06:02.60,0:06:05.39,Default,,0,0,0,,done in this
+Dialogue: 0,0:06:05.39,0:06:08.24,Default,,0,0,0,,package during the
+Dialogue: 0,0:06:08.24,0:06:10.48,Default,,0,0,0,,week I need
+Dialogue: 0,0:06:10.48,0:06:12.43,Default,,0,0,0,,to I need
+Dialogue: 0,0:06:12.43,0:06:15.48,Default,,0,0,0,,a report so
+Dialogue: 0,0:06:15.48,0:06:19.10,Default,,0,0,0,,here and this
+Dialogue: 0,0:06:19.10,0:06:21.54,Default,,0,0,0,,request goes to
+Dialogue: 0,0:06:21.54,0:06:23.19,Default,,0,0,0,,the 3 .7
+Dialogue: 0,0:06:23.19,0:06:25.34,Default,,0,0,0,,flash it's quite
+Dialogue: 0,0:06:25.34,0:06:28.89,Default,,0,0,0,,fast and the
+Dialogue: 0,0:06:28.89,0:06:35.15,Default,,0,0,0,,agent also read
+Dialogue: 0,0:06:35.15,0:06:37.45,Default,,0,0,0,,the directory here
+Dialogue: 0,0:06:37.45,0:06:40.72,Default,,0,0,0,,and it checks
+Dialogue: 0,0:06:40.72,0:06:41.50,Default,,0,0,0,,the git log

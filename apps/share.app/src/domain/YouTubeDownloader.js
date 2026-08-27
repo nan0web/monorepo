@@ -1,17 +1,27 @@
-import { spawn } from 'node:child_process'
-import { promisify } from 'node:util'
-import { exec } from 'node:child_process'
-import path from 'node:path'
-import fs from 'node:fs'
-
-const execAsync = promisify(exec)
+import { ModelAsApp } from '@nan0web/ui'
 
 /**
- * Utility for downloading audio from YouTube using yt-dlp and ffmpeg.
+ * YouTubeDownloader domain model (Model-as-App).
+ * Platform-agnostic domain application controller for media download capability.
  */
-export class YouTubeDownloader {
+export class YouTubeDownloader extends ModelAsApp {
+	static alias = 'youtube:download'
+
+	static url = { help: 'Video or audio URL to download', type: 'string', required: true }
+	static outputDir = { help: 'Directory path for output files', type: 'string', default: '/tmp' }
+
+	/** @type {string} */ url
+	/** @type {string} */ outputDir
+
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		/** @type {string} Video or audio URL to download */ this.url
+		/** @type {string} Directory path for output files */ this.outputDir
+	}
+
 	/**
 	 * Parses a single line of yt-dlp stderr output for progress data.
+	 * Pure domain helper.
 	 * @param {string} line
 	 * @returns {{ percent: number, speed: string, eta: string } | null}
 	 */
@@ -29,58 +39,19 @@ export class YouTubeDownloader {
 	}
 
 	/**
-	 * Downloads audio from a YouTube URL with real-time progress output.
-	 * @param {string} url - YouTube video URL.
-	 * @param {string} [outputDir='/tmp'] - Directory to save the audio file.
-	 * @param {function} [onProgress] - Callback({ percent: number, speed: string, eta: string })
-	 * @returns {Promise<{ filePath: string, title: string }>} Path to the downloaded audio and video title.
+	 * Resolves port and downloads audio.
+	 * @param {string} url - Video URL.
+	 * @param {string} [outputDir='/tmp'] - Target directory.
+	 * @param {function} [onProgress] - Progress callback.
+	 * @param {Object} [options] - Options context containing injected port.
+	 * @returns {Promise<{ filePath: string, title: string }>}
 	 */
-	static async downloadAudio(url, outputDir = '/tmp', onProgress) {
-		// Get video title first for a nice filename
-		const { stdout: title } = await execAsync(`yt-dlp --get-title "${url}"`)
-		const cleanTitle = title.trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, '_')
-		const outputPath = path.join(outputDir, `${cleanTitle}.mp3`)
-
-		// Download audio as mp3 with real-time progress to stderr
-		await new Promise((resolve, reject) => {
-			const proc = spawn('yt-dlp', [
-				'-x', '--audio-format', 'mp3',
-				'--audio-quality', '0',
-				'-o', outputPath,
-				url,
-			], {
-				stdio: ['ignore', 'pipe', 'pipe'],
-			})
-
-			// Parse yt-dlp stderr for progress
-			// yt-dlp writes progress with \r (carriage return), so we buffer and split on \r
-			let stderrBuf = ''
-			proc.stderr.on('data', (chunk) => {
-				stderrBuf += chunk.toString()
-				// Split on \r or \n to get individual lines
-				const lines = stderrBuf.split(/\r?\n|\r/)
-				stderrBuf = lines.pop() || ''  // keep incomplete line
-				if (onProgress) {
-					for (const line of lines) {
-						const parsed = YouTubeDownloader._parseProgress(line)
-						if (parsed) onProgress(parsed)
-					}
-				}
-			})
-
-			proc.on('close', (code) => {
-				if (code === 0) resolve()
-				else reject(new Error(`yt-dlp exited with code ${code}\n${stderrBuf.slice(-500)}`))
-			})
-			proc.on('error', reject)
-		})
-
-		if (!fs.existsSync(outputPath)) {
-			// yt-dlp sometimes adds .mp3 to the output name even if specified
-			if (fs.existsSync(outputPath + '.mp3')) return { filePath: outputPath + '.mp3', title: title.trim() }
-			throw new Error(`Failed to download audio to ${outputPath}`)
+	static async downloadAudio(url, outputDir = '/tmp', onProgress, options = {}) {
+		let port = options.downloader || options._?.downloader
+		if (!port) {
+			const { YouTubeDownloaderPort } = await import('../ports/YouTubeDownloaderPort.js')
+			port = YouTubeDownloaderPort
 		}
-
-		return { filePath: outputPath, title: title.trim() }
+		return port.downloadAudio(url, outputDir, onProgress, options)
 	}
 }

@@ -1,0 +1,24 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:30:31.27,0:30:33.18,Default,,0,0,0,,now I have
+Dialogue: 0,0:30:33.18,0:30:35.01,Default,,0,0,0,,git status I
+Dialogue: 0,0:30:35.01,0:30:36.27,Default,,0,0,0,,would like to
+Dialogue: 0,0:30:36.27,0:30:38.55,Default,,0,0,0,,use rm -ref
+Dialogue: 0,0:30:38.55,0:30:44.81,Default,,0,0,0,,-chat okay so
+Dialogue: 0,0:30:44.81,0:30:46.46,Default,,0,0,0,,and git status
+Dialogue: 0,0:30:46.46,0:30:47.90,Default,,0,0,0,,and status again
+Dialogue: 0,0:30:47.90,0:30:50.33,Default,,0,0,0,,so 33 right
+Dialogue: 0,0:30:50.33,0:30:52.03,Default,,0,0,0,,so it's not
+Dialogue: 0,0:30:52.03,0:30:55.59,Default,,0,0,0,,sending until I
+Dialogue: 0,0:30:55.59,0:30:58.51,Default,,0,0,0,,go I cannot
+Dialogue: 0,0:30:58.51,0:31:02.70,Default,,0,0,0,,use console previous
+Dialogue: 0,0:31:02.70,0:31:06.01,Default,,0,0,0,,git status okay
+Dialogue: 0,0:31:06.01,0:31:07.59,Default,,0,0,0,,no it's good
+Dialogue: 0,0:31:07.59,0:31:12.77,Default,,0,0,0,,okay I will

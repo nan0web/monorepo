@@ -1,30 +1,17 @@
-/**
- * Attach a debug header to every response.
- * @param {ServerResponse} res
- * @param {string} serverId
- */
-export function setDebugHeader(res: ServerResponse, serverId: string): void;
-/**
- * Pre‑set status for DELETE routes – must be done **before**
- * the handler calls `res.json`/`res.end`.
- * @param {import('../messages/IncomingMessage.js').default} req
- * @param {import('../messages/ServerResponse.js').default} res
- */
-export function prepareDeleteResponse(req: import("../messages/IncomingMessage.js").default, res: import("../messages/ServerResponse.js").default): void;
-/**
- * Run middlewares, then invoke the supplied final handler.
- * @param {import('../messages/IncomingMessage.js').default} req
- * @param {import('../messages/ServerResponse.js').default} res
- * @param {Array<MiddlewareFn>} middlewares
- * @param {Function} finalHandler
- */
-export function runMiddlewares(req: import("../messages/IncomingMessage.js").default, res: import("../messages/ServerResponse.js").default, middlewares: Array<MiddlewareFn>, finalHandler: Function): Promise<void>;
-/**
- * Generic error handling for request processing.
- * @param {any} err
- * @param {import('../messages/ServerResponse.js').default} res
- */
-export function handleError(err: any, res: import("../messages/ServerResponse.js").default): Promise<void>;
+import { Server as HttpServer } from 'node:http';
+import Router from './Router.js';
+import IncomingMessage from '../messages/IncomingMessage.js';
+import ServerResponse from '../messages/ServerResponse.js';
+export type MiddlewareFn = (req: IncomingMessage, res: ServerResponse, next: () => Promise<void>) => Promise<void>;
+export type ServerOptions = {
+    id?: string;
+    middlewares?: Array<MiddlewareFn>;
+    server?: HttpServer | null;
+    port?: number;
+    host?: string;
+    logger?: Console;
+    ssl?: any | undefined;
+};
 /** @typedef {(req: IncomingMessage, res: ServerResponse, next: () => Promise<void>) => Promise<void>} MiddlewareFn */
 /**
  * @typedef {Object} ServerOptions
@@ -43,10 +30,6 @@ export function handleError(err: any, res: import("../messages/ServerResponse.js
  * `router.handle` never resolved, causing request time‑outs.
  */
 export default class Server {
-    /**
-     * @param {ServerOptions} options
-     */
-    constructor(options?: ServerOptions);
     /** @type {string} */
     id: string;
     /** @type {Router} */
@@ -63,6 +46,10 @@ export default class Server {
     logger: Console;
     /** @type {Object|undefined} */
     ssl: any | undefined;
+    /**
+     * @param {ServerOptions} options
+     */
+    constructor(options?: ServerOptions);
     /** @param {MiddlewareFn} middleware */
     use(middleware: MiddlewareFn): this;
     /**
@@ -125,17 +112,30 @@ export default class Server {
      */
     sendJson(res: ServerResponse, data: any): void;
 }
-export type MiddlewareFn = (req: IncomingMessage, res: ServerResponse, next: () => Promise<void>) => Promise<void>;
-export type ServerOptions = {
-    id?: string | undefined;
-    middlewares?: MiddlewareFn[] | undefined;
-    server?: HttpServer<typeof import("http").IncomingMessage, typeof import("http").ServerResponse> | null | undefined;
-    port?: number | undefined;
-    host?: string | undefined;
-    logger?: Console | undefined;
-    ssl?: any | undefined;
-};
-import ServerResponse from '../messages/ServerResponse.js';
-import Router from './Router.js';
-import { Server as HttpServer } from 'node:http';
-import IncomingMessage from '../messages/IncomingMessage.js';
+/**
+ * Attach a debug header to every response.
+ * @param {ServerResponse} res
+ * @param {string} serverId
+ */
+export declare function setDebugHeader(res: ServerResponse, serverId: string): void;
+/**
+ * Pre‑set status for DELETE routes – must be done **before**
+ * the handler calls `res.json`/`res.end`.
+ * @param {import('../messages/IncomingMessage.js').default} req
+ * @param {import('../messages/ServerResponse.js').default} res
+ */
+export declare function prepareDeleteResponse(req: import('../messages/IncomingMessage.js').default, res: import('../messages/ServerResponse.js').default): void;
+/**
+ * Run middlewares, then invoke the supplied final handler.
+ * @param {import('../messages/IncomingMessage.js').default} req
+ * @param {import('../messages/ServerResponse.js').default} res
+ * @param {Array<MiddlewareFn>} middlewares
+ * @param {Function} finalHandler
+ */
+export declare function runMiddlewares(req: import('../messages/IncomingMessage.js').default, res: import('../messages/ServerResponse.js').default, middlewares: Array<MiddlewareFn>, finalHandler: Function): Promise<void>;
+/**
+ * Generic error handling for request processing.
+ * @param {any} err
+ * @param {import('../messages/ServerResponse.js').default} res
+ */
+export declare function handleError(err: any, res: import('../messages/ServerResponse.js').default): Promise<void>;

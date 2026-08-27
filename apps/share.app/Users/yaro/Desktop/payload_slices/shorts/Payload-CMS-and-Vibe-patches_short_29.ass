@@ -1,0 +1,37 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:20:50.71,0:20:52.41,Default,,0,0,0,,message says again
+Dialogue: 0,0:20:52.41,0:20:54.47,Default,,0,0,0,,so every next
+Dialogue: 0,0:20:54.47,0:20:55.43,Default,,0,0,0,,step i spent
+Dialogue: 0,0:20:55.43,0:20:56.63,Default,,0,0,0,,more and more
+Dialogue: 0,0:20:56.63,0:20:57.34,Default,,0,0,0,,and more and
+Dialogue: 0,0:20:57.34,0:20:58.76,Default,,0,0,0,,more than previous
+Dialogue: 0,0:20:58.76,0:21:00.82,Default,,0,0,0,,step and it's
+Dialogue: 0,0:21:00.82,0:21:02.39,Default,,0,0,0,,like not doubling
+Dialogue: 0,0:21:02.39,0:21:03.84,Default,,0,0,0,,but it's costing
+Dialogue: 0,0:21:03.84,0:21:05.28,Default,,0,0,0,,more and more
+Dialogue: 0,0:21:05.28,0:21:06.13,Default,,0,0,0,,every next step
+Dialogue: 0,0:21:06.13,0:21:07.76,Default,,0,0,0,,so it's there
+Dialogue: 0,0:21:07.76,0:21:08.43,Default,,0,0,0,,here is the
+Dialogue: 0,0:21:08.43,0:21:09.76,Default,,0,0,0,,function like compact
+Dialogue: 0,0:21:09.76,0:21:11.43,Default,,0,0,0,,i can compact
+Dialogue: 0,0:21:11.43,0:21:14.13,Default,,0,0,0,,the chat but
+Dialogue: 0,0:21:14.13,0:21:15.30,Default,,0,0,0,,this function also
+Dialogue: 0,0:21:15.30,0:21:17.08,Default,,0,0,0,,takes some cost
+Dialogue: 0,0:21:17.08,0:21:18.91,Default,,0,0,0,,because it sent
+Dialogue: 0,0:21:18.91,0:21:21.95,Default,,0,0,0,,the same dialogue
+Dialogue: 0,0:21:21.95,0:21:22.97,Default,,0,0,0,,to the llm
+Dialogue: 0,0:21:22.97,0:21:23.97,Default,,0,0,0,,and asks to
+Dialogue: 0,0:21:23.97,0:21:26.41,Default,,0,0,0,,make a summary
+Dialogue: 0,0:21:26.41,0:21:27.84,Default,,0,0,0,,what is important
+Dialogue: 0,0:21:27.84,0:21:28.75,Default,,0,0,0,,and some kind
+Dialogue: 0,0:21:28.75,0:21:30.52,Default,,0,0,0,,of index and
+Dialogue: 0,0:21:30.52,0:21:31.60,Default,,0,0,0,,start with it
+Dialogue: 0,0:21:31.60,0:21:32.60,Default,,0,0,0,,with the next

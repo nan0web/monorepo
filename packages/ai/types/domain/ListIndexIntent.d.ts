@@ -1,9 +1,10 @@
+import { ModelAsApp } from '@nan0web/ui-cli';
 /**
  * ListIndexIntent — Intent to list individual files within workspace indices.
  * Unlike ShowIndexIntent (which shows index metadata per project),
  * this lists the actual indexed file paths inside a specific index.
  */
-export class ListIndexIntent extends ModelAsApp {
+export declare class ListIndexIntent extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -32,12 +33,8 @@ export class ListIndexIntent extends ModelAsApp {
      * @param {any} [options] Model options
      */
     constructor(data?: Partial<ListIndexIntent> | Record<string, any>, options?: any);
-    /** @type {string|null} */ project: string | null;
-    /** @type {string|null} */ scope: string | null;
-    /** @type {boolean} */ json: boolean;
     /**
      * @returns {AsyncGenerator<any, any, any>}
      */
     run(): AsyncGenerator<any, any, any>;
 }
-import { ModelAsApp } from '@nan0web/ui-cli';

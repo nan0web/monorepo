@@ -1,0 +1,9 @@
+node_modules/
+.npm/
+dist/
+types/
+.cache/
+*.log
+.DS_Store
+snapshots/**/*.webp
+.husky/_

@@ -1,5 +1,47 @@
+import { Model } from '@nan0web/types';
+export type DBProtocolName = 'fs' | 'redis' | 'http' | 'memory';
+export type DBConfigType = {
+    /**
+     * Connection URL or directory path
+     */
+    url: string;
+    /**
+     * Database adapter type
+     */
+    protocol: DBProtocolName;
+    /**
+     * Authentication username
+     */
+    username: string;
+    /**
+     * Authentication password (sensitive)
+     */
+    password: string;
+    /**
+     * Logical database name or namespace
+     */
+    database: string;
+    /**
+     * Maximum reconnection attempts
+     */
+    maxRetries: number;
+    /**
+     * Connection timeout in milliseconds
+     */
+    timeoutMs: number;
+};
 /**
  * @typedef {'fs'|'redis'|'http'|'memory'} DBProtocolName
+ */
+/**
+ * @typedef {Object} DBConfigType
+ * @property {string} url Connection URL or directory path
+ * @property {DBProtocolName} protocol Database adapter type
+ * @property {string} username Authentication username
+ * @property {string} password Authentication password (sensitive)
+ * @property {string} database Logical database name or namespace
+ * @property {number} maxRetries Maximum reconnection attempts
+ * @property {number} timeoutMs Connection timeout in milliseconds
  */
 /**
  * DBConfig — Model-as-Schema for database connection configuration.
@@ -22,7 +64,7 @@
  * @property {number} maxRetries Maximum reconnection attempts
  * @property {number} timeoutMs Connection timeout in milliseconds
  */
-export default class DBConfig extends Model {
+export default class DBConfig extends Model /** @implements {DBConfigType} */ {
     static UI: {
         title: string;
         description: string;
@@ -35,7 +77,7 @@ export default class DBConfig extends Model {
         type: string;
         default: string;
         required: boolean;
-        validate: (v: any) => true | "error_db_url_required";
+        validate: (v: any) => "error_db_url_required" | true;
     };
     static protocol: {
         help: string;
@@ -76,25 +118,18 @@ export default class DBConfig extends Model {
      * @param {string} url
      * @returns {'fs'|'redis'|'http'|'memory'}
      */
-    static detectProtocol(url: string): "fs" | "redis" | "http" | "memory";
+    static detectProtocol(url: string): 'fs' | 'redis' | 'http' | 'memory';
     /**
      * Parses DSN string into its components.
      * @param {string} dsn
-     * @returns {Partial<DBConfig>}
+     * @returns {Partial<DBConfigType>}
      */
-    static parseDsn(dsn: string): Partial<DBConfig>;
+    static parseDsn(dsn: string): Partial<DBConfigType>;
     /**
-     * @param {Partial<DBConfig> | string | Record<string, any>} [data={}]
+     * @param {Partial<DBConfigType> | string | Record<string, any>} [data={}]
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options={}]
      */
-    constructor(data?: Partial<DBConfig> | string | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
-    /** @type {string} Connection URL or directory path */ url: string;
-    /** @type {DBProtocolName} Database adapter type */ protocol: DBProtocolName;
-    /** @type {string} Authentication username (if required by adapter) */ username: string;
-    /** @type {string} Authentication password (sensitive — never logged) */ password: string;
-    /** @type {string} Logical database name or namespace */ database: string;
-    /** @type {number} Maximum reconnection attempts before failure */ maxRetries: number;
-    /** @type {number} Connection timeout in milliseconds */ timeoutMs: number;
+    constructor(data?: Partial<DBConfigType> | string | Record<string, any>, options?: Partial<import('@nan0web/types').ModelOptions>);
     /**
      * Build a sanitized DSN string (without credentials).
      * Safe for logging and diagnostics.
@@ -102,5 +137,3 @@ export default class DBConfig extends Model {
      */
     get safeDsn(): string;
 }
-export type DBProtocolName = "fs" | "redis" | "http" | "memory";
-import { Model } from '@nan0web/types';

@@ -174,6 +174,7 @@ describe('DBBrowser', () => {
 			await db.connect()
 			const result = await db.fetch('typography.json')
 			assert.deepEqual(result, {
+				nav: [{ href: 'index.html', title: 'Home' }],
 				$content: [{ h1: 'Typography' }],
 			})
 		})

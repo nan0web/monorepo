@@ -575,6 +575,65 @@ export default class DB {
 	}
 
 	/**
+	 * Returns a public website or application route path for a data document.
+	 * Resolves document URIs to clean web routes relative to the database cwd:
+	 * - Root index ('index.md', 'index.yaml', '') resolves to '/'
+	 * - Directory index ('en/docs/index.md', 'en/docs/') resolves to '/en/docs/'
+	 * - Regular documents ('en/docs/architecture.yaml') resolve to '/en/docs/architecture'
+	 * - Supports appending a target output extension, e.g. ext='html' or '.html'
+	 * - Returns FALSE for directory configs ('_.yaml', '_.nan0'), globals ('_/analytics.yaml', '_/t.yaml'),
+	 *   or files that are not valid data documents (not in Directory.DATA_EXTNAMES).
+	 *
+	 * @param {string} uri Document URI or path
+	 * @param {string} [ext] Target route extension to add (e.g. 'html' or '.html')
+	 * @returns {string | false} Clean web route path or false if not a routable document
+	 */
+	route(uri, ext = '') {
+		const DirectoryClass = /** @type {typeof DB} */ (this.constructor).Directory
+		const normalized = this.normalize(uri)
+
+		// 1. Check if it's a global variable path (_/...) or directory config (_)
+		if (DirectoryClass.isGlobal(normalized) || DirectoryClass.isConfig(normalized)) {
+			return false
+		}
+
+		// 2. Check if the file has an unsupported extension (not in DATA_EXTNAMES)
+		const fileExt = this.extname(normalized)
+		if (fileExt && !DirectoryClass.DATA_EXTNAMES.includes(fileExt)) {
+			return false
+		}
+
+		const isDir = normalized.endsWith('/') || normalized === '' || normalized === '.'
+		const indexName = DirectoryClass.INDEX
+
+		let targetExt = ext ? (ext.startsWith('.') ? ext : '.' + ext) : ''
+
+		if (isDir) {
+			if (targetExt) {
+				const dirPrefix = normalized && normalized !== '.' && normalized !== '/' ? normalized : ''
+				return '/' + (dirPrefix ? dirPrefix + indexName : indexName) + targetExt
+			}
+			return normalized === '' || normalized === '.' ? '/' : '/' + normalized
+		}
+
+		const base = this.basename(normalized, true)
+		const dir = this.dirname(normalized)
+		const isIndex = base === indexName
+
+		if (targetExt) {
+			const dirPrefix = dir && dir !== '.' ? dir : ''
+			return '/' + (dirPrefix ? dirPrefix + base : base) + targetExt
+		}
+
+		if (isIndex) {
+			return dir && dir !== '.' ? '/' + dir : '/'
+		}
+
+		const dirPrefix = dir && dir !== '.' ? dir : ''
+		return '/' + (dirPrefix ? dirPrefix + base : base)
+	}
+
+	/**
 	 * Returns a list of mounted database instances.
 	 * @returns {Array<{ prefix: string, db: DB }>} Array of mount records
 	 */
@@ -894,7 +953,7 @@ export default class DB {
 	 * @param {boolean} [options.includeDirs=false] - Whether to skip or include directories.
 	 * @param {boolean} [options.skipSymbolicLink=false] - Whether to skip symbolic links
 	 * @param {boolean} [options.skipIndex=false] - Skip index files
-	 * @param {string[]} [options.ignore=[]] - Patterns to ignore
+	 * @param {(string|RegExp)[]} [options.ignore=[]] - Patterns to ignore
 	 * @param {Function} [options.filter] - A filter function to apply to directory entries
 	 * @yields {DocumentEntry}
 	 * @returns {AsyncGenerator<DocumentEntry, void, unknown>}
@@ -969,7 +1028,8 @@ export default class DB {
 				if (ignore.length > 0) {
 					const name = entry.name
 					const isIgnored = ignore.some((pattern) => {
-						if (/** @type {any} */ (pattern) instanceof RegExp) return pattern.test(name)
+						if (/** @type {RegExp | string} */ (pattern) instanceof RegExp)
+							return /** @type {RegExp} */ (pattern).test(name)
 						if (pattern === '.*') return name.startsWith('.')
 						return name === pattern || name.startsWith(pattern + '/')
 					})
@@ -1771,12 +1831,11 @@ export default class DB {
 				if (entries && entries.length > 0) {
 					return entries.map((name) => {
 						const isDir = name.endsWith('/')
-						return DocumentEntry.from({
+						const entryPath = uri === '.' ? name : this.resolveSync(uri, name)
+						return new DocumentEntry({
 							name,
-							isDirectory: isDir,
-							isFile: !isDir,
-							uri: uri === '.' ? name : this.resolveSync(uri, name),
-							extname: isDir ? '' : this.extname(name),
+							path: entryPath,
+							stat: { isDirectory: isDir, isFile: !isDir },
 						})
 					})
 				}
@@ -1797,11 +1856,9 @@ export default class DB {
 		})
 		return filtered.map((path) => {
 			const isDir = path.endsWith('/')
-			if (isDir) {
-				const stat = new DocumentStat({ isDirectory: true, mtimeMs: Date.now() })
-				return new DocumentEntry({ path: path.slice(0, -1), stat })
-			}
-			const stat = this.meta.get(path) || new DocumentStat({ isFile: true, mtimeMs: Date.now() })
+			const stat = isDir
+				? new DocumentStat({ isDirectory: true, mtimeMs: Date.now() })
+				: this.meta.get(path) || new DocumentStat({ isFile: true, mtimeMs: Date.now() })
 			return new DocumentEntry({ path, stat })
 		})
 	}

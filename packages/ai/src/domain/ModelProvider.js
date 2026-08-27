@@ -116,7 +116,11 @@ export class ModelProvider {
 			case 'huggingface':
 				return !!(process.env.HF_TOKEN || process.env.HUGGINGFACE_API_KEY)
 			case 'google':
-				return !!(process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY)
+				return !!(
+					process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
+					process.env.GOOGLE_API_KEY ||
+					process.env.GEMINI_API_KEY
+				)
 			case 'groq':
 				return !!process.env.GROQ_API_KEY
 			case 'mistral':

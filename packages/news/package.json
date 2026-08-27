@@ -1,0 +1,80 @@
+{
+  "name": "@nan0web/news",
+  "version": "3.3.0",
+  "description": "CnAI News Collector - Aggregates latest CnAI news from popular internet sources (HackerNews, Reddit, Twitter) with no API keys required",
+  "type": "module",
+  "main": "src/domain/index.js",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./src/domain/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./app": {
+      "import": "./src/domain/NewsCollectorApp.js",
+      "types": "./types/domain/NewsCollectorApp.d.ts"
+    }
+  },
+  "bin": {
+    "nan0news": "bin/nan0news"
+  },
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/README.md.js",
+    "types/**/*.d.ts",
+    "bin/**",
+    "data/**/*",
+    "docs/**/*"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf types",
+    "build": "tsc",
+    "clean": "rm -rf .cache/ && rm -rf dist/ && rm -rf types/",
+    "clean:modules": "rm -rf node_modules",
+    "precommit": "npm test",
+    "prepush": "npm test",
+    "prepublishOnly": "npm test && npm run build",
+    "release": "nan0release publish",
+    "knip": "knip --production",
+    "test": "node --test --test-timeout=3333 \"src/**/*.test.js\"",
+    "test:docs": "node --test src/README.md.js 2>/dev/null || echo 'No README.md.js tests'",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:all": "npm run test && npm run build && npm run knip"
+  },
+  "knip": {
+    "entry": [
+      "src/domain/index.js",
+      "bin/nan0news"
+    ],
+    "ignoreDependencies": [
+      "@nan0web/types",
+      "@nan0web/ui",
+      "@nan0web/ui-cli"
+    ]
+  },
+  "keywords": [
+    "CnAI",
+    "news",
+    "aggregator",
+    "LLM",
+    "HackerNews",
+    "Reddit",
+    "Twitter",
+    "nan0web",
+    "OLMUI"
+  ],
+  "author": "NaN•Web Team",
+  "license": "MIT",
+  "dependencies": {
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*"
+  },
+  "devDependencies": {
+    "@nan0web/test": "workspace:*"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

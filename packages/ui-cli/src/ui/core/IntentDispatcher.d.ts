@@ -1,0 +1,53 @@
+/**
+ * Handles mapping OLMUI intents to CLI InputAdapter methods.
+ * Extracted from CLiInputAdapter to reduce God Object complexity.
+ */
+export default class IntentDispatcher {
+    #private;
+    adapter: import("./InputAdapter.js").default & {
+        renderForm?: Function | undefined;
+    };
+    /**
+     * @param {import('./InputAdapter.js').default & {renderForm?: Function}} adapter
+     */
+    constructor(adapter: import('./InputAdapter.js').default & {
+        renderForm?: Function;
+    });
+    /**
+     * Map an OLMUI Intent to the corresponding CLI interaction.
+     *
+     * @param {Object} intent
+     * @returns {Promise<{value: any, cancelled: boolean}>}
+     */
+    askIntent(intent: any): Promise<{
+        value: any;
+        cancelled: boolean;
+    }>;
+    /**
+     * Handle OLMUI Show intents.
+     *
+     * @param {Object} intent
+     * @returns {Promise<void>}
+     */
+    showIntent(intent: any): Promise<void>;
+    /**
+     * Handle OLMUI Log intents.
+     * Multi-line messages are rendered via Alert box.
+     * Supports basic markdown: **bold** → ANSI bold.
+     * @param {Object} intent
+     * @returns {Promise<void>}
+     */
+    logIntent(intent: any): Promise<void>;
+    /**
+     * Handle OLMUI Result intents.
+     *
+     * @param {Object} intent
+     */
+    resultIntent(intent: any): Promise<any>;
+    progressIntent(intent: any): Promise<{
+        onData: (chunk: any) => void;
+        onEnd: () => void;
+    } | undefined>;
+    hideActiveProgress(): void;
+    clearActiveProgress(): void;
+}

@@ -5,19 +5,18 @@
 export class Node {
 	/** @type {string} Unique ID of the node instance in the pipeline */
 	id
-	/** @type {Object} Input data for the node */
+	/** @type {Record<string, any>} Input data for the node */
 	inputs = {}
-	/** @type {Object} Output results of the node */
+	/** @type {Record<string, any>} Output results of the node */
 	outputs = {}
 
 	/**
-	 * @param {Object} [params={}]
-	 * @param {string} [params.id]
-	 * @param {Object} [params.inputs]
+	 * @param {Partial<Node>} [params={}]
 	 */
 	constructor(params = {}) {
 		this.id = params.id || this.constructor.name.toLowerCase()
 		this.inputs = params.inputs || {}
+		this.outputs = params.outputs || {}
 	}
 
 	/**
@@ -33,7 +32,7 @@ export class Node {
 
 	/**
 	 * Indicates a new logical step in the process.
-	 * @param {string} label 
+	 * @param {string} label
 	 */
 	step(label) {
 		return { type: 'step', label }
@@ -41,8 +40,8 @@ export class Node {
 
 	/**
 	 * Reports progress of the current step.
-	 * @param {number} value 
-	 * @param {number} total 
+	 * @param {number} value
+	 * @param {number} total
 	 */
 	progress(value, total) {
 		return { type: 'progress', value, total }
@@ -50,7 +49,7 @@ export class Node {
 
 	/**
 	 * Simple log message.
-	 * @param {string} message 
+	 * @param {string} message
 	 */
 	log(message) {
 		return { type: 'log', message }
@@ -58,7 +57,7 @@ export class Node {
 
 	/**
 	 * Visualizes partial or intermediate data.
-	 * @param {any} data 
+	 * @param {any} data
 	 */
 	show(data) {
 		return { type: 'show', data }
@@ -66,7 +65,7 @@ export class Node {
 
 	/**
 	 * Requests input from the user/architect.
-	 * @param {Object} schema 
+	 * @param {Object} schema
 	 */
 	ask(schema) {
 		return { type: 'ask', schema }
@@ -74,7 +73,7 @@ export class Node {
 
 	/**
 	 * Final result of the node.
-	 * @param {Object} data 
+	 * @param {Object} data
 	 */
 	result(data) {
 		this.outputs = { ...this.outputs, ...data }

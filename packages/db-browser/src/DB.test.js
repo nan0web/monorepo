@@ -581,7 +581,7 @@ suite('DBBrowser (DB tests -- network mocked)', () => {
 		})
 	})
 
-	describe.skip('fetch', () => {
+	describe('fetch', () => {
 		it('should resolve simple fetch with inheritance', async () => {
 			const db = new DBBrowser({
 				console: new NoConsole(),

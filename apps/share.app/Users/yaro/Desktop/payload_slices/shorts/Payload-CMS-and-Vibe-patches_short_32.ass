@@ -1,0 +1,32 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:23:04.99,0:23:08.32,Default,,0,0,0,,the ad then
+Dialogue: 0,0:23:08.32,0:23:09.65,Default,,0,0,0,,add flow with
+Dialogue: 0,0:23:09.65,0:23:10.69,Default,,0,0,0,,the direct workspace
+Dialogue: 0,0:23:10.69,0:23:13.13,Default,,0,0,0,,links workspace this
+Dialogue: 0,0:23:13.13,0:23:14.78,Default,,0,0,0,,is how pnpm
+Dialogue: 0,0:23:14.78,0:23:16.25,Default,,0,0,0,,monorepos are meant
+Dialogue: 0,0:23:16.25,0:23:17.56,Default,,0,0,0,,to work there
+Dialogue: 0,0:23:17.56,0:23:18.65,Default,,0,0,0,,are copy instant
+Dialogue: 0,0:23:18.65,0:23:20.69,Default,,0,0,0,,linking no locking
+Dialogue: 0,0:23:20.69,0:23:23.49,Default,,0,0,0,,churn which approach
+Dialogue: 0,0:23:23.49,0:23:25.11,Default,,0,0,0,,do you prefer
+Dialogue: 0,0:23:25.97,0:23:27.67,Default,,0,0,0,,i use when
+Dialogue: 0,0:23:27.67,0:23:29.08,Default,,0,0,0,,nano web repository
+Dialogue: 0,0:23:29.08,0:23:30.36,Default,,0,0,0,,is option b
+Dialogue: 0,0:23:30.36,0:23:32.73,Default,,0,0,0,,already with workspace
+Dialogue: 0,0:23:32.73,0:23:34.08,Default,,0,0,0,,and it works
+Dialogue: 0,0:23:34.08,0:23:36.13,Default,,0,0,0,,well this way
+Dialogue: 0,0:23:36.13,0:23:37.99,Default,,0,0,0,,i used as
+Dialogue: 0,0:23:37.99,0:23:40.50,Default,,0,0,0,,archives because i
+Dialogue: 0,0:23:40.50,0:23:43.41,Default,,0,0,0,,was using already
+Dialogue: 0,0:23:43.41,0:23:44.91,Default,,0,0,0,,before the vip
+Dialogue: 0,0:23:44.91,0:23:46.78,Default,,0,0,0,,npm published versions
+Dialogue: 0,0:23:46.78,0:23:48.06,Default,,0,0,0,,i was used

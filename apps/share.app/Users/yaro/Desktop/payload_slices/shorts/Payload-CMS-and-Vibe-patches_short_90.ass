@@ -1,0 +1,23 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,1:06:22.11,1:06:23.26,Default,,0,0,0,,we select providers
+Dialogue: 0,1:06:23.26,1:06:30.19,Default,,0,0,0,,only cerebras yeah
+Dialogue: 0,1:06:30.19,1:06:31.13,Default,,0,0,0,,but I cannot
+Dialogue: 0,1:06:31.13,1:06:33.42,Default,,0,0,0,,see even my
+Dialogue: 0,1:06:33.42,1:06:34.98,Default,,0,0,0,,prices here this
+Dialogue: 0,1:06:34.98,1:06:36.46,Default,,0,0,0,,is weird because
+Dialogue: 0,1:06:36.46,1:06:37.59,Default,,0,0,0,,if I go
+Dialogue: 0,1:06:37.59,1:06:40.25,Default,,0,0,0,,for example to
+Dialogue: 0,1:06:40.25,1:06:46.55,Default,,0,0,0,,models that are
+Dialogue: 0,1:06:46.55,1:06:47.61,Default,,0,0,0,,available on open
+Dialogue: 0,1:06:47.61,1:06:49.69,Default,,0,0,0,,rotor right so
+Dialogue: 0,1:06:49.69,1:06:53.55,Default,,0,0,0,,I can see
+Dialogue: 0,1:06:53.55,1:06:55.32,Default,,0,0,0,,cerebras on open
+Dialogue: 0,1:06:55.32,1:06:56.84,Default,,0,0,0,,rotor like this

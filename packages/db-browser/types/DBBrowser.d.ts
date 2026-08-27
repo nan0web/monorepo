@@ -1,3 +1,7 @@
+import DB, { DocumentStat } from '@nan0web/db';
+import { NoConsole } from '@nan0web/log';
+import BrowserDirectory from './Directory.js';
+import BrowserStore from './BrowserStore.js';
 /**
  * DBBrowser – minimal, test‑focused implementation.
  *
@@ -7,16 +11,18 @@
  * • `statDocument` ignores any cache (super.statDocument) to ensure `isFile` is set.
  */
 export default class DBBrowser extends DB {
-    /** @type {Function | null} */
-    static "__#private@#FetchFn": Function | null;
+    #private;
+    store: BrowserStore;
+    static Directory: typeof BrowserDirectory;
+    static FetchOptions: typeof import("@nan0web/db").FetchOptions;
     /** @type {Function} */
     static get FetchFn(): Function;
-    /**
-     * Static from helper.
-     * @param {any} input
-     * @returns {DBBrowser}
-     */
-    static from(input: any): DBBrowser;
+    /** @type {string} */
+    host: string;
+    /** @type {number} */
+    timeout: number;
+    /** @type {Function} */
+    fetchFn: Function;
     /**
      * @param {object} [input]
      * @param {string} [input.host] - window.location.origin
@@ -28,21 +34,26 @@ export default class DBBrowser extends DB {
      * @param {Console | NoConsole} [input.console] - The console for messages
      */
     constructor(input?: {
-        host?: string | undefined;
-        indexFile?: string | undefined;
-        localIndexFile?: string | undefined;
-        timeout?: number | undefined;
-        fetchFn?: Function | undefined;
-        root?: string | undefined;
-        console?: Console | NoConsole | undefined;
+        host?: string;
+        indexFile?: string;
+        localIndexFile?: string;
+        timeout?: number;
+        fetchFn?: Function;
+        root?: string;
+        console?: Console | NoConsole;
     });
-    /** @type {string} */
-    host: string;
-    /** @type {number} */
-    timeout: number;
-    /** @type {Function} */
-    fetchFn: Function;
-    store: BrowserStore;
+    /**
+     * Resolves URI to virtual path or absolute URL.
+     * @param  {...string} args
+     * @returns {Promise<string>}
+     */
+    resolve(...args: string[]): Promise<string>;
+    /**
+     * Resolves path segments to absolute URL synchronously.
+     * @param {...string} args
+     * @returns {string}
+     */
+    resolveSync(...args: string[]): string;
     /**
      * Validates access level.
      * @param {string} uri
@@ -50,15 +61,6 @@ export default class DBBrowser extends DB {
      * @returns {Promise<void>}
      */
     ensureAccess(uri: string, level?: string): Promise<void>;
-    /**
-     * Primary fetch logic — override for browser HTTP fetching.
-     * Base `DB.fetch()` delegates here, providing mount routing,
-     * fallback chain, and model hydration around this method.
-     *
-     * @param {string} uri
-     * @returns {Promise<any>}
-     */
-    _fetchPrimary(uri: string): Promise<any>;
     /**
      * Performs fetch with timeout and fallback.
      *
@@ -129,8 +131,10 @@ export default class DBBrowser extends DB {
      * @returns {DBBrowser}
      */
     extract(uri: string): DBBrowser;
+    /**
+     * Static from helper.
+     * @param {any} input
+     * @returns {DBBrowser}
+     */
+    static from(input: any): DBBrowser;
 }
-import DB from '@nan0web/db';
-import BrowserStore from './BrowserStore.js';
-import { DocumentStat } from '@nan0web/db';
-import { NoConsole } from '@nan0web/log';

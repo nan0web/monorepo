@@ -1,0 +1,30 @@
+# CnAI News Collector - Translations (en_US)
+# Format: natural English phrases as keys
+# v0.1.0: English only. v0.2.0+: Add uk_UA and ru_RU
+
+# App UI strings
+"CnAI News Collector": "CnAI News Collector"
+"Collect latest CnAI news from popular internet sources": "Collect latest CnAI news from popular internet sources"
+'Filter by keyword (e.g., "LLM", "agents")': 'Filter by keyword (e.g., "LLM", "agents")'
+"Number of articles to fetch (1-50)": "Number of articles to fetch (1-50)"
+"News sources to collect from": "News sources to collect from"
+"Use cached results (24h TTL)": "Use cached results (24h TTL)"
+"⏳ Fetching news from sources...": "⏳ Fetching news from sources..."
+"No articles found": "No articles found"
+'No articles found for keyword: \"{keyword}\"': 'No articles found for keyword: "{keyword}"'
+"Failed to fetch news: {message}": "Failed to fetch news: {message}"
+'Configuration error:\n{messages}': "Configuration error:\n{messages}"
+"Usage:": "Usage:"
+
+# Display labels
+"📰 Latest CnAI News": "📰 Latest CnAI News"
+"Source": "Source"
+"Score": "Score"
+"Keywords": "Keywords"
+"Total": "Total"
+
+# Error messages
+"Limit must be between 1 and 50": "Limit must be between 1 and 50"
+"At least one news source is required": "At least one news source is required"
+"Invalid locale format": "Invalid locale format"
+"Locale not found": "Locale not found"

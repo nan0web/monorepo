@@ -1,5 +1,7 @@
 /** @typedef {import('../messages/IncomingMessage.js').default} IncomingMessage */
 /** @typedef {import('../messages/ResponseMessage.js').default} ResponseMessage */
+export type IncomingMessage = import('../messages/IncomingMessage.js').default;
+export type ResponseMessage = import('../messages/ResponseMessage.js').default;
 /**
  * Brute force protection middleware.
  * @param {Object} [options]
@@ -9,9 +11,7 @@
  * @returns {(req: IncomingMessage, res: ResponseMessage, next: Function) => Promise<void>}
  */
 export default function bruteForce(options?: {
-    windowMs?: number | undefined;
-    max?: number | undefined;
-    handler?: ((req: IncomingMessage, res: ResponseMessage, next: Function) => void) | undefined;
+    windowMs?: number;
+    max?: number;
+    handler?: (req: IncomingMessage, res: ResponseMessage, next: Function) => void;
 }): (req: IncomingMessage, res: ResponseMessage, next: Function) => Promise<void>;
-export type IncomingMessage = import("../messages/IncomingMessage.js").default;
-export type ResponseMessage = import("../messages/ResponseMessage.js").default;

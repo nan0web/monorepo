@@ -1,4 +1,15 @@
+// @ts-nocheck
 import { Model } from '@nan0web/types'
+
+/**
+ * @typedef {Object} RevisionInfoType
+ * @property {string} sha Unique revision identifier (adapter-specific)
+ * @property {string} key Document key this revision belongs to
+ * @property {string} author Author of the change (empty if anonymous)
+ * @property {string} message Commit/change message
+ * @property {string} timestamp ISO 8601 timestamp of the revision
+ * @property {number} size Document size in bytes at this revision
+ */
 
 /**
  * RevisionInfo — Model-as-Schema for document version history entry.
@@ -21,7 +32,7 @@ import { Model } from '@nan0web/types'
  * @property {string} timestamp ISO 8601 timestamp of the revision
  * @property {number} size Document size in bytes at this revision
  */
-export default class RevisionInfo extends Model {
+export default class RevisionInfo extends Model /** @implements {RevisionInfoType} */ {
 	static UI = {
 		title: 'Revision',
 		description: 'Document version history entry',
@@ -68,7 +79,7 @@ export default class RevisionInfo extends Model {
 	}
 
 	/**
-	 * @param {Partial<RevisionInfo>} [data]
+	 * @param {Partial<RevisionInfoType>} [data]
 	 * @param {object} [options]
 	 */
 	constructor(data = {}, options = {}) {

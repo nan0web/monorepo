@@ -1,3 +1,6 @@
+import IncomingMessage from '../messages/IncomingMessage.js';
+import ServerResponse from '../messages/ServerResponse.js';
+export type MiddlewareFn = import("./Server.js").MiddlewareFn;
 /** @typedef {import("./Server.js").MiddlewareFn} MiddlewareFn */
 /**
  * HTTP Router class for managing routes and middleware
@@ -6,15 +9,14 @@ export default class Router {
     /** @type {Array<Function>} */
     middlewares: Array<Function>;
     /** @type {Object.<string, Array<{pattern: {regex: RegExp, params: Object}, handler: Function}>>} */
-    routes: {
-        [x: string]: {
-            pattern: {
-                regex: RegExp;
-                params: any;
-            };
-            handler: Function;
-        }[];
-    };
+    routes: Record<string, {
+        pattern: {
+            regex: RegExp;
+            params: any;
+        };
+        handler: Function;
+    }[]>;
+    constructor();
     /**
      * Add GET route
      * @param {string} path
@@ -70,7 +72,7 @@ export default class Router {
      * @param {string} path
      * @param {MiddlewareFn} handler
      */
-    addRoute(method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD" | "OPTIONS", path: string, handler: MiddlewareFn): void;
+    addRoute(method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS', path: string, handler: MiddlewareFn): void;
     /**
      * Add middleware function that runs before all routes
      * @param {MiddlewareFn} middleware
@@ -106,6 +108,3 @@ export default class Router {
         params: any;
     }, res: ServerResponse, notFoundHandler: (req: IncomingMessage, res: ServerResponse) => Promise<void>): Promise<void>;
 }
-export type MiddlewareFn = import("./Server.js").MiddlewareFn;
-import IncomingMessage from '../messages/IncomingMessage.js';
-import ServerResponse from '../messages/ServerResponse.js';

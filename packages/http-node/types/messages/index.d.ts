@@ -1,4 +1,3 @@
-export default Messages;
 import IncomingMessage from './IncomingMessage.js';
 import ResponseMessage from './ResponseMessage.js';
 import ServerResponse from './ServerResponse.js';
@@ -14,3 +13,4 @@ declare class Messages {
     static ServerResponse: typeof ServerResponse;
 }
 export { IncomingMessage, ResponseMessage, ServerResponse };
+export default Messages;

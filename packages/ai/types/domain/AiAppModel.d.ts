@@ -1,7 +1,17 @@
+import { ModelAsApp } from '@nan0web/ui-cli';
+import { IndexWorkspaceApp } from './IndexWorkspaceApp.js';
+import { SyncWorkspaceApp } from './SyncWorkspaceApp.js';
+import { StoreApp } from './StoreApp.js';
+import { SearchSourcesIntent } from './SearchSourcesIntent.js';
+import { GetSourceIntent } from './GetSourceIntent.js';
+import { ListIndexIntent } from './ListIndexIntent.js';
+import { PipelineApp } from './PipelineApp.js';
+import { CheckIntent } from './CheckIntent.js';
+import { TaskIntent } from './TaskIntent.js';
 /**
  * AiAppModel — domain model for AI toolkit management (RAG, Indexing, MCP).
  */
-export class AiAppModel extends ModelAsApp {
+export declare class AiAppModel extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -9,16 +19,14 @@ export class AiAppModel extends ModelAsApp {
     };
     static command: {
         help: string;
-        options: (typeof GetSourceIntent | typeof SearchSourcesIntent | typeof IndexWorkspaceApp | typeof SyncWorkspaceApp | typeof StoreApp | typeof ListIndexIntent)[];
+        options: (typeof GetSourceIntent | typeof SearchSourcesIntent | typeof IndexWorkspaceApp | typeof SyncWorkspaceApp | typeof StoreApp | typeof ListIndexIntent | typeof PipelineApp | typeof CheckIntent | typeof TaskIntent)[];
         positional: boolean;
     };
     /**
      * @param {Partial<AiAppModel> | Record<string, any>} [data] Initial state
      * @param {import('@nan0web/ui').ModelAsAppOptions & Record<string, any>} [options] Model options
      */
-    constructor(data?: Partial<AiAppModel> | Record<string, any>, options?: import("@nan0web/ui").ModelAsAppOptions & Record<string, any>);
-    /** @type {InstanceType<typeof IndexWorkspaceApp> | InstanceType<typeof SyncWorkspaceApp> | InstanceType<typeof StoreApp> | SearchSourcesIntent | GetSourceIntent} */
-    command: InstanceType<typeof IndexWorkspaceApp> | InstanceType<typeof SyncWorkspaceApp> | InstanceType<typeof StoreApp> | SearchSourcesIntent | GetSourceIntent;
+    constructor(data?: Partial<AiAppModel> | Record<string, any>, options?: import('@nan0web/ui').ModelAsAppOptions & Record<string, any>);
     /**
      * Main execution entry point for AiAppModel.
      * Acts as a router, delegating execution to the appropriate subcommand (Executor).
@@ -33,10 +41,3 @@ export class AiAppModel extends ModelAsApp {
      */
     internalSearch(vector: number[] | Float32Array, opts?: object): Promise<Array<any>>;
 }
-import { ModelAsApp } from '@nan0web/ui-cli';
-import { IndexWorkspaceApp } from './IndexWorkspaceApp.js';
-import { SyncWorkspaceApp } from './SyncWorkspaceApp.js';
-import { StoreApp } from './StoreApp.js';
-import { SearchSourcesIntent } from './SearchSourcesIntent.js';
-import { GetSourceIntent } from './GetSourceIntent.js';
-import { ListIndexIntent } from './ListIndexIntent.js';

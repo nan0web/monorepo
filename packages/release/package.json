@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/release",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Project Management as Code, Git-Native, GPG-Signed, Test-Driven",
   "main": "src/index.js",
   "types": "types/index.d.ts",

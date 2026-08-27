@@ -1,0 +1,11 @@
+# Temporary download files and outputs
+/tmp/
+*.result.*
+youtube_result.*
+tiktok*_result.*
+result.*
+*.mp3
+*.wav
+*.m4a
+*.aiff
+cookies.txt

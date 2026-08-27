@@ -1,0 +1,31 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:08:12.58,0:08:14.39,Default,,0,0,0,,with automated pnpm
+Dialogue: 0,0:08:14.39,0:08:15.19,Default,,0,0,0,,park all in
+Dialogue: 0,0:08:15.19,0:08:16.91,Default,,0,0,0,,pnpm package own
+Dialogue: 0,0:08:16.91,0:08:18.56,Default,,0,0,0,,commands so this
+Dialogue: 0,0:08:18.56,0:08:21.12,Default,,0,0,0,,is needed for
+Dialogue: 0,0:08:21.12,0:08:23.81,Default,,0,0,0,,development so if
+Dialogue: 0,0:08:23.81,0:08:26.53,Default,,0,0,0,,you are thinking
+Dialogue: 0,0:08:26.53,0:08:28.43,Default,,0,0,0,,about some improvement
+Dialogue: 0,0:08:28.43,0:08:29.72,Default,,0,0,0,,you can do
+Dialogue: 0,0:08:29.72,0:08:31.13,Default,,0,0,0,,this by the
+Dialogue: 0,0:08:31.13,0:08:32.86,Default,,0,0,0,,pull request and
+Dialogue: 0,0:08:32.86,0:08:34.39,Default,,0,0,0,,there are automated
+Dialogue: 0,0:08:34.39,0:08:35.55,Default,,0,0,0,,tools to park
+Dialogue: 0,0:08:35.55,0:08:37.53,Default,,0,0,0,,the packages test
+Dialogue: 0,0:08:37.53,0:08:38.81,Default,,0,0,0,,the packages test
+Dialogue: 0,0:08:38.81,0:08:41.12,Default,,0,0,0,,with the specific
+Dialogue: 0,0:08:41.12,0:08:43.96,Default,,0,0,0,,sandbox so let's
+Dialogue: 0,0:08:43.96,0:08:48.05,Default,,0,0,0,,go further five
+Dialogue: 0,0:08:48.05,0:08:49.96,Default,,0,0,0,,core ESM plugins
+Dialogue: 0,0:08:49.96,0:08:52.22,Default,,0,0,0,,created payload self
+Dialogue: 0,0:08:52.22,0:08:53.31,Default,,0,0,0,,storage self hosted
+Dialogue: 0,0:08:53.31,0:08:55.39,Default,,0,0,0,,storage adapter yeah

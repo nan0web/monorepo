@@ -1,3 +1,15 @@
+import { NoConsole } from '@nan0web/log';
+import Data from '../Data.js';
+import Directory from '../Directory.js';
+import DirectoryIndex from '../DirectoryIndex.js';
+import DocumentStat from '../DocumentStat.js';
+import DocumentEntry from '../DocumentEntry.js';
+import StreamEntry from '../StreamEntry.js';
+import GetOptions from './GetOptions.js';
+import FetchOptions from './FetchOptions.js';
+import AuthContext from './AuthContext.js';
+import DBDriverProtocol from './DriverProtocol.js';
+import FormatRegistry from '../FormatRegistry.js';
 /**
  * Base database class for document storage and retrieval.
  * Provides core functionality for managing documents, metadata, and directory operations.
@@ -30,6 +42,8 @@
  * @extends {DBDriverProtocol} - Optional driver for access control
  */
 export default class DB {
+    #private;
+    _watchers: Map<any, any> | undefined;
     static Data: typeof Data;
     static Directory: typeof Directory;
     static Driver: typeof DBDriverProtocol;
@@ -45,63 +59,6 @@ export default class DB {
      * @returns {boolean}
      */
     static isDB(obj: any): boolean;
-    /**
-     * Creates a new DB instance from properties if object provided
-     * @param {object|DB} input - Properties or DB instance
-     * @returns {DB}
-     */
-    static from(input: object | DB): DB;
-    /**
-     * Creates a new DB instance from input object
-     * that can include configuration for:
-     * - root directory,
-     * - working directory,
-     * - data and metadata maps,
-     * - connection status,
-     * - attached databases,
-     * - console for the debug, silent = true by default.
-     * - auth context for access control.
-     *
-     * @param {object} input
-     * @param {string} [input.cwd="."] - Current working directory (base for absolute paths)
-     * @param {string} [input.root="."] - Root path for URI resolution
-     * @param {DBDriverProtocol} [input.driver=new DBDriverProtocol()] - Access control driver
-     * @param {boolean} [input.connected=false] - Connection status
-     * @param {Map<string, any | false>} [input.data=new Map()] - In-memory data cache
-     * @param {Map<string, DocumentStat>} [input.meta=new Map()] - Metadata cache
-     * @param {number} [input.ttl=0] - Cache life time.
-     * @param {AuthContext | object} [input.context=new AuthContext()] - Authentication/authorization context
-     * @param {Map<string, any> | Array<readonly [string, any]>} [input.predefined=new Map()] - Data for memory operations.
-     * @param {DB[]} [input.dbs=[]] - Attached sub-databases
-     * @param {Function | Map<string, Function>} [input.models] - Model class(es) for hydration
-     * @param {Function} [input.Model] - Shorthand: single Model class for all URIs
-     * @param {Record<string, string>} [input.aliases={}] - URI aliases for virtual projection
-     * @param {Console | NoConsole} [input.console=new NoConsole()] - Logging console
-     * @param {FormatRegistry} [input.registry] - Format registry instance
-     * @param {Array<{ext: string, load: (str: string, ext: string) => any, save: (doc: any, ext: string) => string}>} [input.formats] - Custom format registrations
-     */
-    constructor(input?: {
-        cwd?: string | undefined;
-        root?: string | undefined;
-        driver?: DBDriverProtocol | undefined;
-        connected?: boolean | undefined;
-        data?: Map<string, any> | undefined;
-        meta?: Map<string, DocumentStat> | undefined;
-        ttl?: number | undefined;
-        context?: AuthContext | object;
-        predefined?: Map<string, any> | (readonly [string, any])[] | undefined;
-        dbs?: DB[] | undefined;
-        models?: Function | Map<string, Function> | undefined;
-        Model?: Function | undefined;
-        aliases?: Record<string, string> | undefined;
-        console?: Console | NoConsole | undefined;
-        registry?: FormatRegistry | undefined;
-        formats?: {
-            ext: string;
-            load: (str: string, ext: string) => any;
-            save: (doc: any, ext: string) => string;
-        }[] | undefined;
-    });
     /** @type {FormatRegistry} */
     registry: FormatRegistry;
     /** @type {DBDriverProtocol} */
@@ -134,6 +91,57 @@ export default class DB {
     aliases: Record<string, string>;
     /** @type {Map<string, any>} */
     _inheritanceCache: Map<string, any>;
+    /**
+     * Creates a new DB instance from input object
+     * that can include configuration for:
+     * - root directory,
+     * - working directory,
+     * - data and metadata maps,
+     * - connection status,
+     * - attached databases,
+     * - console for the debug, silent = true by default.
+     * - auth context for access control.
+     *
+     * @param {object} input
+     * @param {string} [input.cwd="."] - Current working directory (base for absolute paths)
+     * @param {string} [input.root="."] - Root path for URI resolution
+     * @param {DBDriverProtocol} [input.driver=new DBDriverProtocol()] - Access control driver
+     * @param {boolean} [input.connected=false] - Connection status
+     * @param {Map<string, any | false>} [input.data=new Map()] - In-memory data cache
+     * @param {Map<string, DocumentStat>} [input.meta=new Map()] - Metadata cache
+     * @param {number} [input.ttl=0] - Cache life time.
+     * @param {AuthContext | object} [input.context=new AuthContext()] - Authentication/authorization context
+     * @param {Map<string, any> | Array<readonly [string, any]>} [input.predefined=new Map()] - Data for memory operations.
+     * @param {DB[]} [input.dbs=[]] - Attached sub-databases
+     * @param {Function | Map<string, Function>} [input.models] - Model class(es) for hydration
+     * @param {Function} [input.Model] - Shorthand: single Model class for all URIs
+     * @param {Record<string, string>} [input.aliases={}] - URI aliases for virtual projection
+     * @param {Console | NoConsole} [input.console=new NoConsole()] - Logging console
+     * @param {FormatRegistry} [input.registry] - Format registry instance
+     * @param {Array<{ext: string, load: (str: string, ext: string) => any, save: (doc: any, ext: string) => string}>} [input.formats] - Custom format registrations
+     */
+    constructor(input?: {
+        cwd?: string;
+        root?: string;
+        driver?: DBDriverProtocol;
+        connected?: boolean;
+        data?: Map<string, any | false>;
+        meta?: Map<string, DocumentStat>;
+        ttl?: number;
+        context?: AuthContext | object;
+        predefined?: Map<string, any> | Array<readonly [string, any]>;
+        dbs?: DB[];
+        models?: Function | Map<string, Function>;
+        Model?: Function;
+        aliases?: Record<string, string>;
+        console?: Console | NoConsole;
+        registry?: FormatRegistry;
+        formats?: Array<{
+            ext: string;
+            load: (str: string, ext: string) => any;
+            save: (doc: any, ext: string) => string;
+        }>;
+    });
     /**
      * Resolves a URI alias. If the URI matches a registered alias,
      * returns the real target URI. Otherwise returns the original URI unchanged.
@@ -187,7 +195,6 @@ export default class DB {
      * @returns {Function} Unsubscribe function
      */
     watch(uri: string, callback: Function): Function;
-    _watchers: Map<any, any> | undefined;
     /**
      * Stops watching a URI. If callback is provided, removes only that
      * specific watcher. Otherwise removes all watchers for the URI.
@@ -298,6 +305,21 @@ export default class DB {
      * @returns {string} The resolved real URI
      */
     realpath(uri: string): string;
+    /**
+     * Returns a public website or application route path for a data document.
+     * Resolves document URIs to clean web routes relative to the database cwd:
+     * - Root index ('index.md', 'index.yaml', '') resolves to '/'
+     * - Directory index ('en/docs/index.md', 'en/docs/') resolves to '/en/docs/'
+     * - Regular documents ('en/docs/architecture.yaml') resolve to '/en/docs/architecture'
+     * - Supports appending a target output extension, e.g. ext='html' or '.html'
+     * - Returns FALSE for directory configs ('_.yaml', '_.nan0'), globals ('_/analytics.yaml', '_/t.yaml'),
+     *   or files that are not valid data documents (not in Directory.DATA_EXTNAMES).
+     *
+     * @param {string} uri Document URI or path
+     * @param {string} [ext] Target route extension to add (e.g. 'html' or '.html')
+     * @returns {string | false} Clean web route path or false if not a routable document
+     */
+    route(uri: string, ext?: string): string | false;
     /**
      * Returns a list of mounted database instances.
      * @returns {Array<{ prefix: string, db: DB }>} Array of mount records
@@ -419,13 +441,7 @@ export default class DB {
      * @returns {Promise<{ total: number, processed: number, ignored: number, updatedURIs: string[] }>}
      */
     dump(dest: DB, options?: {
-        onProgress?: (({ uri, url, data, current, total }: {
-            uri: any;
-            url: any;
-            data: any;
-            current: any;
-            total: any;
-        }) => void) | undefined;
+        onProgress?: ({ uri, url, data, current, total }: any) => void;
     }): Promise<{
         total: number;
         processed: number;
@@ -464,20 +480,20 @@ export default class DB {
      * @param {boolean} [options.includeDirs=false] - Whether to skip or include directories.
      * @param {boolean} [options.skipSymbolicLink=false] - Whether to skip symbolic links
      * @param {boolean} [options.skipIndex=false] - Skip index files
-     * @param {string[]} [options.ignore=[]] - Patterns to ignore
+     * @param {(string|RegExp)[]} [options.ignore=[]] - Patterns to ignore
      * @param {Function} [options.filter] - A filter function to apply to directory entries
      * @yields {DocumentEntry}
      * @returns {AsyncGenerator<DocumentEntry, void, unknown>}
      */
     readDir(uri: string, options?: {
         context?: AuthContext | object;
-        depth?: number | undefined;
-        skipStat?: boolean | undefined;
-        includeDirs?: boolean | undefined;
-        skipSymbolicLink?: boolean | undefined;
-        skipIndex?: boolean | undefined;
-        ignore?: string[] | undefined;
-        filter?: Function | undefined;
+        depth?: number;
+        skipStat?: boolean;
+        includeDirs?: boolean;
+        skipSymbolicLink?: boolean;
+        skipIndex?: boolean;
+        ignore?: (string | RegExp)[];
+        filter?: Function;
     }): AsyncGenerator<DocumentEntry, void, unknown>;
     /**
      * Reads a specific branch at given depth
@@ -695,7 +711,7 @@ export default class DB {
      * @returns {Promise<void>}
      * @throws {Error} - Access denied
      */
-    ensureAccess(uri: string, level?: "r" | "w" | "d", context?: AuthContext | object): Promise<void>;
+    ensureAccess(uri: string, level?: 'r' | 'w' | 'd', context?: AuthContext | object): Promise<void>;
     /**
      * Synchronize data with persistent storage
      * Saves changed documents where local mtime > remote stat mtime.
@@ -747,13 +763,13 @@ export default class DB {
      */
     findStream(uri: string, options?: {
         context?: AuthContext | object;
-        filter?: Function | undefined;
-        limit?: number | undefined;
-        sort?: "name" | "size" | "mtime" | undefined;
-        order?: "asc" | "desc" | undefined;
-        skipStat?: boolean | undefined;
-        skipSymbolicLink?: boolean | undefined;
-        load?: boolean | undefined;
+        filter?: Function;
+        limit?: number;
+        sort?: 'name' | 'mtime' | 'size';
+        order?: 'asc' | 'desc';
+        skipStat?: boolean;
+        skipSymbolicLink?: boolean;
+        load?: boolean;
     }): AsyncGenerator<StreamEntry, void, unknown>;
     /**
      * Returns TRUE if uri is a data file.
@@ -858,23 +874,16 @@ export default class DB {
      * @yields {DocumentEntry} File entries
      */
     browse(uri?: string, options?: {
-        depth?: number | undefined;
-        includeDirs?: boolean | undefined;
-        skipIndex?: boolean | undefined;
-        ignore?: string[] | undefined;
-        filter?: Function | undefined;
+        depth?: number;
+        includeDirs?: boolean;
+        skipIndex?: boolean;
+        ignore?: string[];
+        filter?: Function;
     }): AsyncGenerator<DocumentEntry, void, unknown>;
-    #private;
+    /**
+     * Creates a new DB instance from properties if object provided
+     * @param {object|DB} input - Properties or DB instance
+     * @returns {DB}
+     */
+    static from(input: object | DB): DB;
 }
-import FormatRegistry from '../FormatRegistry.js';
-import DBDriverProtocol from './DriverProtocol.js';
-import DocumentStat from '../DocumentStat.js';
-import AuthContext from './AuthContext.js';
-import { NoConsole } from '@nan0web/log';
-import Data from '../Data.js';
-import Directory from '../Directory.js';
-import DirectoryIndex from '../DirectoryIndex.js';
-import GetOptions from './GetOptions.js';
-import DocumentEntry from '../DocumentEntry.js';
-import StreamEntry from '../StreamEntry.js';
-import FetchOptions from './FetchOptions.js';

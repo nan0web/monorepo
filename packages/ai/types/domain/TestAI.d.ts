@@ -1,4 +1,12 @@
 /**
+ * @typedef {import('ai').StreamTextResult<any, any>} StreamTextResult
+ * @typedef {import('ai').ModelMessage} ModelMessage
+ */
+export type StreamTextResult = import('ai').StreamTextResult<any, any>;
+export type ModelMessage = import('ai').ModelMessage;
+import { AI } from './AI.js';
+import { Usage } from './Usage.js';
+/**
  * TestAI extends AI to simulate chat responses without real API calls.
  *
  * Responses can be provided in-memory via the constructor.
@@ -8,13 +16,14 @@
  * const result = await ai.streamText(null, [])
  * // result.text === 'Hello!'
  */
-export class TestAI extends AI {
+export declare class TestAI extends AI {
+    #private;
     /**
      * @param {string[]} [responses] Pre-recorded text responses.
      */
     constructor(responses?: string[]);
     streamText(model: any, messages: any, options?: {}): Promise<{
-        id: `${string}-${string}-${string}-${string}-${string}`;
+        id: any;
         text: string;
         reasoning: string;
         content: string;
@@ -24,7 +33,7 @@ export class TestAI extends AI {
         };
         usage: Usage;
         rawCall: {
-            messageId: `${string}-${string}-${string}-${string}-${string}`;
+            messageId: any;
         };
         experimental_output: any[];
         warnings: any[];
@@ -39,7 +48,7 @@ export class TestAI extends AI {
             timestamp: Date;
             modelId: string;
             headers: {};
-            messages: any[];
+            messages: undefined[];
         };
     }>;
     /**
@@ -55,9 +64,17 @@ export class TestAI extends AI {
         usedModel: any;
         usedProvider: any;
     }>;
-    #private;
+    /**
+     * Async generator mock for streaming text tokens.
+     * @param {any} model
+     * @param {ModelMessage[]} messages
+     * @param {object} [options]
+     * @returns {AsyncGenerator<string, {text: string, usage: Usage, usedModel: any, usedProvider: any}>}
+     */
+    streamTextGenerator(model: any, messages: ModelMessage[], options?: object): AsyncGenerator<string, {
+        text: string;
+        usage: Usage;
+        usedModel: any;
+        usedProvider: any;
+    }>;
 }
-export type StreamTextResult = import("ai").StreamTextResult<any, any>;
-export type ModelMessage = import("ai").ModelMessage;
-import { AI } from './AI.js';
-import { Usage } from './Usage.js';

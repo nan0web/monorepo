@@ -68,6 +68,19 @@
   - Додано кастомну 404 сторінку з підтримкою Dark Mode.
 - [x] **Валідація збірки**: `npm run build` сформував усі 14 статичних сторінок без жодної помилки.
 
+### 4. Payload CMS Content Migration — v0.3.0 (seed завершено, frontend migration триває)
+- [x] **TS → JS сумісність**: Всі колекції конвертовано на чистий JS (.js розширення, без TS-анотацій `: CollectionConfig`, `as any`).
+- [x] **payload.config.ts → .js**: Прибрано TypeScript-синтаксис, додано `.js` розширення в імпорти.
+- [x] **Schema synchronization**: `migrate:fresh` → `generate:db-schema` → `migrate:create` → `migrate` — схема БД синхронізована з `.js` колекціями.
+- [x] **Seed full import**: 3545 статей оброблено, 2804 створено/оновлено (2276 uk + 528 en locale records) за ~24 секунди.
+- [x] **Idempotency verified**: Повторний запуск оновлює існуючі записи без дублікатів.
+- [x] **externalId як ключ ідемпотентності**: Payload `id` (integer PK) не можна використовувати для text-ідентифікаторів.
+- [x] **Process hang fix**: `db.destroy()` timeout + `process.exit(0)` для коректного завершення.
+- [x] **Payload frontend adapter**: Створено `web/src/data/payload-api.js` з локалізованим читанням і мапінгом `article` у frontend shape.
+- [x] **Server routes частково переведено**: головний новинний route, dashboard і category route використовують Payload adapter.
+- [x] **Adapter tests**: Додано 3 unit-тести для locale, мапінгу та пошуку за `externalId`.
+- [ ] Перевести slug-route, додати ISR/webhook і завершити багатомовний fallback для довільної кількості локалей.
+
 ---
 
 ## 🎯 Наступна сесія (Release v3.2.0)

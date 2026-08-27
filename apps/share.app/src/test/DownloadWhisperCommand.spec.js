@@ -57,10 +57,10 @@ describe('DownloadWhisperCommand', () => {
 		}
 		// The return value of an async generator is the final {done:true, value}
 		// which for-await-of DOES NOT include. We check the yielded intents.
-		const errorLog = results.find(r => r.type === 'log' && r.level === 'error')
-		assert.ok(errorLog, 'should yield an error log')
+		const errorShow = results.find(r => r.type === 'show' && r.level === 'error')
+		assert.ok(errorShow, 'should yield an error show')
 		// The generator returns a result object (not yielded)
 		// We verify the proper error message was yielded
-		assert.ok(errorLog.message.includes('Usage:'))
+		assert.ok(errorShow.message.includes('Usage:'))
 	})
 })

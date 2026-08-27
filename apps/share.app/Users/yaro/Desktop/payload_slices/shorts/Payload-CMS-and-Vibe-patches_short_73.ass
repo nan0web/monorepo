@@ -1,0 +1,19 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:53:37.15,0:53:39.03,Default,,0,0,0,,updating the context
+Dialogue: 0,0:53:39.03,0:53:42.19,Default,,0,0,0,,progress after the
+Dialogue: 0,0:53:42.19,0:53:46.46,Default,,0,0,0,,command selection is
+Dialogue: 0,0:53:46.46,0:53:52.55,Default,,0,0,0,,one step. Backwards.
+Dialogue: 0,0:53:56.98,0:53:58.94,Default,,0,0,0,,I need it
+Dialogue: 0,0:53:58.94,0:54:03.36,Default,,0,0,0,,to work correctly.
+Dialogue: 0,0:54:03.36,0:54:06.03,Default,,0,0,0,,When I select
+Dialogue: 0,0:54:06.03,0:54:08.03,Default,,0,0,0,,a new model,
+Dialogue: 0,0:54:09.13,0:54:13.73,Default,,0,0,0,,it should show
+Dialogue: 0,0:54:13.73,0:54:17.07,Default,,0,0,0,,selected model right

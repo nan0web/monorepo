@@ -186,7 +186,7 @@ suite('FSDriver Tests', () => {
 		const entries = await driver.listDir(testRoot)
 		assert.ok(entries.includes('file1.txt'))
 		assert.ok(entries.includes('file2.json'))
-		assert.ok(entries.includes('dir'))
+		assert.ok(entries.includes('dir/'))
 		assert.strictEqual(entries.length, 3)
 	})
 

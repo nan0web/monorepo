@@ -48,7 +48,9 @@ export class HydratedModel extends Model {
 			for (const [key, value] of Object.entries(this)) {
 				const resolveRef = (refKey) => {
 					if (options.parent[refKey] !== undefined) return options.parent[refKey]
+					if (options.parent[`$${refKey}`] !== undefined) return options.parent[`$${refKey}`]
 					if (flat[refKey] !== undefined) return flat[refKey]
+					if (flat[`$${refKey}`] !== undefined) return flat[`$${refKey}`]
 					if (refKey === '') return options.parent
 					return undefined
 				}

@@ -297,6 +297,44 @@ function testRender() {
 
 	/**
 	 * @docs
+	 * ### `nan0ai pipeline`
+	 *
+	 * Execute declarative pipeline defined in a `pipeline.md` markdown file sequentially.
+	 */
+	it('How to run a pipeline?', () => {
+		/**
+		 * ```bash
+		 * # Run pipeline from default pipeline.md
+		 * nan0ai pipeline
+		 *
+		 * # Run specific release pipeline in quiet mode
+		 * nan0ai pipeline releases/1/0/v1.0.0/pipeline.md --output quiet
+		 * ```
+		 */
+		assert.ok(pkg.bin.nan0ai)
+	})
+
+	/**
+	 * @docs
+	 * ### `nan0ai check`
+	 *
+	 * Fast-Fail syntax validation (`node --check`) for modified JavaScript/TypeScript files.
+	 */
+	it('How to run fast-fail syntax check?', () => {
+		/**
+		 * ```bash
+		 * # Check modified files from git working tree
+		 * nan0ai check
+		 *
+		 * # Check specific files
+		 * nan0ai check src/index.js src/domain/AI.js
+		 * ```
+		 */
+		assert.ok(pkg.bin.nan0ai)
+	})
+
+	/**
+	 * @docs
 	 * ## Architecture
 	 *
 	 * ```

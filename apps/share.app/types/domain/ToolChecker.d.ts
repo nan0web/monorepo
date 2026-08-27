@@ -1,21 +1,25 @@
 /**
- * Checks whether external CLI tools are available and reports missing ones
- * with install instructions.
+ * ToolChecker domain model (Model-as-App).
+ * Platform-agnostic domain application controller for checking CLI tool availability.
  */
-export class ToolChecker {
+export class ToolChecker extends ModelAsApp {
+    static alias: string;
     /**
-     * @param {string} tool - Binary name to check (e.g. 'ffmpeg', 'yt-dlp')
+     * Resolves port and checks if tool exists.
+     * @param {string} tool - Binary name to check.
+     * @param {Object} [options]
      * @returns {Promise<boolean>}
      */
-    static check(tool: string): Promise<boolean>;
+    static check(tool: string, options?: any): Promise<boolean>;
     /**
      * Checks multiple tools and returns a list of missing ones.
-     *
      * @param {Record<string, string>} tools - Map of binary name → install hint
+     * @param {Object} [options]
      * @returns {Promise<{ tool: string, hint: string }[]>}
      */
-    static require(tools: Record<string, string>): Promise<{
+    static require(tools: Record<string, string>, options?: any): Promise<{
         tool: string;
         hint: string;
     }[]>;
 }
+import { ModelAsApp } from '@nan0web/ui';

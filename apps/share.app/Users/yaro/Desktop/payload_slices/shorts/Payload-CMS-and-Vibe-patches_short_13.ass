@@ -1,0 +1,25 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:08:57.01,0:08:59.96,Default,,0,0,0,,adapter with the
+Dialogue: 0,0:08:59.96,0:09:01.87,Default,,0,0,0,,hierarchy structure that
+Dialogue: 0,0:09:01.87,0:09:02.91,Default,,0,0,0,,is just stored
+Dialogue: 0,0:09:02.91,0:09:04.72,Default,,0,0,0,,on vps for
+Dialogue: 0,0:09:04.72,0:09:08.12,Default,,0,0,0,,example just simple
+Dialogue: 0,0:09:08.12,0:09:10.65,Default,,0,0,0,,ssd hdd just
+Dialogue: 0,0:09:10.65,0:09:13.34,Default,,0,0,0,,simple file system
+Dialogue: 0,0:09:13.34,0:09:15.89,Default,,0,0,0,,so why did
+Dialogue: 0,0:09:15.89,0:09:16.96,Default,,0,0,0,,I do this
+Dialogue: 0,0:09:16.96,0:09:21.74,Default,,0,0,0,,because the standard
+Dialogue: 0,0:09:21.74,0:09:24.24,Default,,0,0,0,,the standard payload
+Dialogue: 0,0:09:24.24,0:09:26.22,Default,,0,0,0,,CMS have some
+Dialogue: 0,0:09:26.22,0:09:28.60,Default,,0,0,0,,adapters like s3
+Dialogue: 0,0:09:28.60,0:09:30.51,Default,,0,0,0,,that I could
+Dialogue: 0,0:09:30.51,0:09:32.51,Default,,0,0,0,,run the specific
+Dialogue: 0,0:09:32.51,0:09:36.33,Default,,0,0,0,,server like minio

@@ -32,44 +32,28 @@ export class DownloadWhisperCommand extends ModelAsApp {
         required: boolean;
         help: string;
     };
+    static llmModel: {
+        type: string;
+        required: boolean;
+        help: string;
+    };
+    static cookies: {
+        type: string;
+        required: boolean;
+        help: string;
+    };
     /**
      * Detect output format from file extension.
      * @param {string} filePath
-     * @returns {'txt'|'srt'|'vtt'|'json'|null}
+     * @returns {'txt'|'srt'|'vtt'|'json'|'md'|null}
      */
-    static _detectFormat(filePath: string): "txt" | "srt" | "vtt" | "json" | null;
+    static _detectFormat(filePath: string): "txt" | "srt" | "vtt" | "json" | "md" | null;
     /**
      * @param {DownloadWhisperCommandOptions} data
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
     constructor(data?: DownloadWhisperCommandOptions, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
-    run(): AsyncGenerator<{
-        type: string;
-        level: string;
-        message: string;
-    } | {
-        type: string;
-        message: string;
-        level?: undefined;
-    }, {
-        type: string;
-        data: {
-            success: boolean;
-            title: any;
-            transcript: string;
-            outputPath: any;
-            message?: undefined;
-        };
-    } | {
-        type: string;
-        data: {
-            success: boolean;
-            message: any;
-            title?: undefined;
-            transcript?: undefined;
-            outputPath?: undefined;
-        };
-    }, unknown>;
+    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ProgressIntent | import("@nan0web/ui/src/core/Intent.js").ShowIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
 }
 export type DownloadWhisperCommandOptions = {
     /**

@@ -260,7 +260,9 @@ export async function bootstrapApp(AppModel, config = {}) {
 	const { argv, isTestMode, console, dbConsole, cwd } = await readParams(config)
 
 	// 2. Initialize DB
-	const db = config.db || new DB({ console: /** @type {any} */ (dbConsole) })
+	const db =
+		config.db ||
+		new DBFS({ console: /** @type {any} */ (dbConsole), root: config.root || './data' })
 	const fs = new DBFS({ console: /** @type {any} */ (dbConsole) })
 	const pkg = await fs.loadDocument('package.json', {})
 

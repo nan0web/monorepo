@@ -36,14 +36,10 @@ export function createTarget(raw?: Partial<SocialAdapterTarget>): SocialAdapterT
  */
 export function createResultIntent(raw?: Partial<ResultIntent>): ResultIntent;
 /**
- * Typed models for the @nan0web/share.app Sovereign Social Distribution Protocol.
- * Every model is a real class: validates input, serializable, introspectable for auto-docs.
+ * Base class for all share.app models (Model-as-App & Model-as-Schema).
+ * Provides serialization, introspection, and OLMUI execution.
  */
-/**
- * Base class for all share.app models.
- * Provides serialization and instantiation from inputs.
- */
-export class Model {
+export class Model extends ModelAsApp {
     /**
      * Instantiates a model from raw data, parsing strings as JSON.
      * @param {any} data
@@ -300,3 +296,4 @@ export type SocialAdapterContentOptions = {
  * Standard tokens: 'media', 'delete', 'reply', 'threads', 'photo', 'video', 'document', 'audio'
  */
 export type SocialAdapterCapabilities = string[];
+import { ModelAsApp } from '@nan0web/ui';

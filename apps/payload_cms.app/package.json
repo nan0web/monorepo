@@ -3,9 +3,15 @@
 	"version": "1.0.0",
 	"description": "Universal Model-as-App Model-as-Schema to Payload CMS Bridge & Generator Application",
 	"type": "module",
-	"main": "./src/domain/models/SeedModel.js",
+	"main": "./src/index.js",
 	"exports": {
-		".": "./src/domain/models/SeedModel.js"
+		".": "./src/index.js",
+		"./seed": "./src/domain/models/SeedModel.js",
+		"./transform": "./src/domain/models/TransformModel.js",
+		"./media": "./src/domain/models/MediaMigrateModel.js",
+		"./news": "./src/domain/models/NewsMigrateModel.js",
+		"./verifier": "./src/domain/models/MediaVerifyModel.js",
+		"./utils": "./src/domain/utils/mediaUtils.js"
 	},
 	"bin": {
 		"nan0cms": "./bin/app.js"

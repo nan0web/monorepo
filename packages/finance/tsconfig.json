@@ -14,11 +14,10 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"allowSyntheticDefaultImports": true,
 		"allowJs": true,
 		"checkJs": true,
-		"baseUrl": ".",
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",

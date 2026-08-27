@@ -1,0 +1,35 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,1:03:59.30,1:04:00.13,Default,,0,0,0,,I don't want
+Dialogue: 0,1:04:00.13,1:04:04.73,Default,,0,0,0,,this. Okay. Okay,
+Dialogue: 0,1:04:04.94,1:04:09.34,Default,,0,0,0,,that's enough. So,
+Dialogue: 0,1:04:09.76,1:04:11.84,Default,,0,0,0,,okay, now what
+Dialogue: 0,1:04:11.84,1:04:12.98,Default,,0,0,0,,we have now?
+Dialogue: 0,1:04:15.17,1:04:16.40,Default,,0,0,0,,We have everything
+Dialogue: 0,1:04:16.40,1:04:18.92,Default,,0,0,0,,updated. All the
+Dialogue: 0,1:04:18.92,1:04:20.61,Default,,0,0,0,,patches. So during
+Dialogue: 0,1:04:20.61,1:04:22.61,Default,,0,0,0,,this video, we've
+Dialogue: 0,1:04:22.61,1:04:23.86,Default,,0,0,0,,checked all the
+Dialogue: 0,1:04:23.86,1:04:26.07,Default,,0,0,0,,patches made for
+Dialogue: 0,1:04:26.07,1:04:27.01,Default,,0,0,0,,the wipe. I'm
+Dialogue: 0,1:04:27.01,1:04:29.00,Default,,0,0,0,,using a silly
+Dialogue: 0,1:04:29.00,1:04:30.01,Default,,0,0,0,,tool for the
+Dialogue: 0,1:04:30.01,1:04:31.42,Default,,0,0,0,,coding. And it
+Dialogue: 0,1:04:31.42,1:04:32.46,Default,,0,0,0,,works just fine,
+Dialogue: 0,1:04:32.53,1:04:33.07,Default,,0,0,0,,as you can
+Dialogue: 0,1:04:33.07,1:04:34.61,Default,,0,0,0,,see. And very
+Dialogue: 0,1:04:34.61,1:04:35.65,Default,,0,0,0,,fast, I think.
+Dialogue: 0,1:04:36.13,1:04:37.65,Default,,0,0,0,,Quite enough. And
+Dialogue: 0,1:04:37.65,1:04:38.65,Default,,0,0,0,,it's not Cerebros
+Dialogue: 0,1:04:38.65,1:04:39.67,Default,,0,0,0,,models. I don't
+Dialogue: 0,1:04:39.67,1:04:40.30,Default,,0,0,0,,know how to
+Dialogue: 0,1:04:40.30,1:04:41.59,Default,,0,0,0,,use Cerebros models
+Dialogue: 0,1:04:41.59,1:04:42.96,Default,,0,0,0,,from the OpenRouter.
+Dialogue: 0,1:04:43.07,1:04:43.94,Default,,0,0,0,,They work with

@@ -1,0 +1,20 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:38:45.30,0:38:46.98,Default,,0,0,0,,it uses so
+Dialogue: 0,0:38:46.98,0:38:48.67,Default,,0,0,0,,it's a broader
+Dialogue: 0,0:38:48.67,0:38:55.69,Default,,0,0,0,,distance of the
+Dialogue: 0,0:38:55.69,0:38:56.90,Default,,0,0,0,,of the probability
+Dialogue: 0,0:38:56.90,0:38:59.15,Default,,0,0,0,,of the new
+Dialogue: 0,0:38:59.15,0:39:01.53,Default,,0,0,0,,word so okay
+Dialogue: 0,0:39:01.53,0:39:04.98,Default,,0,0,0,,new token I
+Dialogue: 0,0:39:04.98,0:39:08.63,Default,,0,0,0,,want to have
+Dialogue: 0,0:39:08.63,0:39:12.94,Default,,0,0,0,,context progress updated
+Dialogue: 0,0:39:12.94,0:39:18.44,Default,,0,0,0,,even after command
+Dialogue: 0,0:39:18.44,0:39:22.00,Default,,0,0,0,,is used such

@@ -1,3 +1,4 @@
+import { ModelAsApp } from '@nan0web/ui';
 /**
  * Command to bump the version of changed packages in the monorepo.
  */
@@ -31,9 +32,9 @@ export default class BumpCommand extends ModelAsApp {
      * @param {Partial<BumpCommand>} [data]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
-    constructor(data?: Partial<BumpCommand>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
-    /** @type {string} Target version */ version: string;
-    /** @type {string} Since reference */ since: string;
-    /** @type {boolean} Dry run */ dryRun: boolean;
+    constructor(data?: Partial<BumpCommand>, options?: Partial<import('@nan0web/ui').ModelAsAppOptions>);
+    /**
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+     */
+    run(): AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>;
 }
-import { ModelAsApp } from '@nan0web/ui';

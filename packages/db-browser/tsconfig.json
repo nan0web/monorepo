@@ -3,7 +3,9 @@
 		"target": "esnext",
 		"module": "esnext",
 		"lib": [
-			"esnext"
+			"esnext",
+			"dom",
+			"dom.iterable"
 		],
 		"declaration": true,
 		"declarationMap": false,
@@ -20,7 +22,6 @@
 		"allowJs": true,
 		"checkJs": true,
 		"verbatimModuleSyntax": true,
-		"baseUrl": ".",
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",
@@ -1831,6 +1832,7 @@
 		"node_modules",
 		"**/*.test.js",
 		"**/*.story.js",
-		"src/test"
+		"src/test",
+		"src/README.md.js"
 	]
 }

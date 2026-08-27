@@ -3,10 +3,14 @@
 		"target": "esnext",
 		"module": "esnext",
 		"lib": [
-			"esnext"
+			"esnext",
+			"dom"
 		],
 		"declaration": true,
 		"declarationMap": false,
+		"types": [
+			"node"
+		],
 		"emitDeclarationOnly": true,
 		"outDir": "./types",
 		"rootDir": "./src",
@@ -19,7 +23,6 @@
 		"noImplicitAny": false,
 		"allowJs": true,
 		"checkJs": true,
-		"baseUrl": ".",
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",

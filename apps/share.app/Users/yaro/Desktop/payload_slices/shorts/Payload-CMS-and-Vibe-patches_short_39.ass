@@ -1,0 +1,35 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:28:17.11,0:28:18.40,Default,,0,0,0,,what we changed.
+Dialogue: 0,0:28:19.07,0:28:20.00,Default,,0,0,0,,Testing up package,
+Dialogue: 0,0:28:20.29,0:28:21.03,Default,,0,0,0,,all five plugins,
+Dialogue: 0,0:28:21.16,0:28:22.59,Default,,0,0,0,,switch from file
+Dialogue: 0,0:28:22.59,0:28:24.55,Default,,0,0,0,,to workspace, remove
+Dialogue: 0,0:28:24.55,0:28:26.11,Default,,0,0,0,,duplicate on build,
+Dialogue: 0,0:28:26.36,0:28:27.40,Default,,0,0,0,,dependence, or radiate
+Dialogue: 0,0:28:27.40,0:28:29.46,Default,,0,0,0,,workspace root. Pike
+Dialogue: 0,0:28:29.46,0:28:31.01,Default,,0,0,0,,.js replaced the
+Dialogue: 0,0:28:31.01,0:28:32.40,Default,,0,0,0,,slow pack, then
+Dialogue: 0,0:28:32.40,0:28:33.44,Default,,0,0,0,,add flow with
+Dialogue: 0,0:28:33.44,0:28:34.44,Default,,0,0,0,,a simple parallel
+Dialogue: 0,0:28:34.44,0:28:36.70,Default,,0,0,0,,validation step. No
+Dialogue: 0,0:28:36.70,0:28:39.05,Default,,0,0,0,,more TGZ generation,
+Dialogue: 0,0:28:39.27,0:28:40.46,Default,,0,0,0,,no more PMPM
+Dialogue: 0,0:28:40.46,0:28:41.92,Default,,0,0,0,,add into testing
+Dialogue: 0,0:28:41.92,0:28:43.18,Default,,0,0,0,,up. No more
+Dialogue: 0,0:28:43.18,0:28:45.11,Default,,0,0,0,,log file churn.
+Dialogue: 0,0:28:45.74,0:28:46.96,Default,,0,0,0,,The script now
+Dialogue: 0,0:28:46.96,0:28:48.59,Default,,0,0,0,,just run PMPM
+Dialogue: 0,0:28:48.59,0:28:52.27,Default,,0,0,0,,pack colon check
+Dialogue: 0,0:28:52.27,0:28:53.96,Default,,0,0,0,,on each package
+Dialogue: 0,0:28:53.96,0:28:56.22,Default,,0,0,0,,in parallel. Result
+Dialogue: 0,0:28:56.22,0:28:57.42,Default,,0,0,0,,PMPM pack all
+Dialogue: 0,0:28:57.42,0:28:58.57,Default,,0,0,0,,completes in two
+Dialogue: 0,0:28:58.57,0:28:59.86,Default,,0,0,0,,seconds instead of

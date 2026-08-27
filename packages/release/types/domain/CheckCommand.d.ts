@@ -1,3 +1,4 @@
+import { ModelAsApp } from '@nan0web/ui';
 export default class CheckCommand extends ModelAsApp {
     static UI: {
         title: string;
@@ -21,4 +22,3 @@ export default class CheckCommand extends ModelAsApp {
      */
     _scanDirRecursive(base: string, dir?: string): Promise<string[]>;
 }
-import { ModelAsApp } from '@nan0web/ui';

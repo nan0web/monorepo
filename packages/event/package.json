@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/event",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Agnostic extendable Event System",
   "type": "module",
   "main": "./src/index.js",

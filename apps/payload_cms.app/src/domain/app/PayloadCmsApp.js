@@ -1,6 +1,11 @@
 import { ModelAsApp } from '@nan0web/ui-cli'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import { TransformModel } from '../models/TransformModel.js'
 import { SeedModel } from '../models/SeedModel.js'
+import { MediaMigrateModel } from '../models/MediaMigrateModel.js'
+import { NewsMigrateModel } from '../models/NewsMigrateModel.js'
+import { MediaVerifyModel } from '../models/MediaVerifyModel.js'
 
 /**
  * PayloadCmsApp - Main application controller.
@@ -14,7 +19,13 @@ export class PayloadCmsApp extends ModelAsApp {
 
 	static command = {
 		help: 'Command to execute',
-		options: [TransformModel, SeedModel],
+		options: [
+			TransformModel,
+			SeedModel,
+			MediaMigrateModel,
+			NewsMigrateModel,
+			MediaVerifyModel,
+		],
 		positional: true,
 		default: TransformModel,
 	}
@@ -26,6 +37,54 @@ export class PayloadCmsApp extends ModelAsApp {
 	constructor(data = {}, options = {}) {
 		super(data, options)
 		/** @type {ModelAsApp} Injected subcommand instance */ this.command
+		/** @type {string} */ this.model
+	}
+
+	/**
+	 * Resolves custom SeedModel class from --model flag or package.json exports.
+	 * @returns {Promise<Function|null>}
+	 */
+	async resolveCustomSeedModel() {
+		let modelRelativePath = this.model
+
+		if (!modelRelativePath) {
+			try {
+				const pkgPath = path.resolve(process.cwd(), 'package.json')
+				const pkgContent = JSON.parse(await fs.readFile(pkgPath, 'utf8'))
+				const customSeedExport =
+					pkgContent?.exports?.['./nan0cms/seed/model'] ||
+					pkgContent?.exports?.['./seed/model'] ||
+					pkgContent?.nan0cms?.seed?.model
+
+				if (customSeedExport && typeof customSeedExport === 'string') {
+					modelRelativePath = customSeedExport
+				}
+			} catch {
+				// No package.json or unreadable
+			}
+		}
+
+		if (modelRelativePath) {
+			try {
+				const absolutePath = modelRelativePath.startsWith('/')
+					? modelRelativePath
+					: path.resolve(process.cwd(), modelRelativePath)
+				const importedModule = await import(absolutePath)
+				const CustomModelClass =
+					importedModule.BankSeedModel ||
+					importedModule.SeedModel ||
+					Object.values(importedModule).find(
+						(exp) => typeof exp === 'function' && (exp.alias === 'seed' || exp.alias === 'bank-seed' || exp.name?.includes('Seed'))
+					) ||
+					Object.values(importedModule).find((exp) => typeof exp === 'function')
+
+				return CustomModelClass || null
+			} catch (err) {
+				console.warn(`  ⚠️ Could not load custom SeedModel from ${modelRelativePath}: ${err.message}`)
+			}
+		}
+
+		return null
 	}
 
 	/**
@@ -37,25 +96,12 @@ export class PayloadCmsApp extends ModelAsApp {
 			return yield* super.run()
 		}
 
-		// Support dynamic --model instantiation (e.g. BankSeedModel / CardSeedModel)
-		if (this.command instanceof SeedModel && this.model) {
-			try {
-				const modelPath = typeof this.model === 'string' ? this.model : ''
-				if (modelPath) {
-					const absolutePath = modelPath.startsWith('/')
-						? modelPath
-						: `${process.cwd()}/${modelPath}`
-					const importedModule = await import(absolutePath)
-					const CustomModelClass = Object.values(importedModule).find(
-						(exp) => typeof exp === 'function'
-					)
-					if (CustomModelClass) {
-						const customInstance = new CustomModelClass(this.command, this._)
-						return yield* customInstance.run()
-					}
-				}
-			} catch (e) {
-				// Fallback to default command
+		// Auto-discover and support dynamic SeedModel instantiation
+		if (this.command instanceof SeedModel || this.command?.constructor?.alias === 'seed') {
+			const CustomSeedModelClass = await this.resolveCustomSeedModel()
+			if (CustomSeedModelClass) {
+				const customInstance = new CustomSeedModelClass(this.command?._raw || this.command || {}, this._)
+				return yield* customInstance.run()
 			}
 		}
 

@@ -559,6 +559,21 @@ console.info(Directory.isConfig('_.yaml')) // ← true
 console.info(Directory.isConfig('path/to/_.nan0')) // ← true
 console.info(Directory.isConfig('file.json')) // ← false
 ```
+### `db.route(uri, ext)`
+
+Generates a clean website/app route path for a data document.
+Returns `false` for internal files (`_`, `_/*`) or non-data files.
+
+How to generate public route from document URI?
+
+```js
+import { DB } from '@nan0web/db'
+const db = new DB()
+console.info(db.route('index.md')) // ← /
+console.info(db.route('en/docs/architecture.yaml')) // ← /en/docs/architecture
+console.info(db.route('en/docs/architecture.yaml', 'html')) // ← /en/docs/architecture.html
+console.info(db.route('_/analytics.yaml')) // ← false
+```
 ## Contributing
 
 How to participate? – [see CONTRIBUTING.md]($pkgURL/blob/main/CONTRIBUTING.md)

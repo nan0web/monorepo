@@ -1,0 +1,23 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:32:00.42,0:32:01.74,Default,,0,0,0,,see the status
+Dialogue: 0,0:32:01.74,0:32:05.31,Default,,0,0,0,,and 33 steps
+Dialogue: 0,0:32:05.31,0:32:06.88,Default,,0,0,0,,so nothing sent
+Dialogue: 0,0:32:06.88,0:32:08.77,Default,,0,0,0,,to the API
+Dialogue: 0,0:32:08.77,0:32:10.83,Default,,0,0,0,,and I can
+Dialogue: 0,0:32:10.83,0:32:12.24,Default,,0,0,0,,see that this
+Dialogue: 0,0:32:12.24,0:32:14.25,Default,,0,0,0,,task cost me
+Dialogue: 0,0:32:14.25,0:32:18.20,Default,,0,0,0,,two cents and
+Dialogue: 0,0:32:18.20,0:32:20.44,Default,,0,0,0,,probably more percent
+Dialogue: 0,0:32:20.44,0:32:23.36,Default,,0,0,0,,above because of
+Dialogue: 0,0:32:23.36,0:32:28.33,Default,,0,0,0,,the open router
+Dialogue: 0,0:32:28.33,0:32:33.61,Default,,0,0,0,,interest and in
+Dialogue: 0,0:32:33.61,0:32:35.92,Default,,0,0,0,,output tokens only
+Dialogue: 0,0:32:35.92,0:32:42.03,Default,,0,0,0,,nine thousand two

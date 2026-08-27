@@ -1815,7 +1815,6 @@
 				"../xml/types/domain/StoreBuilderApp.js"
 			]
 		},
-		"baseUrl": "."
 	},
 	"include": [
 		"src/**/*.js"

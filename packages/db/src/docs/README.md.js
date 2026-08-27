@@ -773,6 +773,27 @@ function testRender() {
 
 	/**
 	 * @docs
+	 * ### `db.route(uri, ext)`
+	 *
+	 * Generates a clean website/app route path for a data document.
+	 * Returns `false` for internal files (`_`, `_/*`) or non-data files.
+	 */
+	it('How to generate public route from document URI?', () => {
+		//import { DB } from '@nan0web/db'
+		const db = new DB()
+		console.info(db.route('index.md')) // ← /
+		console.info(db.route('en/docs/architecture.yaml')) // ← /en/docs/architecture
+		console.info(db.route('en/docs/architecture.yaml', 'html')) // ← /en/docs/architecture.html
+		console.info(db.route('_/analytics.yaml')) // ← false
+
+		assert.strictEqual(console.output()[0][1], '/')
+		assert.strictEqual(console.output()[1][1], '/en/docs/architecture')
+		assert.strictEqual(console.output()[2][1], '/en/docs/architecture.html')
+		assert.strictEqual(console.output()[3][1], false)
+	})
+
+	/**
+	 * @docs
 	 * ## Contributing
 	 */
 	it('How to participate? – [see CONTRIBUTING.md]($pkgURL/blob/main/CONTRIBUTING.md)', async () => {

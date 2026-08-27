@@ -1,0 +1,28 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:12:40.74,0:12:42.74,Default,,0,0,0,,answer also it
+Dialogue: 0,0:12:42.74,0:12:44.10,Default,,0,0,0,,could be just
+Dialogue: 0,0:12:44.10,0:12:45.86,Default,,0,0,0,,a vector database
+Dialogue: 0,0:12:45.86,0:12:49.91,Default,,0,0,0,,without even any
+Dialogue: 0,0:12:49.91,0:12:52.51,Default,,0,0,0,,LLM API so
+Dialogue: 0,0:12:52.51,0:12:55.37,Default,,0,0,0,,just vectorized data
+Dialogue: 0,0:12:55.37,0:12:56.86,Default,,0,0,0,,from the manual
+Dialogue: 0,0:12:57.74,0:13:01.31,Default,,0,0,0,,to search by
+Dialogue: 0,0:13:01.31,0:13:04.05,Default,,0,0,0,,sense also payload
+Dialogue: 0,0:13:04.05,0:13:05.62,Default,,0,0,0,,signing theme state
+Dialogue: 0,0:13:05.94,0:13:07.72,Default,,0,0,0,,of course I
+Dialogue: 0,0:13:07.72,0:13:10.15,Default,,0,0,0,,am working during
+Dialogue: 0,0:13:10.15,0:13:11.29,Default,,0,0,0,,the day during
+Dialogue: 0,0:13:11.29,0:13:12.39,Default,,0,0,0,,the evening and
+Dialogue: 0,0:13:13.74,0:13:16.68,Default,,0,0,0,,sometimes nights so
+Dialogue: 0,0:13:16.68,0:13:19.29,Default,,0,0,0,,if I'm working
+Dialogue: 0,0:13:19.29,0:13:20.34,Default,,0,0,0,,in the dark
+Dialogue: 0,0:13:21.13,0:13:22.00,Default,,0,0,0,,as you can
+Dialogue: 0,0:13:22.00,0:13:23.08,Default,,0,0,0,,see now I'm

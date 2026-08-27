@@ -1,0 +1,29 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:19:21.75,0:19:23.77,Default,,0,0,0,,models okay okay
+Dialogue: 0,0:19:23.77,0:19:26.83,Default,,0,0,0,,okay so branch
+Dialogue: 0,0:19:26.83,0:19:29.01,Default,,0,0,0,,main clean no
+Dialogue: 0,0:19:29.01,0:19:30.13,Default,,0,0,0,,open PR so
+Dialogue: 0,0:19:30.13,0:19:31.27,Default,,0,0,0,,painting work visible
+Dialogue: 0,0:19:31.27,0:19:32.44,Default,,0,0,0,,all comments authored
+Dialogue: 0,0:19:32.44,0:19:34.61,Default,,0,0,0,,by Yaroslav okay
+Dialogue: 0,0:19:34.61,0:19:36.86,Default,,0,0,0,,good so I
+Dialogue: 0,0:19:36.86,0:19:39.29,Default,,0,0,0,,just ask do
+Dialogue: 0,0:19:39.29,0:19:40.03,Default,,0,0,0,,we have some
+Dialogue: 0,0:19:40.03,0:19:47.16,Default,,0,0,0,,issues I have
+Dialogue: 0,0:19:47.16,0:19:49.18,Default,,0,0,0,,received a time
+Dialogue: 0,0:19:49.18,0:19:52.68,Default,,0,0,0,,out so here
+Dialogue: 0,0:19:52.68,0:19:53.70,Default,,0,0,0,,we can see
+Dialogue: 0,0:19:53.70,0:19:54.55,Default,,0,0,0,,the price of
+Dialogue: 0,0:19:54.55,0:19:55.42,Default,,0,0,0,,the current session
+Dialogue: 0,0:19:55.42,0:19:56.66,Default,,0,0,0,,now it's zero
+Dialogue: 0,0:19:56.66,0:19:58.51,Default,,0,0,0,,cents but it's
+Dialogue: 0,0:19:58.51,0:20:00.38,Default,,0,0,0,,already calculated just
+Dialogue: 0,0:20:00.38,0:20:01.31,Default,,0,0,0,,we have not

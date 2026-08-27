@@ -1,0 +1,35 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,1:00:17.07,1:00:19.30,Default,,0,0,0,,it has very
+Dialogue: 0,1:00:19.30,1:00:25.34,Default,,0,0,0,,short memory. And
+Dialogue: 0,1:00:25.34,1:00:26.15,Default,,0,0,0,,this is the
+Dialogue: 0,1:00:26.15,1:00:27.01,Default,,0,0,0,,issue of the
+Dialogue: 0,1:00:27.01,1:00:28.44,Default,,0,0,0,,current language models.
+Dialogue: 0,1:00:29.86,1:00:31.51,Default,,0,0,0,,And it hallucinating
+Dialogue: 0,1:00:31.51,1:00:33.92,Default,,0,0,0,,also. And you
+Dialogue: 0,1:00:33.92,1:00:35.38,Default,,0,0,0,,can see almost,
+Dialogue: 0,1:00:35.46,1:00:36.46,Default,,0,0,0,,it's not hallucinating
+Dialogue: 0,1:00:36.46,1:00:37.44,Default,,0,0,0,,yet, but you're
+Dialogue: 0,1:00:37.44,1:00:38.59,Default,,0,0,0,,right, you're right.
+Dialogue: 0,1:00:39.07,1:00:39.86,Default,,0,0,0,,Let me stop
+Dialogue: 0,1:00:39.86,1:00:41.26,Default,,0,0,0,,guessing. You're right,
+Dialogue: 0,1:00:41.30,1:00:42.30,Default,,0,0,0,,you're right, you're
+Dialogue: 0,1:00:42.30,1:00:44.36,Default,,0,0,0,,right. I've been
+Dialogue: 0,1:00:44.36,1:00:45.94,Default,,0,0,0,,going in circles
+Dialogue: 0,1:00:45.94,1:00:47.42,Default,,0,0,0,,reading the same
+Dialogue: 0,1:00:47.42,1:00:48.57,Default,,0,0,0,,lines. You see
+Dialogue: 0,1:00:48.57,1:00:50.57,Default,,0,0,0,,hallucinating already. Let
+Dialogue: 0,1:00:50.57,1:00:51.59,Default,,0,0,0,,me stop back
+Dialogue: 0,1:00:51.59,1:00:52.61,Default,,0,0,0,,and read the
+Dialogue: 0,1:00:52.61,1:00:54.19,Default,,0,0,0,,actual model selecting
+Dialogue: 0,1:00:54.19,1:00:55.76,Default,,0,0,0,,handler in the
+Dialogue: 0,1:00:55.76,1:00:56.86,Default,,0,0,0,,installed file to
+Dialogue: 0,1:00:56.86,1:00:59.11,Default,,0,0,0,,see. Okay, the
+Dialogue: 0,1:00:59.11,1:00:59.94,Default,,0,0,0,,fix is already

@@ -548,7 +548,7 @@ export default class Logger {
 	 * Format table data
 	 * @param {Array<any>} data
 	 * @param {string[]} columns
-	 * @param {object} options
+	 * @param {{ widths?: number[], space?: string, padding?: number, aligns?: string, prefix?: string, silent?: boolean, border?: number, headBorder?: number, footBorder?: number }} options
 	 * @returns {string[]}
 	 */
 	table(data, columns, options = {}) {

@@ -1,14 +1,7 @@
-import { spawn } from 'node:child_process'
-import path from 'node:path'
-import fs from 'node:fs'
-import readline from 'node:readline'
-
-const DEFAULT_SEGMENT_DURATION = 300 // 5 min
-const DEFAULT_OVERLAP = 2 // seconds of overlap on each side of a segment boundary
+import { ModelAsApp } from '@nan0web/ui'
 
 /**
  * Compute Levenshtein distance between two strings.
- * Used for deduplication across chunk boundaries.
  */
 function levenshtein(a, b) {
 	const m = a.length, n = b.length
@@ -29,185 +22,103 @@ function levenshtein(a, b) {
 }
 
 /**
- * Normalize text for comparison: lowercase, remove punctuation, collapse whitespace.
+ * Normalize text for comparison.
  */
 function normalize(text) {
 	return text.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim()
 }
 
 /**
- * Utility for splitting audio files into overlapping segments using ffmpeg,
- * and merging chunked transcripts with deduplication.
+ * AudioSplitter domain model (Model-as-App).
+ * Platform-agnostic domain application controller for audio splitting and transcript merging.
  */
-export class AudioSplitter {
-	/**
-	 * Splits an audio file into fixed-duration segments with overlap.
-	 * For files shorter than segmentDuration, just copies the file.
-	 * @param {string} inputPath - Path to the input audio file.
-	 * @param {Object} options
-	 * @param {number} [options.segmentDuration=300] - Duration of each segment in seconds (default 5m).
-	 * @param {number} [options.overlap=2] - Overlap in seconds on each boundary (default 2s).
-	 * @param {string} [options.outputDir] - Directory to save segments (defaults to input dir).
-	 * @param {function} [options.onProgress] - Callback({ percent, currentTime, totalTime })
-	 * @returns {Promise<string[]>} Array of paths to the generated segments.
-	 */
-	static async split(inputPath, options = {}) {
-		const { segmentDuration = DEFAULT_SEGMENT_DURATION, overlap = DEFAULT_OVERLAP, outputDir = path.dirname(inputPath), onProgress } = options
-
-		if (!fs.existsSync(inputPath)) {
-			throw new Error(`Input file not found: ${inputPath}`)
-		}
-
-		const baseName = path.basename(inputPath, path.extname(inputPath))
-		const totalDuration = await this.probeDuration(inputPath)
-
-		// Short file (< segmentDuration): just copy, no split
-		if (totalDuration !== null && totalDuration <= segmentDuration) {
-			const outPath = path.join(outputDir, `${baseName}_part_000.mp3`)
-			await this._extractSegment(inputPath, 0, totalDuration, outPath)
-			return [outPath]
-		}
-
-		// If we can't probe duration, fall back to ffmpeg segment mode (no overlap)
-		if (totalDuration === null) {
-			return await this._splitFallback(inputPath, { segmentDuration, outputDir, onProgress })
-		}
-
-		// Calculate segment boundaries with overlap.
-		// Each segment extends `overlap` seconds past the nominal boundary,
-		// so overlapping text from adjacent chunks can be deduped.
-		const step = segmentDuration
-		const segments = []
-		let i = 0
-		while (true) {
-			const nominalStart = i * step
-			if (nominalStart >= totalDuration) break
-			const start = Math.max(0, nominalStart - (i > 0 ? overlap : 0))
-			const end = Math.min(totalDuration, nominalStart + step + overlap)
-			segments.push({ start, duration: end - start, index: i })
-			i++
-			if (end >= totalDuration) break
-		}
-
-		// Extract each segment with precise -ss / -t
-		const resultFiles = []
-		for (const seg of segments) {
-			const outPath = path.join(outputDir, `${baseName}_part_${String(seg.index).padStart(3, '0')}.mp3`)
-			await this._extractSegment(inputPath, seg.start, seg.duration, outPath)
-			if (onProgress) {
-				const pct = totalDuration ? Math.min(100, ((seg.start + seg.duration / 2) / totalDuration) * 100) : null
-				onProgress({ percent: pct, currentTime: seg.start, totalTime: totalDuration })
-			}
-			resultFiles.push(outPath)
-		}
-
-		return resultFiles
-	}
+export class AudioSplitter extends ModelAsApp {
+	static alias = 'audio:split'
 
 	/**
-	 * Fallback split when duration probe fails — uses ffmpeg segment muxer (no overlap).
+	 * Resolves port and splits audio file.
 	 * @param {string} inputPath
-	 * @param {object} options
+	 * @param {Object} [options]
 	 * @returns {Promise<string[]>}
 	 */
-	static async _splitFallback(inputPath, { segmentDuration, outputDir, onProgress }) {
-		const baseName = path.basename(inputPath, path.extname(inputPath))
-		const segmentPattern = path.join(outputDir, `${baseName}_part_%03d.mp3`)
-
-		await new Promise((resolve, reject) => {
-			const proc = spawn('ffmpeg', [
-				'-i', inputPath,
-				'-f', 'segment',
-				'-segment_time', String(segmentDuration),
-				'-c', 'copy',
-				segmentPattern,
-			], { stdio: ['ignore', 'pipe', 'pipe'] })
-
-			let stderrBuf = ''
-			proc.stderr.on('data', (chunk) => { stderrBuf += chunk.toString() })
-
-			proc.on('close', (code) => {
-				if (code === 0) resolve()
-				else reject(new Error(`ffmpeg segment fallback exit ${code}\n${stderrBuf.slice(-300)}`))
-			})
-			proc.on('error', reject)
-		})
-
-		const files = fs.readdirSync(outputDir)
-			.filter(f => f.startsWith(`${baseName}_part_`) && f.endsWith('.mp3'))
-			.map(f => path.join(outputDir, f))
-			.sort()
-
-		return files
-	}
-
-	/**
-	 * Probe audio duration using ffprobe.
-	 * @param {string} inputPath
-	 * @returns {Promise<number|null>} duration in seconds, or null if probe fails
-	 */
-	static async probeDuration(inputPath) {
-		try {
-			const { stdout } = await new Promise((resolve, reject) => {
-				const proc = spawn('ffprobe', [
-					'-v', 'error',
-					'-show_entries', 'format=duration',
-					'-of', 'default=noprint_wrappers=1:nokey=1',
-					inputPath,
-				])
-				let out = ''
-				proc.stdout.on('data', (chunk) => { out += chunk.toString() })
-				proc.on('close', (code) => {
-					if (code === 0) resolve({ stdout: out.trim() })
-					else reject(new Error('ffprobe failed'))
-				})
-				proc.on('error', reject)
-			})
-			const dur = parseFloat(stdout)
-			return Number.isFinite(dur) ? dur : null
-		} catch {
-			return null
+	static async split(inputPath, options = {}) {
+		let port = options.splitter || options._?.splitter
+		if (!port) {
+			const { AudioSplitterPort } = await import('../ports/AudioSplitterPort.js')
+			port = AudioSplitterPort
 		}
+		return port.split(inputPath, options)
 	}
 
 	/**
-	 * Extract a segment from an audio file using ffmpeg.
+	 * Resolves port and probes audio duration.
 	 * @param {string} inputPath
-	 * @param {number} startSeconds
-	 * @param {number} durationSeconds
-	 * @param {string} outputPath
+	 * @param {Object} [options]
+	 * @returns {Promise<number|null>}
 	 */
-	static async _extractSegment(inputPath, startSeconds, durationSeconds, outputPath) {
-		await new Promise((resolve, reject) => {
-			const proc = spawn('ffmpeg', [
-				'-y',
-				'-ss', String(startSeconds),
-				'-i', inputPath,
-				'-t', String(durationSeconds),
-				'-c', 'copy',
-				outputPath,
-			], { stdio: ['ignore', 'pipe', 'pipe'] })
-
-			let stderrBuf = ''
-			proc.stderr.on('data', (chunk) => { stderrBuf += chunk.toString() })
-
-			proc.on('close', (code) => {
-				if (code === 0) resolve()
-				else reject(new Error(`ffmpeg extract exit ${code}\n${stderrBuf.slice(-300)}`))
-			})
-			proc.on('error', reject)
-		})
+	static async probeDuration(inputPath, options = {}) {
+		let port = options.splitter || options._?.splitter
+		if (!port) {
+			const { AudioSplitterPort } = await import('../ports/AudioSplitterPort.js')
+			port = AudioSplitterPort
+		}
+		return port.probeDuration(inputPath, options)
 	}
 
 	/**
 	 * Merge overlapping chunk transcripts with deduplication.
-	 * Uses Levenshtein distance to find and remove duplicate text at chunk boundaries.
-	 * @param {string[]} transcripts - Array of transcript strings, one per chunk.
-	 * @returns {string} Merged transcript with duplicates removed.
+	 * Pure domain algorithm.
+	 * @param {string[]} transcripts
+	 * @returns {string}
 	 */
-	static mergeTranscripts(transcripts) {
-		if (transcripts.length === 0) return ''
+	static mergeTranscripts(transcripts, format = 'txt', options = {}) {
+		const { segmentDuration = 300, overlap = 2 } = options
+
+		if (transcripts.length === 0) return format === 'json' ? JSON.stringify({ text: '', segments: [] }) : ''
 		if (transcripts.length === 1) return transcripts[0]
+
+		if (format === 'json') {
+			let mergedText = ''
+			const mergedSegments = []
+
+			for (let i = 0; i < transcripts.length; i++) {
+				const chunkJson = JSON.parse(transcripts[i])
+				const nominalStart = i * segmentDuration
+				const offset = Math.max(0, nominalStart - (i > 0 ? overlap : 0))
+				const nextNominalStart = nominalStart + segmentDuration
+				const isLastChunk = i === transcripts.length - 1
+
+				for (const seg of chunkJson.segments || []) {
+					// Add offset
+					seg.start += offset
+					seg.end += offset
+					if (seg.words) {
+						for (const w of seg.words) {
+							w.start += offset
+							w.end += offset
+						}
+					}
+
+					// Deduplicate overlap using precise timestamps
+					if (i > 0 && seg.start < nominalStart) {
+						continue // Skip overlap, previous chunk handled it
+					}
+					if (!isLastChunk && seg.start >= nextNominalStart) {
+						continue // Let the next chunk handle it
+					}
+
+					seg.id = mergedSegments.length
+					mergedSegments.push(seg)
+					mergedText += (seg.text || '') + ' '
+				}
+			}
+
+			return JSON.stringify({
+				text: mergedText.trim(),
+				segments: mergedSegments,
+				language: JSON.parse(transcripts[0]).language || 'auto'
+			}, null, 2)
+		}
 
 		const merged = [transcripts[0]]
 
@@ -215,10 +126,8 @@ export class AudioSplitter {
 			const prev = merged[merged.length - 1]
 			const curr = transcripts[i]
 
-			// Find the best overlap point between end of prev and start of curr
 			const overlapLen = this._findOverlap(prev, curr)
 			if (overlapLen > 0) {
-				// Remove the overlapping portion from curr's beginning
 				merged[merged.length - 1] = prev + curr.slice(overlapLen)
 			} else {
 				merged[merged.length - 1] = prev + '\n\n' + curr
@@ -230,12 +139,11 @@ export class AudioSplitter {
 
 	/**
 	 * Find the length of overlapping text at the boundary of two chunks.
-	 * Tries suffixes of `prev` against prefixes of `curr`, using Levenshtein distance
-	 * to detect near-matches (Whisper may transcribe the same words slightly differently).
-	 * @param {string} prev - Previous chunk text
-	 * @param {string} curr - Current chunk text
-	 * @param {number} [maxOverlap=50] - Max characters to search for overlap
-	 * @returns {number} Number of characters of curr that overlap with prev
+	 * Pure domain algorithm.
+	 * @param {string} prev
+	 * @param {string} curr
+	 * @param {number} [maxOverlap=50]
+	 * @returns {number}
 	 */
 	static _findOverlap(prev, curr, maxOverlap = 50) {
 		const searchSpace = Math.min(maxOverlap, prev.length, curr.length)
@@ -247,19 +155,14 @@ export class AudioSplitter {
 			const normSuffix = normalize(suffix)
 			const normPrefix = normalize(prefix)
 
-			// Requirement: the first and last word of the overlap must match exactly.
-			// This prevents false positives where only the middle matches
-			// (e.g. "first chunk content" vs "second chunk content").
 			const suffixWords = normSuffix.split(/\s+/)
 			const prefixWords = normPrefix.split(/\s+/)
 			if (suffixWords.length < 2 || prefixWords.length < 2) continue
 			if (suffixWords[0] !== prefixWords[0]) continue
 			if (suffixWords[suffixWords.length - 1] !== prefixWords[prefixWords.length - 1]) continue
 
-			// Exact match
 			if (normSuffix === normPrefix) return len
 
-			// Near match via Levenshtein (allow 20% difference, tighter than 30%)
 			const dist = levenshtein(normSuffix, normPrefix)
 			const maxDist = Math.max(1, Math.floor(len * 0.2))
 			if (dist <= maxDist) return len

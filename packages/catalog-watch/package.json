@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/catalog-watch",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Lightweight catalog subscription watcher via HTTP HEAD + ETag. Zero-State Server.",
   "type": "module",
   "main": "src/index.js",

@@ -1,3 +1,4 @@
+import { ModelAsApp } from '@nan0web/ui';
 export default class PublishCommand extends ModelAsApp {
     static major: {
         help: string;
@@ -19,9 +20,9 @@ export default class PublishCommand extends ModelAsApp {
      * @param {Partial<PublishCommand>} [data]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
-    constructor(data?: Partial<PublishCommand>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
-    /** @type {boolean} Bump major version */ major: boolean;
-    /** @type {boolean} Bump minor version */ minor: boolean;
-    /** @type {boolean} Bump patch version */ patch: boolean;
+    constructor(data?: Partial<PublishCommand>, options?: Partial<import('@nan0web/ui').ModelAsAppOptions>);
+    /**
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+     */
+    run(): AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>;
 }
-import { ModelAsApp } from '@nan0web/ui';

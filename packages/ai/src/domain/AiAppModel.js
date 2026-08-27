@@ -10,6 +10,9 @@ import { SearchSourcesIntent } from './SearchSourcesIntent.js'
 import { GetSourceIntent } from './GetSourceIntent.js'
 import { ShowIndexIntent } from './ShowIndexIntent.js'
 import { ListIndexIntent } from './ListIndexIntent.js'
+import { PipelineApp } from './PipelineApp.js'
+import { CheckIntent } from './CheckIntent.js'
+import { TaskIntent } from './TaskIntent.js'
 
 /**
  * AiAppModel — domain model for AI toolkit management (RAG, Indexing, MCP).
@@ -31,6 +34,9 @@ export class AiAppModel extends ModelAsApp {
 			GetSourceIntent,
 			ShowIndexIntent,
 			ListIndexIntent,
+			PipelineApp,
+			CheckIntent,
+			TaskIntent,
 		],
 		positional: true,
 	}
@@ -41,7 +47,7 @@ export class AiAppModel extends ModelAsApp {
 	 */
 	constructor(data = {}, options = /** @type {any} */ ({})) {
 		super(data, /** @type {any} */ (options))
-		/** @type {InstanceType<typeof IndexWorkspaceApp> | InstanceType<typeof SyncWorkspaceApp> | InstanceType<typeof StoreApp> | SearchSourcesIntent | GetSourceIntent} */
+		/** @type {InstanceType<typeof IndexWorkspaceApp> | InstanceType<typeof SyncWorkspaceApp> | InstanceType<typeof StoreApp> | SearchSourcesIntent | GetSourceIntent | TaskIntent} */
 		this.command
 	}
 
@@ -51,7 +57,7 @@ export class AiAppModel extends ModelAsApp {
 	 * @returns {AsyncGenerator<any, any, any>}
 	 */
 	async *run() {
-		if ((this.help && !this.command) || !this.command || 'string' === typeof this.command) {
+		if (this.help || !this.command) {
 			const content = this.generateHelp()
 			if (this.raw) {
 				yield show(content, 'info', /** @type {any} */ ({ format: 'markdown', raw: true }))
@@ -59,6 +65,11 @@ export class AiAppModel extends ModelAsApp {
 			}
 			const title = /** @type {any} */ (this.constructor).UI?.title || 'Help'
 			yield ask('help', { content, title: `${title} Help`, hint: 'content-viewer' })
+			return
+		}
+
+		if (typeof this.command === 'string') {
+			yield show(`Unknown command: "${this.command}". Run "nan0ai --help" for available commands.`, 'error')
 			return
 		}
 

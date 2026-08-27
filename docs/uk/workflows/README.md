@@ -1,6 +1,8 @@
 # 🗂 Index: Workflows
 
-> Automatically generated on 7/28/2026
+> Automatically generated on 8/7/2026
+>
+> Для релізу Industrial Bank v3.3.0 активні: [architechnomag](./architechnomag.md) та [release](./release.md).
 
 | Workflow | Description |
 |----------|-------------|
@@ -67,6 +69,7 @@
 | **[project-md.md](./project-md.md)** | Архітектурна Документація Пакетів/Додатків (структура project.md, 5 фаз) |
 | **[prop-welder.md](./prop-welder.md)** | Interface Welding Validator Subagent |
 | **[provendocs.md](./provendocs.md)** | ProvenDoc — стандарт верифікованої документації пакетів |
+| **[release-pipeline.md](./release-pipeline.md)** | Стандарт оформлення задач (task.md), контрактів (task.spec.js) та конвеєрів виконання (pipeline.md) |
 | **[release.md](./release.md)** | AGRP Release Workflow — реалізація ТЗ через контрактне тестування |
 | **[restore-project.md](./restore-project.md)** | Відновлення відсутнього project.md для існуючих пакетів |
 | **[sandbox-template.md](./sandbox-template.md)** | Створення пісочниці (play/) зі snapshot-тестами для будь-якого пакета чи додатку |

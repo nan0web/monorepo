@@ -1,0 +1,20 @@
+# Available languages for CnAI News Collector
+# Format: array of { locale, title, icon }
+
+- locale: en_US
+  title: "English (US)"
+  icon: "🇺🇸"
+
+- locale: en_GB
+  title: "English (UK)"
+  icon: "🇬🇧"
+
+- locale: uk_UA
+  title: "Українська"
+  icon: "🇺🇦"
+  plan: "v0.2.0"
+
+- locale: ru_RU
+  title: "Русский"
+  icon: "🇷🇺"
+  plan: "v0.3.0"

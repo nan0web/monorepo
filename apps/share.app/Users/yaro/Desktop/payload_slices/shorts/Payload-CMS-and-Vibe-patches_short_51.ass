@@ -1,0 +1,31 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:37:13.34,0:37:16.65,Default,,0,0,0,,wipe so I
+Dialogue: 0,0:37:16.65,0:37:17.57,Default,,0,0,0,,can use it
+Dialogue: 0,0:37:17.57,0:37:18.63,Default,,0,0,0,,but now I
+Dialogue: 0,0:37:18.63,0:37:21.11,Default,,0,0,0,,need to see
+Dialogue: 0,0:37:21.11,0:37:23.40,Default,,0,0,0,,the chat picker
+Dialogue: 0,0:37:23.40,0:37:24.84,Default,,0,0,0,,has an error
+Dialogue: 0,0:37:24.84,0:37:27.09,Default,,0,0,0,,and also I
+Dialogue: 0,0:37:27.09,0:37:28.34,Default,,0,0,0,,would like to
+Dialogue: 0,0:37:28.34,0:37:30.09,Default,,0,0,0,,update context progress
+Dialogue: 0,0:37:30.09,0:37:32.38,Default,,0,0,0,,even after the
+Dialogue: 0,0:37:32.38,0:37:33.26,Default,,0,0,0,,comment is used
+Dialogue: 0,0:37:33.26,0:37:34.94,Default,,0,0,0,,so I can
+Dialogue: 0,0:37:34.94,0:37:37.78,Default,,0,0,0,,open two parallel
+Dialogue: 0,0:37:37.78,0:37:39.26,Default,,0,0,0,,terminals with the
+Dialogue: 0,0:37:39.26,0:37:41.00,Default,,0,0,0,,same root folder
+Dialogue: 0,0:37:41.00,0:37:42.63,Default,,0,0,0,,wipe cli patches
+Dialogue: 0,0:37:42.63,0:37:44.69,Default,,0,0,0,,and I just
+Dialogue: 0,0:37:44.69,0:37:46.11,Default,,0,0,0,,write wipe so
+Dialogue: 0,0:37:46.11,0:37:48.65,Default,,0,0,0,,I start a
+Dialogue: 0,0:37:48.65,0:37:49.65,Default,,0,0,0,,clean chat inside
+Dialogue: 0,0:37:49.65,0:37:51.57,Default,,0,0,0,,this folder I
+Dialogue: 0,0:37:51.57,0:37:53.23,Default,,0,0,0,,have an issue

@@ -1,0 +1,28 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:37:57.88,0:38:04.19,Default,,0,0,0,,chat picker fix
+Dialogue: 0,0:38:04.19,0:38:06.80,Default,,0,0,0,,it fix it
+Dialogue: 0,0:38:06.80,0:38:11.53,Default,,0,0,0,,okay so then
+Dialogue: 0,0:38:11.53,0:38:12.50,Default,,0,0,0,,I go here
+Dialogue: 0,0:38:12.50,0:38:14.03,Default,,0,0,0,,and also run
+Dialogue: 0,0:38:14.03,0:38:18.32,Default,,0,0,0,,the wipe and
+Dialogue: 0,0:38:18.32,0:38:19.13,Default,,0,0,0,,yes as you
+Dialogue: 0,0:38:19.13,0:38:20.28,Default,,0,0,0,,can see here
+Dialogue: 0,0:38:20.28,0:38:22.65,Default,,0,0,0,,in status I
+Dialogue: 0,0:38:22.65,0:38:25.61,Default,,0,0,0,,have this quen
+Dialogue: 0,0:38:25.61,0:38:27.80,Default,,0,0,0,,3 .7 flash
+Dialogue: 0,0:38:27.80,0:38:29.46,Default,,0,0,0,,code what does
+Dialogue: 0,0:38:29.46,0:38:30.63,Default,,0,0,0,,this mean is
+Dialogue: 0,0:38:30.63,0:38:33.03,Default,,0,0,0,,the same quen
+Dialogue: 0,0:38:33.03,0:38:35.34,Default,,0,0,0,,but the code
+Dialogue: 0,0:38:35.34,0:38:37.76,Default,,0,0,0,,has smaller temperature
+Dialogue: 0,0:38:37.76,0:38:39.92,Default,,0,0,0,,and for dogs
+Dialogue: 0,0:38:39.92,0:38:40.78,Default,,0,0,0,,I can use
+Dialogue: 0,0:38:40.78,0:38:41.40,Default,,0,0,0,,with the higher

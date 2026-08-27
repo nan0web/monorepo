@@ -1,0 +1,25 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:57:20.13,0:57:21.92,Default,,0,0,0,,so of context
+Dialogue: 0,0:57:21.92,0:57:22.84,Default,,0,0,0,,we are using
+Dialogue: 0,0:57:22.84,0:57:25.88,Default,,0,0,0,,because after the
+Dialogue: 0,0:57:25.88,0:57:29.90,Default,,0,0,0,,100 thousand tokens
+Dialogue: 0,0:57:29.90,0:57:31.84,Default,,0,0,0,,some models already
+Dialogue: 0,0:57:31.84,0:57:35.98,Default,,0,0,0,,started hallucinating. Some
+Dialogue: 0,0:57:35.98,0:57:38.09,Default,,0,0,0,,models starts hallucinating
+Dialogue: 0,0:57:38.09,0:57:40.84,Default,,0,0,0,,even before this.
+Dialogue: 0,0:57:44.17,0:57:46.63,Default,,0,0,0,,So also that's
+Dialogue: 0,0:57:46.63,0:57:47.44,Default,,0,0,0,,good to keep
+Dialogue: 0,0:57:47.44,0:57:50.00,Default,,0,0,0,,the small context
+Dialogue: 0,0:57:50.00,0:57:52.28,Default,,0,0,0,,as it possible.
+Dialogue: 0,0:57:54.11,0:57:56.21,Default,,0,0,0,,So new function
+Dialogue: 0,0:57:56.21,0:57:57.88,Default,,0,0,0,,or what no
+Dialogue: 0,0:57:57.88,0:57:59.15,Default,,0,0,0,,no no new
+Dialogue: 0,0:57:59.15,0:58:00.53,Default,,0,0,0,,arguments for the

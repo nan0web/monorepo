@@ -1,4 +1,3 @@
-export default MarkdownToTest;
 /**
  * MarkdownToTest - generates node:test code from markdown release notes
  * Enables writing release notes first, then generating executable tests
@@ -45,3 +44,4 @@ declare class MarkdownToTest {
         tasks: any[];
     }>): string;
 }
+export default MarkdownToTest;

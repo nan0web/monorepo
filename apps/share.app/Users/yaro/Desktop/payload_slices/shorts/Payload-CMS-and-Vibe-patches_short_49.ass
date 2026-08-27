@@ -1,0 +1,28 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:35:43.21,0:35:45.46,Default,,0,0,0,,and here are
+Dialogue: 0,0:35:45.46,0:35:49.50,Default,,0,0,0,,the small the
+Dialogue: 0,0:35:49.50,0:35:52.13,Default,,0,0,0,,small panel how
+Dialogue: 0,0:35:52.13,0:35:53.03,Default,,0,0,0,,to use it
+Dialogue: 0,0:35:53.03,0:35:54.59,Default,,0,0,0,,like help and
+Dialogue: 0,0:35:54.59,0:35:55.21,Default,,0,0,0,,here is the
+Dialogue: 0,0:35:55.21,0:35:58.76,Default,,0,0,0,,status how much
+Dialogue: 0,0:35:58.76,0:36:02.09,Default,,0,0,0,,tokens sent during
+Dialogue: 0,0:36:02.09,0:36:02.96,Default,,0,0,0,,this day right
+Dialogue: 0,0:36:02.96,0:36:03.76,Default,,0,0,0,,because we are
+Dialogue: 0,0:36:03.76,0:36:04.50,Default,,0,0,0,,in this day
+Dialogue: 0,0:36:04.50,0:36:07.59,Default,,0,0,0,,so today I
+Dialogue: 0,0:36:07.59,0:36:12.94,Default,,0,0,0,,have sent 58
+Dialogue: 0,0:36:12.94,0:36:16.26,Default,,0,0,0,,millions of tokens
+Dialogue: 0,0:36:16.26,0:36:20.03,Default,,0,0,0,,and received almost
+Dialogue: 0,0:36:20.03,0:36:21.05,Default,,0,0,0,,half of the
+Dialogue: 0,0:36:21.05,0:36:22.05,Default,,0,0,0,,million more than
+Dialogue: 0,0:36:22.05,0:36:22.59,Default,,0,0,0,,half of the
+Dialogue: 0,0:36:22.59,0:36:25.96,Default,,0,0,0,,million and it

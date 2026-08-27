@@ -47,4 +47,6 @@ export {
 	createT as TFunction,
 }
 
+export { ROLES, DEFAULT_ACCESS } from './domain/Roles.js'
+
 export default NaN0

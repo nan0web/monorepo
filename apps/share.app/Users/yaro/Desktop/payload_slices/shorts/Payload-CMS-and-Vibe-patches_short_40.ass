@@ -1,0 +1,30 @@
+[Script Info]
+Title: Auto-generated subtitles (chunked)
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+Style: Default,Arial,30,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,2,1,2,"Italic"
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:29:01.83,0:29:02.77,Default,,0,0,0,,in links handle
+Dialogue: 0,0:29:02.77,0:29:04.20,Default,,0,0,0,,all dependency resolution
+Dialogue: 0,0:29:04.20,0:29:06.29,Default,,0,0,0,,automatically. Changes to
+Dialogue: 0,0:29:06.29,0:29:08.24,Default,,0,0,0,,any package are
+Dialogue: 0,0:29:08.24,0:29:09.70,Default,,0,0,0,,reflected in testing
+Dialogue: 0,0:29:09.70,0:29:11.11,Default,,0,0,0,,up instantly without
+Dialogue: 0,0:29:11.11,0:29:13.40,Default,,0,0,0,,reinstalling. So that's
+Dialogue: 0,0:29:13.40,0:29:15.09,Default,,0,0,0,,great. And then
+Dialogue: 0,0:29:15.09,0:29:16.18,Default,,0,0,0,,I can just
+Dialogue: 0,0:29:16.18,0:29:17.57,Default,,0,0,0,,check that it
+Dialogue: 0,0:29:17.57,0:29:21.01,Default,,0,0,0,,works correctly. PMPM
+Dialogue: 0,0:29:21.01,0:29:22.20,Default,,0,0,0,,pack all right.
+Dialogue: 0,0:29:25.74,0:29:27.51,Default,,0,0,0,,Yeah, and it
+Dialogue: 0,0:29:27.51,0:29:28.50,Default,,0,0,0,,takes like two
+Dialogue: 0,0:29:28.50,0:29:31.75,Default,,0,0,0,,seconds. So good.
+Dialogue: 0,0:29:33.81,0:29:34.74,Default,,0,0,0,,So this is
+Dialogue: 0,0:29:34.74,0:29:36.05,Default,,0,0,0,,how I use
+Dialogue: 0,0:29:36.05,0:29:37.50,Default,,0,0,0,,now. I have
+Dialogue: 0,0:29:37.50,0:29:40.36,Default,,0,0,0,,payload CMS. And
+Dialogue: 0,0:29:40.36,0:29:43.70,Default,,0,0,0,,I think next
+Dialogue: 0,0:29:43.70,0:29:44.66,Default,,0,0,0,,time I will

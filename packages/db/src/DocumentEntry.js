@@ -51,14 +51,15 @@ class DocumentEntry {
 			fulfilled: fulfilledInit = undefined,
 		} = input
 
-		this.name = String(name)
+		this.name = String(name).replace(/\/$/, '')
 		this.stat = DocumentStat.from(stat)
 		this.depth = Number(depth)
 		this.path = String(path)
 		this.parent = String(parent)
 
 		if (!this.name && this.path) {
-			this.name = String(this.path.split('/').pop() ?? '')
+			const parts = this.path.split('/').filter(Boolean)
+			this.name = String(parts[parts.length - 1] ?? '')
 		}
 		if (!this.parent && this.path.includes('/')) {
 			const arr = this.path.split('/')

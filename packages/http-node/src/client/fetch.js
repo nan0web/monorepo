@@ -51,6 +51,7 @@ async function fetch(url, options = {}) {
 	}
 
 	const controller = new AbortController()
+	/** @type {ReturnType<typeof setTimeout> | null} */
 	let timeoutId = null
 
 	if (signal) {
