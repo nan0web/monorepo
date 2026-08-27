@@ -5,7 +5,10 @@
   "type": "module",
   "files": [
     "bin",
-    "src",
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/test/**",
+    "!src/docs/**",
     "types",
     "LICENSE",
     "README.md"
