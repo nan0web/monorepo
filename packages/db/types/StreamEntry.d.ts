@@ -1,4 +1,4 @@
-import DocumentEntry from './DocumentEntry.js';
+export default StreamEntry;
 /**
  * Represents a stream entry with progress information
  * Aggregates file lists, directories, errors, and stats during directory traversal.
@@ -21,6 +21,30 @@ import DocumentEntry from './DocumentEntry.js';
  * @class
  */
 declare class StreamEntry {
+    /**
+     * Creates a new StreamEntry instance
+     * Converts inputs to proper types (e.g., DocumentEntry).
+     * @param {object} input
+     * @param {DocumentEntry|object} [input.file={}] - Current entry
+     * @param {DocumentEntry[]|object[]} [input.files=[]] - File list
+     * @param {Map<string, DocumentEntry>} [input.dirs=new Map()] - Dirs
+     * @param {Map<string, DocumentEntry>} [input.top=new Map()] - Top entries
+     * @param {Map<string, Error | null>} [input.errors=new Map()] - Errors
+     * @param {number} [input.progress=0] - Progress fraction
+     * @param {{ dirs: number, files: number }} [input.totalSize={ dirs: 0, files: 0 }] - Sizes
+     */
+    constructor(input?: {
+        file?: DocumentEntry | object;
+        files?: any[] | DocumentEntry[] | undefined;
+        dirs?: Map<string, DocumentEntry> | undefined;
+        top?: Map<string, DocumentEntry> | undefined;
+        errors?: Map<string, Error | null> | undefined;
+        progress?: number | undefined;
+        totalSize?: {
+            dirs: number;
+            files: number;
+        } | undefined;
+    });
     /** @type {DocumentEntry} Current file being processed */
     file: DocumentEntry;
     /** @type {DocumentEntry[]} All files found so far (sorted) */
@@ -38,29 +62,5 @@ declare class StreamEntry {
         dirs: number;
         files: number;
     };
-    /**
-     * Creates a new StreamEntry instance
-     * Converts inputs to proper types (e.g., DocumentEntry).
-     * @param {object} input
-     * @param {DocumentEntry|object} [input.file={}] - Current entry
-     * @param {DocumentEntry[]|object[]} [input.files=[]] - File list
-     * @param {Map<string, DocumentEntry>} [input.dirs=new Map()] - Dirs
-     * @param {Map<string, DocumentEntry>} [input.top=new Map()] - Top entries
-     * @param {Map<string, Error | null>} [input.errors=new Map()] - Errors
-     * @param {number} [input.progress=0] - Progress fraction
-     * @param {{ dirs: number, files: number }} [input.totalSize={ dirs: 0, files: 0 }] - Sizes
-     */
-    constructor(input?: {
-        file?: DocumentEntry | object;
-        files?: DocumentEntry[] | object[];
-        dirs?: Map<string, DocumentEntry>;
-        top?: Map<string, DocumentEntry>;
-        errors?: Map<string, Error | null>;
-        progress?: number;
-        totalSize?: {
-            dirs: number;
-            files: number;
-        };
-    });
 }
-export default StreamEntry;
+import DocumentEntry from './DocumentEntry.js';

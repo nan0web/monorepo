@@ -1,19 +1,3 @@
-import { Model } from '@nan0web/types';
-export type AutoHydrated = {
-    /**
-     * The parent document.
-     */
-    parent?: any;
-    /**
-     * The auto field-value mapping from the parent document.
-     */
-    auto?: string[];
-    /**
-     * The name of the auto field-value mapping config in the document.
-     */
-    $auto?: string;
-};
-export type HydratedModelOptions = Partial<import('@nan0web/types').ModelOptions> & AutoHydrated;
 /**
  * @typedef {Object} AutoHydrated
  * @property {Object} [parent] The parent document.
@@ -28,10 +12,26 @@ export type HydratedModelOptions = Partial<import('@nan0web/types').ModelOptions
  * 2. Resolves Late-Bound string references (e.g., "$files") from parent document.
  * 3. Preserves explicit overrides (e.g. []) while auto-hydrating omitted/undefined/null properties.
  */
-export declare class HydratedModel extends Model {
+export class HydratedModel extends Model {
     /**
      * @param {Object} [input]
      * @param {HydratedModelOptions} [options]
      */
     constructor(input?: any, options?: HydratedModelOptions);
 }
+export type AutoHydrated = {
+    /**
+     * The parent document.
+     */
+    parent?: any;
+    /**
+     * The auto field-value mapping from the parent document.
+     */
+    auto?: string[] | undefined;
+    /**
+     * The name of the auto field-value mapping config in the document.
+     */
+    $auto?: string | undefined;
+};
+export type HydratedModelOptions = Partial<import("@nan0web/types").ModelOptions> & AutoHydrated;
+import { Model } from '@nan0web/types';

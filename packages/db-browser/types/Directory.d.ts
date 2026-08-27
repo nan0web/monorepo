@@ -1,23 +1,3 @@
-import { Directory } from '@nan0web/db';
 export default class BrowserDirectory extends Directory {
-    /**
-     * The default file name for directory settings.
-     * @type {string}
-     */
-    static FILE: string;
-    /**
-     * The path prefix for global variables available to all nested documents.
-     * @type {string}
-     */
-    static GLOBALS: string;
-    /**
-     * The default index name for directories.
-     * @type {string}
-     */
-    static INDEX: string;
-    /**
-     * Supported data file extensions for loading documents.
-     * @type {string[]}
-     */
-    static DATA_EXTNAMES: string[];
 }
+import { Directory } from '@nan0web/db';

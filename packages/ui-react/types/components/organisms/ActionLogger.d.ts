@@ -8,4 +8,4 @@
 export default function ActionLogger({ actions, onClear }: {
     actions: any[];
     onClear?: Function | undefined;
-}): import("react/jsx-runtime.js").JSX.Element | null;
+}): import("react/jsx-runtime").JSX.Element | null;

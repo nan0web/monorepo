@@ -4,7 +4,7 @@
  * @param {...string} args - Path segments
  * @returns {string} Resolved absolute URL
  */
-export declare function resolveSync(context: {
+export function resolveSync(context: {
     cwd?: string;
     root?: string;
 }, ...args: string[]): string;

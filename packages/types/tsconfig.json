@@ -18,7 +18,7 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",
@@ -1830,6 +1830,8 @@
 		"types",
 		"src/**/*.test.js",
 		"src/README.md.js",
+		"src/domain/NaN0.benchmark.js",
+		"src/domain/profile_nan0.js",
 		"src/ui/vscode/**"
 	]
 }

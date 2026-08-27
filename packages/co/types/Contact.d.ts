@@ -68,7 +68,9 @@ export default class Contact extends Model {
      * @param {object} [options={}]
      */
     constructor(data?: object, options?: object);
-    /** @type {string} Contact type/URI scheme */ type: string;
-    /** @type {string} Contact value */ value: string;
+    /** @type {string} Contact type/URI scheme */
+    type: string;
+    /** @type {string} Contact value */
+    value: string;
 }
 import { Model } from '@nan0web/types';

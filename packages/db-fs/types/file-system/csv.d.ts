@@ -1,11 +1,23 @@
 /**
  * Loads and parses CSV file into array of objects.
  */
-declare function loadCSV(filePath: any, delimiter?: string, quote?: string, softError?: boolean): any[];
+export function loadCSV(filePath: any, delimiter?: string, quote?: string, softError?: boolean): any[];
+/**
+ * Saves data as CSV file.
+ */
+export function saveCSV(filePath: any, data: any, delimiter?: string, quote?: string, eol?: string): string;
+/**
+ * Parses CSV content into 2D array.
+ */
+export function parseCSV(content: any, delimiter?: string, quote?: string): any[][];
 /**
  * Loads and parses CSV file asynchronously.
  */
-declare function loadCSVAsync(filePath: any, delimiter?: string, quote?: string, softError?: boolean): Promise<any[]>;
+export function loadCSVAsync(filePath: any, delimiter?: string, quote?: string, softError?: boolean): Promise<any[]>;
+/**
+ * Saves data as CSV file asynchronously.
+ */
+export function saveCSVAsync(filePath: any, data: any, delimiter?: string, quote?: string, eol?: string): Promise<string>;
 /**
  * Common logic to parse CSV string into objects.
  * @param {string} content
@@ -13,19 +25,7 @@ declare function loadCSVAsync(filePath: any, delimiter?: string, quote?: string,
  * @param {string} [quote]
  * @returns {any[]}
  */
-declare function parseToObjects(content: string, delimiter?: string, quote?: string): any[];
-/**
- * Parses CSV content into 2D array.
- */
-declare function parseCSV(content: any, delimiter?: string, quote?: string): any[];
-/**
- * Saves data as CSV file.
- */
-declare function saveCSV(filePath: any, data: any, delimiter?: string, quote?: string, eol?: string): string;
-/**
- * Saves data as CSV file asynchronously.
- */
-declare function saveCSVAsync(filePath: any, data: any, delimiter?: string, quote?: string, eol?: string): Promise<string>;
+export function parseToObjects(content: string, delimiter?: string, quote?: string): any[];
 /**
  * Internal logic for CSV stringification.
  * @param {any} data
@@ -34,5 +34,4 @@ declare function saveCSVAsync(filePath: any, data: any, delimiter?: string, quot
  * @param {string} [eol]
  * @returns {string}
  */
-declare function stringifyCSV(data: any, delimiter?: string, quote?: string, eol?: string): string;
-export { loadCSV, saveCSV, parseCSV, loadCSVAsync, saveCSVAsync, parseToObjects, stringifyCSV };
+export function stringifyCSV(data: any, delimiter?: string, quote?: string, eol?: string): string;

@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert'
-import { server, runAuditor } from '../../../../src/ui/mcp.js'
-import { ArchitectureAuditor } from '../../../../src/domain/app/ArchitectureAuditor.js'
+import { server, runAuditor } from '../../../../../ui/mcp.js'
+import { ArchitectureAuditor } from '../../../../../domain/app/ArchitectureAuditor.js'
 import path from 'node:path'
 
 describe('MCP Server for Inspect (Release 3.2.0)', () => {

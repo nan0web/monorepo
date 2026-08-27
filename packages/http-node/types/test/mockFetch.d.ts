@@ -1,10 +1,3 @@
-export type MockFetchResponse = {
-    ok: boolean;
-    status: number;
-    headers: Map<any, any>;
-    json: () => Promise<any>;
-    text: () => Promise<string>;
-};
 /**
  * @typedef {Object} MockFetchResponse
  * @property {boolean} ok
@@ -31,3 +24,10 @@ export type MockFetchResponse = {
  * const data = await response.json();
  */
 export default function mockFetch(routes: Array<[string, (any | any[] | Function)]>, base?: string): (url: string, options: object) => Promise<MockFetchResponse>;
+export type MockFetchResponse = {
+    ok: boolean;
+    status: number;
+    headers: Map<any, any>;
+    json: () => Promise<any>;
+    text: () => Promise<string>;
+};

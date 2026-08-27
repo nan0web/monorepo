@@ -1,5 +1,6 @@
 /**
  * Universal App Runner (Bootstrap) for standalone OLMUI CLI applications.
+ * Bootstrap application must be strictly defined on the agnostic highest level.
  *
  * @param {typeof import('@nan0web/types').Model} [AppModel]
  * @param {BootstrapAppConfig} [config={}]

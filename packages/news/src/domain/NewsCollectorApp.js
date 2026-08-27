@@ -9,6 +9,15 @@ import { NewsArticle } from './NewsArticle.js'
  * CnAI = Collective & Artificial Intelligence (not sentient, emphasizes collective nature).
  */
 export class NewsCollectorApp extends ModelAsApp {
+	/** @type {string} Filter keyword */
+	keyword = ''
+	/** @type {number} Limit (1-50) */
+	limit = 10
+	/** @type {string[]} News sources */
+	sources = ['HackerNews', 'Reddit']
+	/** @type {boolean} Use cache */
+	cached = true
+
 	static UI = {
 		title: 'CnAI News Collector',
 		description: 'Collect latest CnAI news from popular internet sources',
@@ -60,10 +69,7 @@ export class NewsCollectorApp extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} Filter keyword */ this.keyword
-		/** @type {number} Limit (1-50) */ this.limit
-		/** @type {string[]} News sources */ this.sources
-		/** @type {boolean} Use cache */ this.cached
+		Object.assign(this, data)
 	}
 
 	/**
@@ -190,6 +196,7 @@ export class NewsCollectorApp extends ModelAsApp {
 
 		// 2. Fetch fresh data
 		let articles = []
+		/** @type {any} */
 		let fetchError = null
 		try {
 			if (source === 'HackerNews') {

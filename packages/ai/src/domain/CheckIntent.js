@@ -30,11 +30,7 @@ export class CheckIntent extends ModelAsApp {
 	constructor(data = {}, options = {}) {
 		super(data, /** @type {any} */ (options))
 		/** @type {string[]} */
-		this.files = Array.isArray(data.files)
-			? data.files
-			: data.file
-				? [String(data.file)]
-				: []
+		this.files = Array.isArray(data.files) ? data.files : data.file ? [String(data.file)] : []
 	}
 
 	/**

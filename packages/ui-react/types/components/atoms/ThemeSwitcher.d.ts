@@ -13,7 +13,7 @@ declare function ThemeSwitcher({ label, style, onClick, children }?: {
     style?: any;
     onClick?: Function | undefined;
     children?: React.ReactNode;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;
 declare namespace ThemeSwitcher {
     namespace propTypes {
         let label: PropTypes.Requireable<string>;

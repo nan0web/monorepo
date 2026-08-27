@@ -23,7 +23,7 @@ export class StoreBuilderApp extends Model {
      */
     constructor(data?: Partial<StoreBuilderApp> | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
     /** @type {string} */ output: string;
-    run(): AsyncGenerator<import("../../../ui/types/core/Intent.js").LogIntent | import("../../../ui/types/core/Intent.js").ResultIntent | import("../../../ui/types/core/Intent.js").ProgressIntent, import("../../../ui/types/core/Intent.js").ResultIntent | undefined, unknown>;
+    run(): AsyncGenerator<import("../../../ui/types/core/Intent.js").ResultIntent | import("../../../ui/types/core/Intent.js").LogIntent | import("../../../ui/types/core/Intent.js").ProgressIntent, import("../../../ui/types/core/Intent.js").ResultIntent | undefined, unknown>;
 }
 export default StoreBuilderApp;
 import { Model } from '@nan0web/types';

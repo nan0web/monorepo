@@ -3,8 +3,18 @@ import { runSpawn } from '@nan0web/test'
 
 /**
  * Command to bump the version of changed packages in the monorepo.
+ * @property {string} version Target version to set
+ * @property {string} since Git reference to diff against
+ * @property {boolean} dryRun Run the command without making any changes
  */
 export default class BumpCommand extends ModelAsApp {
+	/** @type {string} Target version */
+	version = '3.1.1'
+	/** @type {string} Git reference to diff against */
+	since = 'v3.1.0'
+	/** @type {boolean} Run without making changes */
+	dryRun = false
+
 	static version = {
 		help: 'Target version to set',
 		default: '3.1.1',
@@ -38,9 +48,6 @@ export default class BumpCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} Target version */ this.version
-		/** @type {string} Since reference */ this.since
-		/** @type {boolean} Dry run */ this.dryRun
 	}
 
 	/**

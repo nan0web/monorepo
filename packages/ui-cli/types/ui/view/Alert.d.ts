@@ -11,7 +11,7 @@
 export function Alert(props: {
     title: string;
     children: string;
-    variant?: "error" | "info" | "success" | "warning" | undefined;
+    variant?: "info" | "success" | "warning" | "error" | undefined;
     message?: string | undefined;
     sound?: boolean | undefined;
 }): {

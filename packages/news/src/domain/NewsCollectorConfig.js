@@ -5,6 +5,15 @@ import { Model } from '@nan0web/types'
  * Defines validation rules and defaults for news collection parameters.
  */
 export class NewsCollectorConfig extends Model {
+	/** @type {string} Filter keyword */
+	keyword = ''
+	/** @type {number} Limit (1-50) */
+	limit = 10
+	/** @type {string[]} News sources */
+	sources = ['HackerNews', 'Reddit']
+	/** @type {boolean} Use cache */
+	cached = true
+
 	static keyword = {
 		help: 'Filter by keyword (e.g., "LLM", "agents")',
 		default: '',
@@ -27,14 +36,11 @@ export class NewsCollectorConfig extends Model {
 
 	/**
 	 * @param {Partial<NewsCollectorConfig>} [data]
-	 * @param {import('@nan0web/types').ModelOptions} [options]
+	 * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
 	 */
-	constructor(data, options) {
+	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} Filter keyword */ this.keyword
-		/** @type {number} Limit (1-50) */ this.limit
-		/** @type {string[]} News sources */ this.sources
-		/** @type {boolean} Use cache */ this.cached
+		Object.assign(this, data)
 	}
 
 	/**

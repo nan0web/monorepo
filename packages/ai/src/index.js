@@ -23,5 +23,9 @@ export * from './domain/ChatSession.js'
 export * from './domain/TestAI.js'
 export * from './domain/PipelineApp.js'
 export * from './domain/CheckIntent.js'
+export * from './domain/batch.js'
+export * from './domain/BatchTaskModel.js'
+export * from './domain/discovery.js'
+export * from './domain/WorkspaceInspectorModel.js'
 
 export const UI = ui

@@ -1,18 +1,15 @@
-export class PlayApp {
+import { Runner } from './Runner.js';
+export declare class PlayApp {
+    server: import("../index.js").AuthServer;
+    logger: import("@nan0web/log").default;
+    baseUrl: string;
+    scenariosDir: any;
+    runner: Runner;
     /**
      * @param {import('../server/AuthServer.js').default} server
      * @param {import('../server/AuthServer.js').default['logger']} serverLogger
      */
-    constructor(server: import("../server/AuthServer.js").default, serverLogger: import("../server/AuthServer.js").default["logger"]);
-    server: import("../index.js").AuthServer;
-    logger: import("@nan0web/log").default;
-    baseUrl: string;
-    scenariosDir: string;
-    runner: Runner;
+    constructor(server: import('../server/AuthServer.js').default, serverLogger: import('../server/AuthServer.js').default['logger']);
     main(): Promise<void>;
-    getScenarioChoices(): {
-        label: string;
-        value: string;
-    }[];
+    getScenarioChoices(): any;
 }
-import { Runner } from './Runner.js';

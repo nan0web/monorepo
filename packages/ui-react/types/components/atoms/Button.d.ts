@@ -10,7 +10,7 @@ declare function Button({ children, variant, outline, size, ...props }: {
     variant?: string | undefined;
     outline?: boolean | undefined;
     size?: string | undefined;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;
 declare namespace Button {
     namespace propTypes {
         let children: PropTypes.Validator<NonNullable<PropTypes.ReactNodeLike>>;

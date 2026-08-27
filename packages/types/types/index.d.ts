@@ -21,3 +21,4 @@ import { Model } from './domain/Model.js';
 import { ModelError } from './domain/index.js';
 import { createT } from './utils/TFunction.js';
 export { FilterString, FullObject, UndefinedObject, ObjectWithAlias, ContainerObject, NonEmptyObject, clone, merge, Parser, Node, NaN0, resolveAliases, resolveDefaults, resolveValidation, getMetadata, Model, ModelError, createT, createT as TFunction };
+export { ROLES, DEFAULT_ACCESS } from "./domain/Roles.js";

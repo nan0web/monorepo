@@ -24,7 +24,7 @@ export function UIRoot({ db, components: overrideComponents, renderers: override
     actions?: Record<string, Function> | undefined;
     console?: Console | undefined;
     devMode?: boolean | undefined;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;
 import DB from '@nan0web/db-browser';
 import React from 'react';
 import defaultComponents from './components/index.jsx';

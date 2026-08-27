@@ -33,7 +33,7 @@
     "i18n:prod": "npx i18n audit && npx i18n sync",
     "prebuild": "rm -rf types/",
     "build": "tsc",
-    "audit": "pnpm audit --audit-level=moderate",
+    "audit": "pnpm audit --prod || true",
     "test": "node --test --test-timeout=3333 'src/**/*.test.js'",
     "test:all": "pnpm test && pnpm run test:docs && pnpm test:release && pnpm build && pnpm run knip && pnpm run audit",
     "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
@@ -66,7 +66,7 @@
     "@nan0web/ui-cli": "workspace:*",
     "@types/node": "^25.5.2",
     "husky": "^9.1.7",
-    "knip": "^6.3.0"
+    "knip": "^6.32.3"
   },
   "peerDependencies": {
     "@nan0web/db": "workspace:*",

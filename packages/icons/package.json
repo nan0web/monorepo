@@ -26,7 +26,7 @@
     "generate": "node scripts/generate.js",
     "test": "node --test test/*.test.js",
     "test:docs": "node --test src/README.md.js",
-    "test:e2e": "start-server-and-test 'http-server . -p 39111 -a 127.0.0.1 --cors' http://127.0.0.1:39111/play/index.html 'node --test play/*.e2e.js'",
+    "test:e2e": "start-server-and-test 'npx -y http-server . -p 39111 -a 127.0.0.1 --cors' http://127.0.0.1:39111/play/index.html 'node --test play/*.e2e.js'",
     "test:all": "npm test && npm run test:docs && npm run test:e2e && npm run knip && npm run audit",
     "build": "npm run generate",
     "knip": "knip --production",
@@ -38,7 +38,7 @@
     "@nan0web/db-fs": "workspace:*",
     "@nan0web/log": "workspace:*",
     "@nan0web/test": "workspace:*",
-    "knip": "^5.86.0",
+    "knip": "^5.88.1",
     "playwright": "^1.58.2",
     "react-icons": "^5.6.0",
     "start-server-and-test": "^2.1.5"

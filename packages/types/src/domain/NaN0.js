@@ -589,6 +589,7 @@ export default class NaN0 {
 	 */
 	static parse(input, context = { comments: [], Body: undefined }) {
 		const parser = new Parser({ eol: this.NEW_LINE, tab: this.TAB })
+		/** @type {any} */
 		let result = null
 		let lineNum = 0
 		

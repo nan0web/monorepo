@@ -1,14 +1,12 @@
-export type MiddlewareFn = import('../server/Server.js').MiddlewareFn;
-export type ResponseMessage = import("../messages/ResponseMessage.js").default;
 /** @typedef {import('../server/Server.js').MiddlewareFn} MiddlewareFn */
 /** @typedef {import("../messages/ResponseMessage.js").default} ResponseMessage */
 /**
  * TestServer для інтеграційних тестів: створює тимчасовий сервер з роутами.
  */
 export default class TestServer {
+    constructor(options?: {});
     server: import("../index.js").Server;
     baseUrl: string | null;
-    constructor(options?: {});
     /**
      * Add a route to the test server
      * @param {string} method - HTTP method (GET, POST, etc.)
@@ -41,3 +39,5 @@ export default class TestServer {
      */
     request(path: string, options?: any): Promise<ResponseMessage>;
 }
+export type MiddlewareFn = import("../server/Server.js").MiddlewareFn;
+export type ResponseMessage = import("../messages/ResponseMessage.js").default;

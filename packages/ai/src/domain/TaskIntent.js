@@ -87,7 +87,10 @@ export class TaskIntent extends ModelAsApp {
 
 		for (const line of lines) {
 			const trimmed = line.trim()
-			if (trimmed.startsWith('##') && (trimmed.includes('Scope') || trimmed.includes('Задачі') || trimmed.includes('Tasks'))) {
+			if (
+				trimmed.startsWith('##') &&
+				(trimmed.includes('Scope') || trimmed.includes('Задачі') || trimmed.includes('Tasks'))
+			) {
 				inScope = true
 				continue
 			} else if (inScope && trimmed.startsWith('##')) {
@@ -122,7 +125,9 @@ export class TaskIntent extends ModelAsApp {
 		const workspaceRoot = this._?.workspaceRoot || this._?.root || invokingCwd
 
 		const fromCwd = path.isAbsolute(this.file) ? this.file : path.resolve(invokingCwd, this.file)
-		const fromWorkspace = path.isAbsolute(this.file) ? this.file : path.resolve(workspaceRoot, this.file)
+		const fromWorkspace = path.isAbsolute(this.file)
+			? this.file
+			: path.resolve(workspaceRoot, this.file)
 
 		let content = ''
 		let resolvedPath = fromCwd
@@ -144,7 +149,10 @@ export class TaskIntent extends ModelAsApp {
 		yield show(`🎯 Task: ${taskMeta.title} (v${taskMeta.version || '0.0.0'})`, 'info')
 
 		if (this.dryRun || this.agent === 'none') {
-			yield show(`[Dry-Run] Validated ${taskMeta.tasks.length} scope tasks. Ready for execution.`, 'success')
+			yield show(
+				`[Dry-Run] Validated ${taskMeta.tasks.length} scope tasks. Ready for execution.`,
+				'success'
+			)
 			yield result({
 				file: this.file,
 				status: 'validated',
@@ -159,12 +167,7 @@ export class TaskIntent extends ModelAsApp {
 
 		yield show(`🤖 Spawning autonomous agent [${this.agent}] in ${taskDir}...`, 'info')
 
-		const vibeArgs = [
-			'-p',
-			prompt,
-			'--output',
-			'rich',
-		]
+		const vibeArgs = ['-p', prompt, '--output', 'rich']
 
 		if (this.autoApprove) {
 			vibeArgs.push('--trust', '--auto-approve')

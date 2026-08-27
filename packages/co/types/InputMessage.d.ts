@@ -1,6 +1,12 @@
 /**
  * @typedef {Partial<Message> | null} InputMessageValue
  *
+ * @typedef {Object} InputMessageProps
+ * @property {InputMessageValue} [value=null] - Input value.
+ * @property {string[]|string} [options=[]] - Available options.
+ * @property {boolean} [waiting=false] - Waiting flag.
+ * @property {boolean} [escaped=false] - Whether to store the ESCAPE character.
+ *
  * Represents a message input with value, options and metadata.
  *
  * @class InputMessage
@@ -20,18 +26,9 @@ export default class InputMessage {
     /**
      * Create a new InputMessage.
      *
-     * @param {object} [props={}]
-     * @param {InputMessageValue} [props.value=null] - Input value.
-     * @param {string[]|string} [props.options=[]] - Available options.
-     * @param {boolean} [props.waiting=false] - Waiting flag.
-     * @param {boolean} [props.escaped=false] - Whether to store the ESCAPE character.
+     * @param {InputMessageProps|string} [props={}]
      */
-    constructor(props?: {
-        value?: InputMessageValue | undefined;
-        options?: string | string[] | undefined;
-        waiting?: boolean | undefined;
-        escaped?: boolean | undefined;
-    });
+    constructor(props?: InputMessageProps | string);
     /** @type {Message} */
     value: Message;
     /** @type {string[]} */
@@ -64,8 +61,25 @@ export default class InputMessage {
     toString(): string;
     #private;
 }
-/**
- * Represents a message input with value, options and metadata.
- */
 export type InputMessageValue = Partial<Message> | null;
+export type InputMessageProps = {
+    /**
+     * - Input value.
+     */
+    value?: InputMessageValue | undefined;
+    /**
+     * - Available options.
+     */
+    options?: string | string[] | undefined;
+    /**
+     * - Waiting flag.
+     */
+    waiting?: boolean | undefined;
+    /**
+     * - Whether to store the ESCAPE character.
+     *
+     * Represents a message input with value, options and metadata.
+     */
+    escaped?: boolean | undefined;
+};
 import Message from './Message.js';

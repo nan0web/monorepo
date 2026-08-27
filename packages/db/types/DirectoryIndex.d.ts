@@ -1,5 +1,3 @@
-import DocumentStat from './DocumentStat.js';
-import Directory from './Directory.js';
 /**
  * DirectoryIndex manages encoding/decoding of directory listings for efficient traversal.
  * Supports TXT (immediate children) and TXTL (hierarchical full tree) formats.
@@ -30,20 +28,6 @@ export default class DirectoryIndex {
     static INDEX: string;
     /** @type {typeof Directory} */
     static Directory: typeof Directory;
-    /** @type {string[]} */
-    columns: string[];
-    /** @type {Array<[string, DocumentStat]>} */
-    entries: Array<[string, DocumentStat]>;
-    /**
-     * @param {object} input
-     * @param {Array<[string, DocumentStat]>} [input.entries=[]]
-     * @param {string[]} [input.columns=DirectoryIndex.COLUMNS]
-     */
-    constructor(input?: {
-        entries?: Array<[string, DocumentStat]>;
-        columns?: string[];
-    });
-    get Directory(): typeof Directory;
     /**
      * Encodes entries into string rows using specified columns and radix.
      * Sorts entries alphabetically; handles directories with trailing slash.
@@ -53,23 +37,6 @@ export default class DirectoryIndex {
      * @returns {string[]} Array of encoded rows.
      */
     static encodeRows(entries: Array<[string, DocumentStat]>, columns?: string[], inc?: boolean): string[];
-    /**
-     * Encodes index according to specified format.
-     * Supports flat TXT, hierarchical TXTL (full/long paths), and incremental relative paths.
-     * Adds headers for custom columns, long/inc modes.
-     * @param {Object} [input]
-     * @param {Array<[string, DocumentStat]>} [input.entries=this.entries] - Entries to encode
-     * @param {string} [input.dir="."] - Directory to start with.
-     * @param {boolean} [input.long=false] - Generates all the children maps if long is TRUE, otherwise only current directory.
-     * @param {boolean} [input.inc=false] - If TRUE, uses incremental path format (no duplicate dir prefixes)
-     * @returns {string} Encoded entries as a string
-     */
-    encode({ entries, dir, long, inc }?: {
-        entries?: Array<[string, DocumentStat]>;
-        dir?: string;
-        long?: boolean;
-        inc?: boolean;
-    }): string;
     /**
      * Checks if a given path represents an index.
      * Matches index.txt or dir/index.txt.
@@ -137,4 +104,37 @@ export default class DirectoryIndex {
      * @returns {string}
      */
     static dirname(path: string): string;
+    /**
+     * @param {object} input
+     * @param {Array<[string, DocumentStat]>} [input.entries=[]]
+     * @param {string[]} [input.columns=DirectoryIndex.COLUMNS]
+     */
+    constructor(input?: {
+        entries?: [string, DocumentStat][] | undefined;
+        columns?: string[] | undefined;
+    });
+    /** @type {string[]} */
+    columns: string[];
+    /** @type {Array<[string, DocumentStat]>} */
+    entries: Array<[string, DocumentStat]>;
+    get Directory(): typeof Directory;
+    /**
+     * Encodes index according to specified format.
+     * Supports flat TXT, hierarchical TXTL (full/long paths), and incremental relative paths.
+     * Adds headers for custom columns, long/inc modes.
+     * @param {Object} [input]
+     * @param {Array<[string, DocumentStat]>} [input.entries=this.entries] - Entries to encode
+     * @param {string} [input.dir="."] - Directory to start with.
+     * @param {boolean} [input.long=false] - Generates all the children maps if long is TRUE, otherwise only current directory.
+     * @param {boolean} [input.inc=false] - If TRUE, uses incremental path format (no duplicate dir prefixes)
+     * @returns {string} Encoded entries as a string
+     */
+    encode({ entries, dir, long, inc }?: {
+        entries?: [string, DocumentStat][] | undefined;
+        dir?: string | undefined;
+        long?: boolean | undefined;
+        inc?: boolean | undefined;
+    }): string;
 }
+import DocumentStat from './DocumentStat.js';
+import Directory from './Directory.js';

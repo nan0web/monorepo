@@ -2,6 +2,11 @@ import { ModelAsApp, result, show } from '@nan0web/ui'
 import { runSpawn } from '@nan0web/test'
 
 export default class DepsCommand extends ModelAsApp {
+	/** @type {boolean} Apply fixes automatically */
+	fix = false
+	/** @type {boolean} Update packages to the latest available versions */
+	latest = false
+
 	static fix = {
 		help: 'Apply fixes automatically',
 		default: false,
@@ -21,8 +26,6 @@ export default class DepsCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {boolean} Apply fixes automatically */ this.fix
-		/** @type {boolean} Update packages to the latest available versions */ this.latest
 	}
 
 	/**

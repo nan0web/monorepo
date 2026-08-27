@@ -38,7 +38,7 @@ function isSingleLine(content) {
  * Extract embedded tag attributes from a key using a mapping of separators.
  *
  * @param {string} key - The raw key (e.g. "div.main#id").
- * @param {Object<string,string>} $tagAttrs - Mapping of separators to attribute names.
+ * @param {object} $tagAttrs - Mapping of separators to attribute names.
  * @returns {[string,Object]} Tag name and attribute map.
  */
 function getEmbedTagAttributes(key, $tagAttrs) {

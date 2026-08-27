@@ -1,4 +1,3 @@
-import { ModelAsApp } from '@nan0web/ui';
 export default class DepsCommand extends ModelAsApp {
     static fix: {
         help: string;
@@ -16,9 +15,10 @@ export default class DepsCommand extends ModelAsApp {
      * @param {Partial<DepsCommand>} [data]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
-    constructor(data?: Partial<DepsCommand>, options?: Partial<import('@nan0web/ui').ModelAsAppOptions>);
-    /**
-     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
-     */
-    run(): AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>;
+    constructor(data?: Partial<DepsCommand>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    /** @type {boolean} Apply fixes automatically */
+    fix: boolean;
+    /** @type {boolean} Update packages to the latest available versions */
+    latest: boolean;
 }
+import { ModelAsApp } from '@nan0web/ui';

@@ -60,7 +60,7 @@
     "@nan0web/ui-cli": "workspace:*",
     "@types/node": "^25.6.0",
     "husky": "^9.1.7",
-    "knip": "^6.5.0"
+    "knip": "^6.32.3"
   },
   "peerDependencies": {
     "@nan0web/types": "workspace:*"

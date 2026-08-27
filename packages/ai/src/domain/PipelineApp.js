@@ -260,7 +260,12 @@ export class PipelineApp extends ModelAsApp {
 				if (code === 0) {
 					resolve({ status: 'passed', output: stdout, duration_ms })
 				} else {
-					resolve({ status: 'failed', output: stdout, error: stderr || `Exit code ${code}`, duration_ms })
+					resolve({
+						status: 'failed',
+						output: stdout,
+						error: stderr || `Exit code ${code}`,
+						duration_ms,
+					})
 				}
 			})
 

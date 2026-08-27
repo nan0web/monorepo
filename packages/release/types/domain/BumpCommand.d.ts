@@ -1,6 +1,8 @@
-import { ModelAsApp } from '@nan0web/ui';
 /**
  * Command to bump the version of changed packages in the monorepo.
+ * @property {string} version Target version to set
+ * @property {string} since Git reference to diff against
+ * @property {boolean} dryRun Run the command without making any changes
  */
 export default class BumpCommand extends ModelAsApp {
     static version: {
@@ -32,9 +34,12 @@ export default class BumpCommand extends ModelAsApp {
      * @param {Partial<BumpCommand>} [data]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
-    constructor(data?: Partial<BumpCommand>, options?: Partial<import('@nan0web/ui').ModelAsAppOptions>);
-    /**
-     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
-     */
-    run(): AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>;
+    constructor(data?: Partial<BumpCommand>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    /** @type {string} Target version */
+    version: string;
+    /** @type {string} Git reference to diff against */
+    since: string;
+    /** @type {boolean} Run without making changes */
+    dryRun: boolean;
 }
+import { ModelAsApp } from '@nan0web/ui';

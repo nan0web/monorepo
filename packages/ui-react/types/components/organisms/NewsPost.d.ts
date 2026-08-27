@@ -12,7 +12,7 @@ export default NewsPost;
 declare function NewsPost({ post, className }: {
     post: any;
     className?: string | undefined;
-}): import("react/jsx-runtime.js").JSX.Element | null;
+}): import("react/jsx-runtime").JSX.Element | null;
 declare namespace NewsPost {
     namespace propTypes {
         let post: PropTypes.Validator<NonNullable<PropTypes.InferProps<{

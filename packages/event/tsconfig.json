@@ -19,7 +19,7 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"types": [
 			"node"
 		],

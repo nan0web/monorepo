@@ -6,4 +6,4 @@
  */
 export function Excerpt({ doc, ...sharedProps }: {
     doc: any;
-}): import("react/jsx-runtime.js").JSX.Element | null;
+}): import("react/jsx-runtime").JSX.Element | null;

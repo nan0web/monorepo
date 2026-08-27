@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@nan0web/test": "workspace:*",
-    "knip": "^5.86.0",
+    "knip": "^5.88.1",
     "typescript": "^5.9.3"
   },
   "files": [

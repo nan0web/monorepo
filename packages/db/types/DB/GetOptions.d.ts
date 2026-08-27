@@ -11,8 +11,12 @@
  * @class
  */
 export default class GetOptions {
-    /** @type {any} Fallback value if document not found */
-    defaultValue: any;
+    /**
+     * Factory method to create GetOptions from input.
+     * @param {object | GetOptions} input
+     * @returns {GetOptions}
+     */
+    static from(input: object | GetOptions): GetOptions;
     /**
      * @param {object} input
      * @param {any} [input.defaultValue=undefined]
@@ -20,10 +24,6 @@ export default class GetOptions {
     constructor(input?: {
         defaultValue?: any;
     });
-    /**
-     * Factory method to create GetOptions from input.
-     * @param {object | GetOptions} input
-     * @returns {GetOptions}
-     */
-    static from(input: object | GetOptions): GetOptions;
+    /** @type {any} Fallback value if document not found */
+    defaultValue: any;
 }

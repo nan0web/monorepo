@@ -9,6 +9,19 @@ import { Model } from '@nan0web/types'
  * @alias Plural:News
  */
 export class NewsArticle extends Model {
+	/** @type {string} Article title */
+	title = ''
+	/** @type {string} News source */
+	source = 'HackerNews'
+	/** @type {string} Article URL */
+	url = ''
+	/** @type {number} Engagement score */
+	score = 0
+	/** @type {string} Publication timestamp */
+	published = new Date().toISOString()
+	/** @type {string[]} Extracted keywords */
+	keywords = []
+
 	static title = {
 		help: 'Article title',
 		default: '',
@@ -45,11 +58,6 @@ export class NewsArticle extends Model {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} Article title */ this.title
-		/** @type {string} News source */ this.source
-		/** @type {string} Article URL */ this.url
-		/** @type {number} Engagement score */ this.score
-		/** @type {string} Publication timestamp */ this.published
-		/** @type {string[]} Extracted keywords */ this.keywords
+		Object.assign(this, data)
 	}
 }

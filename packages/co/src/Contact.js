@@ -12,6 +12,11 @@ import { Model } from '@nan0web/types'
  * @extends Model
  */
 export default class Contact extends Model {
+	/** @type {string} Contact type/URI scheme */
+	type = 'address:'
+	/** @type {string} Contact value */
+	value = ''
+
 	static type = {
 		help: 'Contact type/URI scheme',
 		default: 'address:',
@@ -61,8 +66,7 @@ export default class Contact extends Model {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} Contact type/URI scheme */ this.type
-		/** @type {string} Contact value */ this.value
+		Object.assign(this, data)
 	}
 
 	/**

@@ -1,14 +1,10 @@
-import Markdown, { MDElement } from '@nan0web/markdown';
-import Person from './Person.js';
+export default ReleaseDocument;
 declare class ReleaseDocument extends Markdown {
-    /** @type {Person[]} */
-    team: Person[];
-    /** @type {Map<string, Person[]>} */
-    roles: Map<string, Person[]>;
-    /** @type {string} */
-    version: string;
-    /** @type {Date | undefined} */
-    date: Date | undefined;
+    /**
+     * @param {*} input
+     * @returns {ReleaseDocument}
+     */
+    static from(input: any): ReleaseDocument;
     /**
      * @param {Object} options
      * @param {Array} [options.team] - Release team members
@@ -17,22 +13,19 @@ declare class ReleaseDocument extends Markdown {
      * @param {string} [options.date] - Release date
      */
     constructor(options?: {
-        team?: any[];
-        roles?: Map<any, any> | any[];
-        version?: string;
-        date?: string;
+        team?: any[] | undefined;
+        roles?: any[] | Map<any, any> | undefined;
+        version?: string | undefined;
+        date?: string | undefined;
     });
-    /**
-     * Parse release document content
-     * Extracts version and date from H1 heading
-     * @param {string} input - Markdown content
-     * @returns {MDElement[]}
-     */
-    parse(input: string): MDElement[];
-    /**
-     * @param {*} input
-     * @returns {ReleaseDocument}
-     */
-    static from(input: any): ReleaseDocument;
+    /** @type {Person[]} */
+    team: Person[];
+    /** @type {Map<string, Person[]>} */
+    roles: Map<string, Person[]>;
+    /** @type {string} */
+    version: string;
+    /** @type {Date | undefined} */
+    date: Date | undefined;
 }
-export default ReleaseDocument;
+import Markdown from '@nan0web/markdown';
+import Person from './Person.js';

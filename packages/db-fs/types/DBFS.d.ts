@@ -1,9 +1,25 @@
-import DB, { DocumentStat, DocumentEntry } from '@nan0web/db';
-import FS from './FSAdapter.js';
-import FSDriver from './FSDriver.js';
+export default DBFS;
 declare class DBFS extends DB {
     static FS: typeof FS;
     static Driver: typeof FSDriver;
+    /**
+     * Fixes path separators for Windows systems.
+     * @param {string} path The path to fix.
+     * @returns {string} The path with forward slashes.
+     */
+    static winFix(path: string): string;
+    /**
+     * Creates a DocumentStat instance from fs.Stats.
+     * @param {import("node:fs").Stats} stats The fs.Stats object.
+     * @returns {DocumentStat} A new DocumentStat instance.
+     */
+    static createDocumentStatFrom(stats: import("node:fs").Stats): DocumentStat;
+    /**
+     * Creates a DBFS instance from input parameters.
+     * @param {object} input The input parameters for DBFS.
+     * @returns {DBFS} A new or existing DBFS instance.
+     */
+    static from(input: object): DBFS;
     constructor(input?: {});
     /**
      * Array of loader functions that attempt to load data from a file path.
@@ -136,49 +152,9 @@ declare class DBFS extends DB {
         title: string;
         dir: string;
     }[]>;
-    /**
-     * Computes absolute URI for the path segments.
-     * @param {...string} args - Path segments
-     * @returns {string} Absolute URI
-     */
-    absolute(...args: string[]): string;
-    /**
-     * Computes relative URI for the given path.
-     * @param {string} from - Base path
-     * @param {string} [to=from] - Target path (defaults to this.root)
-     * @returns {string} Relative URI
-     */
-    relative(from: string, to?: string): string;
-    /**
-     * Resolves the actual underlying URI for a path.
-     * Resolves firmlinks and symlinks back to a relative DB URI.
-     * @param {string} uri The URI to resolve
-     * @returns {string} The resolved real URI
-     */
-    realpath(uri: string): string;
-    /**
-     * Returns available system volumes/disks as URIs.
-     * Handles macOS (/Volumes), Windows (wmic), and Linux (/mnt, /media).
-     * @returns {Promise<string[]>} Array of volume URIs
-     */
-    getVolumes(): Promise<string[]>;
-    /**
-     * Fixes path separators for Windows systems.
-     * @param {string} path The path to fix.
-     * @returns {string} The path with forward slashes.
-     */
-    static winFix(path: string): string;
-    /**
-     * Creates a DocumentStat instance from fs.Stats.
-     * @param {import("node:fs").Stats} stats The fs.Stats object.
-     * @returns {DocumentStat} A new DocumentStat instance.
-     */
-    static createDocumentStatFrom(stats: import("node:fs").Stats): DocumentStat;
-    /**
-     * Creates a DBFS instance from input parameters.
-     * @param {object} input The input parameters for DBFS.
-     * @returns {DBFS} A new or existing DBFS instance.
-     */
-    static from(input: object): DBFS;
 }
-export default DBFS;
+import DB from '@nan0web/db';
+import FS from './FSAdapter.js';
+import { DocumentStat } from '@nan0web/db';
+import { DocumentEntry } from '@nan0web/db';
+import FSDriver from './FSDriver.js';

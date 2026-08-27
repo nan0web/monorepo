@@ -1,4 +1,68 @@
 /**
+ * Flattens a nested object into a single-level object with path-like keys.
+ * Preserves empty objects/arrays as-is.
+ * @static
+ * @param {Object} obj - The object to flatten.
+ * @param {string} [parent=''] - Parent key prefix (used recursively).
+ * @param {Object} [res={}] - Result object (used recursively).
+ * @returns {Object} Flattened object with path keys.
+ */
+export function flatten(obj: any, parent?: string, res?: any, visited?: Set<any>): any;
+/**
+ * Unflattens an object with path-like keys into a nested structure.
+ * Handles array indices and ensures objects are created before assignment.
+ * Sorts keys for deterministic rebuilding.
+ * @static
+ * @param {Object} data - The flattened object to unflatten.
+ * @returns {Object} The unflattened nested object.
+ */
+export function unflatten(data: any): any;
+/**
+ * Deep merges two objects, creating a new object.
+ * Arrays are replaced rather than merged.
+ * Preserves original objects without mutation.
+ * @static
+ * @param {Object} target - The target object to merge into.
+ * @param {Object} source - The source object to merge from.
+ * @returns {Object} The merged object.
+ */
+export function merge(target: any, source: any, visited?: Map<any, any>): any;
+/**
+ * Finds a value in an object by path.
+ * Supports array indices via wrapper (e.g., '[0]').
+ * Returns undefined if path not found or intermediate value is null/undefined.
+ * @static
+ * @param {string|string[]} path - The path to search (as string or array).
+ * @param {Object} obj - The object to search in.
+ * @returns {*} The found value or undefined.
+ */
+export function find(path: string | string[], obj: any): any;
+/**
+ * Merges two flat [path, value] arrays into one flat array.
+ * Handles $ref objects by expanding their properties into the path.
+ * Later entries override earlier ones.
+ *
+ * @static
+ * @param {Array<[string, any]>} target - Base flat data entries.
+ * @param {Array<[string, any]>} source - Override flat data entries.
+ * @param {{ referenceKey?: string }} options - Merge options.
+ * @returns {Array<[string, any]>} Merged flat entries.
+ */
+export function mergeFlat(target: Array<[string, any]>, source: Array<[string, any]>, { referenceKey }?: {
+    referenceKey?: string;
+}): Array<[string, any]>;
+/**
+ * Gets flat sibling entries of a specific key.
+ * Filters flat entries at the same level (excluding self).
+ * @static
+ * @param {Array<[string, any]>|Object} flat - Flattened data.
+ * @param {string} key - The target key to find siblings for.
+ * @param {string} [parentKey] - Optional parent key to avoid recomputation.
+ * @returns {Array<[string, any]>} Flat sibling entries.
+ */
+export function flatSiblings(flat: Array<[string, any]> | any, key: string, parentKey?: string): Array<[string, any]>;
+export default Data;
+/**
  * Data manipulation utilities for flattening/unflattening objects and deep merging.
  * Every data is stored somewhere, so manipulating with paths and parent items also provided.
  * Supports reference handling for $ref keys in flat structures.
@@ -176,10 +240,3 @@ declare class Data {
      */
     static _splitAndUnescape(flatKey: string): string[];
 }
-export declare const flatten: typeof Data.flatten;
-export declare const unflatten: typeof Data.unflatten;
-export declare const merge: typeof Data.merge;
-export declare const find: typeof Data.find;
-export declare const mergeFlat: typeof Data.mergeFlat;
-export declare const flatSiblings: typeof Data.flatSiblings;
-export default Data;

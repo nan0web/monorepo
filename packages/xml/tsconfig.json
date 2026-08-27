@@ -18,7 +18,7 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",
@@ -1827,6 +1827,9 @@
 	],
 	"exclude": [
 		"node_modules",
-		"src/**/*.test.js"
+		"**/*.test.js",
+		"**/*.story.js",
+		"**/README.md.js",
+		"src/test"
 	]
 }

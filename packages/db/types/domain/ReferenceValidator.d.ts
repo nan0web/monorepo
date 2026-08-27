@@ -1,8 +1,3 @@
-export type Reference = {
-    path: string;
-    ref: string;
-    resolvedUri: string;
-};
 /**
  * Validates references ($ref, href, $href) within documents in the database.
  * Supports checking a single document or scanning the entire database.
@@ -11,11 +6,6 @@ export type Reference = {
  * @class
  */
 export default class ReferenceValidator {
-    db: import("../index.js").default;
-    /**
-     * @param {import('../DB/DB.js').default} db - Database instance
-     */
-    constructor(db: import('../DB/DB.js').default);
     /**
      * Extracts all references from a data object by flattening it
      * and finding keys ending with reference attributes.
@@ -27,6 +17,11 @@ export default class ReferenceValidator {
         path: string;
         ref: string;
     }>;
+    /**
+     * @param {import('../DB/DB.js').default} db - Database instance
+     */
+    constructor(db: import("../DB/DB.js").default);
+    db: import("../index.js").DB;
     /**
      * Validates all references within a specific document.
      * Returns an array of broken references.
@@ -52,5 +47,9 @@ export default class ReferenceValidator {
      * @param {string} [dirPath='.'] - The directory to scan
      * @returns {Promise<Record<string, Array<Reference>>>}
      */
-    validateAll(dirPath?: string): Promise<Record<string, Array<Reference>>>;
+    validateAll(dirPath?: string): Promise<Record<string, Array<{
+        path: string;
+        ref: string;
+        resolvedUri: string;
+    }>>>;
 }

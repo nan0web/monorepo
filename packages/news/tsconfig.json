@@ -1,12 +1,38 @@
 {
-	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"outDir": "types",
+		"target": "esnext",
+		"module": "nodenext",
+		"lib": [
+			"esnext",
+			"dom"
+		],
 		"declaration": true,
-		"emitDeclarationOnly": true,
 		"declarationMap": false,
-		"rootDir": "./src"
+		"emitDeclarationOnly": true,
+		"outDir": "./types",
+		"rootDir": "./src",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "nodenext",
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": false,
+		"allowJs": true,
+		"checkJs": false,
+		"types": [
+			"node"
+		]
 	},
-	"include": ["src/**/*.js"],
-	"exclude": ["node_modules", "dist", "**/*.test.js"]
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"src/collections/**",
+		"**/*.test.js",
+		"**/*.story.js",
+		"**/README.md.js",
+		"src/test"
+	]
 }

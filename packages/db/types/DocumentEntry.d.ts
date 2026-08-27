@@ -1,4 +1,4 @@
-import DocumentStat from './DocumentStat.js';
+export default DocumentEntry;
 /**
  * Represents a document entry in the filesystem or database.
  * Combines path info (name, parent, depth) with stats (size, type, timestamps).
@@ -17,6 +17,31 @@ import DocumentStat from './DocumentStat.js';
  * @class
  */
 declare class DocumentEntry {
+    /**
+     * Creates a DocumentEntry from input
+     * Handles plain objects or existing instances.
+     * @param {object|DocumentEntry} input
+     * @returns {DocumentEntry}
+     */
+    static from(input: object | DocumentEntry): DocumentEntry;
+    /**
+     * Creates a new DocumentEntry instance
+     * @param {object} input
+     * @param {string} [input.name=""] - Entry basename
+     * @param {DocumentStat|object} [input.stat={}] - Stats object
+     * @param {number} [input.depth=0] - Nesting level
+     * @param {string} [input.path=""] - Full path (auto-derives name/parent if missing)
+     * @param {string} [input.parent=""] - Parent path
+     * @param {boolean | undefined} [input.fulfilled] - If entry is fully resolved
+     */
+    constructor(input?: {
+        name?: string | undefined;
+        stat?: DocumentStat | object;
+        depth?: number | undefined;
+        path?: string | undefined;
+        parent?: string | undefined;
+        fulfilled?: boolean | undefined;
+    });
     /** @type {string} Basename of the entry */
     name: string;
     /** @type {DocumentStat} File/directory statistics */
@@ -29,24 +54,6 @@ declare class DocumentEntry {
     parent: string;
     /** @type {boolean} If stat is complete/resolved */
     fulfilled: boolean;
-    /**
-     * Creates a new DocumentEntry instance
-     * @param {object} input
-     * @param {string} [input.name=""] - Entry basename
-     * @param {DocumentStat|object} [input.stat={}] - Stats object
-     * @param {number} [input.depth=0] - Nesting level
-     * @param {string} [input.path=""] - Full path (auto-derives name/parent if missing)
-     * @param {string} [input.parent=""] - Parent path
-     * @param {boolean | undefined} [input.fulfilled] - If entry is fully resolved
-     */
-    constructor(input?: {
-        name?: string;
-        stat?: DocumentStat | object;
-        depth?: number;
-        path?: string;
-        parent?: string;
-        fulfilled?: boolean | undefined;
-    });
     /**
      * Check if entry is a directory
      * Delegates to stat.isDirectory.
@@ -71,12 +78,5 @@ declare class DocumentEntry {
      * @returns {string} e.g., "F file.txt"
      */
     toString(): string;
-    /**
-     * Creates a DocumentEntry from input
-     * Handles plain objects or existing instances.
-     * @param {object|DocumentEntry} input
-     * @returns {DocumentEntry}
-     */
-    static from(input: object | DocumentEntry): DocumentEntry;
 }
-export default DocumentEntry;
+import DocumentStat from './DocumentStat.js';

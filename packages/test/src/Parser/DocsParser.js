@@ -2,6 +2,7 @@ import { Parser, Node } from '@nan0web/types'
 
 class DocsParser extends Parser {
 	static SKIP = []
+	tab = Parser.TAB
 	stops = ['/** @docs */', 'assert.']
 	#insideComment = false
 	#insideDocs = false
@@ -27,8 +28,8 @@ class DocsParser extends Parser {
 			// Extract the source code of the function
 			text = text.toString()
 		}
+		this.tab = Parser.findTab(text) || this.tab || '  '
 		const tab = this.tab
-		this.tab = Parser.findTab(text) || this.tab
 		this.#insideComment = false
 		this.#insideDocs = false
 		this.#insideRawDocs = false

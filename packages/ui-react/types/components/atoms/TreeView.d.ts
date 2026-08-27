@@ -13,7 +13,7 @@ declare function TreeView({ data, onSelect, loader, mode }: {
     onSelect?: Function | undefined;
     loader?: Function | undefined;
     mode?: "file" | "dir" | "multi" | undefined;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;
 declare namespace TreeView {
     namespace propTypes {
         let data: PropTypes.Requireable<any[]>;

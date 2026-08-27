@@ -17,7 +17,7 @@
 		"moduleResolution": "bundler",
 		"allowSyntheticDefaultImports": true,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",

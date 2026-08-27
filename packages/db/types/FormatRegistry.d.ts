@@ -3,10 +3,8 @@
  * Supports both global and instance-level format registrations.
  */
 export default class FormatRegistry {
-    #private;
     /** @type {FormatRegistry} */
     static default: FormatRegistry;
-    constructor();
     /**
      * Registers loader and saver functions for a specific extension.
      * @param {string} ext - Extension, e.g., '.yaml' or '.md'
@@ -26,4 +24,5 @@ export default class FormatRegistry {
      * @returns {(doc: any, ext: string) => string}
      */
     resolveSaver(ext: string): (doc: any, ext: string) => string;
+    #private;
 }

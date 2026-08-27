@@ -4,4 +4,4 @@ declare function Header({ nav, title: propTitle, $logo: propLogo, offices }: {
     title: any;
     $logo: any;
     offices: any;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;

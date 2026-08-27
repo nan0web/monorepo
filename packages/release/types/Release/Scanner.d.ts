@@ -1,39 +1,3 @@
-export type ContractEntry = {
-    /**
-     * - Release version (e.g. "v1.0.0")
-     */
-    version: string;
-    /**
-     * - Absolute path to the contract file
-     */
-    path: string;
-    /**
-     * - "spec" or "test"
-     */
-    type: string;
-    /**
-     * - Directory containing the contract
-     */
-    dir: string;
-};
-export type VersionStatus = {
-    /**
-     * - Release version
-     */
-    version: string;
-    /**
-     * - Version state
-     */
-    state: 'wip' | 'closed' | 'mixed';
-    /**
-     * - Paths to spec files
-     */
-    specs: string[];
-    /**
-     * - Paths to test files
-     */
-    tests: string[];
-};
 /**
  * @typedef {Object} ContractEntry
  * @property {string} version - Release version (e.g. "v1.0.0")
@@ -54,13 +18,12 @@ export type VersionStatus = {
  * та плоску: releases/v{version}/
  */
 export default class Scanner {
-    #private;
-    /** @type {string} */
-    root: string;
     /**
      * @param {string} root - Root directory of the project
      */
     constructor(root: string);
+    /** @type {string} */
+    root: string;
     /**
      * Find all .spec.js files (WIP contracts)
      * @param {string} [version] - Optional version filter
@@ -87,4 +50,41 @@ export default class Scanner {
         closed: number;
         files: string[];
     };
+    #private;
 }
+export type ContractEntry = {
+    /**
+     * - Release version (e.g. "v1.0.0")
+     */
+    version: string;
+    /**
+     * - Absolute path to the contract file
+     */
+    path: string;
+    /**
+     * - "spec" or "test"
+     */
+    type: string;
+    /**
+     * - Directory containing the contract
+     */
+    dir: string;
+};
+export type VersionStatus = {
+    /**
+     * - Release version
+     */
+    version: string;
+    /**
+     * - Version state
+     */
+    state: "wip" | "closed" | "mixed";
+    /**
+     * - Paths to spec files
+     */
+    specs: string[];
+    /**
+     * - Paths to test files
+     */
+    tests: string[];
+};

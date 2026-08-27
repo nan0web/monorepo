@@ -18,21 +18,21 @@ import Logger from '@nan0web/log'
  */
 export default class Release {
 	/** @type {string} */
-	version
+	version = '0.0.0'
 	/** @type {Date} */
-	createdAt
+	createdAt = new Date()
 	/** @type {Date?} */
-	startAt
+	startAt = null
 	/** @type {Date?} */
-	planAt
+	planAt = null
 	/** @type {Date?} */
-	completeAt
+	completeAt = null
 	/** @type {Map<string, Function>} */
-	tasks
+	tasks = new Map()
 	/** @type {ReleaseDocument} */
 	document
 	/** @type {Logger} */
-	logger
+	logger = new Logger()
 
 	/**
 	 * Creates a Release instance

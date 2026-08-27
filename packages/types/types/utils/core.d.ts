@@ -83,7 +83,7 @@ export function to(type: Function | any): (value: any) => any;
 export function match(test: string | RegExp, options?: {
     caseInsensitive?: boolean | undefined;
     stringFn?: string | undefined;
-    method?: "every" | "some" | undefined;
+    method?: "some" | "every" | undefined;
 }): (...args: string[]) => boolean;
 /**
  * Validator for enumeration values.

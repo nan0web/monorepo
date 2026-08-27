@@ -106,7 +106,7 @@ export default class FS {
 	 * Removes empty directory.
 	 * @function
 	 * @param {string} path - Directory path.
-	 * @param {object} [options] - Removal options.
+	 * @param {{ recursive?: boolean } & object} [options] - Removal options.
 	 * @returns {void}
 	 */
 	static rmdirSync(path, options) {
@@ -268,9 +268,12 @@ export default class FS {
 
 	/**
 	 * Gets file statistics.
+	 * @param {string} path
+	 * @param {import('node:fs').StatOptions} [options]
+	 * @returns {Promise<import('node:fs').Stats>}
 	 */
-	static async stat(path, options) {
-		return await stat(path, options)
+	static async stat(path, options = undefined) {
+		return /** @type {import('node:fs').Stats} */ (await stat(path, options))
 	}
 
 	/**

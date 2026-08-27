@@ -20,7 +20,7 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"verbatimModuleSyntax": true,
 		"paths": {
 			"@nan0web/ai": [

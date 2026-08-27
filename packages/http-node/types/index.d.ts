@@ -1,17 +1,21 @@
-import { createServer, Server } from './server/index.js';
-import Router from './server/Router.js';
+export default fetch;
+export type MiddlewareFn = import("./server/Server.js").MiddlewareFn;
+import fetch from './client/fetch.js';
+import { APIRequest } from './client/fetch.js';
+import { get } from './client/fetch.js';
+import { post } from './client/fetch.js';
+import { put } from './client/fetch.js';
+import { patch } from './client/fetch.js';
+import { head } from './client/fetch.js';
+import { options } from './client/fetch.js';
+import { del } from './client/fetch.js';
 import middlewares from './middlewares/index.js';
-import fetch, { APIRequest, get, post, put, patch, head, options, del } from './client/fetch.js';
 import IncomingMessage from './messages/IncomingMessage.js';
 import ResponseMessage from './messages/ResponseMessage.js';
 import ServerResponse from './messages/ServerResponse.js';
+import Router from './server/Router.js';
+import { createServer } from './server/index.js';
+import { Server } from './server/index.js';
 import mockFetch from './test/mockFetch.js';
 import TestServer from './test/TestServer.js';
-export type MiddlewareFn = import("./server/Server.js").MiddlewareFn;
-/** @typedef {import("./server/Server.js").MiddlewareFn} MiddlewareFn */
-/**
- * Main exports for the nan0 web framework
- * Provides HTTP client functionality, server creation, routing, and middleware
- */
-export { fetch, APIRequest, get, post, put, patch, head, options, del, middlewares, IncomingMessage, ResponseMessage, ServerResponse, Router, createServer, Server, mockFetch, TestServer, };
-export default fetch;
+export { fetch, APIRequest, get, post, put, patch, head, options, del, middlewares, IncomingMessage, ResponseMessage, ServerResponse, Router, createServer, Server, mockFetch, TestServer };

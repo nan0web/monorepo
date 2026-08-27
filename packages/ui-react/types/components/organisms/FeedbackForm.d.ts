@@ -15,7 +15,7 @@ declare function FeedbackForm({ onSubmit, initialValues, className, isAuthRequir
     className?: string | undefined;
     isAuthRequired?: boolean | undefined;
     user?: null | undefined;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;
 declare namespace FeedbackForm {
     namespace propTypes {
         let onSubmit: PropTypes.Validator<(...args: any[]) => any>;

@@ -47,7 +47,7 @@
     "@nan0web/release": "workspace:*",
     "@nan0web/test": "workspace:*",
     "husky": "^9.1.7",
-    "knip": "^5.86.0",
+    "knip": "^5.88.1",
     "typescript": "^5.9.3"
   }
 }

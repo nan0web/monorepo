@@ -1,4 +1,4 @@
-export function Page({ children, nav, sidebar, className, fluid, sidebarPosition, doc, }: PageProps): import("react/jsx-runtime.js").JSX.Element;
+export function Page({ children, nav, sidebar, className, fluid, sidebarPosition, doc, }: PageProps): import("react/jsx-runtime").JSX.Element;
 export namespace Page {
     let inlineRenderer: boolean;
     let displayName: string;

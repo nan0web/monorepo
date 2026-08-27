@@ -1,14 +1,13 @@
-import { Buffer } from 'node:buffer';
-import ResponseMessage from '../messages/ResponseMessage.js';
+export default fetch;
 export type FetchOptions = {
     /**
      * - The HTTP method
      */
-    method?: string;
+    method?: string | undefined;
     /**
      * - The request headers
      */
-    headers?: Record<string, string | string[] | undefined>;
+    headers?: Record<string, string | string[] | undefined> | undefined;
     /**
      * - The request body
      */
@@ -16,31 +15,31 @@ export type FetchOptions = {
     /**
      * - The response type
      */
-    type?: string;
+    type?: string | undefined;
     /**
      * - The protocol to use (http, https, http2)
      */
-    protocol?: string;
+    protocol?: string | undefined;
     /**
      * - The ALPNProtocols.
      */
-    ALPNProtocols?: string[];
+    ALPNProtocols?: string[] | undefined;
     /**
      * - The timeout in milliseconds
      */
-    timeout?: number;
+    timeout?: number | undefined;
     /**
      * - Reject self-signed certificates
      */
-    rejectUnauthorized?: boolean;
+    rejectUnauthorized?: boolean | undefined;
     /**
      * - The logger to use
      */
-    logger?: Console;
+    logger?: Console | undefined;
     /**
      * - Abort signal.
      */
-    signal?: AbortSignal;
+    signal?: AbortSignal | undefined;
 };
 /**
  * @typedef {Object} FetchOptions
@@ -63,58 +62,6 @@ export type FetchOptions = {
  */
 declare function fetch(url: string, options?: FetchOptions): Promise<ResponseMessage>;
 /**
- * Makes a GET request
- * @param {string} url - The URL to fetch
- * @param {FetchOptions} options - The fetch options
- * @returns {Promise<ResponseMessage>} The response
- */
-declare function get(url: string, options?: FetchOptions): Promise<ResponseMessage>;
-/**
- * Makes a POST request
- * @param {string} url - The URL to fetch
- * @param {Object|Buffer|ReadableStream} body - The request body
- * @param {FetchOptions} options - The fetch options
- * @returns {Promise<ResponseMessage>} The response
- */
-declare function post(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<ResponseMessage>;
-/**
- * Makes a PUT request
- * @param {string} url - The URL to fetch
- * @param {Object|Buffer|ReadableStream} body - The request body
- * @param {FetchOptions} options - The fetch options
- * @returns {Promise<ResponseMessage>} The response
- */
-declare function put(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<ResponseMessage>;
-/**
- * Makes a PATCH request
- * @param {string} url - The URL to fetch
- * @param {Object|Buffer|ReadableStream} body - The request body
- * @param {FetchOptions} options - The fetch options
- * @returns {Promise<ResponseMessage>} The response
- */
-declare function patch(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<ResponseMessage>;
-/**
- * Makes a DELETE request
- * @param {string} url - The URL to fetch
- * @param {FetchOptions} options - The fetch options
- * @returns {Promise<ResponseMessage>} The response
- */
-declare function del(url: string, options?: FetchOptions): Promise<ResponseMessage>;
-/**
- * Makes a HEAD request
- * @param {string} url - The URL to fetch
- * @param {FetchOptions} options - The fetch options
- * @returns {Promise<ResponseMessage>} The response
- */
-declare function head(url: string, options?: FetchOptions): Promise<ResponseMessage>;
-/**
- * Makes an OPTIONS request
- * @param {string} url - The URL to fetch
- * @param {FetchOptions} options - The fetch options
- * @returns {Promise<ResponseMessage>} The response
- */
-declare function options(url: string, options?: FetchOptions): Promise<ResponseMessage>;
-/**
  * APIRequest class for handling API requests with default options
  * @class
  * @param {string} baseUrl - The base URL for API requests
@@ -124,7 +71,8 @@ declare function options(url: string, options?: FetchOptions): Promise<ResponseM
  * @param {number} options.timeout - The timeout in milliseconds
  * @param {Object} options.logger - The logger to use
  */
-declare class APIRequest {
+export class APIRequest {
+    constructor(baseUrl: any, defaultHeaders?: {}, options?: {});
     baseUrl: any;
     defaultHeaders: {};
     options: {
@@ -133,7 +81,6 @@ declare class APIRequest {
         ALPNProtocols: any;
     };
     logger: any;
-    constructor(baseUrl: any, defaultHeaders?: {}, options?: {});
     /**
      * Constructs full URL from base and path
      * @param {string} path - The API endpoint path
@@ -179,5 +126,57 @@ declare class APIRequest {
      */
     del(path: string, headers?: Record<string, string>): Promise<ResponseMessage>;
 }
-export default fetch;
-export { APIRequest, get, post, put, patch, del, head, options };
+/**
+ * Makes a GET request
+ * @param {string} url - The URL to fetch
+ * @param {FetchOptions} options - The fetch options
+ * @returns {Promise<ResponseMessage>} The response
+ */
+export function get(url: string, options?: FetchOptions): Promise<ResponseMessage>;
+/**
+ * Makes a POST request
+ * @param {string} url - The URL to fetch
+ * @param {Object|Buffer|ReadableStream} body - The request body
+ * @param {FetchOptions} options - The fetch options
+ * @returns {Promise<ResponseMessage>} The response
+ */
+export function post(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<ResponseMessage>;
+/**
+ * Makes a PUT request
+ * @param {string} url - The URL to fetch
+ * @param {Object|Buffer|ReadableStream} body - The request body
+ * @param {FetchOptions} options - The fetch options
+ * @returns {Promise<ResponseMessage>} The response
+ */
+export function put(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<ResponseMessage>;
+/**
+ * Makes a PATCH request
+ * @param {string} url - The URL to fetch
+ * @param {Object|Buffer|ReadableStream} body - The request body
+ * @param {FetchOptions} options - The fetch options
+ * @returns {Promise<ResponseMessage>} The response
+ */
+export function patch(url: string, body: any | Buffer | ReadableStream, options?: FetchOptions): Promise<ResponseMessage>;
+/**
+ * Makes a DELETE request
+ * @param {string} url - The URL to fetch
+ * @param {FetchOptions} options - The fetch options
+ * @returns {Promise<ResponseMessage>} The response
+ */
+export function del(url: string, options?: FetchOptions): Promise<ResponseMessage>;
+/**
+ * Makes a HEAD request
+ * @param {string} url - The URL to fetch
+ * @param {FetchOptions} options - The fetch options
+ * @returns {Promise<ResponseMessage>} The response
+ */
+export function head(url: string, options?: FetchOptions): Promise<ResponseMessage>;
+/**
+ * Makes an OPTIONS request
+ * @param {string} url - The URL to fetch
+ * @param {FetchOptions} options - The fetch options
+ * @returns {Promise<ResponseMessage>} The response
+ */
+export function options(url: string, options?: FetchOptions): Promise<ResponseMessage>;
+import { Buffer } from 'node:buffer';
+import ResponseMessage from '../messages/ResponseMessage.js';

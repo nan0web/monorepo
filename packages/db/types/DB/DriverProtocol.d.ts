@@ -1,37 +1,3 @@
-import Directory from '../Directory.js';
-import DocumentStat from '../DocumentStat.js';
-import AuthContext from './AuthContext.js';
-import FormatRegistry from '../FormatRegistry.js';
-export type DriverConfig = {
-    /**
-     * - Current working directory (base for absolute paths)
-     */
-    cwd?: string;
-    /**
-     * - Root path for URI resolution
-     */
-    root?: string;
-    /**
-     * - Directory class with data functionality
-     */
-    Directory?: typeof Directory;
-    /**
-     * - Next driver if current fails, undefined by default
-     */
-    driver?: DBDriverProtocol;
-    /**
-     * - Format registry instance
-     */
-    registry?: FormatRegistry;
-    /**
-     * - Custom format registrations
-     */
-    formats?: Array<{
-        ext: string;
-        load: (str: string, ext: string) => any;
-        save: (doc: any, ext: string) => string;
-    }>;
-};
 /**
  * @typedef {Object} DriverConfig
  * @property {string} [cwd="."] - Current working directory (base for absolute paths)
@@ -56,6 +22,15 @@ export default class DBDriverProtocol {
         load(str: any, ext: any): any;
         save(doc: any, ext: any): string;
     };
+    /**
+     * @param {any} input
+     * @returns {DBDriverProtocol}
+     */
+    static from(input: any): DBDriverProtocol;
+    /**
+     * @param {DriverConfig} config
+     */
+    constructor(config?: DriverConfig);
     /** @type {string} */
     cwd: string;
     /** @type {string} */
@@ -66,10 +41,6 @@ export default class DBDriverProtocol {
     driver: DBDriverProtocol | undefined;
     /** @type {FormatRegistry} */
     registry: FormatRegistry;
-    /**
-     * @param {DriverConfig} config
-     */
-    constructor(config?: DriverConfig);
     /**
      * Connects to the physical environment
      * Initializes the driver (e.g., open connection, mount filesystem).
@@ -91,7 +62,7 @@ export default class DBDriverProtocol {
      * @param {AuthContext} [context=new AuthContext()]
      * @returns {Promise<boolean | void>} - TRUE if allowed, FALSE if denied, undefined if not realized.
      */
-    access(absoluteURI: string, level: 'r' | 'w' | 'd', context?: AuthContext): Promise<boolean | void>;
+    access(absoluteURI: string, level: "r" | "w" | "d", context?: AuthContext): Promise<boolean | void>;
     /**
      * Loads a document
      * Reads content from storage.
@@ -157,9 +128,38 @@ export default class DBDriverProtocol {
      * @returns {Promise<string[]>}
      */
     listDir(absoluteURI: string): Promise<string[]>;
-    /**
-     * @param {any} input
-     * @returns {DBDriverProtocol}
-     */
-    static from(input: any): DBDriverProtocol;
 }
+export type DriverConfig = {
+    /**
+     * - Current working directory (base for absolute paths)
+     */
+    cwd?: string | undefined;
+    /**
+     * - Root path for URI resolution
+     */
+    root?: string | undefined;
+    /**
+     * - Directory class with data functionality
+     */
+    Directory?: typeof Directory | undefined;
+    /**
+     * - Next driver if current fails, undefined by default
+     */
+    driver?: DBDriverProtocol | undefined;
+    /**
+     * - Format registry instance
+     */
+    registry?: FormatRegistry | undefined;
+    /**
+     * - Custom format registrations
+     */
+    formats?: {
+        ext: string;
+        load: (str: string, ext: string) => any;
+        save: (doc: any, ext: string) => string;
+    }[] | undefined;
+};
+import Directory from '../Directory.js';
+import FormatRegistry from '../FormatRegistry.js';
+import AuthContext from './AuthContext.js';
+import DocumentStat from '../DocumentStat.js';

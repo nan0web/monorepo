@@ -1,11 +1,14 @@
-import LogConsole from './Console.js';
 /**
  * Memory-bound Console implementation that captures logs without output.
  * Part of the `nan0coding.architect` trusted knowledge system.
  */
 export default class NoConsole extends LogConsole {
-    #private;
-    silent: boolean;
+    /**
+     * Factory method for consistent instance creation.
+     * @param {Object} input - Configuration or existing instance
+     * @returns {NoConsole}
+     */
+    static from(input: any): NoConsole;
     /**
      * Creates a silent Console instance that stores logs in memory.
      * @param {Object} [options={}] - Configuration options
@@ -13,39 +16,10 @@ export default class NoConsole extends LogConsole {
      * @param {any} [options.prefix] - The prefix data for logs (inherited)
      */
     constructor(options?: {
-        silent?: boolean;
+        silent?: boolean | undefined;
         prefix?: any;
     });
-    /**
-     * Clears all stored logs.
-     * @returns {void}
-     */
-    clear(): void;
-    /**
-     * Captures debug log without outputting.
-     * @param {...*} args - Arguments to capture
-     */
-    debug(...args: any[]): void;
-    /**
-     * Captures info log without outputting.
-     * @param {...*} args - Arguments to capture
-     */
-    info(...args: any[]): void;
-    /**
-     * Captures warning log without outputting.
-     * @param {...*} args - Arguments to capture
-     */
-    warn(...args: any[]): void;
-    /**
-     * Captures error log without outputting.
-     * @param {...*} args - Arguments to capture
-     */
-    error(...args: any[]): void;
-    /**
-     * Captures generic log without outputting.
-     * @param {...*} args - Arguments to capture
-     */
-    log(...args: any[]): void;
+    silent: boolean;
     /**
      * Captures generic write without outputting.
      * @param {...*} args - Arguments to capture
@@ -58,12 +32,6 @@ export default class NoConsole extends LogConsole {
      */
     output(type?: string | Function | null): Array<[string, ...any[]]>;
     /**
-     * Factory method for consistent instance creation.
-     * @param {Object} input - Configuration or existing instance
-     * @returns {NoConsole}
-     */
-    static from(input: any): NoConsole;
-    /**
      * Ensures optional console methods don't throw.
      */
     assert(): void;
@@ -73,7 +41,6 @@ export default class NoConsole extends LogConsole {
     dirxml(): void;
     group(): void;
     groupCollapsed(): void;
-    groupEnd(): void;
     profile(): void;
     profileEnd(): void;
     time(): void;
@@ -81,5 +48,6 @@ export default class NoConsole extends LogConsole {
     timeEnd(): void;
     timeLog(): void;
     table(): void;
-    trace(): void;
+    #private;
 }
+import LogConsole from './Console.js';

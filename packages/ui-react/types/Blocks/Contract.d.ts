@@ -17,4 +17,4 @@ export function Contract({ doc, onNavigate, locale, db, globals, duty }: {
     db?: any;
     globals?: any;
     duty?: any;
-}): import("react/jsx-runtime.js").JSX.Element | null;
+}): import("react/jsx-runtime").JSX.Element | null;

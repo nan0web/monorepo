@@ -1,16 +1,15 @@
-import { EventContext } from './index.js';
 /**
  * Base Event class for extension
  */
 export default class Event {
-    emitter: import("./types/index.js").EventBus;
     /**
      * @param {object} input
      * @param {import("./types/index.js").EventBus} [input.emitter]
      */
     constructor(input?: {
-        emitter?: import("./types/index.js").EventBus;
+        emitter?: import("./types/index.js").EventBus | undefined;
     });
+    emitter: import("./types/index.js").EventBus;
     /**
      * Listen to an event
      * @param {string} event
@@ -31,3 +30,4 @@ export default class Event {
      */
     emit(event: string, data: any): Promise<EventContext<any>>;
 }
+import { EventContext } from './index.js';

@@ -10,7 +10,7 @@ export default function UIReact({ db, uri, context, console, ...rest }: {
     uri?: string | undefined;
     context?: Partial<UIContextValue> | undefined;
     console?: Console | LogConsole | undefined;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;
 import DB from '@nan0web/db-browser';
 import UIContextValue from './context/UIContextValue.jsx';
 import { LogConsole } from '@nan0web/log';

@@ -4,7 +4,7 @@ import './components/UIFeatureGrid.js'
 import './components/UIAdapters.js'
 import './components/UICodeBlock.js'
 import './components/UIFooter.js'
-import yaml from 'js-yaml'
+import * as yaml from 'js-yaml'
 
 /* ── Theme ─────────────────────────────────────────── */
 

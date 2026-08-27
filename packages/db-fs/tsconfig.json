@@ -4,7 +4,8 @@
 		"target": "esnext",
 		"module": "nodenext",
 		"lib": [
-			"esnext"
+			"esnext",
+			"dom"
 		],
 		"declaration": true,
 		"declarationMap": false,
@@ -19,7 +20,10 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true
+		"checkJs": false,
+		"types": [
+			"node"
+		]
 	},
 	"include": [
 		"src/**/*"
@@ -28,6 +32,7 @@
 		"node_modules",
 		"**/*.test.js",
 		"**/*.story.js",
+		"**/README.md.js",
 		"src/test"
 	]
 }

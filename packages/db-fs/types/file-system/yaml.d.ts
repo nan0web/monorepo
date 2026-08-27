@@ -6,14 +6,7 @@
  * @returns {*} Parsed YAML content.
  * @throws {Error} If parsing fails and softError is false.
  */
-declare function loadYAML(file: string, softError?: boolean): any;
-/**
- * Loads and parses YAML file asynchronously.
- * @param {string} file
- * @param {boolean} softError
- * @returns {Promise<any>}
- */
-declare function loadYAMLAsync(file: string, softError?: boolean): Promise<any>;
+export function loadYAML(file: string, softError?: boolean): any;
 /**
  * Saves data as YAML file.
  * @function
@@ -21,12 +14,18 @@ declare function loadYAMLAsync(file: string, softError?: boolean): Promise<any>;
  * @param {*} data - Data to save.
  * @returns {string} Stringified YAML.
  */
-declare function saveYAML(file: string, data: any): string;
+export function saveYAML(file: string, data: any): string;
+/**
+ * Loads and parses YAML file asynchronously.
+ * @param {string} file
+ * @param {boolean} softError
+ * @returns {Promise<any>}
+ */
+export function loadYAMLAsync(file: string, softError?: boolean): Promise<any>;
 /**
  * Saves data as YAML file asynchronously.
  * @param {string} file
  * @param {any} data
  * @returns {Promise<string>}
  */
-declare function saveYAMLAsync(file: string, data: any): Promise<string>;
-export { loadYAML, saveYAML, loadYAMLAsync, saveYAMLAsync };
+export function saveYAMLAsync(file: string, data: any): Promise<string>;

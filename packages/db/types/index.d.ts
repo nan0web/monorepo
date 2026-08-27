@@ -1,23 +1,6 @@
-/**
- * Main export module for @nan0web/db.
- * Re-exports core classes, utilities, and types.
- * Default export is the DB class for easy instantiation.
- *
- * Core components:
- * - DB: Main database class
- * - Data: Object manipulation utilities
- * - Directory/Index: Directory handling
- * - DocumentEntry/Stat: File metadata
- * - StreamEntry: Progress during traversal
- *
- * Usage:
- * ```js
- * import DB, { Data, DocumentStat } from '@nan0web/db';
- * ```
- *
- * @module
- */
-import DB, { AuthContext, DBDriverProtocol, GetOptions, FetchOptions } from './DB/index.js';
+export * from "./DB/path.js";
+export default DB;
+export type DBProtocolName = import("./domain/index.js").DBProtocolName;
 import Directory from './Directory.js';
 import DirectoryIndex from './DirectoryIndex.js';
 import DocumentEntry from './DocumentEntry.js';
@@ -25,11 +8,12 @@ import DocumentStat from './DocumentStat.js';
 import StreamEntry from './StreamEntry.js';
 import Data from './Data.js';
 import { HydratedModel } from './HydratedModel.js';
+import DB from './DB/index.js';
+import { DBDriverProtocol } from './DB/index.js';
+import { GetOptions } from './DB/index.js';
+import { FetchOptions } from './DB/index.js';
+import { AuthContext } from './DB/index.js';
 import DBConfig from './domain/DBConfig.js';
 import RevisionInfo from './domain/RevisionInfo.js';
 import FormatRegistry from './FormatRegistry.js';
-export { Directory, DirectoryIndex, DocumentEntry, DocumentStat, StreamEntry, Data, HydratedModel, DB, DBDriverProtocol, GetOptions, FetchOptions, AuthContext, DBConfig, RevisionInfo, FormatRegistry, };
-export * from './DB/path.js';
-export default DB;
-export type DBProtocolName = import('./domain/index.js').DBProtocolName;
-/** @typedef {import('./domain/index.js').DBProtocolName} DBProtocolName */
+export { Directory, DirectoryIndex, DocumentEntry, DocumentStat, StreamEntry, Data, HydratedModel, DB, DBDriverProtocol, GetOptions, FetchOptions, AuthContext, DBConfig, RevisionInfo, FormatRegistry };

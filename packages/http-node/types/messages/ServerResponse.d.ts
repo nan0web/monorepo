@@ -1,11 +1,7 @@
-import { ServerResponse as HttpServerResponse } from 'node:http';
-import IncomingMessage from './IncomingMessage.js';
 /**
  * @extends {HttpServerResponse}
  */
-export default class ServerResponse extends HttpServerResponse {
-    /** @type {Object} */
-    params: any;
+export default class ServerResponse extends HttpServerResponse<import("http").IncomingMessage> {
     /**
      *
      * @param {IncomingMessage} [req]
@@ -14,6 +10,8 @@ export default class ServerResponse extends HttpServerResponse {
     constructor(req?: IncomingMessage, options?: {
         params?: object;
     });
+    /** @type {Object} */
+    params: any;
     /**
      * Set JSON response.
      * @param {any} data
@@ -39,3 +37,5 @@ export default class ServerResponse extends HttpServerResponse {
      */
     end(chunk?: any, encoding?: any, callback?: any): this;
 }
+import { ServerResponse as HttpServerResponse } from 'node:http';
+import IncomingMessage from './IncomingMessage.js';

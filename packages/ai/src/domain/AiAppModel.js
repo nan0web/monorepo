@@ -69,7 +69,10 @@ export class AiAppModel extends ModelAsApp {
 		}
 
 		if (typeof this.command === 'string') {
-			yield show(`Unknown command: "${this.command}". Run "nan0ai --help" for available commands.`, 'error')
+			yield show(
+				`Unknown command: "${this.command}". Run "nan0ai --help" for available commands.`,
+				'error'
+			)
 			return
 		}
 

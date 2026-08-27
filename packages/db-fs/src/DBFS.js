@@ -236,7 +236,8 @@ class DBFS extends DB {
 					error: new Error('Document not found'),
 				})
 			}
-			return DBFS.createDocumentStatFrom(await this.FS.stat(path))
+			const stat = await this.FS.stat(path)
+			return DocumentStat.from(stat)
 		} catch (/** @type {any} */ err) {
 			return new DocumentStat({
 				error: err,

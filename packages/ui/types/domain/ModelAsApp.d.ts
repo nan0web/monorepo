@@ -28,7 +28,8 @@ export class ModelAsApp extends Model {
      * @param {Partial<ModelAsAppOptions>} [options={}]
      */
     constructor(data?: Partial<ModelAsApp> | Record<string, any>, options?: Partial<ModelAsAppOptions>);
-    /** @type {boolean} Show help */ help: boolean;
+    /** @type {boolean} Show help */
+    help: boolean;
     _: {
         adapter: InputAdapter;
         parentPath: string;

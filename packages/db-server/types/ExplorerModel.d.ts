@@ -1,43 +1,8 @@
-import { Model } from '@nan0web/types';
 /**
  * ExplorerModel — i18n schema for DB Server Web Explorer UI.
  * All static fields are scanned by @nan0web/i18n for dictionary extraction.
  */
-export declare class ExplorerModel extends Model {
-    brand: any;
-    filesPanelTitle: any;
-    breadcrumbsRoot: any;
-    viewModeFetch: any;
-    viewModeGet: any;
-    refreshButton: any;
-    saveButton: any;
-    deleteButton: any;
-    noFileSelected: any;
-    emptyStatePrompt: any;
-    statusReady: any;
-    statusLoadingDir: any;
-    statusLoadError: any;
-    statusLoadedCount: any;
-    statusLoadingFile: any;
-    statusFileLoaded: any;
-    statusFileLoadError: any;
-    statusSavingFile: any;
-    statusSaved: any;
-    statusSaveError: any;
-    statusDeleted: any;
-    statusDeleteError: any;
-    confirmDelete: any;
-    editorNoFile: any;
-    apiDocsTitle: any;
-    apiDocsDescription: any;
-    healthOk: any;
-    healthService: any;
-    notFoundError: any;
-    missingUriError: any;
-    missingDocumentError: any;
-    saveFailedError: any;
-    dropFailedError: any;
-    serverRequiresDb: any;
+export class ExplorerModel extends Model {
     static brand: {
         help: string;
         default: string;
@@ -175,4 +140,39 @@ export declare class ExplorerModel extends Model {
         default: string;
     };
     constructor(data?: {});
+    brand: any;
+    filesPanelTitle: any;
+    breadcrumbsRoot: any;
+    viewModeFetch: any;
+    viewModeGet: any;
+    refreshButton: any;
+    saveButton: any;
+    deleteButton: any;
+    noFileSelected: any;
+    emptyStatePrompt: any;
+    statusReady: any;
+    statusLoadingDir: any;
+    statusLoadError: any;
+    statusLoadedCount: any;
+    statusLoadingFile: any;
+    statusFileLoaded: any;
+    statusFileLoadError: any;
+    statusSavingFile: any;
+    statusSaved: any;
+    statusSaveError: any;
+    statusDeleted: any;
+    statusDeleteError: any;
+    confirmDelete: any;
+    editorNoFile: any;
+    apiDocsTitle: any;
+    apiDocsDescription: any;
+    healthOk: any;
+    healthService: any;
+    notFoundError: any;
+    missingUriError: any;
+    missingDocumentError: any;
+    saveFailedError: any;
+    dropFailedError: any;
+    serverRequiresDb: any;
 }
+import { Model } from '@nan0web/types';

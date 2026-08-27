@@ -33,7 +33,7 @@ export default class Section extends MDHeading3 {
      */
     add(change: Partial<Change> | string | MDElement): this;
 }
-export type MDElementProps = import("@nan0web/markdown/types/MDElement.js").MDElementProps;
+export type MDElementProps = any;
 export type SectionProps = {
     added?: (string | Partial<Change>)[] | undefined;
     changed?: (string | Partial<Change>)[] | undefined;

@@ -1,20 +1,7 @@
 /**
  * Executes a sequence of steps against the auth server.
  */
-export class Runner {
-    /**
-     * @param {object} options
-     * @param {string} [options.baseUrl] - Base URL of the server
-     * @param {number} [options.delay=1000] - Delay between steps in ms
-     * @param {boolean} [options.silent=false] - Suppress render output (for testing)
-     * @param {import('../AuthDB.js').default} [options.db] - AuthDB instance for reading verification codes (test mode only)
-     */
-    constructor(options?: {
-        baseUrl?: string | undefined;
-        delay?: number | undefined;
-        silent?: boolean | undefined;
-        db?: import("../AuthDB.js").AuthDB | undefined;
-    });
+export declare class Runner {
     baseUrl: string;
     delay: number;
     headers: {
@@ -30,6 +17,19 @@ export class Runner {
         status: number | string;
         data: any;
     }>;
+    /**
+     * @param {object} options
+     * @param {string} [options.baseUrl] - Base URL of the server
+     * @param {number} [options.delay=1000] - Delay between steps in ms
+     * @param {boolean} [options.silent=false] - Suppress render output (for testing)
+     * @param {import('../AuthDB.js').default} [options.db] - AuthDB instance for reading verification codes (test mode only)
+     */
+    constructor(options?: {
+        baseUrl?: string;
+        delay?: number;
+        silent?: boolean;
+        db?: import('../AuthDB.js').default;
+    });
     sleep(ms: any): Promise<any>;
     run(steps: any): Promise<void>;
     execute(step: any): Promise<void>;

@@ -1,5 +1,4 @@
 export default class BrowserStore {
-    #private;
     static DB_NAME: string;
     static STORE_NAME: string;
     static DB_VERSION: number;
@@ -22,4 +21,5 @@ export default class BrowserStore {
      * @returns {Promise<any[]>}
      */
     getAllUnsynced(): Promise<any[]>;
+    #private;
 }

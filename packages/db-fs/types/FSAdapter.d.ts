@@ -1,7 +1,3 @@
-export type MakeDirectoryOptions = {
-    recursive?: boolean;
-    mode?: number | string;
-};
 /** @typedef {{ recursive?: boolean, mode?: number | string }} MakeDirectoryOptions */
 /**
  * File System utility class providing synchronous file operations.
@@ -63,10 +59,12 @@ export default class FS {
      * Removes empty directory.
      * @function
      * @param {string} path - Directory path.
-     * @param {object} [options] - Removal options.
+     * @param {{ recursive?: boolean } & object} [options] - Removal options.
      * @returns {void}
      */
-    static rmdirSync(path: string, options?: object): void;
+    static rmdirSync(path: string, options?: {
+        recursive?: boolean;
+    } & object): void;
     /**
      * Resolves path segments into an absolute path.
      * @function
@@ -94,10 +92,10 @@ export default class FS {
      * @returns {*} Parsed file content.
      */
     static load(file: string, opts?: {
-        format?: string;
-        softError?: boolean;
-        delimiter?: string;
-        quote?: string;
+        format?: string | undefined;
+        softError?: boolean | undefined;
+        delimiter?: string | undefined;
+        quote?: string | undefined;
     }): any;
     /**
      * Loads text file, optionally splitting by delimiter.
@@ -168,34 +166,41 @@ export default class FS {
     /**
      * Creates directory recursively.
      */
-    static mkdir(path: any, options: any): Promise<any>;
+    static mkdir(path: any, options: any): Promise<string | undefined>;
     /**
      * Gets file statistics.
+     * @param {string} path
+     * @param {import('node:fs').StatOptions} [options]
+     * @returns {Promise<import('node:fs').Stats>}
      */
-    static stat(path: any, options: any): Promise<any>;
+    static stat(path: string, options?: import("node:fs").StatOptions): Promise<import("node:fs").Stats>;
     /**
      * Reads directory contents.
      */
-    static readdir(path: any, options: any): Promise<any>;
+    static readdir(path: any, options: any): Promise<string[]>;
     /**
      * Deletes a file.
      */
-    static unlink(path: any): Promise<any>;
+    static unlink(path: any): Promise<void>;
     /**
      * Removes directory.
      */
-    static rmdir(path: any, options: any): Promise<any>;
+    static rmdir(path: any, options: any): Promise<void>;
     /**
      * Reads file content.
      */
-    static readFile(path: any, options: any): Promise<any>;
+    static readFile(path: any, options: any): Promise<NonSharedBuffer>;
     /**
      * Writes data to file.
      */
-    static writeFile(path: any, data: any, options: any): Promise<any>;
+    static writeFile(path: any, data: any, options: any): Promise<void>;
     /**
      * Appends data to a file.
      */
-    static appendFile(path: any, data: any, options: any): Promise<any>;
+    static appendFile(path: any, data: any, options: any): Promise<void>;
     static ensurePath(path: any): Promise<void>;
 }
+export type MakeDirectoryOptions = {
+    recursive?: boolean;
+    mode?: number | string;
+};

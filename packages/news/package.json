@@ -47,6 +47,9 @@
       "src/domain/index.js",
       "bin/nan0news"
     ],
+    "ignore": [
+      "src/collections/**"
+    ],
     "ignoreDependencies": [
       "@nan0web/types",
       "@nan0web/ui",

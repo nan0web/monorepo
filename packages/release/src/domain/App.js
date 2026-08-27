@@ -9,6 +9,9 @@ import StatusCommand from './StatusCommand.js'
 import BumpCommand from './BumpCommand.js'
 
 export class ReleaseApp extends ModelAsApp {
+	/** @type {ModelAsApp | null} Subcommand to run */
+	command = null
+
 	static command = {
 		help: 'Subcommand to run',
 		options: [
@@ -31,6 +34,5 @@ export class ReleaseApp extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {ModelAsApp} Subcommand to run */ this.command
 	}
 }

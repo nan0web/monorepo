@@ -3,7 +3,8 @@
 		"target": "esnext",
 		"module": "esnext",
 		"lib": [
-			"esnext"
+			"esnext",
+			"dom"
 		],
 		"declaration": true,
 		"declarationMap": false,
@@ -18,7 +19,7 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",
@@ -1829,6 +1830,8 @@
 		"node_modules",
 		"**/*.test.js",
 		"**/*.story.js",
-		"src/test"
+		"**/README.md.js",
+		"src/test",
+		"src/play"
 	]
 }

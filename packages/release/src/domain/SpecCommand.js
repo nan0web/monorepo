@@ -3,6 +3,9 @@ import { runSpawn } from '@nan0web/test'
 import Scanner from '../Release/Scanner.js'
 
 export default class SpecCommand extends ModelAsApp {
+	/** @type {string} Release version filter */
+	version = ''
+
 	static version = {
 		help: 'Release version filter',
 		default: '',
@@ -18,7 +21,6 @@ export default class SpecCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} Release version filter */ this.version
 	}
 
 	/**

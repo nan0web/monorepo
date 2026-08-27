@@ -1,14 +1,7 @@
-import { ModelAsApp } from '@nan0web/ui-cli';
 /**
  * DBServerApp - ModelAsApp controller for @nan0web/db-server CLI.
  */
-export declare class DBServerApp extends ModelAsApp {
-    /** @type {string} */
-    root: string;
-    /** @type {number} */
-    port: number;
-    /** @type {string} */
-    host: string;
+export class DBServerApp extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -38,10 +31,17 @@ export declare class DBServerApp extends ModelAsApp {
      * @param {Record<string, any>} [data]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
-    constructor(data?: Record<string, any>, options?: Partial<import('@nan0web/ui').ModelAsAppOptions>);
+    constructor(data?: Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    /** @type {string} */
+    root: string;
+    /** @type {number} */
+    port: number;
+    /** @type {string} */
+    host: string;
     /**
      * Run the DBServerApp logic.
      * @returns {AsyncGenerator<import('@nan0web/ui/core').Intent, any, any>}
      */
-    run(): AsyncGenerator<import('@nan0web/ui/core').Intent, any, any>;
+    run(): AsyncGenerator<import("@nan0web/ui/core").Intent, any, any>;
 }
+import { ModelAsApp } from '@nan0web/ui-cli';

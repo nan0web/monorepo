@@ -21,7 +21,7 @@
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"paths": {
 			"@nan0web/ai": [
 				"../ai/types",

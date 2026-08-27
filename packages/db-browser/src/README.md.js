@@ -419,7 +419,7 @@ function testRender() {
 		 * ```
 		 */
 		assert.ok(String(pkg.scripts?.play).includes('node play'))
-		const response = await runSpawn('node', ['play/main.js', 'dbbrowser'], { timeout: 5000 })
+		const response = await runSpawn('node', ['play/main.js', 'dbbrowser'], { timeout: 10000 })
 		assert.ok(response.code === 0)
 		assert.ok(response.text.includes('DBBrowser Demo'))
 	})

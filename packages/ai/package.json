@@ -54,6 +54,7 @@
     "docs:build": "nan0web build",
     "knip": "knip --production",
     "lint": "prettier --check \"src/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\"",
     "precommit": "npm test",
     "prepublishOnly": "npm test"
   },
@@ -78,6 +79,7 @@
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@nan0web/db-fs": "workspace:*",
     "@nan0web/ui": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
     "@openrouter/ai-sdk-provider": "^1.5.4",
     "ai": "^6.0.209",
     "hnswlib-node": "^3.0.0"
@@ -97,21 +99,21 @@
   },
   "devDependencies": {
     "@nan0web/test": "workspace:*",
-    "knip": "^6.0.0"
+    "knip": "^6.32.3"
   },
   "knip": {
     "ignoreDependencies": [
       "@nan0web/ui",
+      "@nan0web/ui-cli",
       "@modelcontextprotocol/sdk",
       "@nan0web/db-fs"
     ],
     "ignore": [
       "bin/*.js",
       "releases/**/*.js",
-      "src/domain/IndexWorkspaceApp.story.js",
-      "src/domain/AI.streamTextGenerator.story.js",
+      "src/**/*.story.js",
       "src/README.md.js",
-      "types/**/*.ts"
+      "types/**/*.d.ts"
     ]
   }
 }

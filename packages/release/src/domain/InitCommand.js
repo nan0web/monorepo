@@ -1,6 +1,9 @@
 import { ModelAsApp, result, show } from '@nan0web/ui'
 
 export default class InitCommand extends ModelAsApp {
+	/** @type {string} Release version */
+	version = ''
+
 	static version = {
 		help: 'Release version',
 		default: '',
@@ -17,7 +20,6 @@ export default class InitCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} Release version */ this.version
 	}
 
 	/**

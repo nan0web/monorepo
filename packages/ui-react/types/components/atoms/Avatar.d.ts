@@ -4,7 +4,7 @@ declare function Avatar({ src, alt, style, className, ...props }: {
     alt?: string | undefined;
     style?: {} | undefined;
     className?: string | undefined;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;
 declare namespace Avatar {
     namespace propTypes {
         let src: PropTypes.Requireable<string>;

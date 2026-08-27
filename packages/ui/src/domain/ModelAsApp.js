@@ -18,6 +18,9 @@ import { resolvePositionalArgs } from '../core/resolvePositionalArgs.js'
  * @extends {Model}
  */
 export class ModelAsApp extends Model {
+	/** @type {boolean} Show help */
+	help
+
 	static help = {
 		help: 'Show help',
 		default: false,
@@ -29,7 +32,7 @@ export class ModelAsApp extends Model {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {boolean} Show help */ this.help
+		/** @type {boolean} Show help */ this.help = Boolean(data.help)
 		this._ =  {
 			...this._,
 			adapter: options.adapter || new InputAdapter(),

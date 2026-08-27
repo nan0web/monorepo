@@ -4,6 +4,12 @@ import Message from './Message.js'
 /**
  * @typedef {Partial<Message> | null} InputMessageValue
  *
+ * @typedef {Object} InputMessageProps
+ * @property {InputMessageValue} [value=null] - Input value.
+ * @property {string[]|string} [options=[]] - Available options.
+ * @property {boolean} [waiting=false] - Waiting flag.
+ * @property {boolean} [escaped=false] - Whether to store the ESCAPE character.
+ *
  * Represents a message input with value, options and metadata.
  *
  * @class InputMessage
@@ -29,17 +35,12 @@ export default class InputMessage {
 	/**
 	 * Create a new InputMessage.
 	 *
-	 * @param {object} [props={}]
-	 * @param {InputMessageValue} [props.value=null] - Input value.
-	 * @param {string[]|string} [props.options=[]] - Available options.
-	 * @param {boolean} [props.waiting=false] - Waiting flag.
-	 * @param {boolean} [props.escaped=false] - Whether to store the ESCAPE character.
+	 * @param {InputMessageProps|string} [props={}]
 	 */
 	constructor(props = {}) {
-		if (typeof props === 'string') {
-			props = { value: { body: props } }
-		}
-		const { value = new Message(), waiting = false, options = [], escaped = false } = props
+		/** @type {InputMessageProps} */
+		const p = typeof props === 'string' ? { value: { body: props } } : props
+		const { value = new Message(), waiting = false, options = [], escaped = false } = p
 		this.#time = Date.now()
 		this.waiting = Boolean(waiting)
 		this.options = Array.isArray(options) ? options.map(String) : [String(options)]

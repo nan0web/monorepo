@@ -12,7 +12,7 @@ declare function Modal({ isOpen, onClose, children, style, ...props }: {
     onClose: Function;
     children: React.ReactNode;
     style?: any;
-}): import("react/jsx-runtime.js").JSX.Element | null;
+}): import("react/jsx-runtime").JSX.Element | null;
 declare namespace Modal {
     namespace propTypes {
         let isOpen: PropTypes.Validator<boolean>;

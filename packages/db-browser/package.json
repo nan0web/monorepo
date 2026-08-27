@@ -44,7 +44,7 @@
     "@nan0web/test": "workspace:*",
     "@nan0web/ui-cli": "workspace:*",
     "husky": "^9.1.7",
-    "knip": "^5.84.1"
+    "knip": "^5.88.1"
   },
   "peerDependencies": {
     "@nan0web/db": "workspace:*",

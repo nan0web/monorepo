@@ -4,7 +4,7 @@ declare function Checkbox({ checked, defaultChecked, onChange, disabled, ...prop
     defaultChecked: any;
     onChange: any;
     disabled?: boolean | undefined;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;
 declare namespace Checkbox {
     namespace propTypes {
         let checked: PropTypes.Requireable<boolean>;

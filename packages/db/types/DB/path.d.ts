@@ -1,8 +1,4 @@
 /**
- * Path manipulation utilities for DB class
- * Extracted to isolate path‑related logic and errors
- */
-/**
  * Public normalise – mimics the original behaviour where a leading cwd is
  * ignored when it is absolute and the next argument is relative. This matches
  * the expectations of the existing test‑suite.
@@ -10,7 +6,7 @@
  * @param  {...string} args - Path segments
  * @returns {string} Normalised path (no leading slash)
  */
-export declare function normalize(...args: string[]): string;
+export function normalize(...args: string[]): string;
 /**
  * Resolves path segments to a virtual‑space relative path.
  * Keeps the cwd unless the root is absolute (in which case cwd is ignored).
@@ -20,7 +16,7 @@ export declare function normalize(...args: string[]): string;
  * @param  {...string} args - Path segments
  * @returns {string} Resolved relative path
  */
-export declare function resolveSync(cwd: string, root: string, ...args: string[]): string;
+export function resolveSync(cwd: string, root: string, ...args: string[]): string;
 /**
  * Returns base name of URI with the removedSuffix (if provided).
  * If `removeSuffix` is `true` the extension will be removed.
@@ -29,21 +25,21 @@ export declare function resolveSync(cwd: string, root: string, ...args: string[]
  * @param {string|true} [removeSuffix] - Suffix to remove or true for extension
  * @returns {string}
  */
-export declare function basename(uri: string, removeSuffix?: string | true): string;
+export function basename(uri: string, removeSuffix?: string | true): string;
 /**
  * Returns directory name of URI.
  *
  * @param {string} uri
  * @returns {string}
  */
-export declare function dirname(uri: string): string;
+export function dirname(uri: string): string;
 /**
  * Extract file extension (with leading dot) from URI.
  *
  * @param {string} uri
  * @returns {string} Extension (e.g. ".txt") or empty string
  */
-export declare function extname(uri: string): string;
+export function extname(uri: string): string;
 /**
  * Relative path resolver.
  *
@@ -54,7 +50,7 @@ export declare function extname(uri: string): string;
  * @param {string} to   - Target path (file or directory)
  * @returns {string} Relative path
  */
-export declare function relative(from: string, to: string): string;
+export function relative(from: string, to: string): string;
 /**
  * Get absolute path.
  *
@@ -63,18 +59,18 @@ export declare function relative(from: string, to: string): string;
  * @param  {...string} args - Path segments
  * @returns {string} Absolute path (or URL when `cwd` is remote)
  */
-export declare function absolute(cwd: string, root: string, ...args: string[]): string;
+export function absolute(cwd: string, root: string, ...args: string[]): string;
 /**
  * Checks if `uri` has a scheme (http://, https://, ftp://, file://, …).
  *
  * @param {string} uri
  * @returns {boolean}
  */
-export declare function isRemote(uri: string): boolean;
+export function isRemote(uri: string): boolean;
 /**
  * Checks if `uri` is absolute (starts with `/`) or remote.
  *
  * @param {string} uri
  * @returns {boolean}
  */
-export declare function isAbsolute(uri: string): boolean;
+export function isAbsolute(uri: string): boolean;

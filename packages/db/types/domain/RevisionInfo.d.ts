@@ -1,30 +1,3 @@
-import { Model } from '@nan0web/types';
-export type RevisionInfoType = {
-    /**
-     * Unique revision identifier (adapter-specific)
-     */
-    sha: string;
-    /**
-     * Document key this revision belongs to
-     */
-    key: string;
-    /**
-     * Author of the change (empty if anonymous)
-     */
-    author: string;
-    /**
-     * Commit/change message
-     */
-    message: string;
-    /**
-     * ISO 8601 timestamp of the revision
-     */
-    timestamp: string;
-    /**
-     * Document size in bytes at this revision
-     */
-    size: number;
-};
 /**
  * @typedef {Object} RevisionInfoType
  * @property {string} sha Unique revision identifier (adapter-specific)
@@ -55,7 +28,7 @@ export type RevisionInfoType = {
  * @property {string} timestamp ISO 8601 timestamp of the revision
  * @property {number} size Document size in bytes at this revision
  */
-export default class RevisionInfo extends Model /** @implements {RevisionInfoType} */ {
+export default class RevisionInfo extends Model {
     static UI: {
         title: string;
         description: string;
@@ -99,6 +72,12 @@ export default class RevisionInfo extends Model /** @implements {RevisionInfoTyp
      * @param {object} [options]
      */
     constructor(data?: Partial<RevisionInfoType>, options?: object);
+    /** @type {string} Hash of the revision */ sha: string;
+    /** @type {string} Document key this revision belongs to */ key: string;
+    /** @type {string} Author of the change (empty if anonymous/wiki) */ author: string;
+    /** @type {string} Commit or change description */ message: string;
+    /** @type {string} ISO 8601 timestamp of the revision */ timestamp: string;
+    /** @type {number} Document size in bytes at this revision */ size: number;
     /**
      * @returns {Date | null}
      */
@@ -109,3 +88,30 @@ export default class RevisionInfo extends Model /** @implements {RevisionInfoTyp
      */
     get shortSha(): string;
 }
+export type RevisionInfoType = {
+    /**
+     * Unique revision identifier (adapter-specific)
+     */
+    sha: string;
+    /**
+     * Document key this revision belongs to
+     */
+    key: string;
+    /**
+     * Author of the change (empty if anonymous)
+     */
+    author: string;
+    /**
+     * Commit/change message
+     */
+    message: string;
+    /**
+     * ISO 8601 timestamp of the revision
+     */
+    timestamp: string;
+    /**
+     * Document size in bytes at this revision
+     */
+    size: number;
+};
+import { Model } from '@nan0web/types';

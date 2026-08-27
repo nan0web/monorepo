@@ -1,6 +1,6 @@
-import mockFetch from './mockFetch.js';
 export { mockFetch };
-declare const _default: {
-    mockFetch: typeof mockFetch;
-};
+declare namespace _default {
+    export { mockFetch };
+}
 export default _default;
+import mockFetch from './mockFetch.js';

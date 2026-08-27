@@ -12,7 +12,7 @@ declare function Autocomplete({ options, onSelect, placeholder, value: initialVa
     onSelect?: Function | undefined;
     placeholder?: string | undefined;
     value?: string | undefined;
-}): import("react/jsx-runtime.js").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;
 declare namespace Autocomplete {
     namespace propTypes {
         let options: PropTypes.Requireable<NonNullable<any[] | ((...args: any[]) => any) | Map<unknown, unknown> | null | undefined>>;

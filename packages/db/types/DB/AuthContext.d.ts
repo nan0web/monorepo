@@ -11,15 +11,12 @@
  * @class
  */
 export default class AuthContext {
-    #private;
-    /** @type {string} */
-    username: string;
-    /** @type {string} */
-    role: string;
-    /** @type {string[]} */
-    roles: string[];
-    /** @type {any} */
-    user: any;
+    /**
+     * Creates AuthContext from input.
+     * @param {AuthContext | object} input - Existing instance or plain object
+     * @returns {AuthContext}
+     */
+    static from(input: AuthContext | object): AuthContext;
     /**
      * @param {object} [input={}] - Context data
      * @param {string} [input.username=''] - Username
@@ -29,12 +26,20 @@ export default class AuthContext {
      * @param {any[]} [input.fails=[]] - Stored errors of fail access.
      */
     constructor(input?: {
-        username?: string;
-        role?: string;
-        roles?: string[];
+        username?: string | undefined;
+        role?: string | undefined;
+        roles?: string[] | undefined;
         user?: any;
-        fails?: any[];
+        fails?: any[] | undefined;
     });
+    /** @type {string} */
+    username: string;
+    /** @type {string} */
+    role: string;
+    /** @type {string[]} */
+    roles: string[];
+    /** @type {any} */
+    user: any;
     /** @returns {any[]} */
     get fails(): any[];
     /**
@@ -48,10 +53,5 @@ export default class AuthContext {
      * @param {any} err
      */
     fail(err: any): void;
-    /**
-     * Creates AuthContext from input.
-     * @param {AuthContext | object} input - Existing instance or plain object
-     * @returns {AuthContext}
-     */
-    static from(input: AuthContext | object): AuthContext;
+    #private;
 }

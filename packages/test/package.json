@@ -82,6 +82,6 @@
     "@nan0web/http-node": "workspace:*",
     "@nan0web/ui-cli": "workspace:*",
     "husky": "^9.1.7",
-    "knip": "^6.6.0"
+    "knip": "^6.32.3"
   }
 }
