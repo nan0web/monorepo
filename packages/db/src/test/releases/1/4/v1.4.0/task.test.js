@@ -3,9 +3,9 @@ import assert from 'node:assert/strict'
 import { DB } from '../../../../../index.js'
 import { NoConsole } from '@nan0web/log'
 
-describe('Реліз v1.4.0: Aliases Protocol та Стабілізація', () => {
-	describe('1. Aliases Protocol — поле aliases в конструкторі', () => {
-		it('DB приймає aliases як Map<string, string> через конструктор', () => {
+describe('Release v1.4.0: Aliases Protocol and Stabilization', () => {
+	describe('1. Aliases Protocol — aliases field in constructor', () => {
+		it('DB accepts aliases as Map<string, string> via constructor', () => {
 			const db = new DB({
 				console: new NoConsole(),
 				aliases: {
@@ -13,19 +13,19 @@ describe('Реліз v1.4.0: Aliases Protocol та Стабілізація', ()
 					'docs/en/project.md': './docs/en/project.md',
 				},
 			})
-			assert.ok(db.aliases, 'DB повинен мати поле aliases')
-			assert.equal(typeof db.aliases, 'object', "aliases має бути об'єктом")
+			assert.ok(db.aliases, 'DB must have aliases property')
+			assert.equal(typeof db.aliases, 'object', 'aliases must be an object')
 		})
 
-		it("aliases за замовчуванням є порожнім об'єктом", () => {
+		it('aliases defaults to an empty object', () => {
 			const db = new DB({ console: new NoConsole() })
-			assert.ok(db.aliases !== undefined, 'aliases має існувати')
-			assert.deepEqual(db.aliases, {}, "aliases за замовчуванням має бути порожнім об'єктом")
+			assert.ok(db.aliases !== undefined, 'aliases must exist')
+			assert.deepEqual(db.aliases, {}, 'aliases must be an empty object by default')
 		})
 	})
 
-	describe('2. Aliases Protocol — метод resolveAlias()', () => {
-		it('resolveAlias повертає реальний URI якщо alias існує (hit)', () => {
+	describe('2. Aliases Protocol — resolveAlias() method', () => {
+		it('resolveAlias returns real URI if alias exists (hit)', () => {
 			const db = new DB({
 				console: new NoConsole(),
 				aliases: {
@@ -33,10 +33,10 @@ describe('Реліз v1.4.0: Aliases Protocol та Стабілізація', ()
 				},
 			})
 			const resolved = db.resolveAlias('docs/en/README.md')
-			assert.equal(resolved, './README.md', 'Має повернути реальний шлях')
+			assert.equal(resolved, './README.md', 'Must return real path')
 		})
 
-		it('resolveAlias повертає оригінальний URI якщо alias не існує (miss)', () => {
+		it('resolveAlias returns original URI if alias does not exist (miss)', () => {
 			const db = new DB({
 				console: new NoConsole(),
 				aliases: {
@@ -44,10 +44,10 @@ describe('Реліз v1.4.0: Aliases Protocol та Стабілізація', ()
 				},
 			})
 			const resolved = db.resolveAlias('some/other/path.md')
-			assert.equal(resolved, 'some/other/path.md', 'Має повернути оригінальний URI')
+			assert.equal(resolved, 'some/other/path.md', 'Must return original URI')
 		})
 
-		it('resolve() автоматично застосовує alias (наскрізна інтеграція)', async () => {
+		it('resolve() automatically applies alias (end-to-end integration)', async () => {
 			const db = new DB({
 				console: new NoConsole(),
 				aliases: {
@@ -55,15 +55,14 @@ describe('Реліз v1.4.0: Aliases Protocol та Стабілізація', ()
 				},
 			})
 			const resolved = await db.resolve('en/README.md')
-			assert.ok(!resolved.includes('en/README.md'), 'URI має бути замінено через alias')
-			assert.ok(resolved.includes('root/README.md'), 'Має містити реальний шлях з alias')
+			assert.ok(!resolved.includes('en/README.md'), 'URI must be replaced via alias')
+			assert.ok(resolved.includes('root/README.md'), 'Must contain real path from alias')
 		})
 	})
 
-	describe('3. CrossDriver — виправлення regression тестів', () => {
-		it('CrossDriver.test.js не має падаючих тестів (4/4 pass)', async () => {
-			// Цей тест є маркером: він не імпортує CrossDriver напряму,
-			// а лише перевіряє що DB.fetch коректно обробляє mounted $ref
+	describe('3. CrossDriver — fix regression tests', () => {
+		it('CrossDriver.test.js has no failing tests (4/4 pass)', async () => {
+			// Marker test verifying DB.fetch correctly resolves mounted $ref
 			const memDb = new DB({
 				console: new NoConsole(),
 				predefined: [
@@ -74,14 +73,14 @@ describe('Реліз v1.4.0: Aliases Protocol та Стабілізація', ()
 			await memDb.connect()
 
 			const data = await memDb.fetch('doc')
-			assert.ok(data, 'fetch має повернути дані')
+			assert.ok(data, 'fetch must return data')
 			assert.equal(data.name, 'test')
-			assert.equal(data.memGlobal, 'mem_value', 'Глобальні змінні мають успадкуватись')
+			assert.equal(data.memGlobal, 'mem_value', 'Globals must be inherited')
 		})
 	})
 
-	describe('4. Закриття v1.3.1 — міграція контрактних тестів', () => {
-		it('контрактні тести v1.3.1 повинні існувати у src/test/releases/', async () => {
+	describe('4. v1.3.1 closure — contract tests migration', () => {
+		it('v1.3.1 contract tests must exist in src/test/releases/', async () => {
 			const { existsSync } = await import('node:fs')
 			const { resolve } = await import('node:path')
 
@@ -90,7 +89,7 @@ describe('Реліз v1.4.0: Aliases Protocol та Стабілізація', ()
 				'../../../1/3/v1.3.1/task.test.js',
 			)
 
-			assert.ok(existsSync(regressionPath), `Регресійний тест має існувати: ${regressionPath}`)
+			assert.ok(existsSync(regressionPath), `Regression test must exist: ${regressionPath}`)
 		})
 	})
 })

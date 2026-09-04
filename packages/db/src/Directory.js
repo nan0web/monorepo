@@ -34,11 +34,24 @@ export default class Directory {
 	static GLOBALS = '_/'
 
 	/**
-	 * The default index name for directories.
-	 * Used for listing immediate children (e.g., index.txt).
-	 * @type {string}
+	 * The default index names for directories.
+	 * Can be an array of names (e.g., ['index', 'README']) or a string.
+	 * @type {string[] | string}
 	 */
-	static INDEX = 'index'
+	static INDEX = ['index', 'README']
+
+	/**
+	 * Checks if a given name or filename matches any directory index name.
+	 * Strips extension before comparing.
+	 * @param {string} name - Name or path to check
+	 * @returns {boolean}
+	 */
+	static isIndex(name) {
+		if (typeof name !== 'string') return false
+		const base = name.split('/').pop()?.split('.')[0] ?? ''
+		const indexes = Array.isArray(this.INDEX) ? this.INDEX : [this.INDEX]
+		return indexes.includes(base)
+	}
 
 	/**
 	 * Supported data file extensions for loading documents.

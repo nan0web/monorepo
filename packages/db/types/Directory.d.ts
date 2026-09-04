@@ -32,11 +32,18 @@ export default class Directory {
      */
     static GLOBALS: string;
     /**
-     * The default index name for directories.
-     * Used for listing immediate children (e.g., index.txt).
-     * @type {string}
+     * The default index names for directories.
+     * Can be an array of names (e.g., ['index', 'README']) or a string.
+     * @type {string[] | string}
      */
-    static INDEX: string;
+    static INDEX: string[] | string;
+    /**
+     * Checks if a given name or filename matches any directory index name.
+     * Strips extension before comparing.
+     * @param {string} name - Name or path to check
+     * @returns {boolean}
+     */
+    static isIndex(name: string): boolean;
     /**
      * Supported data file extensions for loading documents.
      * Determines if a file is treated as structured data.

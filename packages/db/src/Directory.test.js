@@ -7,7 +7,7 @@ suite('Directory', () => {
 		it('should have correct default constants', () => {
 			assert.strictEqual(Directory.FILE, '_')
 			assert.strictEqual(Directory.GLOBALS, '_/')
-			assert.strictEqual(Directory.INDEX, 'index')
+			assert.deepStrictEqual(Directory.INDEX, ['index', 'README'])
 			assert.deepStrictEqual(Directory.DATA_EXTNAMES, [
 				'.json',
 				'.yaml',
@@ -17,6 +17,16 @@ suite('Directory', () => {
 				'.csv',
 				'.md',
 			])
+		})
+
+		it('isIndex should recognize index and README files with or without extensions', () => {
+			assert.strictEqual(Directory.isIndex('index'), true)
+			assert.strictEqual(Directory.isIndex('index.md'), true)
+			assert.strictEqual(Directory.isIndex('README'), true)
+			assert.strictEqual(Directory.isIndex('README.md'), true)
+			assert.strictEqual(Directory.isIndex('docs/README.yaml'), true)
+			assert.strictEqual(Directory.isIndex('docs/other.md'), false)
+			assert.strictEqual(Directory.isIndex(''), false)
 		})
 	})
 

@@ -37,6 +37,15 @@ export class HydratedModel extends Model {
 			}
 		}
 
+		// 2. Auto-hydrate unprovided fields from options.parent into input
+		if (options?.parent && typeof options.parent === 'object') {
+			for (const [key, value] of Object.entries(options.parent)) {
+				if (!key.startsWith('_') && !key.startsWith('$') && hydratedInput[key] === undefined) {
+					hydratedInput[key] = value
+				}
+			}
+		}
+
 		super(hydratedInput, options)
 
 		// 3. Resolve Late-Bound properties and Auto-hydrate from parent

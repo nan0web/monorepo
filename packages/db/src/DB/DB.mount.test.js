@@ -219,7 +219,7 @@ describe('DB.mount routing (get/set/stat/fetch)', () => {
 	})
 })
 
-// ─── seal() — Макіавеллі ───
+// ─── seal() — Machiavelli ───
 
 describe('DB.seal() — Sealed Mount Registry', () => {
 	it('seal() prevents further mount()', () => {
@@ -271,7 +271,7 @@ describe('DB.seal() — Sealed Mount Registry', () => {
 	})
 })
 
-// ─── Контракт помилок — Сократ + Джобс ───
+// ─── Error Contract — Socrates + Jobs ───
 
 describe('DB._findMount() — Error Contract for ~ and @ prefixes', () => {
 	it('throws clear error for unmounted ~ prefix', () => {
@@ -298,7 +298,7 @@ describe('DB._findMount() — Error Contract for ~ and @ prefixes', () => {
 	it('does NOT throw for regular unmounted paths (fallback to local)', () => {
 		const root = new DB()
 		const result = root._findMount('some/regular/path')
-		assert.strictEqual(result, null) // нормальна поведінка
+		assert.strictEqual(result, null) // normal behavior
 	})
 
 	it('does NOT throw for ~ when it IS mounted', () => {
