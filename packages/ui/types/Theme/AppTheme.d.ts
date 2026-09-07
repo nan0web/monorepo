@@ -1,6 +1,6 @@
 declare const _default: {
     fontFamily: string;
-    atoms: Partial<typeof import("./atoms/index.js")>;
+    atoms: typeof import("./atoms/index.js");
     molecules: typeof import("./molecules/index.js");
     organisms: typeof import("./organisms/index.js");
 };

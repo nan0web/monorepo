@@ -47,4 +47,5 @@ export {
 	EmptyStateModel,
 	BannerModel,
 	ProfileDropdownModel,
+	ShellModel,
 } from './components/index.js'

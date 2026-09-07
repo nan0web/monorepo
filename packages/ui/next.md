@@ -1,96 +1,53 @@
-# 🏁 План релізу та наступних кроків — v3.2.0 (Sovereign Platform)
+# 🏁 План релізу та наступних кроків — v3.5.0 (Fractal OLMUI & Terminal Separation)
 
-## 🚀 Виконано у поточній сесії (Achievements)
-
-### 1. Стабілізація тест-конвеєра Llimo
-
-- [x] **Детермінізм сценарних тестів**: Повністю стабілізовано `PipelineModel.scenario.test.js`. Усунено плаваючі помилки та рекурсивний запуск реального `npm test` за рахунок повного мокування потоків `childProcess.spawn`.
-- [x] **Збереження сирого Markdown**: Перевірка результатів згенерованих файлів переведена на нативний метод `db.loadDocumentAs('.txt', ...)` замість використання `node:fs`, що забезпечує чистоту взаємодії з віртуальною базою даних `DBFS`.
-
-
-
-### 2. Цілісність серіалізації Markdown
-
-- [x] **Рішення для таблиць**: Виправлено метод `MDTableRow.toString()` у пакеті `@nan0web/markdown` — тепер у разі відсутності дочірніх об'єктів-комірок повертається сирий вміст `content` рядка, запобігаючи руйнуванню структури таблиць під час запису.
-
-
-
-### 3. Фінансове та стратегічне планування
-
-- [x] **Investment Pitch Plan**: Створено детальний план для комбінаторів та самофінансування на $1.2M - $1.5M із 12-місячною дорожньою картою, вирівняними ставками команди (ЯRаСлав, Дмитро, Павло), та детальним описом юніт-економіки бутстрапінгу (заробіток $1.5M через запуск 2-3 додатків на тиждень за допомогою LLiMo).
-
-
+> **Статус:** В процесі планування та декомпозиції  
+> **Концепція:** One Logic — Multiple User Interfaces (OLMUI)  
+> **Директорії реалізації:** `packages/ui` (`@nan0web/ui`), `packages/ui-cli` (`@nan0web/ui-cli`), `packages/ui-tui` (`@nan0web/ui-tui`)
 
 ---
 
-## 🔥 Наступні кроки після перезапуску IDE (Task Pool)
+## 🏛 Архітектурна Декомпозиція по Сесіях (Zero-Hallucination Context Strategy)
 
-Пріоритетна черга завдань для нової сесії з чистим контекстом:
-
-### 🤖 Крок 1. Розширення Llimo App для паралельної роботи (Абсолютний пріоритет)
-
-_Розробка сайту банку на токенах Antigravity є надто дорогою. Необхідно спочатку запустити Llimo для дешевої генерації._
-
-- [ ] **LLM-1**: Дописати можливість писати код з допомогою Llimo App і агента, який самостійно зможе підтягувати необхідні файли у контекст.
-- [ ] **LLM-2**: Дописати Llimo App pipeline для запобігання блокувань під час вичерпання лімітів токенів у Antigravity.
-
-
-
-### ⚙️ Крок 2. Здача сайту Industrial Bank (Здійснюється через Llimo)
-
-- [ ] **IB-1**: Доопрацювати та здати продукти у веб-форматі в директорії `apps/3rdparty/industrialbank/*`.
-- [ ] **IB-2**: Інтегрувати вбудований редактор контенту (NaN0/YAML схеми) та базову авторизацію (Login/Password + SSO) безпосередньо в сайт банку для менеджерів.
-- [ ] **IB-3**: Спрямувати перші отримані кошти від здачі (до 250,000 грн) ЯRаСлаву як компенсацію первинних R&D витрат.
-
-
-
-### 🧪 Крок 3. Повний прогін тестів монорепозиторію
-
-- [ ] **TST-1**: Переконатися, що всі 345 тестів є зеленими після перезавантаження:
-
-
-  ```bash
-  pnpm -r run test
-  ```
-
-### 💼 Крок 4. Подача заявок на фінансування (Венчур + Гранти)
-
-- [ ] **FUND-1**: Підготувати заявку у **NLnet Foundation** для отримання безвідсоткового гранту на децентралізовані мережі (початкове фінансування без втрати часток компанії).
-- [ ] **FUND-2**: Оформити Pitch Deck для **OSS Capital** на основі готового ядра `@nan0web` та його npm-історії.
-
-
+Щоб уникнути переповнення контексту (Zero-Hallucination Context Strategy згідно з `AGENTS.md`) та не змішувати абстракції, реалізація ділиться на **3 окремі ізольовані сесії (чати)**:
 
 ---
 
-_Документ оновлено Antigravity (АрхіТехноМаг) 27 травня 2026 року після зміни пріоритетів розробки на користь оптимізації вартості токенів через Llimo._
+### 🔹 Сесія 1: Ядро Моделі та Фрактальний $content (Workspace: `packages/ui`)
+**Мета:** Підтримка довільного порядку блоків `$content` у `Document` та розгортання посилань на навігацію.
+- **Вхідні workflows:** `docs/uk/workflows/model-schema.md`, `docs/uk/workflows/data-architecture.md`, `docs/uk/workflows/fix.md`.
+- **Задачі:**
+  - [ ] **DOC-1**: Додати в `Document` та `Content` резолвер посилань для `nav: headerNav` та `nav: { $ref: '#headerNav' }`.
+  - [ ] **DOC-2**: Переконатися, що якщо блок у `$content` має значення `true`, він автоматично бере дані однойменного поля з документа (наприклад, `Header: true` бере `this.header`).
+  - [ ] **DOC-3**: Додати сценарний контрактний тест `src/domain/DocumentContent.test.js` на рекурсивне розгортання `$content` зверху-вниз.
+  - [ ] **DOC-4**: Валідація через `pnpm test` (100% Green).
 
 ---
 
-### PhaseAuditor
-- [ ] [phase] .editorconfig: `Missing fundamental file: .editorconfig`
-
-**Boundary**: [@[.editorconfig]](./.editorconfig)
-**Context**: [@[project.md]](./project.md), [@[seed.md]](./seed.md)
+### 🔹 Сесія 2: Мультимодальні Контракти та Мобільна Адаптація (Workspace: `packages/ui`)
+**Мета:** Фіксація контракту `ShellContract` / `DocumentContract` та правила трансформації Header Navigation ➔ Mobile Bottom Bar.
+- **Вхідні workflows:** `docs/uk/workflows/olm-ui-architecture-adapters.md`, `docs/uk/workflows/release.md`.
+- **Задачі:**
+  - [ ] **MOB-1**: Зафіксувати в `Structure.js` контракт `DocumentContract` / `ShellContract` як контейнер `$content` замість фіксованих слотів `PageContract`.
+  - [ ] **MOB-2**: Описати правила адаптерної проекції: десктопний `Header` на мобільному стає `Bottom Navigation Bar` під великий палець руки, спираючись на єдину модель `Navigation`.
+  - [ ] **MOB-3**: Оновити документацію в `packages/ui/docs/uk/contracts/README.md`.
+  - [ ] **MOB-4**: Валідація через `pnpm run test:docs` та `pnpm run test`.
 
 ---
 
-### JsHygieneAuditor
-- [ ] [hygiene] devDependencies.typescript: `Missing devDependency: typescript (required for npm run build)`
+### 🔹 Сесія 3: Розділення Термінальних Інтерфейсів CLI vs TUI (Workspace: `packages/ui-cli` & `packages/ui-tui`)
+**Мета:** Чітке технологічне та пакетне розмежування потокового CLI та повноекранного псевдографічного TUI.
+- **Вхідні workflows:** `docs/uk/workflows/ui-cli-standards.md`, `docs/uk/workflows/model-as-app-cli.md`.
+- **Задачі:**
+  - [ ] **TERM-1**: Зафіксувати специфікацію `@nan0web/ui-cli` як виключно потокового генераторного діалогу (stream-based: `stdout`/`stderr`, `ask`, `show`, `progress`) для CLI-утиліт та CI/CD.
+  - [ ] **TERM-2**: Ініціалізувати або виділити концепт `@nan0web/ui-tui` (Terminal User Interface) для повноекранного режиму (Alternate screen buffer, вікна, скрол, статус-бар як Midnight Commander / VIBE CLI та **підтримка подій миші**).
+  - [ ] **TERM-3**: Написати контрактні тести взаємодії моделей з TUI-адаптером.
 
-  - **Suggested Fix**: `npm install -D typescript`
+---
 
-- [ ] [hygiene] devDependencies.c8: `Missing devDependency: c8 (required for npm run test:coverage)`
+## 📊 Поточний статус завдань (Task Pool)
 
-  - **Suggested Fix**: `npm install -D c8`
-
-- [ ] [hygiene] scripts.test:all: `Incomplete test:all chain, missing: build`
-
-**Boundary**: [@[package.json]](./package.json)
-**Context**: [@[package.json]](./package.json)
-
-## Recommended Subagents
-- `nan0inspect phase --fix`
-- `nan0inspect hygiene --fix`
-- `nan0inspect snapshots --fix`
-
-
+- [x] Очищено зайвий синтаксис JSON Pointer (`#/nav`). Залишено `nav: headerNav` та `nav: { $ref: '#headerNav' }`.
+- [x] Оновлено та верифіковано офіційний архітектурний план у `implementation_plan.md`.
+- [ ] Виконати Сесію 1: Резолвінг `$content` у `packages/ui`.
+- [ ] Виконати Сесію 2: Мультимодальна проекція Mobile Bottom Bar у `packages/ui`.
+- [ ] Виконати Сесію 3: Специфікація та відокремлення TUI у `packages/ui-tui`.

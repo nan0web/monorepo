@@ -37,6 +37,7 @@ focusing on type safety, minimalism, and pure JavaScript design.
 - [Testing (TDD+)](#testing-tdd)
   - [Scenario Testing (v1.12+)](#scenario-testing-v112)
   - [Story Testing (.nan0)](#story-testing-nan0-spec-files)
+- [Component Contracts (OLMUI)](#component-contracts-olmui)
 - [Master IDE](#master-ide-component-sandbox)
 - [Philosophy & Economy](./en/philosophy-economy.md)
 - [Legacy Architecture v1](./en/legacy/v1.md)
@@ -242,6 +243,26 @@ import { Welcome } from '@nan0web/ui'
 const output = Welcome({ user: { name: 'Test' } })
 console.info(output) // ← Welcome Test!
 ```
+
+### Component Contracts (OLMUI)
+
+From v3.4.0, `@nan0web/ui/components` introduces strict, multimodal, framework-agnostic component contracts defined via pure JavaScript JSDoc typedefs.
+
+These contracts serve as a Single Source of Truth for:
+- 💻 **Terminal (CLI)**
+- 🌐 **Web (Lit / React / SSR)**
+- 📱 **Mobile**
+- ⌚ **Watch (Wearable)**
+- 🎙️ **Voice (Speech/Audio)**
+- 💬 **AI Chat / LLM**
+
+Supported core contracts:
+- **Structure**: `PageContract`, `NavContract`, `SidebarContract`, `FooterContract`
+- **Content & Feedback**: `MarkdownContract`, `AlertContract`, `BadgeContract`, `TableContract`
+- **Interaction & Forms**: `ActionContract` (`Button`), `InputContract`, `ChoiceContract` (`Select` / `Autocomplete`)
+- **Dialog & Progress**: `DialogContract` (`Modal`), `ProgressContract` (`Spinner` / `ProgressBar`)
+
+For complete specifications, see [Component Contracts Documentation (UK)](./uk/contracts/README.md).
 
 ### Master IDE (Component Sandbox)
 

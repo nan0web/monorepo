@@ -133,7 +133,7 @@ export class SpecRunner extends ModelAsApp {
 
 		// The stream must be fully consumed
 		if (localStream.length > 0) {
-			assert.fail(t(SpecRunner.UI.unhandledSteps, { count: localStream.length }))
+			this.#assert.fail(t(SpecRunner.UI.unhandledSteps, { count: localStream.length }))
 		}
 
 		return result(resVal)

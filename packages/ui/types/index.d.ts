@@ -1,5 +1,8 @@
 export { Attachment } from "./domain/Attachment.js";
 export { Article } from "./domain/Article.js";
+export * from "./Component/contracts/index.js";
+export * from "./core/Intent.js";
+export * from "./domain/index.js";
 export { default as Element } from "./Model/Element.js";
 export { resolveContext } from "./utils/resolveContext.js";
 export { processI18n } from "./utils/processI18n.js";
@@ -15,8 +18,6 @@ export { default as UiMessage } from "./core/Message/Message.js";
 export { default as UiAdapter } from "./core/UiAdapter.js";
 export { resolvePositionalArgs } from "./core/resolvePositionalArgs.js";
 export { tokens } from "./Theme/tokens.js";
-export * from "./core/Intent.js";
-export * from "./domain/index.js";
 export { IntentErrorModel } from "./core/IntentErrorModel.js";
 export { runGenerator } from "./core/GeneratorRunner.js";
 export { buildNan0SpecFromTrace } from "./testing/CrashReporter.js";

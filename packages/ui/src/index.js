@@ -8,6 +8,7 @@ export { Article } from './domain/Article.js'
 export { BlockRegistry, blockRegistry } from './core/BlockRegistry.js'
 
 export { Locale, Model, Models, Component }
+export * from './Component/contracts/index.js'
 export { default as Element } from './Model/Element.js'
 export {
 	default as Theme,
