@@ -1,6 +1,6 @@
 {
 	"name": "@nan0web/payload-cms.app",
-	"version": "3.3.0",
+	"version": "3.3.1",
 	"description": "Universal Model-as-App Model-as-Schema to Payload CMS Bridge & Generator Application",
 	"type": "module",
 	"main": "./src/index.js",
@@ -30,6 +30,7 @@
 	"dependencies": {
 		"@nan0web/db": "^3.3.0",
 		"@nan0web/types": "^3.3.0",
+		"@nan0web/ui": "^3.3.0",
 		"@nan0web/ui-cli": "^3.3.0",
 		"@nan0web/ui-payload": "^3.3.0",
 		"typescript": "^5.9.3"
