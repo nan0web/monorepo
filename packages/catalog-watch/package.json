@@ -3,22 +3,43 @@
   "version": "3.3.0",
   "description": "Lightweight catalog subscription watcher via HTTP HEAD + ETag. Zero-State Server.",
   "type": "module",
-  "main": "src/index.js",
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
   "exports": {
-    ".": "./src/index.js",
-    "./server": "./src/server/buildCatalogIndex.js",
-    "./sw": "./src/sw.js",
-    "./domain": "./src/domain/CatalogIndexModel.js"
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./server": {
+      "import": "./src/server/buildCatalogIndex.js",
+      "types": "./types/server/buildCatalogIndex.d.ts"
+    },
+    "./sw": {
+      "import": "./src/sw.js",
+      "types": "./types/sw.d.ts"
+    },
+    "./domain": {
+      "import": "./src/domain/CatalogIndexModel.js",
+      "types": "./types/domain/CatalogIndexModel.d.ts"
+    }
   },
   "files": [
     "src/**/*.js",
     "!src/**/*.test.js",
+    "!src/**/*.story.js",
+    "types/**/*.d.ts",
     "data/**/*.yaml"
   ],
   "scripts": {
-    "test": "node --test src/domain/*.test.js",
-    "test:story": "node --test src/domain/*.story.js",
-    "test:all": "npm run test && npm run test:story"
+    "prebuild": "rm -rf types/",
+    "build": "tsc",
+    "test": "node --test \"src/domain/*.test.js\"",
+    "test:story": "node --test \"src/domain/*.story.js\"",
+    "lint": "prettier --check \"src/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\"",
+    "knip": "knip --production",
+    "test:all": "npm run test && npm run test:story && npm run build && npm run lint && npm run knip",
+    "audit": "pnpm audit --prod || true"
   },
   "keywords": [
     "catalog",
@@ -29,11 +50,14 @@
     "nan0web"
   ],
   "dependencies": {
+    "@nan0web/core": "workspace:*",
     "@nan0web/db": "workspace:*",
     "@nan0web/event": "workspace:*",
     "@nan0web/types": "workspace:*",
-    "@nan0web/core": "workspace:*",
     "@nan0web/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "knip": "^5.88.1"
   },
   "license": "ISC",
   "author": "YaRaSLove (ЯRаСлав) <support@yaro.page>"

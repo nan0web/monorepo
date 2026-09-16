@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["src/index.js!", "src/ui-react/index.js!", "playground/main.js"],
+  "project": ["src/**/*.js!"],
+  "ignore": ["types/**", "src/README.md.js"],
+  "ignoreDependencies": [
+    "@nan0web/db-browser",
+    "@nan0web/db-fs"
+  ]
+}

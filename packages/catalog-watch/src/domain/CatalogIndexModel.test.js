@@ -26,9 +26,7 @@ function createEnv(overrides = {}) {
 	return {
 		listFiles: async () => overrides.files ?? SAMPLE_FILES,
 		hash: async () => overrides.hash ?? 'abc123def',
-		readVersion: overrides.version !== undefined
-			? async () => overrides.version
-			: undefined,
+		readVersion: overrides.version !== undefined ? async () => overrides.version : undefined,
 	}
 }
 
@@ -77,7 +75,7 @@ describe('CatalogIndexModel: Serialization', () => {
 		const lines = output.trim().split('\n')
 
 		assert.equal(lines.length, 5) // 5 header lines, no file lines
-		assert.ok(lines.every(l => l.startsWith('#')))
+		assert.ok(lines.every((l) => l.startsWith('#')))
 	})
 
 	it('parse() reconstructs model from valid .index.txt', () => {
@@ -273,7 +271,10 @@ describe('CatalogIndexModel: async *run()', () => {
 		let calledWith = ''
 		const model = new CatalogIndexModel({ catalog: 'metals', locale: 'de' })
 		const env = {
-			listFiles: async (path) => { calledWith = path; return ['a.yaml'] },
+			listFiles: async (path) => {
+				calledWith = path
+				return ['a.yaml']
+			},
 			hash: async () => 'h1',
 		}
 		await drain(model.run(env))
@@ -286,7 +287,10 @@ describe('CatalogIndexModel: async *run()', () => {
 		const model = new CatalogIndexModel({ catalog: 'cards', locale: 'uk' })
 		const env = {
 			listFiles: async () => ['a.yaml', 'b.yaml'],
-			hash: async (files) => { hashedFiles = files; return 'h' },
+			hash: async (files) => {
+				hashedFiles = files
+				return 'h'
+			},
 		}
 		await drain(model.run(env))
 

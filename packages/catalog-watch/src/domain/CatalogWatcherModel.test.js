@@ -28,7 +28,12 @@ cards/mastercard-platinum.yaml
 `
 
 /** Creates a fake fetch that returns HEAD + GET responses */
-function createFakeFetch({ headStatus = 200, etag = null, getText = SAMPLE_INDEX_TXT, throwError = false } = {}) {
+function createFakeFetch({
+	headStatus = 200,
+	etag = null,
+	getText = SAMPLE_INDEX_TXT,
+	throwError = false,
+} = {}) {
 	return async (url, init = {}) => {
 		if (throwError) throw new Error('Network failure')
 
@@ -36,7 +41,7 @@ function createFakeFetch({ headStatus = 200, etag = null, getText = SAMPLE_INDEX
 			return {
 				status: headStatus,
 				headers: {
-					get: (name) => name === 'etag' ? etag : null,
+					get: (name) => (name === 'etag' ? etag : null),
 				},
 			}
 		}
@@ -45,7 +50,7 @@ function createFakeFetch({ headStatus = 200, etag = null, getText = SAMPLE_INDEX
 			status: 200,
 			text: async () => getText,
 			headers: {
-				get: (name) => name === 'etag' ? etag : null,
+				get: (name) => (name === 'etag' ? etag : null),
 			},
 		}
 	}
@@ -58,9 +63,8 @@ async function runCheck(model, env, askResponses = {}) {
 	let step = await gen.next()
 	while (!step.done) {
 		intents.push(step.value)
-		const response = step.value.type === 'ask'
-			? (askResponses[step.value.field] ?? { value: true })
-			: undefined
+		const response =
+			step.value.type === 'ask' ? (askResponses[step.value.field] ?? { value: true }) : undefined
 		step = await gen.next(response)
 	}
 	return { intents, result: step.value }
@@ -154,10 +158,14 @@ describe('CatalogWatcherModel: check() — Happy Paths', () => {
 		const { intents, result: final } = await runCheck(w, env)
 
 		// Should have: progress(checking) → log(updated!) → ask(download) → log(downloaded)
-		assert.ok(intents.some(i => i.type === 'progress'))
-		assert.ok(intents.some(i => i.type === 'log' && i.message === CatalogWatcherModel.UI.label_updated))
-		assert.ok(intents.some(i => i.type === 'ask' && i.field === 'download'))
-		assert.ok(intents.some(i => i.type === 'log' && i.message === CatalogWatcherModel.UI.label_downloaded))
+		assert.ok(intents.some((i) => i.type === 'progress'))
+		assert.ok(
+			intents.some((i) => i.type === 'log' && i.message === CatalogWatcherModel.UI.label_updated)
+		)
+		assert.ok(intents.some((i) => i.type === 'ask' && i.field === 'download'))
+		assert.ok(
+			intents.some((i) => i.type === 'log' && i.message === CatalogWatcherModel.UI.label_downloaded)
+		)
 
 		assert.equal(final.data.updated, true)
 		assert.equal(final.data.downloaded, true)
@@ -182,7 +190,7 @@ describe('CatalogWatcherModel: check() — Happy Paths', () => {
 		const { intents, result: final } = await runCheck(w, env)
 
 		// Should NOT have ask intent
-		assert.ok(!intents.some(i => i.type === 'ask'))
+		assert.ok(!intents.some((i) => i.type === 'ask'))
 		assert.equal(final.data.updated, true)
 		assert.equal(final.data.downloaded, true)
 	})
@@ -215,7 +223,7 @@ describe('CatalogWatcherModel: check() — Happy Paths', () => {
 		const env = { fetch: createFakeFetch() }
 		const { intents, result: final } = await runCheck(w, env)
 
-		assert.ok(intents.some(i => i.message === CatalogWatcherModel.UI.label_unchanged))
+		assert.ok(intents.some((i) => i.message === CatalogWatcherModel.UI.label_unchanged))
 		assert.equal(final.data.updated, false)
 		assert.equal(w.status, 'unchanged')
 	})
@@ -232,7 +240,7 @@ describe('CatalogWatcherModel: check() — Happy Paths', () => {
 				if (init.method === 'HEAD') {
 					return {
 						status: 200,
-						headers: { get: (n) => n === 'etag' ? '"etag-v1"' : null },
+						headers: { get: (n) => (n === 'etag' ? '"etag-v1"' : null) },
 					}
 				}
 				getCalled = true
@@ -303,7 +311,7 @@ describe('CatalogWatcherModel: check() — User Rejection', () => {
 			download: { value: false },
 		})
 
-		assert.ok(intents.some(i => i.message === CatalogWatcherModel.UI.label_skipped))
+		assert.ok(intents.some((i) => i.message === CatalogWatcherModel.UI.label_skipped))
 		assert.equal(final.data.updated, true)
 		assert.equal(final.data.downloaded, false)
 	})
@@ -348,7 +356,7 @@ describe('CatalogWatcherModel: check() — Error Handling', () => {
 		const env = { fetch: createFakeFetch({ throwError: true }) }
 		const { intents, result: final } = await runCheck(w, env)
 
-		assert.ok(intents.some(i => i.type === 'log' && i.level === 'error'))
+		assert.ok(intents.some((i) => i.type === 'log' && i.level === 'error'))
 		assert.equal(w.status, 'error')
 		assert.equal(final.data.updated, false)
 		assert.equal(final.data.error, 'Network failure')
@@ -395,7 +403,9 @@ describe('CatalogWatcherModel: watch() — Loop', () => {
 		let sleepCalled = false
 		const env = {
 			fetch: createFakeFetch(),
-			sleep: async () => { sleepCalled = true },
+			sleep: async () => {
+				sleepCalled = true
+			},
 		}
 
 		const gen = w.watch(env)
@@ -411,9 +421,7 @@ describe('CatalogWatcherModel: watch() — Loop', () => {
 			if (step.value.message === CatalogWatcherModel.UI.label_next_check) {
 				break // We reached the sleep phase — first cycle complete
 			}
-			step = await gen.next(
-				step.value.type === 'ask' ? { value: true } : undefined
-			)
+			step = await gen.next(step.value.type === 'ask' ? { value: true } : undefined)
 			safety++
 		}
 
@@ -452,7 +460,7 @@ describe('CatalogWatcherModel: Intent Contract', () => {
 		const env = { fetch: createFakeFetch() }
 		const { intents } = await runCheck(w, env)
 
-		const askIntent = intents.find(i => i.type === 'ask')
+		const askIntent = intents.find((i) => i.type === 'ask')
 		assert.ok(askIntent)
 		assert.equal(askIntent.field, 'download')
 		assert.equal(askIntent.schema.type, 'boolean')
@@ -469,7 +477,7 @@ describe('CatalogWatcherModel: Intent Contract', () => {
 		const env = { fetch: createFakeFetch() }
 		const { intents } = await runCheck(w, env)
 
-		const logs = intents.filter(i => i.type === 'log')
+		const logs = intents.filter((i) => i.type === 'log')
 		for (const l of logs) {
 			assert.ok(typeof l.level === 'string', 'log missing level')
 			assert.ok(typeof l.message === 'string', 'log missing message')
@@ -485,7 +493,7 @@ describe('CatalogWatcherModel: Intent Contract', () => {
 		const env = { fetch: createFakeFetch() }
 		const { intents } = await runCheck(w, env)
 
-		const progs = intents.filter(i => i.type === 'progress')
+		const progs = intents.filter((i) => i.type === 'progress')
 		for (const p of progs) {
 			assert.ok(typeof p.message === 'string', 'progress missing message')
 		}

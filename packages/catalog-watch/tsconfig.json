@@ -8,7 +8,6 @@
     "emitDeclarationOnly": true,
     "outDir": "./types",
     "rootDir": "./src",
-    "jsx": "react-jsx",
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,

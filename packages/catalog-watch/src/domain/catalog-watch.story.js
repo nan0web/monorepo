@@ -49,7 +49,7 @@ function createFakeFetch(opts = {}) {
 			if (status304) return { status: 304, headers: { get: () => null } }
 			return {
 				status: 200,
-				headers: { get: (n) => n === 'etag' ? etag : null },
+				headers: { get: (n) => (n === 'etag' ? etag : null) },
 			}
 		}
 
@@ -57,7 +57,7 @@ function createFakeFetch(opts = {}) {
 		return {
 			status: 200,
 			text: async () => body,
-			headers: { get: (n) => n === 'etag' ? etag : null },
+			headers: { get: (n) => (n === 'etag' ? etag : null) },
 		}
 	}
 	fn.calls = calls
@@ -68,7 +68,10 @@ function createFakeFetch(opts = {}) {
 async function runAndCollect(gen, askResponse = { value: true }) {
 	const intents = []
 	const result = await runGenerator(gen, {
-		ask: async (intent) => { intents.push({ type: 'ask', ...intent }); return askResponse },
+		ask: async (intent) => {
+			intents.push({ type: 'ask', ...intent })
+			return askResponse
+		},
 		progress: (intent) => intents.push({ type: 'progress', ...intent }),
 		log: (intent) => intents.push({ type: 'log', ...intent }),
 	})
@@ -122,7 +125,9 @@ describe('W03 — 304 Not Modified', () => {
 		assert.equal(result.updated, false)
 		assert.equal(model.status, 'unchanged')
 		assert.equal(fetch.calls.length, 1) // HEAD only, no GET
-		assert.ok(intents.some(i => i.type === 'log' && i.message === CatalogWatcherModel.UI.label_unchanged))
+		assert.ok(
+			intents.some((i) => i.type === 'log' && i.message === CatalogWatcherModel.UI.label_unchanged)
+		)
 	})
 })
 
@@ -171,7 +176,7 @@ describe('W06 — Interactive confirmation', () => {
 		})
 
 		const { intents } = await runAndCollect(model.check({ fetch }), { value: true })
-		const askIntent = intents.find(i => i.type === 'ask')
+		const askIntent = intents.find((i) => i.type === 'ask')
 
 		assert.ok(askIntent, 'ask intent must be present')
 		assert.equal(askIntent.schema.help, CatalogWatcherModel.UI.label_download)
@@ -208,7 +213,7 @@ describe('W08 — Auto-confirm', () => {
 
 		assert.equal(result.updated, true)
 		assert.equal(result.downloaded, true)
-		assert.ok(!intents.some(i => i.type === 'ask'), 'no ask intent')
+		assert.ok(!intents.some((i) => i.type === 'ask'), 'no ask intent')
 	})
 })
 
@@ -225,7 +230,7 @@ describe('W09 — Network error', () => {
 		assert.equal(result.updated, false)
 		assert.ok(result.error)
 		assert.equal(model.status, 'error')
-		assert.ok(intents.some(i => i.type === 'log' && i.level === 'error'))
+		assert.ok(intents.some((i) => i.type === 'log' && i.level === 'error'))
 	})
 })
 
@@ -239,7 +244,9 @@ describe('W10 — Parse error', () => {
 			}
 			return {
 				status: 200,
-				text: async () => { throw new Error('corrupt data') },
+				text: async () => {
+					throw new Error('corrupt data')
+				},
 				headers: { get: () => '"changed"' },
 			}
 		}
@@ -296,7 +303,7 @@ describe('W12 — URL validation', () => {
 		assert.equal(result.updated, false)
 		assert.equal(result.error, 'no_url')
 		assert.equal(fetch.calls.length, 0) // zero network requests
-		assert.ok(intents.some(i => i.type === 'log' && i.level === 'error'))
+		assert.ok(intents.some((i) => i.type === 'log' && i.level === 'error'))
 	})
 })
 
@@ -311,7 +318,9 @@ describe('W13 — Infinite watch loop', () => {
 
 		const gen = model.watch({
 			fetch,
-			sleep: async () => { /* no-wait */ },
+			sleep: async () => {
+				/* no-wait */
+			},
 		})
 
 		// First intent — progress(init)
@@ -350,7 +359,10 @@ describe('A01 — Emit updated', () => {
 
 			const received = await new Promise((resolve, reject) => {
 				const timer = setTimeout(() => reject(new Error('timeout')), 2000)
-				watcher.on('updated', (data) => { clearTimeout(timer); resolve(data) })
+				watcher.on('updated', (data) => {
+					clearTimeout(timer)
+					resolve(data)
+				})
 				watcher.checkNow()
 			})
 
@@ -406,7 +418,10 @@ describe('A03 — Emit error', () => {
 
 			const received = await new Promise((resolve, reject) => {
 				const timer = setTimeout(() => reject(new Error('timeout')), 2000)
-				watcher.on('error', (data) => { clearTimeout(timer); resolve(data) })
+				watcher.on('error', (data) => {
+					clearTimeout(timer)
+					resolve(data)
+				})
 				watcher.checkNow()
 			})
 
@@ -477,11 +492,14 @@ describe('P01 — Pre-caching logic', () => {
 			'https://bank.example.com/@catalog/uk/cards.index.txt',
 			'https://bank.example.com/@catalog/uk/branches.index.txt',
 		]
-		const watchers = urls.map(url => new CatalogWatcherModel({
-			url,
-			interval: 3600,
-			autoConfirm: true,
-		}))
+		const watchers = urls.map(
+			(url) =>
+				new CatalogWatcherModel({
+					url,
+					interval: 3600,
+					autoConfirm: true,
+				})
+		)
 
 		assert.equal(watchers.length, 2)
 		assert.equal(watchers[0].url, urls[0])
@@ -492,19 +510,17 @@ describe('P01 — Pre-caching logic', () => {
 
 describe('P02 — Fetch interception logic', () => {
 	it('matches catalog URLs and ignores unrelated requests', () => {
-		const urls = [
-			'https://bank.example.com/@catalog/uk/cards.index.txt',
-		]
-		const watchers = urls.map(url => new CatalogWatcherModel({ url, autoConfirm: true }))
+		const urls = ['https://bank.example.com/@catalog/uk/cards.index.txt']
+		const watchers = urls.map((url) => new CatalogWatcherModel({ url, autoConfirm: true }))
 
 		// Catalog request — should match
 		const catalogUrl = 'https://bank.example.com/@catalog/uk/cards.index.txt'
-		const found = watchers.find(w => catalogUrl.includes(w.url))
+		const found = watchers.find((w) => catalogUrl.includes(w.url))
 		assert.ok(found, 'watcher found for catalog URL')
 
 		// Non-catalog request — should not match
 		const otherUrl = 'https://bank.example.com/api/users'
-		const notFound = watchers.find(w => otherUrl.includes(w.url))
+		const notFound = watchers.find((w) => otherUrl.includes(w.url))
 		assert.equal(notFound, undefined, 'watcher not found for unrelated URL')
 	})
 })
@@ -524,15 +540,18 @@ describe('P03 — Message-based check', () => {
 			}),
 		]
 
-		const results = await Promise.all(watchers.map(async (w, i) => {
-			const fetch = i === 0
-				? createFakeFetch({ etag: '"new"' }) // cards — updated
-				: createFakeFetch({ etag: '"same"' }) // metals — unchanged
-			const { result } = await runAndCollect(w.check({ fetch }))
-			return { url: w.url, ...result }
-		}))
+		const results = await Promise.all(
+			watchers.map(async (w, i) => {
+				const fetch =
+					i === 0
+						? createFakeFetch({ etag: '"new"' }) // cards — updated
+						: createFakeFetch({ etag: '"same"' }) // metals — unchanged
+				const { result } = await runAndCollect(w.check({ fetch }))
+				return { url: w.url, ...result }
+			})
+		)
 
-		const updated = results.filter(r => r.updated)
+		const updated = results.filter((r) => r.updated)
 		assert.equal(updated.length, 1, 'only one catalog updated')
 		assert.ok(updated[0].url.includes('cards'), 'cards was updated')
 	})

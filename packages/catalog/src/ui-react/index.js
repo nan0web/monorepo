@@ -7,39 +7,35 @@ const CatalogContext = createContext(null)
  * Catalog Provider
  */
 export function CatalogProvider({ data, children, initialCategory = 'all' }) {
-  const [activeCategory, setActiveCategory] = useState(initialCategory)
-  const [searchQuery, setSearchQuery] = useState('')
+	const [activeCategory, setActiveCategory] = useState(initialCategory)
+	const [searchQuery, setSearchQuery] = useState('')
 
-  const engine = useMemo(() => new CatalogEngine(data), [data])
+	const engine = useMemo(() => new CatalogEngine(data), [data])
 
-  const filteredItems = useMemo(() => {
-    return engine.getItems(activeCategory, searchQuery)
-  }, [engine, activeCategory, searchQuery])
+	const filteredItems = useMemo(() => {
+		return engine.getItems(activeCategory, searchQuery)
+	}, [engine, activeCategory, searchQuery])
 
-  const value = {
-    items: filteredItems,
-    allItems: data,
-    activeCategory,
-    setActiveCategory,
-    searchQuery,
-    setSearchQuery,
-    count: filteredItems.length
-  }
+	const value = {
+		items: filteredItems,
+		allItems: data,
+		activeCategory,
+		setActiveCategory,
+		searchQuery,
+		setSearchQuery,
+		count: filteredItems.length,
+	}
 
-  return (
-    <CatalogContext.Provider value={value}>
-      {children}
-    </CatalogContext.Provider>
-  )
+	return <CatalogContext.Provider value={value}>{children}</CatalogContext.Provider>
 }
 
 /**
  * Hook to use Catalog
  */
 export function useCatalog() {
-  const context = useContext(CatalogContext)
-  if (!context) {
-    throw new Error('useCatalog must be used within a CatalogProvider')
-  }
-  return context
+	const context = useContext(CatalogContext)
+	if (!context) {
+		throw new Error('useCatalog must be used within a CatalogProvider')
+	}
+	return context
 }

@@ -2,15 +2,35 @@
   "name": "@nan0web/catalog",
   "version": "3.3.0",
   "description": "Universal catalog engine for NaN0Web — filtering, search, and data thinkers",
-  "main": "src/index.js",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
   "exports": {
-    ".": "./src/index.js",
-    "./react": "./src/ui-react/index.js"
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./react": {
+      "import": "./src/ui-react/index.js",
+      "types": "./types/ui-react/index.d.ts"
+    }
   },
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/README.md.js",
+    "types/**/*.d.ts"
+  ],
   "scripts": {
-    "test": "node --test src/**/*.test.js",
+    "prebuild": "rm -rf types/",
     "build": "tsc",
-    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "test": "node --test \"src/**/*.test.js\"",
+    "lint": "prettier --check \"src/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\"",
+    "knip": "knip --production",
+    "test:all": "npm run test && npm run build && npm run lint && npm run knip",
+    "audit": "pnpm audit --prod || true",
+    "clean": "rm -rf .cache/ && rm -rf dist/ && rm -rf types/",
     "clean:modules": "rm -rf node_modules",
     "play": "node play/main.js",
     "release": "nan0release publish",
@@ -31,16 +51,10 @@
     "@nan0web/release": "workspace:*",
     "@nan0web/test": "workspace:*",
     "husky": "^9.1.7",
+    "knip": "^5.88.1",
     "react": "^19.2.6"
   },
   "peerDependencies": {
-    "react": "^18.0.0"
-  },
-  "type": "module",
-  "files": [
-    "src/",
-    "types/",
-    "package.json",
-    "README.md"
-  ]
+    "react": "^18.0.0 || ^19.0.0"
+  }
 }

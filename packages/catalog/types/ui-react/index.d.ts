@@ -4,9 +4,9 @@
 export function CatalogProvider({ data, children, initialCategory }: {
     data: any;
     children: any;
-    initialCategory?: string | undefined;
+    initialCategory?: string;
 }): import("react/jsx-runtime").JSX.Element;
 /**
  * Hook to use Catalog
  */
-export function useCatalog(): never;
+export function useCatalog(): any;

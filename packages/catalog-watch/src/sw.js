@@ -28,11 +28,14 @@ const CACHE_NAME = 'catalog-watch-v1'
  * @param {{ interval?: number }} [options={}]
  */
 export function registerCatalogSync(sw, indexUrls, options = {}) {
-	const watchers = indexUrls.map(url => new CatalogWatcherModel({
-		url,
-		interval: options.interval ?? 3600,
-		autoConfirm: true,
-	}))
+	const watchers = indexUrls.map(
+		(url) =>
+			new CatalogWatcherModel({
+				url,
+				interval: options.interval ?? 3600,
+				autoConfirm: true,
+			})
+	)
 
 	// ─── Install: Pre-cache initial catalog indexes ───
 	sw.addEventListener('install', (event) => {
@@ -55,7 +58,7 @@ export function registerCatalogSync(sw, indexUrls, options = {}) {
 	// ─── Fetch: Intercept requests to catalog indexes ───
 	sw.addEventListener('fetch', (event) => {
 		const { request } = event
-		const watcher = watchers.find(w => request.url.includes(w.url))
+		const watcher = watchers.find((w) => request.url.includes(w.url))
 
 		if (!watcher) return // Not a catalog request
 
@@ -66,16 +69,15 @@ export function registerCatalogSync(sw, indexUrls, options = {}) {
 	sw.addEventListener('message', (event) => {
 		if (event.data?.type === 'catalog:check') {
 			// Client returned to foreground — check all catalogs
-			Promise.all(watchers.map(w => checkSingleCatalog(w)))
-				.then(results => {
-					const updated = results.filter(r => r.updated)
-					if (updated.length > 0 && event.source) {
-						event.source.postMessage({
-							type: 'catalog:updated',
-							catalogs: updated,
-						})
-					}
-				})
+			Promise.all(watchers.map((w) => checkSingleCatalog(w))).then((results) => {
+				const updated = results.filter((r) => r.updated)
+				if (updated.length > 0 && event.source) {
+					event.source.postMessage({
+						type: 'catalog:updated',
+						catalogs: updated,
+					})
+				}
+			})
 		}
 	})
 }

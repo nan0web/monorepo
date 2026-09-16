@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/index.js!",
+    "src/server/buildCatalogIndex.js!",
+    "src/sw.js!",
+    "src/domain/CatalogIndexModel.js!"
+  ],
+  "project": ["src/**/*.js!"],
+  "ignore": ["types/**", "src/README.md.js", "src/domain/catalog-watch.story.js"],
+  "ignoreDependencies": [
+    "@nan0web/db",
+    "@nan0web/event",
+    "@nan0web/types",
+    "@nan0web/core",
+    "@nan0web/ui"
+  ]
+}

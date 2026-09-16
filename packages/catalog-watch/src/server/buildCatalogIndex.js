@@ -58,9 +58,7 @@ export async function buildCatalogIndex(options) {
 			const fullPath = join(rootPath, dirPath)
 			try {
 				const entries = await readdir(fullPath, { recursive: true })
-				return entries
-					.filter(e => !e.startsWith('.') && !e.startsWith('_'))
-					.sort()
+				return entries.filter((e) => !e.startsWith('.') && !e.startsWith('_')).sort()
 			} catch {
 				return []
 			}
@@ -106,13 +104,17 @@ export async function buildCatalogIndex(options) {
 	// Run the generator through runGenerator with adapter handlers
 	const data = await runGenerator(model.run(env), {
 		ask: async () => ({ value: true }), // SSG never asks — auto-confirm
-		progress: silent ? undefined : (intent) => {
-			process.stdout.write(`  ⏳ ${intent.message}\n`)
-		},
-		log: silent ? undefined : (intent) => {
-			const icon = { info: 'ℹ', warn: '⚠', error: '✖', success: '✔' }
-			process.stdout.write(`  ${icon[intent.level] || '•'} ${intent.message}\n`)
-		},
+		progress: silent
+			? undefined
+			: (intent) => {
+					process.stdout.write(`  ⏳ ${intent.message}\n`)
+				},
+		log: silent
+			? undefined
+			: (intent) => {
+					const icon = { info: 'ℹ', warn: '⚠', error: '✖', success: '✔' }
+					process.stdout.write(`  ${icon[intent.level] || '•'} ${intent.message}\n`)
+				},
 	})
 
 	if (!data?.success) {
