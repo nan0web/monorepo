@@ -127,13 +127,17 @@ class DBFS extends DB {
 		this.registry.register('.tsv0', csv0Loader, csv0Saver)
 
 		// Override JSON saver with validation
-		this.registry.register('.json', (str) => JSON.parse(str), (doc) => {
-			// Validation: cannot be null or undefined
-			if (doc === undefined || doc === null) {
-				throw new Error('JSON document cannot be null or undefined')
+		this.registry.register(
+			'.json',
+			(str) => JSON.parse(str),
+			(doc) => {
+				// Validation: cannot be null or undefined
+				if (doc === undefined || doc === null) {
+					throw new Error('JSON document cannot be null or undefined')
+				}
+				return JSON.stringify(doc, null, 2)
 			}
-			return JSON.stringify(doc, null, 2)
-		})
+		)
 	}
 
 	/**

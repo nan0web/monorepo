@@ -127,7 +127,10 @@ async function saveCSVAsync(filePath, data, delimiter = ',', quote = '"', eol = 
  */
 function stringifyCSV(data, delimiter = ',', quote = '"', eol = '\n') {
 	const escapeCell = (cell) => {
-		if (typeof cell === 'string' && (cell.includes(delimiter) || cell.includes(quote) || cell.includes(eol))) {
+		if (
+			typeof cell === 'string' &&
+			(cell.includes(delimiter) || cell.includes(quote) || cell.includes(eol))
+		) {
 			cell = cell.replace(new RegExp(quote, 'g'), `${quote}${quote}`)
 			return `${quote}${cell}${quote}`
 		}

@@ -56,42 +56,45 @@ test('DBFS Locale Auto-Detection Protocols', async (t) => {
 		assert.equal(ar.dir, 'rtl')
 	})
 
-	await t.test('detectLocales() ignores invalid structural bcp47, special folders and files', async () => {
-		const locales = await db.detectLocales()
+	await t.test(
+		'detectLocales() ignores invalid structural bcp47, special folders and files',
+		async () => {
+			const locales = await db.detectLocales()
 
-		// Total valid: ar, en, uk, zh-CN -> 4 count
-		assert.equal(locales.length, 4, 'Should contain exactly 4 valid locales')
+			// Total valid: ar, en, uk, zh-CN -> 4 count
+			assert.equal(locales.length, 4, 'Should contain exactly 4 valid locales')
 
-		assert.equal(
-			locales.find((l) => l.locale === 'assets'),
-			undefined,
-			'Should ignore structurally-valid but non-existing locale items',
-		)
-		assert.equal(
-			locales.find((l) => l.locale === 'docs'),
-			undefined,
-			'Should ignore structurally invalid tag like docs',
-		)
-		assert.equal(
-			locales.find((l) => l.locale === '_hidden'),
-			undefined,
-			'Should ignore underscores',
-		)
-		assert.equal(
-			locales.find((l) => l.locale === '.git'),
-			undefined,
-			'Should ignore dot folders',
-		)
-		assert.equal(
-			locales.find((l) => l.locale === 'file.txt'),
-			undefined,
-			'Should ignore files',
-		)
+			assert.equal(
+				locales.find((l) => l.locale === 'assets'),
+				undefined,
+				'Should ignore structurally-valid but non-existing locale items'
+			)
+			assert.equal(
+				locales.find((l) => l.locale === 'docs'),
+				undefined,
+				'Should ignore structurally invalid tag like docs'
+			)
+			assert.equal(
+				locales.find((l) => l.locale === '_hidden'),
+				undefined,
+				'Should ignore underscores'
+			)
+			assert.equal(
+				locales.find((l) => l.locale === '.git'),
+				undefined,
+				'Should ignore dot folders'
+			)
+			assert.equal(
+				locales.find((l) => l.locale === 'file.txt'),
+				undefined,
+				'Should ignore files'
+			)
 
-		// Ensure sorted properly alphabetically
-		assert.equal(locales[0].locale, 'ar')
-		assert.equal(locales[1].locale, 'en')
-		assert.equal(locales[2].locale, 'uk')
-		assert.equal(locales[3].locale, 'zh-CN')
-	})
+			// Ensure sorted properly alphabetically
+			assert.equal(locales[0].locale, 'ar')
+			assert.equal(locales[1].locale, 'en')
+			assert.equal(locales[2].locale, 'uk')
+			assert.equal(locales[3].locale, 'zh-CN')
+		}
+	)
 })

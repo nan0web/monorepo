@@ -14,14 +14,23 @@
     "!types/README.md.d.ts",
     "!types/test.d.ts"
   ],
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
   "scripts": {
+    "prebuild": "rm -rf types",
     "build": "tsc",
     "test": "node --test \"src/**/*.js\"",
     "test:nan0test": "node --test \"src/**/*.test.js\" | nan0test parse --fail",
     "test:play": "node --test \"play/**/*.test.js\"",
+    "lint": "prettier --check \"src/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\"",
     "knip": "knip --production",
     "audit": "pnpm audit --prod || true",
-    "test:all": "npm run test && npm run test:play && npm run test:docs && npm run build && npm run knip && npm run audit",
+    "test:all": "npm run test && npm run test:play && npm run test:docs && npm run build && npm run lint && npm run knip && npm run audit",
     "clean": "rm -rf .cache/ && rm -rf dist/",
     "clean:modules": "rm -rf node_modules",
     "test:docs": "node --test src/README.md.js",

@@ -341,7 +341,7 @@ describe('DBFS directory index handling', () => {
 		db.meta.set('level1/level2/', new DocumentStat({ size: 0, mtimeMs: 300, isDirectory: true }))
 		db.meta.set(
 			'level1/level2/nested-file.yaml',
-			new DocumentStat({ size: 50, mtimeMs: 400, isFile: true }),
+			new DocumentStat({ size: 50, mtimeMs: 400, isFile: true })
 		)
 
 		// Execute: Save full index

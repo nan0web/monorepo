@@ -10,7 +10,6 @@ import Markdown from '@nan0web/markdown'
 
 import { parseToObjects, stringifyCSV } from './file-system/csv.js'
 
-
 /**
  * File System Driver for Node.js environments.
  * Provides persistent storage using fs/promises with automatic format handling.
@@ -21,22 +20,30 @@ export default class FSDriver extends DBDriverProtocol {
 		super({ ...config, registry })
 
 		// Register default formats for db-fs
-		this.registry.register('.jsonl',
-			(str) => str.split('\n').filter(Boolean).map(x => JSON.parse(x)),
-			(arr) => arr.map(x => JSON.stringify(x)).join('\n') + '\n'
+		this.registry.register(
+			'.jsonl',
+			(str) =>
+				str
+					.split('\n')
+					.filter(Boolean)
+					.map((x) => JSON.parse(x)),
+			(arr) => arr.map((x) => JSON.stringify(x)).join('\n') + '\n'
 		)
 
-		this.registry.register('.json',
+		this.registry.register(
+			'.json',
 			(str) => JSON.parse(str),
 			(doc) => JSON.stringify(doc, null, 2)
 		)
 
-		this.registry.register('.txt',
+		this.registry.register(
+			'.txt',
 			(str) => str,
 			(doc) => String(doc)
 		)
 
-		this.registry.register('.md',
+		this.registry.register(
+			'.md',
 			(str) => new Markdown(str),
 			(doc) => {
 				if (doc instanceof Markdown) return String(doc)
@@ -208,7 +215,7 @@ export default class FSDriver extends DBDriverProtocol {
 						try {
 							JSON.parse(buffer)
 							yield buffer
-						} catch(e) {
+						} catch (e) {
 							yield buffer // flush whatever is left
 						}
 					}
@@ -363,7 +370,7 @@ export default class FSDriver extends DBDriverProtocol {
 	async listDir(absoluteURI) {
 		try {
 			const entries = await readdir(absoluteURI, { withFileTypes: true })
-			return entries.map((entry) => entry.isDirectory() ? entry.name + '/' : entry.name)
+			return entries.map((entry) => (entry.isDirectory() ? entry.name + '/' : entry.name))
 		} catch {
 			if (this.driver) {
 				return await this.driver.listDir(absoluteURI)

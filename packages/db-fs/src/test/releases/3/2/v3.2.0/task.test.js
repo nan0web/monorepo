@@ -25,17 +25,17 @@ describe('DBFS Core Expansion (v3.2.0)', () => {
 
 	it('listDir() preserves isSymbolicLink using lstat', async () => {
 		const db = new DBFS({ root: tmpDir })
-		
+
 		const entries = await db.listDir('')
-		const linkEntry = entries.find(e => e.name === 'file-link.txt')
-		
+		const linkEntry = entries.find((e) => e.name === 'file-link.txt')
+
 		assert.ok(linkEntry, 'Symlink entry should be found')
 		assert.strictEqual(linkEntry.stat.isSymbolicLink, true, 'isSymbolicLink should be true')
 	})
 
 	it('realpath() resolves symbolic links back to relative URIs', async () => {
 		const db = new DBFS({ root: tmpDir })
-		
+
 		// The symlink 'file-link.txt' points to 'file.txt' which is inside tmpDir.
 		// realpathSync should resolve it to the absolute path of file.txt,
 		// and DBFS.realpath should map it back to the relative URI 'file.txt'.
@@ -46,7 +46,7 @@ describe('DBFS Core Expansion (v3.2.0)', () => {
 	it('getVolumes() returns an array including root', async () => {
 		const db = new DBFS({ root: tmpDir })
 		const volumes = await db.getVolumes()
-		
+
 		assert.ok(Array.isArray(volumes), 'getVolumes should return an array')
 		assert.ok(volumes.length > 0, 'Should have at least one volume')
 		assert.ok(volumes.includes('/'), 'Should include root volume')

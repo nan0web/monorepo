@@ -26,7 +26,7 @@ describe('md (Markdown with frontmatter)', () => {
 					'# Заголовок',
 					'',
 					'Текст контенту.',
-				].join('\n'),
+				].join('\n')
 			)
 
 			const result = loadMD(file)
@@ -77,7 +77,7 @@ describe('md (Markdown with frontmatter)', () => {
 					'# Серія 1: Анатомія Тривоги',
 					'',
 					'> "Врятуй себе, і врятуєш тисячі."',
-				].join('\n'),
+				].join('\n')
 			)
 
 			const result = loadMD(file)
@@ -112,7 +112,7 @@ describe('md (Markdown with frontmatter)', () => {
 					'---',
 					'',
 					'This is a horizontal rule, not frontmatter.',
-				].join('\n'),
+				].join('\n')
 			)
 
 			const result = loadMD(file)

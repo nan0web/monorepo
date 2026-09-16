@@ -67,7 +67,12 @@ function saveMD(file, data) {
 	const { content = '', ...metadata } = data
 	const hasMetadata = Object.keys(metadata).length > 0
 	let output = hasMetadata
-		? [FRONTMATTER_SEPARATOR, YAML.stringify(metadata).trimEnd(), FRONTMATTER_SEPARATOR, content].join('\n')
+		? [
+				FRONTMATTER_SEPARATOR,
+				YAML.stringify(metadata).trimEnd(),
+				FRONTMATTER_SEPARATOR,
+				content,
+			].join('\n')
 		: content
 
 	fs.writeFileSync(file, output, 'utf-8')
@@ -86,7 +91,12 @@ async function saveMDAsync(file, data) {
 	const { content = '', ...metadata } = data
 	const hasMetadata = Object.keys(metadata).length > 0
 	const output = hasMetadata
-		? [FRONTMATTER_SEPARATOR, YAML.stringify(metadata).trimEnd(), FRONTMATTER_SEPARATOR, content].join('\n')
+		? [
+				FRONTMATTER_SEPARATOR,
+				YAML.stringify(metadata).trimEnd(),
+				FRONTMATTER_SEPARATOR,
+				content,
+			].join('\n')
 		: content
 
 	await fsp.writeFile(file, output, 'utf-8')

@@ -329,7 +329,7 @@ suite('findStream()', () => {
 		const sorted = [...results].sort((a, b) => b.file.stat.mtime - a.file.stat.mtime)
 		assert.notDeepStrictEqual(
 			results.map((r) => r.file.name),
-			sorted.map((r) => r.file.name),
+			sorted.map((r) => r.file.name)
 		)
 	})
 
@@ -365,7 +365,7 @@ suite('findStream()', () => {
 		const sorted = [...results].sort((a, b) => a.file.stat.size - b.file.stat.size)
 		assert.notDeepStrictEqual(
 			results.map((r) => r.file.name),
-			sorted.map((r) => r.file.name),
+			sorted.map((r) => r.file.name)
 		)
 	})
 
@@ -589,7 +589,7 @@ suite('findStream()', () => {
 		const expectedFileOrder = ['data.json', 'script.js', 'style.css', 'index.html', 'dir/image.png']
 		assert.deepStrictEqual(
 			fileResults.map((f) => f.name),
-			expectedFileOrder,
+			expectedFileOrder
 		)
 	})
 })

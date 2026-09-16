@@ -100,7 +100,7 @@ suite('DB URI Core - POSIX style', () => {
 			assert.strictEqual(blogDb.resolveSync('post1.json'), 'post1.json')
 			assert.strictEqual(
 				blogDb.absolute('post1.json'),
-				'https://example.com/content/blog/post1.json',
+				'https://example.com/content/blog/post1.json'
 			)
 		})
 
@@ -127,7 +127,7 @@ suite('DB URI Core - POSIX style', () => {
 			assert.strictEqual(usersDb.resolveSync('john.json'), 'john.json')
 			assert.strictEqual(
 				usersDb.absolute('john.json'),
-				'https://example.com/api/v1/users/john.json',
+				'https://example.com/api/v1/users/john.json'
 			)
 		})
 	})

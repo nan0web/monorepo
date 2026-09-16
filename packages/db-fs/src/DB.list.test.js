@@ -11,7 +11,7 @@ class DB extends DBFS {
 		this.accessLevels.push({ uri, level })
 		if (!['r', 'w', 'd'].includes(level)) {
 			throw new TypeError(
-				['Access level must be one of [r, w, d]', 'r = read', 'w = write', 'd = delete'].join('\n'),
+				['Access level must be one of [r, w, d]', 'r = read', 'w = write', 'd = delete'].join('\n')
 			)
 		}
 		return true

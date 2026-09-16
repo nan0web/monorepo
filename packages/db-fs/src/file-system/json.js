@@ -50,7 +50,10 @@ function toJSON(data, replacer = null, space = 0) {
 function saveJSON(file, data, replacer = null, space = 0) {
 	let content = ''
 	if (typeof data === 'string') {
-		if ((data.startsWith('{') && data.endsWith('}')) || (data.startsWith('[') && data.endsWith(']'))) {
+		if (
+			(data.startsWith('{') && data.endsWith('}')) ||
+			(data.startsWith('[') && data.endsWith(']'))
+		) {
 			content = data
 		} else {
 			content = toJSON(data, replacer, space)
@@ -68,7 +71,10 @@ function saveJSON(file, data, replacer = null, space = 0) {
 async function saveJSONAsync(file, data, replacer = null, space = 0) {
 	let content = ''
 	if (typeof data === 'string') {
-		if ((data.startsWith('{') && data.endsWith('}')) || (data.startsWith('[') && data.endsWith(']'))) {
+		if (
+			(data.startsWith('{') && data.endsWith('}')) ||
+			(data.startsWith('[') && data.endsWith(']'))
+		) {
 			content = data
 		} else {
 			content = toJSON(data, replacer, space)

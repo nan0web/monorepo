@@ -42,23 +42,17 @@ describe('DBFS Document Validation', () => {
 
 	describe('YAML Validation', () => {
 		it('should reject null YAML document', async () => {
-			await assert.rejects(
-				db.saveDocumentAs('.yaml', '@test/null.yaml', null),
-				(e) => {
-					assert.ok(e.message.includes('YAML document cannot be null or undefined'))
-					return true
-				}
-			)
+			await assert.rejects(db.saveDocumentAs('.yaml', '@test/null.yaml', null), (e) => {
+				assert.ok(e.message.includes('YAML document cannot be null or undefined'))
+				return true
+			})
 		})
 
 		it('should reject undefined YAML document', async () => {
-			await assert.rejects(
-				db.saveDocumentAs('.yaml', '@test/undefined.yaml', undefined),
-				(e) => {
-					assert.ok(e.message.includes('YAML document cannot be null or undefined'))
-					return true
-				}
-			)
+			await assert.rejects(db.saveDocumentAs('.yaml', '@test/undefined.yaml', undefined), (e) => {
+				assert.ok(e.message.includes('YAML document cannot be null or undefined'))
+				return true
+			})
 		})
 
 		it('should accept valid YAML object', async () => {
@@ -82,23 +76,17 @@ describe('DBFS Document Validation', () => {
 
 	describe('NaN0 Validation', () => {
 		it('should reject null NaN0 document', async () => {
-			await assert.rejects(
-				db.saveDocumentAs('.nan0', '@test/null.nan0', null),
-				(e) => {
-					assert.ok(e.message.includes('NaN·Web document cannot be null or undefined'))
-					return true
-				}
-			)
+			await assert.rejects(db.saveDocumentAs('.nan0', '@test/null.nan0', null), (e) => {
+				assert.ok(e.message.includes('NaN·Web document cannot be null or undefined'))
+				return true
+			})
 		})
 
 		it('should reject undefined NaN0 document', async () => {
-			await assert.rejects(
-				db.saveDocumentAs('.nan0', '@test/undefined.nan0', undefined),
-				(e) => {
-					assert.ok(e.message.includes('NaN·Web document cannot be null or undefined'))
-					return true
-				}
-			)
+			await assert.rejects(db.saveDocumentAs('.nan0', '@test/undefined.nan0', undefined), (e) => {
+				assert.ok(e.message.includes('NaN·Web document cannot be null or undefined'))
+				return true
+			})
 		})
 
 		it('should reject non-object NaN0 document', async () => {
@@ -150,7 +138,10 @@ describe('DBFS Document Validation', () => {
 		})
 
 		it('should accept valid JSONL array', async () => {
-			const validDoc = [{ id: 1, name: 'first' }, { id: 2, name: 'second' }]
+			const validDoc = [
+				{ id: 1, name: 'first' },
+				{ id: 2, name: 'second' },
+			]
 			const result = await db.saveDocumentAs('.jsonl', '@test/valid.jsonl', validDoc)
 			assert.strictEqual(result, true)
 		})
@@ -164,23 +155,17 @@ describe('DBFS Document Validation', () => {
 
 	describe('JSON Validation', () => {
 		it('should reject null JSON document', async () => {
-			await assert.rejects(
-				db.saveDocumentAs('.json', '@test/null.json', null),
-				(e) => {
-					assert.ok(e.message.includes('JSON document cannot be null or undefined'))
-					return true
-				}
-			)
+			await assert.rejects(db.saveDocumentAs('.json', '@test/null.json', null), (e) => {
+				assert.ok(e.message.includes('JSON document cannot be null or undefined'))
+				return true
+			})
 		})
 
 		it('should reject undefined JSON document', async () => {
-			await assert.rejects(
-				db.saveDocumentAs('.json', '@test/undefined.json', undefined),
-				(e) => {
-					assert.ok(e.message.includes('JSON document cannot be null or undefined'))
-					return true
-				}
-			)
+			await assert.rejects(db.saveDocumentAs('.json', '@test/undefined.json', undefined), (e) => {
+				assert.ok(e.message.includes('JSON document cannot be null or undefined'))
+				return true
+			})
 		})
 
 		it('should accept valid JSON object', async () => {
