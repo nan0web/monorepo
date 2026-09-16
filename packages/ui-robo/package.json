@@ -4,12 +4,22 @@
   "description": "Robotics Action Verification Adapter — OLMUI",
   "type": "module",
   "main": "src/index.js",
+  "types": "types/index.d.ts",
   "exports": {
-    ".": "./src/index.js",
-    "./testing": "./src/testing/index.js"
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./testing": {
+      "types": "./types/testing/VisualAdapter.d.ts",
+      "import": "./src/testing/VisualAdapter.js"
+    }
   },
   "files": [
     "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/README.md.js",
+    "types/**/*.d.ts",
     "docs/**/*.md"
   ],
   "author": "YaRaSLove (ЯRаСлав) <support@yaro.page>",
@@ -18,12 +28,17 @@
     "@nan0web/ui": "workspace:*"
   },
   "scripts": {
+    "prebuild": "rm -rf types/",
     "build": "tsc",
     "clean": "rm -rf .cache/ && rm -rf dist/",
     "clean:modules": "rm -rf node_modules",
     "play": "node play/main.js",
     "release": "nan0release publish",
     "test": "node --test \"src/**/*.test.js\"",
+    "lint": "prettier --check \"src/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\"",
+    "knip": "knip --production",
+    "test:all": "npm run test && npm run build && npm run lint && npm run knip",
     "test:docs": "node --test src/README.md.js",
     "test:release": "node --test \"releases/**/*.test.js\"",
     "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
@@ -36,6 +51,7 @@
   "devDependencies": {
     "@nan0web/release": "workspace:*",
     "@nan0web/test": "workspace:*",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "knip": "^5.88.1"
   }
 }
