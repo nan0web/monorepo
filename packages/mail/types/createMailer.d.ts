@@ -4,4 +4,4 @@ export default createMailer;
  * @param {object} trasportConfig The nodemailer config
  * @returns nodemailer.transport.
  */
-declare function createMailer(trasportConfig: object): any;
+declare function createMailer(trasportConfig: object): import("nodemailer").Mail<import("nodemailer").SMTPSentMessageInfo>;

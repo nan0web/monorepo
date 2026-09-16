@@ -1,1 +1,1 @@
-export { default } from "./ArchitectureMap.js";
+export { default, ArchitectureMap } from "./ArchitectureMap.js";

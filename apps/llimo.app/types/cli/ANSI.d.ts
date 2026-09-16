@@ -25,7 +25,7 @@ export function cursorUp(rows?: number): string;
  * function will still return a reasonably cleaned string.
  */
 export function stripANSI(str: string): string;
-export const RESET: "" | "\u001B[0m";
+export const RESET: "\u001B[0m" | "";
 export const BOLD: "" | "\u001B[1m";
 export const DIM: "" | "\u001B[2m";
 export const ITALIC: "" | "\u001B[3m";

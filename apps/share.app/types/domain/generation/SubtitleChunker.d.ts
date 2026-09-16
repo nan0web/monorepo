@@ -54,6 +54,38 @@ export function blocksToAss(blocks: Array<SubtitleBlock>, options?: {
     playResY?: number;
     style?: string;
 }): string;
+/**
+ * Converts an array of SubtitleBlock to SRT format string.
+ * @param {Array<SubtitleBlock>} blocks
+ * @param {object} [options]
+ * @param {number} [options.offset=0] - Offset in seconds to subtract from timestamps
+ * @returns {string}
+ */
+export function blocksToSrt(blocks: Array<SubtitleBlock>, options?: {
+    offset?: number;
+}): string;
+/**
+ * Converts an array of SubtitleBlock to WebVTT (.vtt) format string.
+ * @param {Array<SubtitleBlock>} blocks
+ * @param {object} [options]
+ * @param {number} [options.offset=0] - Offset in seconds to subtract from timestamps
+ * @returns {string}
+ */
+export function blocksToVtt(blocks: Array<SubtitleBlock>, options?: {
+    offset?: number;
+}): string;
+/**
+ * Formats seconds to SRT time format (HH:MM:SS,mmm)
+ * @param {number} seconds
+ * @returns {string}
+ */
+export function formatTimeSrt(seconds: number): string;
+/**
+ * Formats seconds to WebVTT time format (HH:MM:SS.mmm)
+ * @param {number} seconds
+ * @returns {string}
+ */
+export function formatTimeVtt(seconds: number): string;
 export type WordEntry = {
     word: string;
     start: number;

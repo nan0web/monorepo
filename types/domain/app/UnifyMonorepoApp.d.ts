@@ -20,5 +20,9 @@ export default class UnifyMonorepoApp extends ModelAsApp {
     constructor(data?: Partial<UnifyMonorepoApp>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
     /** @type {boolean} */
     dryRun: boolean;
+    /**
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+     */
+    run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
 }
 import { ModelAsApp } from '@nan0web/ui';

@@ -4,6 +4,15 @@
  */
 export class MediaDownloadModel extends Model {
     static alias: string;
+    static UI: {
+        downloadProgress: string;
+        segmentProgress: string;
+        whisperChunkProgress: string;
+        whisperChunkDetail: string;
+        whisperChunkDone: string;
+        transcriptionComplete: string;
+        transcriptionSaved: string;
+    };
     static url: {
         help: string;
         default: any;

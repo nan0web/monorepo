@@ -56,12 +56,12 @@ export default class NaN0WebConfig extends Model {
     static ui: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     static ssl: {
         help: string;
         type: string;
-        default: null;
+        default: any;
         hidden: boolean;
     };
     static log: {
@@ -76,7 +76,7 @@ export default class NaN0WebConfig extends Model {
         type: string;
         hint: typeof AppEntryConfig;
         hidden: boolean;
-        default: never[];
+        default: any[];
     };
     /**
      * @param {object} input

@@ -119,7 +119,7 @@ export function filterTests(tests: import("../cli/testing/node.js").TestInfo[], 
  */
 export function printAnswer(input: {
     ui: Ui;
-    type?: "skip" | "fail" | "todo" | undefined;
+    type?: "todo" | "fail" | "skip" | undefined;
     tests?: import("../cli/testing/node.js").TestInfo[] | undefined;
     content?: string[] | undefined;
 }): Promise<boolean>;

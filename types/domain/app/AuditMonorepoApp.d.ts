@@ -41,9 +41,12 @@ export default class AuditMonorepoApp extends ModelAsApp {
         lab: string;
         seeds: string;
         missingPurpose: string;
-        errorNoDb?: string;
     };
     static errorNoDb: string;
+    /**
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+     */
+    run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
     /**
      * @param {any} content
      * @returns {string|null}

@@ -17,7 +17,7 @@ export class Alert extends UiOutput {
     /** @type {AlertVariant} */
     variant: AlertVariant;
     get type(): string;
-    get level(): "error" | "info" | "success" | "warn";
+    get level(): "info" | "success" | "warn" | "error";
     get message(): string;
 }
 export type AlertVariant = "success" | "info" | "warn" | "error" | "debug";

@@ -50,10 +50,14 @@ export class DownloadWhisperCommand extends ModelAsApp {
     static _detectFormat(filePath: string): "txt" | "srt" | "vtt" | "json" | "md" | null;
     /**
      * @param {DownloadWhisperCommandOptions} data
-     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions & { toolChecker?: typeof ToolCheckerPort }>} [options]
      */
-    constructor(data?: DownloadWhisperCommandOptions, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
-    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ProgressIntent | import("@nan0web/ui/src/core/Intent.js").ShowIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
+    constructor(data?: DownloadWhisperCommandOptions, options?: Partial<import("@nan0web/ui").ModelAsAppOptions & {
+        toolChecker?: typeof ToolCheckerPort;
+    }>);
+    /** @type {typeof ToolCheckerPort} Port to check availability of external CLI tools */
+    toolChecker: typeof ToolCheckerPort;
+    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ShowIntent | import("@nan0web/ui/src/core/Intent.js").ProgressIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
 }
 export type DownloadWhisperCommandOptions = {
     /**
@@ -74,3 +78,4 @@ export type DownloadWhisperCommandOptions = {
     format?: "txt" | "srt" | "vtt" | "json";
 };
 import { ModelAsApp } from '@nan0web/ui-cli';
+import { ToolCheckerPort } from '../../ports/ToolCheckerPort.js';

@@ -10,10 +10,12 @@
 Please select your preferred language for technical documentation, setup guides, and architectural standards:
 
 ### [🇺🇦 Українська (Ukrainian)](./docs/uk/README.md)
-*Повний посібник з архітектури, встановлення та налаштування локальної бази знань ШІ.*
+
+_Повний посібник з архітектури, встановлення та налаштування локальної бази знань ШІ._
 
 ### [🇺🇸 English (English)](./docs/en/README.md)
-*Comprehensive guide for architecture, setup, and AI knowledge base integration.*
+
+_Comprehensive guide for architecture, setup, and AI knowledge base integration._
 
 ---
 
@@ -40,6 +42,7 @@ pnpm test
 NaN•Web is designed to be developed alongside AI agents. To give your agent full context, follow these steps:
 
 ### 1. Configure EMBEDDER_URL
+
 Specify the address of your local embedding server (LM Studio or Ollama).
 
 **For Linux / macOS (zsh, bash):**
@@ -47,11 +50,13 @@ Specify the address of your local embedding server (LM Studio or Ollama).
 ```bash
 export EMBEDDER_URL="http://localhost:1234/v1"
 ```
+
 **For Windows (Command Prompt):**
 
 ```cmd
 set EMBEDDER_URL=http://localhost:1234/v1
 ```
+
 **For Windows (PowerShell):**
 
 ```powershell
@@ -59,6 +64,7 @@ $env:EMBEDDER_URL = "http://localhost:1234/v1"
 ```
 
 ### 2. Index the Workspace (docs, source, data)
+
 Index all packages and the global documentation to build the knowledge base:
 
 ```bash
@@ -66,6 +72,7 @@ pnpm run ai:index
 ```
 
 ### 3. Index Agent configurations
+
 Generate the agent registry for specialized tasks:
 
 ```bash
@@ -73,6 +80,7 @@ pnpm run ai:index --agents
 ```
 
 ### 4. Setup MCP Server
+
 Register the `@nan0web/ai` server in your AI client (e.g. Claude Desktop or Antigravity):
 
 ```bash
@@ -88,6 +96,7 @@ You can install the assistant globally to access NaN•Web knowledge from anywhe
 ```bash
 pnpm add -g @nan0web/ai
 ```
+
 > 💡 **Note:** If you run into a native bindings error (`Could not locate the bindings file` for `hnswlib-node`), run: `npm rebuild hnswlib-node --prefix $(pnpm root -g)/..`
 
 Now the `nan0ai` command is available everywhere. Try:
@@ -98,7 +107,6 @@ nan0ai search "How to create a new component?"
 
 1.- Global AI access
 
-
 ## 🏛️ Ecosystem Highlights
 
 - **LLiMo** — AI-native developer assistant.
@@ -106,8 +114,12 @@ nan0ai search "How to create a new component?"
 - **Editor.app** — Data-driven document editor.
 - **UI-CLI** — Premium terminal interface with "Lux-level" aesthetics.
 
+## Packages
+
+<!-- %PACKAGE_STATUS% -->
 
 ---
+
 > NaN•Web v3.0.0 — Designed for Sovereign Developers & AI Agents.
 
 ## Contributing
@@ -117,5 +129,3 @@ How to contribute? [check here](./CONTRIBUTING.md)
 ## License
 
 How to license? See the [ISC LICENSE](./LICENSE) file.
-
-

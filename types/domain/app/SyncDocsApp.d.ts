@@ -3,7 +3,6 @@ export default class SyncDocsApp extends ModelAsApp {
         syncing: string;
         done: string;
         error: string;
-        errorNoDb?: string;
     };
     static path: {
         help: string;

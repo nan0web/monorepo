@@ -50,7 +50,7 @@ export default class Page extends ContainerObject {
     static $content: {
         help: string;
         type: string;
-        default: null;
+        default: any;
         hidden: boolean;
     };
     /**

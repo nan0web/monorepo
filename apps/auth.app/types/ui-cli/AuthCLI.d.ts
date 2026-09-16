@@ -49,7 +49,7 @@ export default class AuthCLI {
         };
         info: {
             title: string;
-            fn: (input: import("../messages/UpdateInfoMessage.js").default) => AsyncGenerator<OutputMessage, void, unknown>;
+            fn: (input: import("../index.js").UpdateInfoMessage) => AsyncGenerator<OutputMessage, void, unknown>;
         };
         refresh: {
             title: string;

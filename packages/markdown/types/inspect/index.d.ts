@@ -7,10 +7,6 @@ export class ProvenDocsAuditor extends AuditorModel {
         default: number;
         help: string;
     };
-    /** @type {Object<string, string>} UI messages for audit steps */
-    static UI: {
-        [x: string]: string;
-    };
     /**
      * Standardizes text into a URL-friendly slug.
      * @param {string} text - Input text.

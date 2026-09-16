@@ -54,7 +54,7 @@ export default class AppManifest extends Model {
     static adapters: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     /**
      * Parse package.json exports to detect available UI adapters.

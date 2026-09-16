@@ -7,6 +7,7 @@
  * • `statDocument` ignores any cache (super.statDocument) to ensure `isFile` is set.
  */
 export default class DBBrowser extends DB {
+    static Directory: typeof BrowserDirectory;
     /** @type {Function | null} */
     static "__#private@#FetchFn": Function | null;
     /** @type {Function} */
@@ -124,4 +125,5 @@ export default class DBBrowser extends DB {
 import DB from '@nan0web/db';
 import BrowserStore from './BrowserStore.js';
 import { DocumentStat } from '@nan0web/db';
+import BrowserDirectory from './Directory.js';
 import { NoConsole } from '@nan0web/log';

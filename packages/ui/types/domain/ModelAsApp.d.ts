@@ -17,9 +17,15 @@ export class ModelAsApp extends Model {
         default: boolean;
     };
     /** @typedef {{ [key: string]: string }} UIMap */
-    /** @type {UIMap} */
-    /** @typedef {{ [key: string]: string }} UIMap */
-    /** @type {UIMap} */
+    /**
+     * Default UI message templates and i18n keys.
+     * All keys and default fallback phrases MUST be written in English.
+     * Translations are stored in data dictionaries (`data/*`) or database storage
+     * in the `t` variable (e.g. `[locale]/_/t.{nan0|yaml|json}`) and can be overridden
+     * by any document down the hierarchy via DB inheritance and `fetch()`.
+     *
+     * @type {UIMap}
+     */
     static UI: {
         [key: string]: string;
     };

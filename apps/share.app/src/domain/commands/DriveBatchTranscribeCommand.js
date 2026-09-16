@@ -1,4 +1,4 @@
-import { ModelAsApp, progress, show, result } from '@nan0web/ui-cli'
+import { ModelAsApp, progress, show, result } from '@nan0web/ui'
 import { TranscriptCacheService } from '../storage/TranscriptCacheService.js'
 import { MediaInspectorService } from '../analysis/MediaInspectorService.js'
 import { SubtitleMuxerPort } from '../pipeline/SubtitleMuxerPort.js'

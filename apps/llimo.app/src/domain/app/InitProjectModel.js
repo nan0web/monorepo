@@ -52,9 +52,9 @@ export class InitProjectModel extends ModelAsApp {
 		const projectName = basename(absoluteDir) || 'app'
 
 		if (!db) {
-			const [{ default: DB }, { default: FSDriver }] = await Promise.all([
+			const [{ default: DB }, { FSDriver }] = await Promise.all([
 				import('@nan0web/db'),
-				import('@nan0web/db-fs/src/FSDriver.js'),
+				import('@nan0web/db-fs'),
 			])
 			const _this = /** @type {any} */ (this._)
 			_this.db = new (/** @type {any} */ (DB))({

@@ -50,9 +50,9 @@ export type Intent = {
     /**
      * - Target URL/action within the app (e.g. 'signup', 'login')
      */
-    url?: string | undefined;
+    url?: string;
     /**
      * - Preferred UI adapter (e.g. 'cli', 'api', 'chat', 'lit')
      */
-    ui?: string | undefined;
+    ui?: string;
 };

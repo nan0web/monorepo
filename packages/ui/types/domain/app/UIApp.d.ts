@@ -20,37 +20,7 @@ export class UIApp extends ModelAsApp {
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options={}]
      */
     constructor(data?: Partial<UIApp> | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
-    run(): AsyncGenerator<import("../../core/Intent.js").ShowIntent | (import("../../core/Intent.js").AskIntent & {
-        $value?: any;
-        $success?: boolean;
-        $files?: Record<string, string>;
-        $message?: string;
-    }) | (import("../../core/Intent.js").ProgressIntent & {
-        $value?: any;
-        $success?: boolean;
-        $files?: Record<string, string>;
-        $message?: string;
-    }) | (import("../../core/Intent.js").LogIntent & {
-        $value?: any;
-        $success?: boolean;
-        $files?: Record<string, string>;
-        $message?: string;
-    }) | (import("../../core/Intent.js").RenderIntent & {
-        $value?: any;
-        $success?: boolean;
-        $files?: Record<string, string>;
-        $message?: string;
-    }) | (import("../../core/Intent.js").AgentIntent & {
-        $value?: any;
-        $success?: boolean;
-        $files?: Record<string, string>;
-        $message?: string;
-    }) | (import("../../core/Intent.js").ResultIntent & {
-        $value?: any;
-        $success?: boolean;
-        $files?: Record<string, string>;
-        $message?: string;
-    }), import("../../core/Intent.js").ResultIntent, any>;
+    run(): AsyncGenerator<import("../../core/Intent.js").ShowIntent | (import("../../core/Intent.js").AskIntent & import("../../core/Intent.js").IntentBase) | (import("../../core/Intent.js").ProgressIntent & import("../../core/Intent.js").IntentBase) | (import("../../core/Intent.js").LogIntent & import("../../core/Intent.js").IntentBase) | (import("../../core/Intent.js").RenderIntent & import("../../core/Intent.js").IntentBase) | (import("../../core/Intent.js").AgentIntent & import("../../core/Intent.js").IntentFiles & import("../../core/Intent.js").IntentBase) | (import("../../core/Intent.js").ResultIntent & import("../../core/Intent.js").IntentBase), import("../../core/Intent.js").ResultIntent, any>;
 }
 export default UIApp;
 import { ModelAsApp } from '../ModelAsApp.js';

@@ -21,7 +21,6 @@ export default class BumpMonorepoApp extends ModelAsApp {
         versionUpdatedDry: string;
         wouldNotBump: string;
         noDB: string;
-        errorNoDb?: string;
     };
     /**
      * @param {Partial<BumpMonorepoApp>} [data]
@@ -32,5 +31,9 @@ export default class BumpMonorepoApp extends ModelAsApp {
     version: string;
     /** @type {boolean} */
     dryRun: boolean;
+    /**
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+     */
+    run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
 }
 import { ModelAsApp } from '@nan0web/ui';

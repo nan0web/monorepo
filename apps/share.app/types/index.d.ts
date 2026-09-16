@@ -5,9 +5,19 @@ export class ShareAppCLI extends ModelAsApp {
     static alias: string;
     static command: {
         help: string;
-        options: (typeof DownloadWhisperCommand | typeof VideoCompileCommand | typeof ShortsGenerateCommand | typeof SubtitleGenerateCommand | typeof ScriptGenerateCommand | typeof PublishCommand | typeof VideoPipelineCommand | typeof DriveIndexCommand | typeof DeduplicateCommand)[];
+        options: (typeof DownloadWhisperCommand | typeof VideoCompileCommand | typeof ShortsGenerateCommand | typeof SubtitleGenerateCommand | typeof ScriptGenerateCommand | typeof PublishCommand | typeof VideoPipelineCommand | typeof DriveIndexCommand | typeof DeduplicateCommand | typeof DriveBatchTranscribeCommand)[];
         positional: boolean;
     };
+    /**
+     * @param {Partial<ShareAppCLI>} [data]
+
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions & { toolChecker?: typeof import('./ports/ToolCheckerPort.js').ToolCheckerPort }>} [options]
+     */
+    constructor(data?: Partial<ShareAppCLI>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions & {
+        toolChecker?: typeof import("./ports/ToolCheckerPort.js").ToolCheckerPort;
+    }>);
+    /** @type {typeof import('./ports/ToolCheckerPort.js').ToolCheckerPort | undefined} */
+    toolChecker: typeof import("./ports/ToolCheckerPort.js").ToolCheckerPort | undefined;
     run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").Intent, void, any>;
 }
 import { MediaDownloadModel } from './domain/MediaDownloadModel.js';
@@ -19,6 +29,7 @@ import { parseDelay } from './domain/RulesEngine.js';
 import { matchesConditions } from './domain/RulesEngine.js';
 import { DriveIndexCommand } from './domain/commands/DriveIndexCommand.js';
 import { DeduplicateCommand } from './domain/commands/DeduplicateCommand.js';
+import { DriveBatchTranscribeCommand } from './domain/commands/DriveBatchTranscribeCommand.js';
 import { ModelAsApp } from '@nan0web/ui-cli';
 import { DownloadWhisperCommand } from './domain/commands/DownloadWhisperCommand.js';
 import { VideoCompileCommand } from './domain/commands/VideoCompileCommand.js';
@@ -27,4 +38,4 @@ import { SubtitleGenerateCommand } from './domain/commands/SubtitleGenerateComma
 import { ScriptGenerateCommand } from './domain/commands/ScriptGenerateCommand.js';
 import { PublishCommand } from './domain/commands/PublishCommand.js';
 import { VideoPipelineCommand } from './domain/commands/VideoPipelineCommand.js';
-export { MediaDownloadModel, DummyAdapter, SocialAdapter, evaluateRules, executeTasks, parseDelay, matchesConditions, DriveIndexCommand, DeduplicateCommand };
+export { MediaDownloadModel, DummyAdapter, SocialAdapter, evaluateRules, executeTasks, parseDelay, matchesConditions, DriveIndexCommand, DeduplicateCommand, DriveBatchTranscribeCommand };

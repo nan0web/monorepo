@@ -106,8 +106,6 @@ export class LLMAgent extends ModelAsApp {
         files: string[];
         chat: ChatSession;
     }, any>;
-    /** @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>} */
-    run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
 }
 export type TestedFile = {
     ok: boolean;

@@ -1,1 +1,1 @@
-export { default } from "./InterfaceTemplate.js";
+export { default, InterfaceTemplate } from "./InterfaceTemplate.js";

@@ -88,7 +88,7 @@ class PackageStatusDB extends DB {
 				const path = entry.path || ''
 				const isIgnored = ['/node_modules/', '/.git/', '/.cache/', '/dist/', 'node_modules/', '.git/', '.cache/', 'dist/', '3rdparty'].some((s) => path === s || path.includes(s))
 				if (isIgnored) return false
-				return path.startsWith('packages') || path.startsWith('apps') || path.startsWith('./packages') || path.startsWith('./apps')
+				return path === 'README.md' || path.startsWith('packages') || path.startsWith('apps') || path.startsWith('./packages') || path.startsWith('./apps')
 			}
 		})
 
@@ -334,7 +334,7 @@ class StatusCommand extends CLI {
 		logger.info('  1. Build passes             2. Tests pass               3. tsconfig.json present')
 		logger.info('  4. LICENSE & CONTRIBUTING   5. Playground script        6. README.md present')
 		logger.info('  7. ProvenDoc (README.md.js)  8. Published on npm\n')
-		await this.fs.save()
+		await db.save()
 		if (msg.body.todo) {
 			this.renderTodo()
 		}

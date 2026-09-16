@@ -42,7 +42,6 @@ nan0web.json
 @current/
 export/
 scratch.js
-task*.md
 test_*.sh
 todo.app/
 needed_files.md

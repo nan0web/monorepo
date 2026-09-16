@@ -241,7 +241,7 @@ export class ChatSessionModel extends AiModelAsApp {
      * @returns {AsyncGenerator<any, any, any>}
      */
     run(): AsyncGenerator<any, any, any>;
-    _currentDb: import("@nan0web/db").default | DBFS | undefined;
+    _currentDb: any;
     /**
      * @param {ChatSessionContext} ctx
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, boolean | string, any>} Result FALSE to break the chat loop, TRUE to continue the chat loop, "string" to set the answer to the session
@@ -372,6 +372,5 @@ export type ChatSessionContext = {
 };
 import { AiModelAsApp } from './AiModelAsApp.js';
 import { Command } from './commands/index.js';
-import DBFS from '@nan0web/db-fs';
 import { GetCommand } from './commands/index.js';
 import { ModelAsApp } from '@nan0web/ui';

@@ -13,6 +13,35 @@ export class VideoPipelineCommand extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
+        initializing: string;
+        missingInput: string;
+        stepTranscription: string;
+        cachedTranscriptFound: string;
+        audioDownloadProgress: string;
+        audioSegmentProgress: string;
+        whisperChunkProgress: string;
+        whisperChunkDetail: string;
+        whisperChunkDone: string;
+        transcriptionSaved: string;
+        stepSegmentation: string;
+        pausesFound: string;
+        episodesGenerated: string;
+        stepSlicing: string;
+        slicingComplete: string;
+        subtitlesGenerated: string;
+        overviewCreated: string;
+        groundTruthLoaded: string;
+        articleGenStart: string;
+        articleSaved: string;
+        articlesAllDone: string;
+        masterLongreadDone: string;
+        socialPackagesDone: string;
+        llmMetrics: string;
+        shortsProgress: string;
+        stepPublishing: string;
+        auditEmptyWarning: string;
+        auditSuccess: string;
+        pipelineComplete: string;
     };
     static url: {
         type: string;
@@ -35,6 +64,66 @@ export class VideoPipelineCommand extends ModelAsApp {
         required: boolean;
         help: string;
     };
+    static language: {
+        type: string;
+        required: boolean;
+        default: string;
+        help: string;
+    };
+    static minChapterDuration: {
+        type: string;
+        required: boolean;
+        default: number;
+        help: string;
+    };
+    static shorts: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        help: string;
+    };
+    static shortsDuration: {
+        type: string;
+        required: boolean;
+        default: number;
+        help: string;
+    };
+    static subtitles: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        help: string;
+    };
+    static article: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        help: string;
+    };
+    static template: {
+        type: string;
+        required: boolean;
+        default: string;
+        help: string;
+    };
+    static model: {
+        type: string;
+        required: boolean;
+        default: string;
+        help: string;
+    };
+    static sources: {
+        type: string;
+        required: boolean;
+        default: string;
+        help: string;
+    };
+    static overview: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        help: string;
+    };
     static dryRun: {
         type: string;
         required: boolean;
@@ -46,33 +135,7 @@ export class VideoPipelineCommand extends ModelAsApp {
      * @param {object} [options]
      */
     constructor(data?: VideoPipelineOptions, options?: object);
-    run(): AsyncGenerator<{
-        type: string;
-        message: string;
-        level?: undefined;
-    } | {
-        type: string;
-        level: string;
-        message: string;
-    }, {
-        type: string;
-        data: {
-            success: boolean;
-            error: string;
-            outputDir?: undefined;
-            url?: undefined;
-            published?: undefined;
-        };
-    } | {
-        type: string;
-        data: {
-            success: boolean;
-            outputDir: string;
-            url: any;
-            published: boolean;
-            error?: undefined;
-        };
-    }, unknown>;
+    run(): AsyncGenerator<string | import("@nan0web/ui/src/core/Intent.js").ShowIntent | import("@nan0web/ui/src/core/Intent.js").ProgressIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
 }
 export type VideoPipelineOptions = {
     /**

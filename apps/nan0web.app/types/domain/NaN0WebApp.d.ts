@@ -61,7 +61,7 @@ export default class NaN0WebApp extends ModelAsApp {
     static ssl: {
         help: string;
         type: string;
-        default: null;
+        default: any;
         hidden: boolean;
     };
     static log: {
@@ -76,7 +76,7 @@ export default class NaN0WebApp extends ModelAsApp {
         type: string;
         hint: typeof AppEntryConfig;
         hidden: boolean;
-        default: never[];
+        default: any[];
     };
     static aliases: {
         help: string;
@@ -87,7 +87,7 @@ export default class NaN0WebApp extends ModelAsApp {
     static ui: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     static build: {
         help: string;

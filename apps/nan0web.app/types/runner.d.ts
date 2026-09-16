@@ -100,11 +100,11 @@ import AppLogger from './utils/AppLogger.js';
  */
 declare class I18n {
     constructor({ locale }?: {
-        locale?: string | undefined;
+        locale?: string;
     });
     locale: string;
     vocabulary: {};
-    t: import("../../../packages/types/types/utils/TFunction.js").TFunction;
+    t: import("@nan0web/types/src/utils/TFunction").TFunction;
     /** @param {object} data */
     load(data: object): void;
 }

@@ -26,5 +26,9 @@ export default class PrepareApp extends ModelAsApp {
     target: string;
     /** @type {number} Target step number (1 to 9). */
     step: number;
+    /**
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+     */
+    run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
 }
 import { ModelAsApp } from '@nan0web/ui';
