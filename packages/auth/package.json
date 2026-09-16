@@ -21,10 +21,10 @@
     "prebuild": "rm -rf types/",
     "build": "tsc",
     "test": "node --test \"src/**/*.test.js\"",
-    "test:docs": "node --test src/README.md.js",
-    "test:all1": "npm run test && npm run test:docs && npm run build && npm run knip",
-    "test:all": "npm run test && npm run build && npm run knip",
+    "lint": "prettier --check \"src/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\"",
     "knip": "knip --production",
+    "test:all": "npm run test && npm run build && npm run lint && npm run knip",
     "audit": "pnpm audit --prod || true",
     "precommit": "npm test",
     "play": "node play/demo.js"
