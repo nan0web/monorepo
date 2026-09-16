@@ -8,7 +8,10 @@ async function drainGenerator(gen) {
 	let last = null
 	while (true) {
 		const step = await gen.next()
-		if (step.done) { last = step.value; break }
+		if (step.done) {
+			last = step.value
+			break
+		}
 		intents.push(step.value)
 	}
 	return { intents, result: last }
@@ -16,10 +19,12 @@ async function drainGenerator(gen) {
 
 describe('VerificationAuditor', () => {
 	it('fails when play/ is missing', async () => {
-		const db = new DB({ predefined: [
-			['src/foo.test.js', 'test("x", () => {})'],
-			['src/README.md.js', ''],
-		] })
+		const db = new DB({
+			predefined: [
+				['src/foo.test.js', 'test("x", () => {})'],
+				['src/README.md.js', ''],
+			],
+		})
 		await db.connect()
 		const auditor = new VerificationAuditor({ dir: '.' }, { db })
 		auditor.isTestFile = (e) => e.name.endsWith('.test.js')
@@ -30,10 +35,12 @@ describe('VerificationAuditor', () => {
 	})
 
 	it('fails when no *.test.js files exist in src/', async () => {
-		const db = new DB({ predefined: [
-			['play/', {}],
-			['src/README.md.js', ''],
-		] })
+		const db = new DB({
+			predefined: [
+				['play/', {}],
+				['src/README.md.js', ''],
+			],
+		})
 		await db.connect()
 		const auditor = new VerificationAuditor({ dir: '.' }, { db })
 		auditor.isTestFile = (e) => e.name.endsWith('.test.js')
@@ -44,12 +51,14 @@ describe('VerificationAuditor', () => {
 	})
 
 	it('passes when all mandatory verification items exist (src/README.md.js variant)', async () => {
-		const db = new DB({ predefined: [
-			['play/', {}],
-			['src/foo.test.js', 'test("x", () => {})'],
-			['src/README.md.js', ''],
-			['snapshots/core/', {}],
-		] })
+		const db = new DB({
+			predefined: [
+				['play/', {}],
+				['src/foo.test.js', 'test("x", () => {})'],
+				['src/README.md.js', ''],
+				['snapshots/core/', {}],
+			],
+		})
 		await db.connect()
 		const auditor = new VerificationAuditor({ dir: '.' }, { db })
 		auditor.isTestFile = (e) => e.name.endsWith('.test.js')
@@ -60,12 +69,14 @@ describe('VerificationAuditor', () => {
 	})
 
 	it('passes when README.md.js is in src/docs/', async () => {
-		const db = new DB({ predefined: [
-			['play/', {}],
-			['src/foo.test.js', 'test("x", () => {})'],
-			['src/docs/README.md.js', ''],
-			['snapshots/core/', {}],
-		] })
+		const db = new DB({
+			predefined: [
+				['play/', {}],
+				['src/foo.test.js', 'test("x", () => {})'],
+				['src/docs/README.md.js', ''],
+				['snapshots/core/', {}],
+			],
+		})
 		await db.connect()
 		const auditor = new VerificationAuditor({ dir: '.' }, { db })
 		auditor.isTestFile = (e) => e.name.endsWith('.test.js')

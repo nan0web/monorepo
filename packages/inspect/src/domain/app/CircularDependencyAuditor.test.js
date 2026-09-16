@@ -19,7 +19,7 @@ describe('CircularDependencyAuditor', () => {
 		const auditor = new CircularDependencyAuditor({ dir: '.', platform: 'js' }, { db, t })
 		const gen = auditor.run()
 		let res = await gen.next()
-		while(!res.done) res = await gen.next()
+		while (!res.done) res = await gen.next()
 		assert.strictEqual(res.value.data.success, true)
 	})
 
@@ -27,13 +27,16 @@ describe('CircularDependencyAuditor', () => {
 		const db = {
 			resolveSync: () => '/tmp/real-path',
 			statDocument: async () => ({ exists: true }),
-			constructor: { name: 'RealDB' }
+			constructor: { name: 'RealDB' },
 		}
-		const auditor = new CircularDependencyAuditor({ dir: '.', timeout: 100, platform: 'js' }, { db, t })
+		const auditor = new CircularDependencyAuditor(
+			{ dir: '.', timeout: 100, platform: 'js' },
+			{ db, t }
+		)
 		auditor._runMadgeAsync = async () => ({ timeout: true })
 		const gen = auditor.run()
 		let res = await gen.next()
-		while(!res.done) res = await gen.next()
+		while (!res.done) res = await gen.next()
 		assert.strictEqual(res.value.data.success, false)
 	})
 
@@ -41,13 +44,13 @@ describe('CircularDependencyAuditor', () => {
 		const db = {
 			resolveSync: () => '/tmp/real-path',
 			statDocument: async () => ({ exists: true }),
-			constructor: { name: 'RealDB' }
+			constructor: { name: 'RealDB' },
 		}
 		const auditor = new CircularDependencyAuditor({ dir: '.', platform: 'js' }, { db, t })
 		auditor._runMadgeAsync = async () => ({ error: 'Some error' })
 		const gen = auditor.run()
 		let res = await gen.next()
-		while(!res.done) res = await gen.next()
+		while (!res.done) res = await gen.next()
 		assert.strictEqual(res.value.data.success, false)
 	})
 
@@ -55,28 +58,30 @@ describe('CircularDependencyAuditor', () => {
 		const db = {
 			resolveSync: () => '/tmp/real-path',
 			statDocument: async () => ({ exists: true }),
-			constructor: { name: 'RealDB' }
+			constructor: { name: 'RealDB' },
 		}
 		const auditor = new CircularDependencyAuditor({ dir: '.', platform: 'js' }, { db, t })
 		auditor._runMadgeAsync = async () => ({
-			circular: [['a.js', 'b.js', 'a.js']]
+			circular: [['a.js', 'b.js', 'a.js']],
 		})
 		const gen = auditor.run()
 		let res = await gen.next()
-		while(!res.done) res = await gen.next()
+		while (!res.done) res = await gen.next()
 		assert.strictEqual(res.value.data.success, false)
 	})
 
 	it('should handle exceptions in run()', async () => {
 		const db = {
-			resolveSync: () => { throw new Error('Boom') },
+			resolveSync: () => {
+				throw new Error('Boom')
+			},
 			statDocument: async () => ({ exists: true }),
-			constructor: { name: 'RealDB' }
+			constructor: { name: 'RealDB' },
 		}
 		const auditor = new CircularDependencyAuditor({ dir: '.', platform: 'js' }, { db, t })
 		const gen = auditor.run()
 		let res = await gen.next()
-		while(!res.done) res = await gen.next()
+		while (!res.done) res = await gen.next()
 		assert.strictEqual(res.value.data.success, false)
 	})
 
@@ -88,7 +93,7 @@ describe('CircularDependencyAuditor', () => {
 				if (event === 'exit') setTimeout(() => cb(), 20)
 			},
 			kill: () => {},
-			send: () => {}
+			send: () => {},
 		}
 		auditor.fork = () => mockChild
 		const res = await auditor._runMadgeAsync('.', 5000)
@@ -100,7 +105,7 @@ describe('CircularDependencyAuditor', () => {
 		const mockChild = {
 			on: () => {},
 			kill: () => {},
-			send: () => {}
+			send: () => {},
 		}
 		auditor.fork = () => mockChild
 		const res = await auditor._runMadgeAsync('.', 10)
@@ -114,7 +119,7 @@ describe('CircularDependencyAuditor', () => {
 				if (event === 'error') cb(new Error('Mock Error'))
 			},
 			kill: () => {},
-			send: () => {}
+			send: () => {},
 		}
 		auditor.fork = () => mockChild
 		const res = await auditor._runMadgeAsync('.', 5000)
@@ -124,7 +129,9 @@ describe('CircularDependencyAuditor', () => {
 	it('fork: should call real child_process.fork', () => {
 		const auditor = new CircularDependencyAuditor()
 		assert.strictEqual(typeof auditor.fork, 'function')
-		try { auditor.fork('./non-existent', {}) } catch {}
+		try {
+			auditor.fork('./non-existent', {})
+		} catch {}
 	})
 
 	it('_runMadgeAsync: should handle worker creation failure', async () => {

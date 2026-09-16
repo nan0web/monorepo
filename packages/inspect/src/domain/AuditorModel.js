@@ -62,7 +62,7 @@ export class AuditorModel extends ModelAsApp {
 		/** @type {boolean} Show help */ this.help
 		/** @type {LanguagePlatform} Language platform to audit */ this.platform
 		/** @type {boolean} Automatically apply fixes where possible */ this.fix = Boolean(
-			data.fix || (options && 'fix' in options ? /** @type {any} */ (options).fix : false),
+			data.fix || (options && 'fix' in options ? /** @type {any} */ (options).fix : false)
 		)
 		this.#specificPlatform = data.platform
 	}
@@ -118,24 +118,24 @@ export class AuditorModel extends ModelAsApp {
 		try {
 			const session = await this._.db.loadDocument(sessionPath)
 			if (session && Array.isArray(session.disabledInspectors)) {
-				const alias = String(/** @type {any} */(this.constructor).alias || '').toLowerCase()
-				
+				const alias = String(/** @type {any} */ (this.constructor).alias || '').toLowerCase()
+
 				/** @type {Record<string, string>} Mapping of auditor aliases to session inspector keys */
 				const aliasMap = {
-					'jsdoc': 'jsdoc',
-					'models': 'models',
-					'welding': 'welding',
-					'verification': 'welding',
-					'export': 'adapters',
-					'exports': 'adapters',
-					'hygiene': 'adapters',
-					'domain': 'adapters',
-					'cli': 'ui-cli',
-					'chat': 'ui-chat',
-					'web': 'ui-web',
-					'snapshot': 'ui-web',
-					'theming': 'ui-web',
-					'qa': 'qa'
+					jsdoc: 'jsdoc',
+					models: 'models',
+					welding: 'welding',
+					verification: 'welding',
+					export: 'adapters',
+					exports: 'adapters',
+					hygiene: 'adapters',
+					domain: 'adapters',
+					cli: 'ui-cli',
+					chat: 'ui-chat',
+					web: 'ui-web',
+					snapshot: 'ui-web',
+					theming: 'ui-web',
+					qa: 'qa',
 				}
 
 				const inspectorName = aliasMap[alias] || alias

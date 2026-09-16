@@ -30,14 +30,14 @@ export class NoTypeScriptAuditor extends AuditorModel {
 					tsFiles.push(entry.path)
 				}
 			}
-		} catch { }
+		} catch {}
 	}
 
 	async *run() {
 		if (!this._.db) throw new Error('DB not found in context')
 		const { db, t } = this._
 		if (!db) throw new Error('DB not found in context')
-		
+
 		yield progress(t(NoTypeScriptAuditor.UI.checking))
 
 		/** @type {string[]} */ const tsFiles = []

@@ -17,10 +17,10 @@ export class PhaseAuditor extends AuditorModel {
     run(): AsyncGenerator<import("@nan0web/ui").Intent, any, any>;
 }
 export type PhaseError = {
-    file?: string | undefined;
-    check?: string | undefined;
+    file?: string;
+    check?: string;
     error: string;
-    boundary?: string[] | undefined;
-    context?: string[] | undefined;
+    boundary?: string[];
+    context?: string[];
 };
 import { AuditorModel } from '../AuditorModel.js';

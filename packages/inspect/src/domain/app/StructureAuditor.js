@@ -14,7 +14,7 @@ export class StructureAuditor extends AuditorModel {
 
 	async *run() {
 		/** @type {(key: string, data?: Record<string, any>) => string} */
-		const t = (this._.t)
+		const t = this._.t
 		yield progress(t(StructureAuditor.UI.checking, { dir: this.dir }))
 
 		const systemMdPath = join(this.dir, 'system.md')

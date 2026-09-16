@@ -28,7 +28,7 @@ export class ProjectModel extends Model {
     static models: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     static mission: {
         help: string;
@@ -48,7 +48,7 @@ export class ProjectModel extends Model {
     static contract: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     static adapter: {
         help: string;
@@ -58,27 +58,27 @@ export class ProjectModel extends Model {
     static ui_cli: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     static ui_chat: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     static ui_web: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     static ui_mobile: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     static qa: {
         help: string;
         type: string;
-        default: never[];
+        default: any[];
     };
     static get phases(): string[];
     constructor(data?: {}, options?: {});

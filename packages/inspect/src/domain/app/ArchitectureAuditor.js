@@ -63,7 +63,7 @@ class ArchitectureAuditor extends AuditorModel {
 	static timeout = {
 		help: 'Timeout for the audit operations in ms',
 		type: 'number',
-		default: 30_000
+		default: 30_000,
 	}
 
 	/**
@@ -154,7 +154,7 @@ class ArchitectureAuditor extends AuditorModel {
 			if (!key) {
 				yield show(
 					t(ArchitectureAuditor.UI.error_auditor_class_alias, { name: AuditorClass.name }),
-					'warn',
+					'warn'
 				)
 				continue
 			}
@@ -176,9 +176,12 @@ class ArchitectureAuditor extends AuditorModel {
 		for (const config of auditorsConfig) {
 			const { _, ...data } = this
 			const auditor = new config.Class({ ...data, dir: config.subDir }, _)
-			
+
 			if (await auditor.isCapped()) {
-				yield show(`[Step-Capped Validation] skipping auditor ${config.key} (capped by active session step)`, 'info')
+				yield show(
+					`[Step-Capped Validation] skipping auditor ${config.key} (capped by active session step)`,
+					'info'
+				)
 				scores[config.key] = { ok: true, skipped: true }
 				continue
 			}
@@ -194,7 +197,10 @@ class ArchitectureAuditor extends AuditorModel {
 					const stepPromise = gen.next()
 					let timerId
 					const timeoutPromise = new Promise((_, reject) => {
-						timerId = setTimeout(() => reject(new Error(`Auditor ${config.key} timed out`)), this.timeout)
+						timerId = setTimeout(
+							() => reject(new Error(`Auditor ${config.key} timed out`)),
+							this.timeout
+						)
 					})
 
 					try {
@@ -242,11 +248,13 @@ class ArchitectureAuditor extends AuditorModel {
 
 		// Build Summary Table
 		const totalCount = Object.keys(scores).length
-		const passedCount = Object.values(scores).filter((s) => s.ok !== undefined ? s.ok : s.success).length
+		const passedCount = Object.values(scores).filter((s) =>
+			s.ok !== undefined ? s.ok : s.success
+		).length
 		const pct = totalCount > 0 ? Math.round((passedCount / totalCount) * 100) : 100
 
 		const allErrors = Object.entries(scores).flatMap(([key, s]) =>
-			(Array.isArray(s.errors) ? s.errors : []).map((e) => ({ auditor: key, ...e })),
+			(Array.isArray(s.errors) ? s.errors : []).map((e) => ({ auditor: key, ...e }))
 		)
 
 		if (!overallSuccess) {
@@ -383,7 +391,7 @@ class ArchitectureAuditor extends AuditorModel {
 				...scores,
 				errors: allErrors,
 			},
-			overallSuccess,
+			overallSuccess
 		)
 	}
 }

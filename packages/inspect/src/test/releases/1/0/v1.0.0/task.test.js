@@ -10,7 +10,10 @@ async function drainGenerator(gen) {
 	try {
 		while (true) {
 			const step = await gen.next()
-			if (step.done) { last = step.value; break }
+			if (step.done) {
+				last = step.value
+				break
+			}
 			intents.push(step.value)
 		}
 	} catch (e) {
@@ -24,42 +27,47 @@ describe('v1.0.0 Release Task Suite — Hermetic Isolation', () => {
 	let db
 
 	beforeEach(async () => {
-		db = new DB({ predefined: [
-			['package.json', { 
-				name: '@nan0web/inspect', 
-				version: '1.0.0',
-				private: true, 
-				scripts: { 
-					test: 'node --test',
-					'test:all': 'npm run build && npm run test && npm run knip',
-					build: 'tsc',
-					prebuild: 'rm -rf dist types',
-					knip: 'knip',
-					play: 'node play/main.js',
-					'test:docs': 'node --test README.md.js',
-					'test:release': 'npm run test:all',
-					'release:spec': 'node bin/release.js',
-					'test:coverage': 'c8 node --test'
-				},
-				devDependencies: {
-					typescript: 'latest',
-					knip: 'latest',
-					c8: 'latest'
-				} 
-			}],
-			['seed.md', '# Seed'],
-			['project.md', '# Project'],
-			['CONTRIBUTING.md', ''],
-			['LICENSE', ''],
-			['.editorconfig', ''],
-			['tsconfig.json', {}],
-			['knip.json', {}],
-			['src/index.js', 'export const x = 1'],
-			['src/domain/index.js', 'export const y = 2'],
-			['play/main.js', ''],
-			['README.md.js', ''],
-			['snapshots/core/', {}]
-		] })
+		db = new DB({
+			predefined: [
+				[
+					'package.json',
+					{
+						name: '@nan0web/inspect',
+						version: '1.0.0',
+						private: true,
+						scripts: {
+							test: 'node --test',
+							'test:all': 'npm run build && npm run test && npm run knip',
+							build: 'tsc',
+							prebuild: 'rm -rf dist types',
+							knip: 'knip',
+							play: 'node play/main.js',
+							'test:docs': 'node --test README.md.js',
+							'test:release': 'npm run test:all',
+							'release:spec': 'node bin/release.js',
+							'test:coverage': 'c8 node --test',
+						},
+						devDependencies: {
+							typescript: 'latest',
+							knip: 'latest',
+							c8: 'latest',
+						},
+					},
+				],
+				['seed.md', '# Seed'],
+				['project.md', '# Project'],
+				['CONTRIBUTING.md', ''],
+				['LICENSE', ''],
+				['.editorconfig', ''],
+				['tsconfig.json', {}],
+				['knip.json', {}],
+				['src/index.js', 'export const x = 1'],
+				['src/domain/index.js', 'export const y = 2'],
+				['play/main.js', ''],
+				['README.md.js', ''],
+				['snapshots/core/', {}],
+			],
+		})
 		await db.connect()
 	})
 
@@ -100,7 +108,10 @@ describe('v1.0.0 Release Task Suite — Hermetic Isolation', () => {
 			const { intents, result } = await drainGenerator(auditor.run())
 
 			assert.ok(intents.length > 0, 'Should have intents')
-			assert.ok(intents.find(i => i.type === 'progress'), 'Should have progress intent')
+			assert.ok(
+				intents.find((i) => i.type === 'progress'),
+				'Should have progress intent'
+			)
 			assert.ok(result.data.score > 0, 'Should have a score')
 			assert.ok(result.data.phase, 'Should have phase')
 			assert.ok(result.data.hygiene, 'Should have hygiene')

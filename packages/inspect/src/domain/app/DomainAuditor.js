@@ -30,7 +30,9 @@ export class DomainAuditor extends AuditorModel {
 		/** @type {import('@nan0web/i18n').TFunction} */
 		const t = this._.t
 
-		yield progress(t(DomainAuditor.UI.starting, { dir: this.dir }) || `Starting Domain Audit in ${this.dir}...`)
+		yield progress(
+			t(DomainAuditor.UI.starting, { dir: this.dir }) || `Starting Domain Audit in ${this.dir}...`
+		)
 		yield progress(t(DomainAuditor.UI.scanning, {}) || 'Scanning for domain violations...')
 
 		/** @type {DomainError[]} */

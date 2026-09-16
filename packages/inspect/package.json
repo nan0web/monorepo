@@ -36,13 +36,16 @@
     "build": "tsc",
     "inspect": "node bin/inspect.js",
     "test": "node --test --test-timeout=3333 src/**/*.test.js",
-    "test:all": "npm run test && npm run test:docs && npm run build && npm run knip",
     "test:docs": "node --test --test-timeout=3333 'src/docs/**/*.md.js'",
     "test:coverage": "c8 node --test",
     "play": "nan0cli --data play",
     "release:spec": "node --test releases/**/**/*.spec.js",
     "test:release": "node --test src/test/releases/**/**/*.test.js",
-    "knip": "knip --production"
+    "lint": "prettier --check \"src/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\"",
+    "knip": "knip --production",
+    "test:all": "npm run test && npm run test:docs && npm run build && npm run lint && npm run knip"
+
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

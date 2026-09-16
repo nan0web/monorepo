@@ -33,7 +33,7 @@ export class ArchitectureAuditor extends AuditorModel {
     static command: {
         help: string;
         options: (typeof PhaseAuditor | typeof CircularDependencyAuditor | typeof SnapshotAuditor)[];
-        default: null;
+        default: any;
     };
     /**
      * @param {string | typeof AuditorModel} key
@@ -49,6 +49,10 @@ export class ArchitectureAuditor extends AuditorModel {
     /** @type {string} Auditors to skip */ skip: string;
     /** @type {typeof AuditorModel | null} Current command */ command: typeof AuditorModel | null;
     /** @type {number} Timeout for audit */ timeout: number;
+    /**
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+     */
+    run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
 }
 import { AuditorModel } from '../AuditorModel.js';
 import { PhaseAuditor } from './PhaseAuditor.js';

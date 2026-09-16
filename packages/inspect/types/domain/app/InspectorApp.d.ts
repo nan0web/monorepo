@@ -35,6 +35,10 @@ export class InspectorApp extends ModelAsApp {
      * Detects the project platform based on configuration files.
      */
     init(): Promise<void>;
+    /**
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+     */
+    run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
 }
 import { ModelAsApp } from '@nan0web/ui';
 import { AuditorModel } from '../AuditorModel.js';

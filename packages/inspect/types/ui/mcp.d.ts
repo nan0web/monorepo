@@ -5,33 +5,33 @@ export const server: Server<{
         [x: string]: unknown;
         _meta?: {
             [x: string]: unknown;
-            progressToken?: string | number | undefined;
+            progressToken?: string | number;
             "io.modelcontextprotocol/related-task"?: {
                 taskId: string;
-            } | undefined;
-        } | undefined;
-    } | undefined;
+            };
+        };
+    };
 }, {
     method: string;
     params?: {
         [x: string]: unknown;
         _meta?: {
             [x: string]: unknown;
-            progressToken?: string | number | undefined;
+            progressToken?: string | number;
             "io.modelcontextprotocol/related-task"?: {
                 taskId: string;
-            } | undefined;
-        } | undefined;
-    } | undefined;
+            };
+        };
+    };
 }, {
     [x: string]: unknown;
     _meta?: {
         [x: string]: unknown;
-        progressToken?: string | number | undefined;
+        progressToken?: string | number;
         "io.modelcontextprotocol/related-task"?: {
             taskId: string;
-        } | undefined;
-    } | undefined;
+        };
+    };
 }>;
 export function runAuditor(AuditorClass: any, dir: any): Promise<{
     content: {

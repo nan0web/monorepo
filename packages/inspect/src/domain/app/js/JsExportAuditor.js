@@ -29,7 +29,10 @@ export class JsExportAuditor extends ExportAuditor {
 		if (hasDomain) {
 			if (!(await fileExists('src/domain/index.js'))) {
 				errors.push({ check: 'src/domain/index.js', error: ExportAuditor.UI.missing_domain_index })
-				yield show(t(ExportAuditor.UI.missing_domain_index, {}) || 'Missing domain/index.js', 'error')
+				yield show(
+					t(ExportAuditor.UI.missing_domain_index, {}) || 'Missing domain/index.js',
+					'error'
+				)
 			} else {
 				yield show(t(ExportAuditor.UI.domain_ok, {}) || 'Domain index: OK', 'success')
 			}
@@ -63,7 +66,9 @@ export class JsExportAuditor extends ExportAuditor {
 				if (!(await dirExists(adapterDir))) continue
 				const exportKey = `./ui/${adapter}`
 				if (!pkgExports[exportKey]) {
-					const error = t(ExportAuditor.UI.missing_ui_export, { dir: adapterDir }) || `Missing UI export for: ${adapterDir}`
+					const error =
+						t(ExportAuditor.UI.missing_ui_export, { dir: adapterDir }) ||
+						`Missing UI export for: ${adapterDir}`
 					errors.push({
 						check: `exports["${exportKey}"]`,
 						error,
@@ -86,7 +91,10 @@ export class JsExportAuditor extends ExportAuditor {
 				if (entry.name === 'node_modules' || entry.name === 'dist') return false
 				return true
 			}
-			for await (const entry of this._.db.browse(srcPath, (/** @type {any} */ ({ depth: Infinity, filter })))) {
+			for await (const entry of this._.db.browse(
+				srcPath,
+				/** @type {any} */ ({ depth: Infinity, filter })
+			)) {
 				if (entry.isFile && entry.name.endsWith('.js')) {
 					const text = await readText(entry.path)
 					if (text && /^\s*export\s+default\s+/m.test(text)) {
@@ -97,10 +105,12 @@ export class JsExportAuditor extends ExportAuditor {
 			}
 		}
 
-		const missing = errors.filter(e => e.error !== 'export default prohibited').map(e => e.check)
+		const missing = errors
+			.filter((e) => e.error !== 'export default prohibited')
+			.map((e) => e.check)
 
 		return {
-			exports: { missing, defaultExports }
+			exports: { missing, defaultExports },
 		}
 	}
 }

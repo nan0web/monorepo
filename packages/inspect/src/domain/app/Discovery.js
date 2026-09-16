@@ -21,7 +21,7 @@ export class AuditorDiscovery extends Model {
 	async discover(targetDir) {
 		return new Set()
 	}
-	
+
 	/**
 	 * Dynamic importer for auditors.
 	 * @param {string} specifier
@@ -53,6 +53,6 @@ export class AuditorDiscovery extends Model {
 	importAuditorModel() {
 		// This should be overridden or imported carefully.
 		// For now we assume the caller knows.
-		return /** @type {any} */ ({}) 
+		return /** @type {any} */ ({})
 	}
 }

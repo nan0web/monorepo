@@ -57,7 +57,7 @@ export class CircularDependencyAuditor extends AuditorModel {
 			if (timeout < 100) timeout *= 1000
 
 			const absolutePath = this._.db.resolveSync(scanPath)
-			
+
 			// If DB is virtual (like in tests), madge cannot scan it via filesystem
 			if (this._.db.constructor.name.includes('Mock') || !absolutePath.startsWith('/')) {
 				return result({ success: true, circular: [] })
@@ -132,8 +132,11 @@ export class CircularDependencyAuditor extends AuditorModel {
 			});
 		`
 
-		const tmpFile = join(tmpdir(), `.madge-worker-${Date.now()}-${Math.random().toString(36).slice(2)}.mjs`)
-		
+		const tmpFile = join(
+			tmpdir(),
+			`.madge-worker-${Date.now()}-${Math.random().toString(36).slice(2)}.mjs`
+		)
+
 		return new Promise(async (resolve) => {
 			try {
 				writeFileSync(tmpFile, workerCode)
@@ -141,7 +144,7 @@ export class CircularDependencyAuditor extends AuditorModel {
 				const error = err instanceof Error ? err : new Error(String(err))
 				return resolve({ error: `Failed to create worker: ${error.message}` })
 			}
- 
+
 			const child = this.fork(tmpFile, { stdio: 'inherit' })
 			const timer = setTimeout(() => {
 				child.kill()
@@ -161,7 +164,9 @@ export class CircularDependencyAuditor extends AuditorModel {
 			})
 
 			child.on('exit', () => {
-				try { unlinkSync(tmpFile) } catch {}
+				try {
+					unlinkSync(tmpFile)
+				} catch {}
 			})
 
 			child.send(scanPath)

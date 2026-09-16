@@ -77,28 +77,38 @@ export class PhaseAuditor extends AuditorModel {
 							const done = (text.match(/- \[x\]/gi) || []).length
 							const pending = (text.match(/- \[ \]/gi) || []).length
 							progress = { done, total: done + pending }
-						} catch (e) { /* no task.md */ }
-						
+						} catch (e) {
+							/* no task.md */
+						}
+
 						releases.push({ name: entry.name, ...progress })
 					}
 				}
-				releases.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }))
+				releases.sort((a, b) =>
+					a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
+				)
 			}
 		} catch (e) {
 			/* ignore */
 		}
 
-
 		// Phase detection
 		const seedPaths = ['seed.md', 'docs/seed.md', 'docs/uk/seed.md', 'docs/en/seed.md']
-		const projectPaths = ['project.md', 'docs/project.md', 'docs/uk/project.md', 'docs/en/project.md']
+		const projectPaths = [
+			'project.md',
+			'docs/project.md',
+			'docs/uk/project.md',
+			'docs/en/project.md',
+		]
 
 		// Check langs.nan0 for localized validation
 		let configuredLangs = []
 		try {
 			const langs = await db.loadDocument(db.resolveSync(this.dir, 'docs/_/langs.nan0'))
-			configuredLangs = Array.isArray(langs) ? langs.map(l => l.locale) : []
-		} catch (e) { /* ignore */ }
+			configuredLangs = Array.isArray(langs) ? langs.map((l) => l.locale) : []
+		} catch (e) {
+			/* ignore */
+		}
 
 		let hasSeed = false
 		for (const p of seedPaths) {
@@ -130,21 +140,27 @@ export class PhaseAuditor extends AuditorModel {
 
 		let phase = 'unknown'
 		let releaseStatus = { done: 0, total: 0, percentage: 0 }
-		
+
 		if (releases.length > 0) {
 			// If we have releases but they are not fully done, or if we have new seed/project changes, it might be development
 			const latestRelease = releases[releases.length - 1]
 			releaseStatus = {
 				...latestRelease,
-				percentage: latestRelease.total > 0 ? Math.round((latestRelease.done / latestRelease.total) * 100) : 0
+				percentage:
+					latestRelease.total > 0
+						? Math.round((latestRelease.done / latestRelease.total) * 100)
+						: 0,
 			}
 
 			if (releaseStatus.total > 0 && releaseStatus.done < releaseStatus.total) {
 				phase = 'development'
-				yield show(t('Detected Phase: Development (Release {version} in progress: {percentage}%)', {
-					version: releaseStatus.name,
-					percentage: releaseStatus.percentage
-				}), 'info')
+				yield show(
+					t('Detected Phase: Development (Release {version} in progress: {percentage}%)', {
+						version: releaseStatus.name,
+						percentage: releaseStatus.percentage,
+					}),
+					'info'
+				)
 			} else {
 				phase = 'production'
 				yield show(t(PhaseAuditor.UI.phase_4), 'success')

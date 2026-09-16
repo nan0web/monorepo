@@ -9,7 +9,10 @@ async function drainGenerator(gen) {
 	let last = null
 	while (true) {
 		const step = await gen.next()
-		if (step.done) { last = step.value; break }
+		if (step.done) {
+			last = step.value
+			break
+		}
 		intents.push(step.value)
 	}
 	return { intents, result: last }
@@ -17,22 +20,36 @@ async function drainGenerator(gen) {
 
 describe('DomainAuditor', () => {
 	it('detects extends Model outside src/domain/', async () => {
-		const db = new DB({ predefined: [
-			['src/SomeUtil.js', 'import { Model } from "@nan0web/types"\nexport class SomeUtil extends Model {}\n'],
-		] })
+		const db = new DB({
+			predefined: [
+				[
+					'src/SomeUtil.js',
+					'import { Model } from "@nan0web/types"\nexport class SomeUtil extends Model {}\n',
+				],
+			],
+		})
 		await db.connect()
 
 		const auditor = new JsDomainAuditor({ dir: '.' }, { db, t: (key) => key })
 		const { result } = await drainGenerator(auditor.run())
 
 		assert.equal(result.data.success, false)
-		assert.ok(result.data.errors.some((e) => e.error.startsWith(DomainAuditor.UI.violation_found.split('{')[0])))
+		assert.ok(
+			result.data.errors.some((e) =>
+				e.error.startsWith(DomainAuditor.UI.violation_found.split('{')[0])
+			)
+		)
 	})
 
 	it('allows extends Model inside src/domain/', async () => {
-		const db = new DB({ predefined: [
-			['src/domain/MyModel.js', 'import { Model } from "@nan0web/types"\nexport class MyModel extends Model {}\n'],
-		] })
+		const db = new DB({
+			predefined: [
+				[
+					'src/domain/MyModel.js',
+					'import { Model } from "@nan0web/types"\nexport class MyModel extends Model {}\n',
+				],
+			],
+		})
 		await db.connect()
 
 		const auditor = new JsDomainAuditor({ dir: '.' }, { db, t: (key) => key })

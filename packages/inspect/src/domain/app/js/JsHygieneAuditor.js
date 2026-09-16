@@ -15,7 +15,9 @@ export class JsHygieneAuditor extends HygieneAuditor {
 		const t = this._.t
 		await this.init()
 
-		yield progress(t(HygieneAuditor.UI.starting, { dir: this.dir }) || `Starting Hygiene Audit in ${this.dir}...`)
+		yield progress(
+			t(HygieneAuditor.UI.starting, { dir: this.dir }) || `Starting Hygiene Audit in ${this.dir}...`
+		)
 
 		/** @type {import('../../AuditorModel.js').AuditorError[]} */
 		const errors = []
@@ -24,7 +26,7 @@ export class JsHygieneAuditor extends HygieneAuditor {
 		yield progress(t(HygieneAuditor.UI.checking_scripts, {}) || 'Checking package scripts...')
 		const pkgPath = this._.db.resolveSync(this.dir, 'package.json')
 		/** @type {Record<string, any>} */
-		const pkg = await this._.db.loadDocument(pkgPath).catch(() => ({})) || {}
+		const pkg = (await this._.db.loadDocument(pkgPath).catch(() => ({}))) || {}
 		const scripts = pkg.scripts || {}
 		const devDeps = pkg.devDependencies || {}
 		let pkgChanged = false
@@ -50,13 +52,18 @@ export class JsHygieneAuditor extends HygieneAuditor {
 
 		for (const script of required) {
 			const fixValue = this._getSuggestedScript(script)
-			const errorMsg = t(HygieneAuditor.UI.missing_script, { script }) || `Missing required script: ${script}`
-			
+			const errorMsg =
+				t(HygieneAuditor.UI.missing_script, { script }) || `Missing required script: ${script}`
+
 			if (!scripts[script]) {
 				if (this.fix && fixValue) {
 					scripts[script] = fixValue
 					pkgChanged = true
-					yield show(t(HygieneAuditor.UI.fixing_script, { script }) || `Automatically added script: ${script}`, 'success')
+					yield show(
+						t(HygieneAuditor.UI.fixing_script, { script }) ||
+							`Automatically added script: ${script}`,
+						'success'
+					)
 				} else {
 					errors.push({
 						check: `scripts.${script}`,
@@ -99,9 +106,10 @@ export class JsHygieneAuditor extends HygieneAuditor {
 			if (!s.includes('knip')) missingParts.push('knip')
 
 			if (missingParts.length > 0) {
-				const errorMsg = t(HygieneAuditor.UI.incomplete_test_all, {
-					missing: missingParts.join(', '),
-				}) || `Incomplete test:all chain, missing: ${missingParts.join(', ')}`
+				const errorMsg =
+					t(HygieneAuditor.UI.incomplete_test_all, {
+						missing: missingParts.join(', '),
+					}) || `Incomplete test:all chain, missing: ${missingParts.join(', ')}`
 				errors.push({
 					check: 'scripts.test:all',
 					error: errorMsg,
@@ -114,7 +122,8 @@ export class JsHygieneAuditor extends HygieneAuditor {
 
 		const hasPrebuild = scripts.prebuild && scripts.prebuild.includes('rm -rf')
 		if (!hasPrebuild) {
-			const errorMsg = t(HygieneAuditor.UI.missing_prebuild, {}) || 'Missing prebuild cleanup (rm -rf dist types)'
+			const errorMsg =
+				t(HygieneAuditor.UI.missing_prebuild, {}) || 'Missing prebuild cleanup (rm -rf dist types)'
 			if (this.fix) {
 				scripts.prebuild = 'rm -rf dist types'
 				pkgChanged = true
@@ -145,7 +154,8 @@ export class JsHygieneAuditor extends HygieneAuditor {
 
 		for (const config of configs) {
 			if (!(await this.fileExists(config))) {
-				const errorMsg = t(HygieneAuditor.UI.missing_config, { file: config }) || `Missing config file: ${config}`
+				const errorMsg =
+					t(HygieneAuditor.UI.missing_config, { file: config }) || `Missing config file: ${config}`
 
 				if (this.fix) {
 					const defaults =
@@ -156,7 +166,11 @@ export class JsHygieneAuditor extends HygieneAuditor {
 							: { $schema: 'https://unpkg.com/knip@5/schema.json', entry: ['src/index.js'] }
 
 					await this._.db.saveDocument(this._.db.resolveSync(this.dir, config), defaults)
-					yield show(t(HygieneAuditor.UI.fixing_config, { file: config }) || `Automatically added config: ${config}`, 'success')
+					yield show(
+						t(HygieneAuditor.UI.fixing_config, { file: config }) ||
+							`Automatically added config: ${config}`,
+						'success'
+					)
 				} else {
 					errors.push({
 						check: config,
@@ -179,7 +193,8 @@ export class JsHygieneAuditor extends HygieneAuditor {
 		const missingConfigs = errors
 			.filter(
 				(e) =>
-					e.check && (e.check.endsWith('.json') || (e.check.endsWith('.jsonc') && e.check !== 'package.json')),
+					e.check &&
+					(e.check.endsWith('.json') || (e.check.endsWith('.jsonc') && e.check !== 'package.json'))
 			)
 			.map((e) => e.check || '')
 
@@ -193,7 +208,7 @@ export class JsHygieneAuditor extends HygieneAuditor {
 
 	/**
 	 * Gets a suggested script content based on project structure.
-	 * @param {string} script 
+	 * @param {string} script
 	 * @returns {string | null}
 	 * @private
 	 */

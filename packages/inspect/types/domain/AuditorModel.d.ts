@@ -70,11 +70,11 @@ export type AuditorError = {
     /**
      * Target file where the error occurred
      */
-    file?: string | undefined;
+    file?: string;
     /**
      * Logical check identifier (e.g. scripts.test)
      */
-    check?: string | undefined;
+    check?: string;
     /**
      * Human-readable error description
      */
@@ -82,14 +82,14 @@ export type AuditorError = {
     /**
      * Optional code snippet or command to fix the issue
      */
-    suggestion?: string | undefined;
+    suggestion?: string;
     /**
      * Files that must be modified to fix the issue
      */
-    boundary?: string[] | undefined;
+    boundary?: string[];
     /**
      * Files needed as context to understand the fix
      */
-    context?: string[] | undefined;
+    context?: string[];
 };
 import { ModelAsApp } from '@nan0web/ui';

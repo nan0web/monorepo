@@ -30,21 +30,20 @@ export class JsAuditorDiscovery extends AuditorDiscovery {
 
 		const failed = []
 		const pkgPath = db.resolveSync(targetDir, 'package.json')
-		
+
 		/** @type {string[]} List of potential entry points for local inspectors */
-		const localEntries = [
-			'inspect.js',
-			'.inspect/index.js',
-			'.inspect.js'
-		]
+		const localEntries = ['inspect.js', '.inspect/index.js', '.inspect.js']
 
 		try {
 			const pkg = await db.loadDocument(pkgPath).catch(() => null)
-			
+
 			// 1. Check target project's own 'inspect' export from package.json
 			if (pkg?.exports?.['./inspect']) {
 				const inspectExport = pkg.exports['./inspect']
-				const entry = typeof inspectExport === 'object' && inspectExport !== null ? inspectExport.import : inspectExport
+				const entry =
+					typeof inspectExport === 'object' && inspectExport !== null
+						? inspectExport.import
+						: inspectExport
 				if (entry) {
 					localEntries.unshift(entry)
 				}
@@ -53,7 +52,12 @@ export class JsAuditorDiscovery extends AuditorDiscovery {
 			// 2. Scan and import local entries
 			for (const entry of localEntries) {
 				const fullPath = db.resolveSync(targetDir, entry)
-				if (await db.statDocument(fullPath).then(s => s.exists && s.isFile).catch(() => false)) {
+				if (
+					await db
+						.statDocument(fullPath)
+						.then((s) => s.exists && s.isFile)
+						.catch(() => false)
+				) {
 					try {
 						const mod = await this.importModule(fullPath)
 						this.collectAuditors(mod, discoveredAuditors)
@@ -67,8 +71,8 @@ export class JsAuditorDiscovery extends AuditorDiscovery {
 			if (pkg) {
 				const deps = Object.keys({
 					...(pkg.dependencies || {}),
-					...(pkg.devDependencies || {})
-				}).filter(dep => dep.startsWith('@nan0web/'))
+					...(pkg.devDependencies || {}),
+				}).filter((dep) => dep.startsWith('@nan0web/'))
 
 				for (const dep of deps) {
 					const depPkgPath = db.resolveSync(targetDir, 'node_modules', dep, 'package.json')
@@ -87,10 +91,13 @@ export class JsAuditorDiscovery extends AuditorDiscovery {
 			failed.push(new ModelError({ package: pkgPath, err }))
 		}
 		if (failed.length) {
-			const error = failed.reduce((prev, current) => {
-				prev.fields.errors.push(current)
-				return prev
-			}, new ModelError({ errors: [] }))
+			const error = failed.reduce(
+				(prev, current) => {
+					prev.fields.errors.push(current)
+					return prev
+				},
+				new ModelError({ errors: [] })
+			)
 			throw error
 		}
 

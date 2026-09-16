@@ -19,6 +19,11 @@ export class CircularDependencyAuditor extends AuditorModel {
     constructor(data?: Partial<CircularDependencyAuditor>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
     /** @type {number} Timeout to cancel */ timeout: number;
     /**
+     * Runs the circular dependency audit.
+     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
+     */
+    run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
+    /**
      * @param {string} scanPath
      * @param {number} timeout
      * @returns {Promise<any>}

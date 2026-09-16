@@ -73,9 +73,18 @@ export class InspectorApp extends ModelAsApp {
 			const targetAbs = path.resolve(process.cwd(), this.dir || '.')
 
 			this._.db.mount('@app', new DBFS({ cwd: targetAbs, root: '', console: this._.db.console }))
-			this._.db.mount('@data', new DBFS({ cwd: targetAbs, root: 'data', console: this._.db.console }))
-			this._.db.mount('@docs', new DBFS({ cwd: targetAbs, root: 'docs', console: this._.db.console }))
-			this._.db.mount('@play', new DBFS({ cwd: targetAbs, root: 'play', console: this._.db.console }))
+			this._.db.mount(
+				'@data',
+				new DBFS({ cwd: targetAbs, root: 'data', console: this._.db.console })
+			)
+			this._.db.mount(
+				'@docs',
+				new DBFS({ cwd: targetAbs, root: 'docs', console: this._.db.console })
+			)
+			this._.db.mount(
+				'@play',
+				new DBFS({ cwd: targetAbs, root: 'play', console: this._.db.console })
+			)
 		} catch (e) {
 			// Ignore mount errors
 		}
@@ -86,8 +95,8 @@ export class InspectorApp extends ModelAsApp {
 				return
 			}
 			const hasPy =
-				((await this._.db.statDocument('requirements.txt')).exists) ||
-				((await this._.db.statDocument('pyproject.toml')).exists)
+				(await this._.db.statDocument('requirements.txt')).exists ||
+				(await this._.db.statDocument('pyproject.toml')).exists
 			if (hasPy) {
 				this.platform = 'python'
 				return
@@ -103,9 +112,7 @@ export class InspectorApp extends ModelAsApp {
 	 */
 	async *run() {
 		if (!this._.db) throw new Error('DB not found in context')
-		
 
-		
 		const { t } = this._
 		if (this.help) return yield* super.run()
 
@@ -118,7 +125,7 @@ export class InspectorApp extends ModelAsApp {
 				normalizedCmd = 'audit'
 			}
 
-			const aliases = (InspectorApp.command.options || []).map(o => o.alias).filter(Boolean)
+			const aliases = (InspectorApp.command.options || []).map((o) => o.alias).filter(Boolean)
 			const isAlias = aliases.includes(normalizedCmd)
 			if (!isAlias) {
 				// Treat as dir
@@ -126,7 +133,9 @@ export class InspectorApp extends ModelAsApp {
 				this.command = new ArchitectureAuditor({ dir: this.dir }, this._)
 			} else {
 				// It IS an alias, resolve it to a class
-				const TargetClass = (InspectorApp.command.options || []).find(o => o.alias === normalizedCmd)
+				const TargetClass = (InspectorApp.command.options || []).find(
+					(o) => o.alias === normalizedCmd
+				)
 				if (TargetClass) {
 					this.command = new TargetClass({ dir: this.dir }, this._)
 				}
@@ -140,18 +149,33 @@ export class InspectorApp extends ModelAsApp {
 			const CurrentClass = /** @type {typeof AuditorModel} */ (this.command.constructor)
 			const ActualClass = await ArchitectureAuditor.getAuditorClass(CurrentClass, this.platform)
 			if (ActualClass && ActualClass !== CurrentClass) {
-				this.command = new ActualClass({ ...this.command, platform: this.platform, dir: this.dir }, this._)
+				this.command = new ActualClass(
+					{ ...this.command, platform: this.platform, dir: this.dir },
+					this._
+				)
 			}
 		}
 
-		if (this.command && typeof this.command.isCapped === 'function' && await this.command.isCapped()) {
-			const alias = /** @type {any} */(this.command.constructor).alias || this.command.constructor.name
-			yield show(`[Step-Capped Validation] skipping auditor ${alias} (capped by active session step)`, 'info')
+		if (
+			this.command &&
+			typeof this.command.isCapped === 'function' &&
+			(await this.command.isCapped())
+		) {
+			const alias =
+				/** @type {any} */ (this.command.constructor).alias || this.command.constructor.name
+			yield show(
+				`[Step-Capped Validation] skipping auditor ${alias} (capped by active session step)`,
+				'info'
+			)
 			return result({ ok: true, skipped: true })
 		}
 
 		if (!this.command || !(this.command instanceof ModelAsApp)) {
-			yield show(t(InspectorApp.UI.unknownCommand, { command: this.command }) || `Unknown command: ${this.command}`, 'error')
+			yield show(
+				t(InspectorApp.UI.unknownCommand, { command: this.command }) ||
+					`Unknown command: ${this.command}`,
+				'error'
+			)
 			return result({ ok: false })
 		}
 

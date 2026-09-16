@@ -37,7 +37,9 @@ export class HygieneAuditor extends AuditorModel {
 		/** @type {import('@nan0web/i18n').TFunction} */
 		const t = this._.t
 
-		yield progress(t(HygieneAuditor.UI.starting, { dir: this.dir }) || `Starting Hygiene Audit in ${this.dir}...`)
+		yield progress(
+			t(HygieneAuditor.UI.starting, { dir: this.dir }) || `Starting Hygiene Audit in ${this.dir}...`
+		)
 
 		/** @type {HygieneError[]} */
 		const errors = []
@@ -63,7 +65,11 @@ export class HygieneAuditor extends AuditorModel {
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}
 	 */
 	async *checkPlatformHygiene(errors, t) {
-		yield show(t(HygieneAuditor.UI.platform_unknown, {}) || 'Platform not detected. Skipping JS-specific hygiene checks.', 'warn')
+		yield show(
+			t(HygieneAuditor.UI.platform_unknown, {}) ||
+				'Platform not detected. Skipping JS-specific hygiene checks.',
+			'warn'
+		)
 		return {}
 	}
 }

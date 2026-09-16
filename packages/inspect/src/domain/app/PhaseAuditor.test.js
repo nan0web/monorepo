@@ -19,7 +19,7 @@ describe('PhaseAuditor (Lifecycle Stages)', () => {
 				name: 'Stage 1: Localized docs/uk/seed.md (Valid)',
 				data: [
 					['docs/_/langs.nan0', [{ locale: 'uk' }]],
-					['docs/uk/seed.md', 'Seed']
+					['docs/uk/seed.md', 'Seed'],
 				],
 				expected: 'seed',
 			},
@@ -27,7 +27,7 @@ describe('PhaseAuditor (Lifecycle Stages)', () => {
 				name: 'Stage 1: Localized docs/uk/seed.md (Invalid - missing lang)',
 				data: [
 					['docs/_/langs.nan0', [{ locale: 'en' }]],
-					['docs/uk/seed.md', 'Seed']
+					['docs/uk/seed.md', 'Seed'],
 				],
 				expected: 'unknown',
 			},
@@ -77,7 +77,7 @@ describe('PhaseAuditor (Lifecycle Stages)', () => {
 				verify: (res) => {
 					assert.strictEqual(res.progress.name, 'v1.1.0')
 					assert.strictEqual(res.progress.percentage, 100)
-				}
+				},
 			},
 			{
 				name: 'Stage: Development (Multiple Releases, 50% Progress)',
@@ -93,7 +93,7 @@ describe('PhaseAuditor (Lifecycle Stages)', () => {
 				verify: (res) => {
 					assert.strictEqual(res.progress.name, 'v1.1.0')
 					assert.strictEqual(res.progress.percentage, 50)
-				}
+				},
 			},
 		]
 

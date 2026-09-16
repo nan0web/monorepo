@@ -33,6 +33,6 @@ export class BuildWorkflowsApp extends AuditorModel {
      * @returns {Promise<string[]>}
      */
     findNan0Configs(dir: string): Promise<string[]>;
-    run(): AsyncGenerator<import("../../../../ui/types/core/Intent.js").ProgressIntent | import("../../../../ui/types/core/Intent.js").ShowIntent, import("../../../../ui/types/core/Intent.js").ResultIntent, unknown>;
+    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ProgressIntent | import("@nan0web/ui/src/core/Intent.js").ShowIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
 }
 import { AuditorModel } from '../AuditorModel.js';

@@ -24,7 +24,10 @@ export function parseFrontMatter(content) {
 		// Check if it's a list item under a key
 		if (trimmed.startsWith('-') && currentKey) {
 			let val = trimmed.slice(1).trim()
-			if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+			if (
+				(val.startsWith('"') && val.endsWith('"')) ||
+				(val.startsWith("'") && val.endsWith("'"))
+			) {
 				val = val.slice(1, -1)
 			}
 			if (!Array.isArray(data[currentKey])) {
@@ -46,18 +49,28 @@ export function parseFrontMatter(content) {
 			continue
 		}
 
-		if ((valText.startsWith('"') && valText.endsWith('"')) || (valText.startsWith("'") && valText.endsWith("'"))) {
+		if (
+			(valText.startsWith('"') && valText.endsWith('"')) ||
+			(valText.startsWith("'") && valText.endsWith("'"))
+		) {
 			valText = valText.slice(1, -1)
 		}
 
 		if (valText.startsWith('[') && valText.endsWith(']')) {
-			data[key] = valText.slice(1, -1).split(',').map(s => {
-				let item = s.trim()
-				if ((item.startsWith('"') && item.endsWith('"')) || (item.startsWith("'") && item.endsWith("'"))) {
-					item = item.slice(1, -1)
-				}
-				return item
-			}).filter(Boolean)
+			data[key] = valText
+				.slice(1, -1)
+				.split(',')
+				.map((s) => {
+					let item = s.trim()
+					if (
+						(item.startsWith('"') && item.endsWith('"')) ||
+						(item.startsWith("'") && item.endsWith("'"))
+					) {
+						item = item.slice(1, -1)
+					}
+					return item
+				})
+				.filter(Boolean)
 		} else {
 			data[key] = valText
 		}
@@ -94,7 +107,10 @@ export function parseNan0Config(yamlText) {
 
 		if (trimmed.startsWith('name:')) {
 			let name = trimmed.slice(5).trim()
-			if ((name.startsWith('"') && name.endsWith('"')) || (name.startsWith("'") && name.endsWith("'"))) {
+			if (
+				(name.startsWith('"') && name.endsWith('"')) ||
+				(name.startsWith("'") && name.endsWith("'"))
+			) {
 				name = name.slice(1, -1)
 			}
 			data.name = name
@@ -114,7 +130,10 @@ export function parseNan0Config(yamlText) {
 
 		if (trimmed.startsWith('description:') && currentAgent) {
 			let desc = trimmed.slice(12).trim()
-			if ((desc.startsWith('"') && desc.endsWith('"')) || (desc.startsWith("'") && desc.endsWith("'"))) {
+			if (
+				(desc.startsWith('"') && desc.endsWith('"')) ||
+				(desc.startsWith("'") && desc.endsWith("'"))
+			) {
 				desc = desc.slice(1, -1)
 			}
 			currentAgent.description = desc
@@ -133,7 +152,10 @@ export function parseNan0Config(yamlText) {
 
 		if (trimmed.startsWith('-') && currentAgent && currentSection) {
 			let val = trimmed.slice(1).trim()
-			if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+			if (
+				(val.startsWith('"') && val.endsWith('"')) ||
+				(val.startsWith("'") && val.endsWith("'"))
+			) {
 				val = val.slice(1, -1)
 			}
 			if (currentSection === 'workflows') {
@@ -214,7 +236,7 @@ export class BuildWorkflowsApp extends AuditorModel {
 					const workspaceWfPath = path.relative(resolvedRoot, fullWfPath)
 
 					// Convert package-relative anchors to workspace-relative
-					const resolvedAnchors = (metadata.anchors || []).map(anchor => {
+					const resolvedAnchors = (metadata.anchors || []).map((anchor) => {
 						return isWorkspaceRoot ? anchor : path.join(relativePkgDir, anchor)
 					})
 
@@ -250,8 +272,14 @@ export class BuildWorkflowsApp extends AuditorModel {
 		await writeFile(ukFile, JSON.stringify(ukManifest, null, 2), 'utf8')
 		await writeFile(enFile, JSON.stringify(enManifest, null, 2), 'utf8')
 
-		yield show(t(BuildWorkflowsApp.UI.saved, { file: '.llimo/workflows_manifest.uk.json' }), 'success')
-		yield show(t(BuildWorkflowsApp.UI.saved, { file: '.llimo/workflows_manifest.en.json' }), 'success')
+		yield show(
+			t(BuildWorkflowsApp.UI.saved, { file: '.llimo/workflows_manifest.uk.json' }),
+			'success'
+		)
+		yield show(
+			t(BuildWorkflowsApp.UI.saved, { file: '.llimo/workflows_manifest.en.json' }),
+			'success'
+		)
 
 		return result({
 			ok: true,

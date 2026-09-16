@@ -12,7 +12,10 @@ async function drainGenerator(gen) {
 	let last = null
 	while (true) {
 		const step = await gen.next()
-		if (step.done) { last = step.value; break }
+		if (step.done) {
+			last = step.value
+			break
+		}
 		intents.push(step.value)
 	}
 	return { intents, result: last }
@@ -20,10 +23,12 @@ async function drainGenerator(gen) {
 
 describe('ExportAuditor', () => {
 	it('fails when src/index.js is missing', async () => {
-		const db = new DB({ predefined: [
-			['package.json', { name: 'test', exports: {} }],
-			['src/', {}],
-		] })
+		const db = new DB({
+			predefined: [
+				['package.json', { name: 'test', exports: {} }],
+				['src/', {}],
+			],
+		})
 		await db.connect()
 
 		const auditor = new JsExportAuditor({ dir: '.' }, { db })
@@ -34,11 +39,13 @@ describe('ExportAuditor', () => {
 	})
 
 	it('fails when src/domain/ exists but src/domain/index.js is missing', async () => {
-		const db = new DB({ predefined: [
-			['package.json', { name: 'test', exports: {} }],
-			['src/index.js', 'export const x = 1'],
-			['src/domain/', {}],
-		] })
+		const db = new DB({
+			predefined: [
+				['package.json', { name: 'test', exports: {} }],
+				['src/index.js', 'export const x = 1'],
+				['src/domain/', {}],
+			],
+		})
 		await db.connect()
 
 		const auditor = new JsExportAuditor({ dir: '.' }, { db })
@@ -49,12 +56,14 @@ describe('ExportAuditor', () => {
 	})
 
 	it('fails when src/ui/cli exists but not declared in exports', async () => {
-		const db = new DB({ predefined: [
-			['package.json', { name: 'test', exports: {} }],
-			['src/index.js', 'export const x = 1'],
-			['src/ui/', {}],
-			['src/ui/cli/', {}],
-		] })
+		const db = new DB({
+			predefined: [
+				['package.json', { name: 'test', exports: {} }],
+				['src/index.js', 'export const x = 1'],
+				['src/ui/', {}],
+				['src/ui/cli/', {}],
+			],
+		})
 		await db.connect()
 
 		const auditor = new JsExportAuditor({ dir: '.' }, { db })
@@ -65,15 +74,20 @@ describe('ExportAuditor', () => {
 	})
 
 	it('passes for a fully correct package structure', async () => {
-		const db = new DB({ predefined: [
-			['package.json', {
-				name: 'test',
-				exports: { './ui/cli': './src/ui/cli/index.js' }
-			}],
-			['src/index.js', 'export const x = 1'],
-			['src/domain/index.js', 'export const y = 2'],
-			['src/ui/cli/', {}],
-		] })
+		const db = new DB({
+			predefined: [
+				[
+					'package.json',
+					{
+						name: 'test',
+						exports: { './ui/cli': './src/ui/cli/index.js' },
+					},
+				],
+				['src/index.js', 'export const x = 1'],
+				['src/domain/index.js', 'export const y = 2'],
+				['src/ui/cli/', {}],
+			],
+		})
 		await db.connect()
 
 		const auditor = new JsExportAuditor({ dir: '.' }, { db })

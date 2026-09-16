@@ -2,4 +2,3 @@
 
 export * from './domain/index.js'
 export * as mcp from './ui/mcp.js'
-

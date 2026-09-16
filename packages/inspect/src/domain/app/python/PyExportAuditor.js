@@ -10,7 +10,10 @@ export class PyExportAuditor extends ExportAuditor {
 	 * @param {Function} readText
 	 */
 	async *checkPlatformExports(errors, t, fileExists, dirExists, readText) {
-		yield show('Platform detected: Python. Doing python-specific export check (__init__.py)', 'info')
+		yield show(
+			'Platform detected: Python. Doing python-specific export check (__init__.py)',
+			'info'
+		)
 		// For python, we might check __all__ in __init__.py, etc.
 	}
 }

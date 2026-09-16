@@ -12,7 +12,10 @@ async function drainGenerator(gen) {
 	let last = null
 	while (true) {
 		const step = await gen.next()
-		if (step.done) { last = step.value; break }
+		if (step.done) {
+			last = step.value
+			break
+		}
 		intents.push(step.value)
 	}
 	return { intents, result: last }
@@ -28,14 +31,14 @@ const minScripts = {
 	'test:release': 'node --test src/test/releases/**/*.test.js',
 	'release:spec': 'node --test releases/**/*.spec.js',
 	'test:coverage': 'c8 node --test',
-	'prebuild': 'rm -rf dist types',
+	prebuild: 'rm -rf dist types',
 }
 
 describe('JsHygieneAuditor', () => {
 	it('reports missing scripts and missing config files', async () => {
-		const db = new DB({ predefined: [
-			['package.json', { name: 'test', scripts: { test: 'node --test' } }],
-		] })
+		const db = new DB({
+			predefined: [['package.json', { name: 'test', scripts: { test: 'node --test' } }]],
+		})
 		await db.connect()
 		const auditor = new JsHygieneAuditor({ dir: '.' }, { db })
 		const { result } = await drainGenerator(auditor.run())
@@ -49,19 +52,24 @@ describe('JsHygieneAuditor', () => {
 	})
 
 	it('passes for a fully configured package', async () => {
-		const db = new DB({ predefined: [
-			['package.json', { 
-				name: 'test', 
-				scripts: minScripts,
-				devDependencies: {
-					typescript: 'latest',
-					knip: 'latest',
-					c8: 'latest'
-				}
-			}],
-			['tsconfig.json', {}],
-			['knip.json', {}],
-		] })
+		const db = new DB({
+			predefined: [
+				[
+					'package.json',
+					{
+						name: 'test',
+						scripts: minScripts,
+						devDependencies: {
+							typescript: 'latest',
+							knip: 'latest',
+							c8: 'latest',
+						},
+					},
+				],
+				['tsconfig.json', {}],
+				['knip.json', {}],
+			],
+		})
 		await db.connect()
 		const auditor = new JsHygieneAuditor({ dir: '.' }, { db })
 		const { result } = await drainGenerator(auditor.run())
@@ -72,13 +80,15 @@ describe('JsHygieneAuditor', () => {
 	})
 
 	it('automatically fixes missing scripts when fix: true is set', async () => {
-		const db = new DB({ predefined: [
-			['package.json', { name: 'test', scripts: { test: 'node --test' } }],
-			['tsconfig.json', {}],
-			['knip.json', {}],
-		] })
+		const db = new DB({
+			predefined: [
+				['package.json', { name: 'test', scripts: { test: 'node --test' } }],
+				['tsconfig.json', {}],
+				['knip.json', {}],
+			],
+		})
 		await db.connect()
-		
+
 		// Run with fix: true
 		const auditor = new JsHygieneAuditor({ dir: '.' }, { db, fix: true, t: (k) => k })
 		await drainGenerator(auditor.run())

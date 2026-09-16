@@ -35,7 +35,9 @@ export class ExportAuditor extends AuditorModel {
 		/** @type {import('@nan0web/i18n').TFunction} */
 		const t = this._.t
 
-		yield progress(t(ExportAuditor.UI.starting, { dir: this.dir }) || `Starting Export Audit in ${this.dir}...`)
+		yield progress(
+			t(ExportAuditor.UI.starting, { dir: this.dir }) || `Starting Export Audit in ${this.dir}...`
+		)
 
 		/** @type {ExportError[]} */
 		const errors = []
@@ -50,13 +52,19 @@ export class ExportAuditor extends AuditorModel {
 				const { db } = this._
 				if (!db) throw new Error('DB not found in context')
 				const val = await db.loadDocument(db.resolveSync(this.dir, rel))
-				return typeof val === 'string' ? val : (val && val.toString ? val.toString() : '')
+				return typeof val === 'string' ? val : val && val.toString ? val.toString() : ''
 			} catch {
 				return null
 			}
 		}
 
-		const gen = this.checkPlatformExports(errors, t, this.fileExists.bind(this), this.dirExists.bind(this), readText)
+		const gen = this.checkPlatformExports(
+			errors,
+			t,
+			this.fileExists.bind(this),
+			this.dirExists.bind(this),
+			readText
+		)
 		let data = {}
 		while (true) {
 			const res = await gen.next()

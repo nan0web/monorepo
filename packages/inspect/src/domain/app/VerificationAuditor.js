@@ -72,7 +72,7 @@ export class VerificationAuditor extends AuditorModel {
 				if (this.isIgnoredDir(entry)) return false
 				return true
 			}
-			for await (const entry of db.browse(dir, (/** @type {any} */ ({ depth: Infinity, filter })))) {
+			for await (const entry of db.browse(dir, /** @type {any} */ ({ depth: Infinity, filter }))) {
 				if (entry.isFile && this.isTestFile(entry)) {
 					collected.push(entry.path)
 				}
@@ -89,7 +89,10 @@ export class VerificationAuditor extends AuditorModel {
 		const { db, t } = this._
 		if (!db) throw new Error('DB not found in context')
 
-		yield progress(t(VerificationAuditor.UI.starting, { dir: this.dir }) || `Starting Verification Audit in ${this.dir}...`)
+		yield progress(
+			t(VerificationAuditor.UI.starting, { dir: this.dir }) ||
+				`Starting Verification Audit in ${this.dir}...`
+		)
 
 		/** @type {VerificationError[]} */
 		const errors = []
@@ -101,8 +104,10 @@ export class VerificationAuditor extends AuditorModel {
 			errors.push({ check: 'play/', error: VerificationAuditor.UI.missing_play })
 			yield render('Alert', {
 				title: 'Mandatory directory missing',
-				children: t(VerificationAuditor.UI.missing_play) || 'No play/ directory found — playground is mandatory for every package',
-				variant: 'error'
+				children:
+					t(VerificationAuditor.UI.missing_play) ||
+					'No play/ directory found — playground is mandatory for every package',
+				variant: 'error',
 			})
 		} else {
 			yield show(t(VerificationAuditor.UI.play_ok) || 'Playground: OK', 'success')

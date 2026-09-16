@@ -61,7 +61,9 @@ agents:
 			assert.strictEqual(config.agents.length, 1)
 			assert.strictEqual(config.agents[0].id, 'adapter-architect')
 			assert.strictEqual(config.agents[0].description, 'UI Adapter Creation (Step 4)')
-			assert.deepStrictEqual(config.agents[0].workflows, ['src/agents/workflows/pipeline-no4-adapter.md'])
+			assert.deepStrictEqual(config.agents[0].workflows, [
+				'src/agents/workflows/pipeline-no4-adapter.md',
+			])
 			assert.deepStrictEqual(config.agents[0].inspectors, ['src/agents/inspectors/prop-welder.md'])
 		})
 	})
@@ -69,7 +71,7 @@ agents:
 	describe('Compilation integration', () => {
 		it('should compile configurations into manifests', async () => {
 			const tempRoot = await mkdtemp(path.join(tmpdir(), 'nan0web-test-'))
-			
+
 			// Setup package folder packages/ui
 			const pkgDir = path.join(tempRoot, 'packages', 'ui')
 			await mkdir(pkgDir, { recursive: true })
