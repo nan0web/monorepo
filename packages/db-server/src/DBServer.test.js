@@ -201,6 +201,8 @@ describe('DBServer', () => {
 			noFileSelected: 'Оберіть файл...',
 			emptyStatePrompt: 'Порожній стан',
 			statusReady: 'Все готово',
+			searchPlaceholder: 'Швидкий пошук...',
+			fileInfoSize: 'Розмір: {{size}}',
 		}
 		const srv = new DBServer({ db, port: 0, model })
 		t.after(() => srv.close())
@@ -213,6 +215,7 @@ describe('DBServer', () => {
 		assert.ok(html.includes('Custom Brand DB Explorer'))
 		assert.ok(html.includes('Кастомні Файли'))
 		assert.ok(html.includes('Все готово'))
+		assert.ok(html.includes('Швидкий пошук...'))
 	})
 
 	it('static create() starts and returns server', async (t) => {

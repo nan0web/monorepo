@@ -1,0 +1,30 @@
+title: Універсальні Мультимодальні Контракти UI (v3.4.0)
+version: 3.4.0
+banner:
+  type: banner
+  message: 🎉 Вітаємо в NaN•Web!
+  variant: info
+hero:
+  type: hero
+  title: Швидкий старт
+  subtitle: Одна логіка — багато інтерфейсів
+stats:
+  type: stats
+  items:
+    - label: Модулів
+      value: 24
+    - label: Платформ
+      value: 6
+footer:
+  type: footer
+  copyright: © 2026 NaN•Web
+  status: онлайн
+$content:
+  - Banner: true
+  - Hero: true
+    Stats: true
+  - Markdown:
+      content: |
+        # Головна сторінка
+        Ласкаво просимо до платформи.
+  - Footer: true

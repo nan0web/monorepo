@@ -1,4 +1,3 @@
-import { Model } from '@nan0web/ui';
 /**
  * Global ecosystem metadata.
  */
@@ -47,3 +46,4 @@ export default class EcosystemModel extends Model {
         };
     };
 }
+import { Model } from '@nan0web/ui';

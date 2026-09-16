@@ -19,8 +19,10 @@ import {
 	DialogContract,
 	ModalContract,
 	ProgressContract,
+	ModelAsApp,
 } from '../../../../src/index.js'
 import ComponentExports from '../../../../src/Component/index.js'
+import DB from '@nan0web/db'
 
 describe('Universal UI Component Contracts (v3.4.0)', () => {
 	it('defines structure contracts (Page, Nav, Sidebar, Footer)', async () => {
@@ -212,5 +214,36 @@ describe('Universal UI Component Contracts (v3.4.0)', () => {
 		assert.strictEqual(Contracts.Page, PageContract)
 		assert.strictEqual(ComponentExports.PageContract, PageContract)
 		assert.strictEqual(ComponentExports.Contracts, Contracts)
+	})
+
+	it('provides guaranteed ModelAsApp.$db getter when db is injected', async () => {
+		const db = new DB({ predefined: [['data/test.json', { ok: true }]] })
+		await db.connect()
+		class CustomApp extends ModelAsApp {}
+		const app = new CustomApp({}, { db })
+
+		assert.equal(app.$db, db, 'Should return injected DB instance')
+		const doc = await app.$db.loadDocument('data/test.json')
+		assert.deepEqual(doc, { ok: true })
+	})
+
+	it('throws localized UI.errorNoDb via ModelAsApp.$db when db is missing', () => {
+		class LocalizedApp extends ModelAsApp {
+			static UI = {
+				errorNoDb: 'Custom Database instance is required for {alias}',
+			}
+			static alias = 'custom'
+		}
+		const app = new LocalizedApp({}, { t: (k, p = {}) => k.replace(/\{(\w+)\}/g, (_, x) => p[x] || '') })
+
+		assert.throws(
+			() => {
+				const _db = app.$db
+			},
+			{
+				name: 'Error',
+				message: 'Custom Database instance is required for custom',
+			}
+		)
 	})
 })

@@ -12,6 +12,10 @@
  * console.log(issue.foo) // undefined
  */
 export default class AuditIssue {
+    /**
+     * @param {Partial<AuditIssue>} [input={}]
+     */
+    constructor(input?: Partial<AuditIssue>);
     /** @type {"critical"|"high"|"moderate"|"low"} Severity */
     type: "critical" | "high" | "moderate" | "low";
     /** @type {string|undefined} Human‑readable description */
@@ -26,8 +30,4 @@ export default class AuditIssue {
     paths: string | undefined;
     /** @type {string|undefined} URL with more information */
     info: string | undefined;
-    /**
-     * @param {Partial<AuditIssue>} [input={}]
-     */
-    constructor(input?: Partial<AuditIssue>);
 }

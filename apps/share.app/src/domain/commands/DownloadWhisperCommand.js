@@ -58,10 +58,12 @@ export class DownloadWhisperCommand extends ModelAsApp {
 
 	/**
 	 * @param {DownloadWhisperCommandOptions} data
-	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions & { toolChecker?: typeof ToolCheckerPort }>} [options]
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
+		/** @type {typeof ToolCheckerPort} Port to check availability of external CLI tools */
+		this.toolChecker = options?.toolChecker || ToolCheckerPort
 	}
 
 	/**
@@ -93,7 +95,8 @@ export class DownloadWhisperCommand extends ModelAsApp {
 		}
 
 		// Verify required CLI tools are installed
-		const missing = await ToolCheckerPort.require({
+		const toolChecker = this.toolChecker || ToolCheckerPort
+		const missing = await toolChecker.require({
 			'mlx_whisper': 'pip install mlx-whisper  (Apple Silicon required)',
 			'yt-dlp': 'pip install yt-dlp  or  brew install yt-dlp',
 			'ffmpeg': 'brew install ffmpeg  or  apt install ffmpeg',

@@ -2,11 +2,7 @@ import { ModelAsApp, result, progress, show } from '@nan0web/ui'
 import { Data } from '@nan0web/db'
 
 export default class SyncDocsApp extends ModelAsApp {
-	static UI = {
-		syncing: 'Syncing: {file}',
-		done: '✨ Heritage preserved in {count} documents',
-		error: 'Heritage source not found',
-	}
+	static UI = { ...ModelAsApp.UI, syncing: 'Syncing: {file}', done: '✨ Heritage preserved in {count} documents', error: 'Heritage source not found' }
 
 	static path = {
 		help: 'Path to the target folder, default is @app/docs',

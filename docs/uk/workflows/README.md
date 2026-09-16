@@ -52,8 +52,11 @@
 | **[jsonl-gallery.md](./jsonl-gallery.md)** | Формування та перевірка базових UI-тестів (Logical JSONL Gallery) |
 | **[language-of-intent.md](./language-of-intent.md)** | Мова Наміру (Language of Intent) - фільтр істинного змісту через відкидання частки "не" та інтеграція Субагентів |
 | **[llimo.md](./llimo.md)** | 🤖 Емуляція LLiMo через Antigravity (Майстер-Воркфлоу Розробки) |
+| **[llm-measure-protocol.md](./llm-measure-protocol.md)** | ⚖️ Протокол МІри: межі LLM, анти-прогрів та Стоп-Гейт для білого списку файлів |
 | **[mcp-knowledge-base.md](./mcp-knowledge-base.md)** | MCP Knowledge Base Protocol (Vector DB Search) |
+| **[model-as-app-cli.md](./model-as-app-cli.md)** | Рецепт: Model-as-App CLI (Golden Reference з прикладами коду, тестів та точок входу) |
 | **[model-as-app.md](./model-as-app.md)** | Формалізація Model-as-App архітектури (OLMUI додатки та підкоманди) |
+
 | **[model-schema.md](./model-schema.md)** | Формалізація Data-Model-As-Schema (як описувати class з метаданими для UI Form) |
 | **[nan0web-v2-roadmap.md](./nan0web-v2-roadmap.md)** | Роадмап NaN•Web v2 (Zero-Hallucination Framework) |
 | **[nan0web.md](./nan0web.md)** | Протокол NaN•Web Universal |
@@ -66,11 +69,11 @@
 | **[olmui-scenario-test.md](./olmui-scenario-test.md)** | Каноничний Сценарний Тест OLMUI (Обовʼязковий Стандарт для всіх додатків) |
 | **[package-hygiene.md](./package-hygiene.md)** | Гігієна пакету — обовʼязкові скрипти, конвеєр test:all, knip, .npmignore |
 | **[production-deployment-and-security.md](./production-deployment-and-security.md)** | 🏭 Конвеєр Продакшн Розгортання, Безпеки (CORS, Obfuscation) та Субдоменів |
-| **[project-md.md](./project-md.md)** | Архітектурна Документація Пакетів/Додатків (структура project.md, 5 фаз) |
+| **[project.md](./project.md)** | Архітектурна Документація Пакетів/Додатків (структура project.md, 5 фаз та PM-as-Code) |
 | **[prop-welder.md](./prop-welder.md)** | Interface Welding Validator Subagent |
 | **[provendocs.md](./provendocs.md)** | ProvenDoc — стандарт верифікованої документації пакетів |
 | **[release-pipeline.md](./release-pipeline.md)** | Стандарт оформлення задач (task.md), контрактів (task.spec.js) та конвеєрів виконання (pipeline.md) |
-| **[release.md](./release.md)** | AGRP Release Workflow — реалізація ТЗ через контрактне тестування |
+| **[release.md](./release.md)** | PM-as-Code Release Workflow — реалізація ТЗ через контрактне тестування |
 | **[restore-project.md](./restore-project.md)** | Відновлення відсутнього project.md для існуючих пакетів |
 | **[sandbox-template.md](./sandbox-template.md)** | Створення пісочниці (play/) зі snapshot-тестами для будь-якого пакета чи додатку |
 | **[sandbox-verify.md](./sandbox-verify.md)** | Протокол ізольованого тестування та верифікації компонентів (Sandbox TDD) |

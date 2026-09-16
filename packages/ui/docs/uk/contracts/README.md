@@ -1,184 +1,338 @@
-# 📜 Специфікація Контрактів UI-Компонентів (@nan0web/ui/components)
+# 🏛 Мультимодальні OLMUI Контракти Компонентів
 
-Цей документ описує універсальні контракти компонентів у `@nan0web/ui` (v3.4.0). Контракти визначають єдине машинно- та людиночитане джерело правди (Single Source of Truth) для намірів (intents), вхідних параметрів (props), регіонів (regions) та подій (events) для всіх адаптерів платформи:
-- 💻 **Terminal / CLI**: текстовий інтерфейс, ASCII таблиці, TTY меню.
-- 🌐 **Web**: HTML / Lit / React / SSG розмітка.
-- 📱 **Mobile**: тач-інтерфейс, bottom bar, жести.
-- ⌚ **Watch**: мікро-екран, коронка/скрол, вібро-відгук (haptic).
-- 🎙️ **Voice**: синтез та розпізнавання мови, звукові повідомлення.
-- 💬 **AI Chat / LLM**: діалогове опитування, текстовий генератор повідомлень.
-
-Контракти побудовані на чистому JavaScript з використанням **JSDoc `@typedef`** для забезпечення 100% типізації без рантайм-залежностей.
+> **Пакет:** `@nan0web/ui` (починаючи з v3.4.0)  
+> **Концепція:** One Logic — Multiple User Interfaces (OLMUI)  
+> **Мультимодальні платформи:**  
+> 💻 **Terminal (CLI)** | 🌐 **Web (Lit/React/SSR)** | 📱 **Mobile** | ⌚ **Watch (Wearable)** | 🎙️ **Voice (Speech/Audio)** | 💬 **AI Chat / LLM**
 
 ---
 
-## 📑 Зміст
+## 🧭 I. Фундаментальні Принципи OLMUI Контрактів
 
-1. [Лейаут та Структура (Structure Contracts)](#1-лейаут-та-структура-structure-contracts)
-   - [PageContract](#pagecontract)
-   - [NavContract](#navcontract)
-   - [SidebarContract](#sidebarcontract)
-   - [FooterContract](#footercontract)
-2. [Контент та Звіти (Content Contracts)](#2-контент-та-звіти-content-contracts)
-   - [MarkdownContract](#markdowncontract)
-   - [AlertContract](#alertcontract)
-   - [BadgeContract](#badgecontract)
-   - [TableContract](#tablecontract)
-3. [Дії та Ввід (Interaction Contracts)](#3-дії-та-ввід-interaction-contracts)
-   - [ActionContract (ButtonContract)](#actioncontract-buttoncontract)
-   - [InputContract](#inputcontract)
-   - [ChoiceContract (SelectContract)](#choicecontract-selectcontract)
-4. [Оркестрація Форм (Form Contracts)](#4-оркестрація-форм-form-contracts)
-   - [FormContract & FormFieldContract](#formcontract--formfieldcontract)
-   - [Типізація FieldOptions (OptionObject / OptionResolver)](#типізація-fieldoptions)
-   - [Підтримка $collection та $alias](#підтримка-collection-та-alias)
-5. [Діалог та Прогрес (Dialog & Progress Contracts)](#5-діалог-та-прогрес-dialog--progress-contracts)
-   - [DialogContract (ModalContract)](#dialogcontract-modalcontract)
-   - [ProgressContract](#progresscontract)
-6. [Порівняльний Аналіз з Іншими Платформами](#6-порівняльний-аналіз-з-іншими-платформами)
-7. [Каталог для 99% Бізнес-Додатків (Business Matrix)](#7-каталог-для-99-бізнес-додатків-business-matrix)
+1. **Семантичний Намір замість DOM-розмітки**:
+   - Контракт описує **намір і структуру даних** (Data & Intent), а не специфічні теги браузера чи CSS-властивості.
+   - Елемент взаємодії — це семантична дія (`Action`), вибір із множини (`Choice`), текстовий ввід (`Input`), повідомлення (`Alert / Notice`), стан процесу (`Progress`).
+2. **Абсолютна платформна агностичність**:
+   - Жодних браузеро-специфічних понять у ядрі контрактів (жодних `htmlFor`, `optgroup`, `slot` як DOM-елементів).
+   - Замість DOM-слотів використовуються **семантичні зони/регіони** (`regions`: `header`, `navigation`, `main`, `aside`, `footer`).
+3. **Чистий JavaScript + JSDoc Typedefs**:
+   - 100% типізація через JSDoc для IDE/IntelliSense без сторонніх компіляторів.
+   - Незмінні мета-об'єкти (`Object.freeze`) для автоматичних контрактних тестів будь-яких UI-адаптерів.
+4. **Матриця мультимодальної адаптації**:
+   - Кожен контракт визначає, як він матеріалізується у кожному з 6 ключових інтерфейсних середовищ.
+5. **Спеціальні стандарти OLMUI**:
+   - 📜 [Контракт декларативних даних `$content` та `content`](./content-structure.md)
+   - 📐 [Чистий i18n суверенітет та `$`-метадані моделей](./model-schema-metadata.md)
 
 ---
 
-## 1. Лейаут та Структура (Structure Contracts)
+## 🗺️ II. Матриця Мультимодальної Адаптації 24 Компонентів
 
-### `PageContract`
-Описує головний контейнер сторінки або екрана (хедер, навігація, основний контент, бічна панель, підвал).
-- **Props**:
-  - `title?: string` — Заголовок сторінки / екрана.
-  - `lang?: string` — Мовний код сторінки (напр. `'uk'`, `'en'`).
-  - `theme?: string` — Ідентифікатор теми оформлення (напр. `'dark'`, `'light'`).
-- **Regions (Семантичні зони замість DOM-слотів)**:
-  - `'header'`, `'navigation'`, `'main'`, `'aside'`, `'footer'`
-- **Slots**: `['nav', 'sidebar', 'default', 'footer']`
-- **Events**: немає.
+Усі компоненти бібліотеки проектуються на канонічні семантичні контракти та мультимодальні платформи:
 
-### `NavContract`
-Описує верхню/нижню навігаційну панель із підтримкою бренду та посилань.
-- **Props**:
-  - `brand?: { title: string, logo?: string, url?: string }` — Інформація про бренд / логотип.
-  - `items?: Array<{ id: string, label: string, url?: string, active?: boolean, icon?: string, shortcut?: string, children?: Array }>` — Список пунктів навігації.
-- **Events**:
-  - `'navigate'` — Спрацьовує при переході за посиланням.
-  - `'toggle-menu'` — Спрацьовує при відкритті/закритті мобільного меню.
-
-### `SidebarContract`
-Ієрархічне дерево меню розділів (покриває `Tree` та `Accordion`).
-- **Props**:
-  - `title?: string` — Заголовок бічної панелі.
-  - `items?: Array<{ id: string, label: string, url?: string, active?: boolean, icon?: string, children?: Array }>` — Елементи дерева.
-- **Events**:
-  - `'select'` — Спрацьовує при виборі пункту меню.
-  - `'toggle'` — Спрацьовує при розгортанні/згортанні підгрупи.
-
-### `FooterContract`
-Підвал сторінки з авторськими правами, статусом підключення та посиланнями.
-- **Props**:
-  - `copyright?: string` — Текст копірайту.
-  - `status?: string` — Системний стан (Online/Offline/Sync).
-  - `links?: Array<{ label: string, url: string }>` — Набір посилань у футері.
+| Категорія | Компонент | Контракт ядра (`@nan0web/ui`) | Роль / Намір | CLI (Термінал) | Web (Lit/React) | Mobile | Watch | Voice (Голос) | AI Chat |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Actions** | Button | `ActionContract` (аліас `Button`) | Ініціація дії / команди | Гаряча клавіша / `[Enter]` | Кнопка `<button>` / pill | Тач-кнопка (>=44px) | Тап по екрану | Голосова команда («Збережи») | Quick Reply кнопка |
+| **Actions** | Toggle | `ChoiceContract` (тип `boolean`) | Бінарний перемикач | Toggle `[x] / [ ]` | Перемикач-світч | Світч під великий палець | Перемикач у списку | «Увімкнено / Вимкнено» | Текстовий статус перемикача |
+| **Data** | Accordion | `SidebarContract` / `Tree` | Розкривний список секцій | Дерево зі стрілками `▶ / ▼` | Розкривні панелі `<details>` | Акордеон-секції | — (поелементний перегляд) | Голосовий список з розкриттям | Нумерований спойлер |
+| **Data** | Badge | `BadgeContract` | Статусна мітка / тег | ANSI тег `[STATUS]` | Тег / badge / pill | Компактна мітка | Кольоровий індикатор | Короткий вербальний статус | Мітка `[Статус]` |
+| **Data** | Card | `PageContract` / `Container` | Семантичний блок контенту | Рамка навколо блоку (box) | Картка з тінню/межами | Сенсорна картка | Одиночний екран | Зачитування блоку цілком | Окремий блок повідомлення |
+| **Data** | CodeBlock | `MarkdownContract` (код) | Підсвічений блок коду | ANSI кольоровий синтаксис | Блок коду з копіюванням | Код з горизонтальним скролом | — | «Блок коду мовою X» | Блок коду з markdown-підсвіткою |
+| **Data** | Markdown | `MarkdownContract` | Форматований документ | ANSI форматування тексту | HTML розмітка | Адаптивний текст статті | Саммарі тексту | Синтез мови з паузами | Повідомлення чату |
+| **Data** | Sortable | `ChoiceContract` (ordered) | Зміна порядку списку | Переміщення клавішами `K/J` | Drag-and-drop список | Жест перетягування | — | «Перемістити X вище Y» | Команда перестановки |
+| **Data** | Table | `TableContract` | Двовимірні табличні дані | ASCII / Unicode таблиця | Адаптивна таблиця | Картковий список рядків | Послідовні значення | Зачитування підсумків | Markdown таблиця |
+| **Data** | Tree | `SidebarContract` (ієрархія) | Ієрархічні дані (таксономія) | Дерево папок терміналу | Деревоподібний список | Вкладені екрани (drill-down) | — | Поетапне занурення в рівні | Дерево відступами |
+| **Feedback** | Alert | `AlertContract` (Notice) | Важливе повідомлення / callout | Кольорова рамка (warn/err) | Плашка сповіщення | Спливаючий банер | Haptic + іконка | Звук + голосове застереження | Виділений блок `> Увага:` |
+| **Feedback** | Confirm | `DialogContract` (Confirm) | Підтвердження дії (y/N) | Запит у терміналі `(y/N)` | Модальний діалог підтвердження | Bottom Sheet «Підтвердити?» | Екран `Так / Ні` | «Ви впевнені? Скажіть так чи ні» | «Ви підтверджуєте? (Так/Ні)» |
+| **Feedback** | Modal | `DialogContract` | Фокусування на задачі | Вкладений підрежим CLI | Модальне вікно (popup) | Повноекранний діалог | Моно-екран | Пріоритетний діалог | Діалогова гілка |
+| **Feedback** | ProgressBar | `ProgressContract` (лінійний) | Прогрес операції (0..100%) | Текстовий прогрес-бар `[=== ]` | Прогрес-бар з відсотками | Лінійний індикатор | Круговий індикатор | «Завершено 45 відсотків» | Індикатор у повідомленні |
+| **Feedback** | Spinner | `ProgressContract` (асинхронний) | Індикатор очікування | Анімований спінер (ora/dots) | Анімований лоадер | Спінер у центрі | Пульсуюча крапка | Звуковий сигнал очікування | «ШІ думає...» |
+| **Feedback** | Toast | `AlertContract` (Floating) | Спливаюче сповіщення | Однорядковий статус унизу | Спливаючий тост (auto-hide) | Системний push / snackbar | Короткий вібро-відгук | Коротке звукове підтвердження | Коротке повідомлення-статус |
+| **Forms** | Input | `InputContract` | Введення тексту/числа/паролю | Текстовий prompt | Поле `<input>` | Сенсорна клавіатура | Голосовий надиктовувач | Розпізнавання мови (STT) | Очікування відповіді користувача |
+| **Forms** | Autocomplete | `ChoiceContract` / `Input` | Вибір із пошуком/підказками | Пошуковий prompt (Tab-complete) | Інпут із підказками / combobox | Інпут із пошуковим дропдауном | — | Голосовий пошук та вибір | Запит з автодоповненням |
+| **Forms** | Select | `ChoiceContract` (Dropdown) | Дискретний вибір із переліку | Стрілочний вибір чи цифри | Випадаючий `<select>` | Bottom Sheet зі списком | Коронка прокрутки | Озвучення списку варіантів | Список варіантів вибору |
+| **Forms** | Slider | `InputContract` (Range) | Числовий діапазон | Повзунок стрілками `[--*--]` | Повзунок `<input type=range>` | Сенсорний слайдер | Обертання коронки годинника | «Встановіть значення від A до B» | Введення числа в межах |
+| **Forms** | Color | `InputContract` (Колір) | Вибір кольору (HEX/RGBA) | ANSI палітра або hex-ввід | Color picker | Сенсорна колірна палітра | — | «Назвіть колір або код» | Вибір із колірних кнопок |
+| **Forms** | Shadow | `InputContract` (Ефект) | Налаштування тіней/глибини | Вибір рівня elevation (0..5) | Візуальний селектор тіней | Рівень elevation | — | «Рівень тіні від 1 до 5» | Вибір стилю |
+| **System** | LangSelect | `ChoiceContract` (Мова) | Вибір мови локалізації | Меню вибору `[uk / en]` | Мовний перемикач у шапці | Мовний перемикач | — | «Перемкнути на українську» | Команда `/lang uk` |
+| **System** | ThemeToggle | `ActionContract` (Тема) | Перемикач теми Dark/Light | Перемикання кольорової схеми | Кнопка день/ніч з іконкою | Перемикач теми | — | «Увімкни темну тему» | Команда `/theme dark` |
 
 ---
 
-## 2. Контент та Звіти (Content Contracts)
+## 📐 III. Детальна Специфікація Контрактів на JSDoc
 
-### `MarkdownContract`
-Рендерер Markdown-контенту з підтримкою безпечної розмітки та підсвітки коду (`CodeBlock`).
-- **Props**:
-  - `content: string` — Сирий Markdown-текст.
-  - `toc?: boolean` — Чи формувати зміст (Table of Contents).
-  - `baseUrl?: string` — Базовий URL для відносних шляхів.
+### 1. Доменна група: Структура (Structure)
 
-### `AlertContract`
-Універсальний блок виклику/повідомлення (Callout, Notice, Toast).
-- **Props**:
-  - `variant?: 'info' | 'warn' | 'warning' | 'error' | 'err' | 'danger' | 'success' | 'ok' | 'tip'` — Стильовий варіант.
-  - `title?: string` — Опціональний заголовок.
-  - `content: string` — Текст повідомлення.
-  - `open?: boolean` — Стан видимості.
-  - `icon?: string` — Користувацька іконка або SVG.
-- **Events**:
-  - `'close'` — Спрацьовує при закритті користувачем.
+#### 1.1. `PageContract`
+Семантичний контейнер документа або екрана застосунку.
+```javascript
+/**
+ * @typedef {Object} PageProps
+ * @property {string} [title] - Семантичний заголовок сторінки / екрана
+ * @property {string} [description] - Опис для SEO, голосових помічників або доступності
+ * @property {string} [lang] - Мовний код ('uk', 'en')
+ * @property {string} [theme] - Ідентифікатор теми ('dark', 'light', 'high-contrast')
+ */
 
-### `BadgeContract`
-Компактний бейдж або тег статусу.
-- **Props**:
-  - `label: string` — Текст бейджа.
-  - `variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'outline' | string` — Кольоровий варіант.
+/**
+ * Семантичні зони макета:
+ * @typedef {'header' | 'navigation' | 'main' | 'aside' | 'footer'} PageRegion
+ */
+```
 
-### `TableContract`
-Відображення табличних даних із сортуванням та вибором.
-- **Props**:
-  - `columns?: Array<{ key: string, label: string, align?: 'left' | 'center' | 'right', width?: number, type?: string }>` — Специфікація колонок.
-  - `rows?: Array<Record<string, any>>` — Рядки даних.
-  - `keyField?: string` — Унікальне поле-ідентифікатор для рядка.
-- **Events**:
-  - `'sort'` — Сортування за колонкою.
-  - `'row-click'` — Клік по рядку.
+#### 1.2. `NavContract`
+Головна навігаційна структура / карта переходів.
+```javascript
+/**
+ * @typedef {Object} NavBrand
+ * @property {string} title - Назва бренду / проєкту
+ * @property {string} [icon] - Ідентифікатор іконки або логотипу
+ * @property {string} [url] - Маршрут переходу на головну
+ *
+ * @typedef {Object} NavItem
+ * @property {string} id - Унікальний ідентифікатор пункту
+ * @property {string} label - Текстова мітка для відображення / озвучення
+ * @property {string} [url] - Маршрут або команда
+ * @property {boolean} [active] - Чи є активним у даний момент
+ * @property {string} [icon] - Ідентифікатор іконки
+ * @property {string} [shortcut] - Гаряча клавіша або голосовий тригер
+ * @property {NavItem[]} [children] - Вкладені пункти підменю
+ *
+ * @typedef {Object} NavProps
+ * @property {NavBrand} [brand]
+ * @property {NavItem[]} [items]
+ *
+ * Події:
+ * - 'navigate' ({ id, url, item })
+ * - 'toggle' ({ open })
+ */
+```
+
+#### 1.3. `SidebarContract`
+Ієрархічне дерево розділів або навігаційне меню категорій.
+```javascript
+/**
+ * @typedef {Object} SidebarItem
+ * @property {string} id
+ * @property {string} label
+ * @property {string} [url]
+ * @property {boolean} [active]
+ * @property {string} [icon]
+ * @property {SidebarItem[]} [children]
+ *
+ * @typedef {Object} SidebarProps
+ * @property {string} [title] - Заголовок панелі / розділу
+ * @property {SidebarItem[]} [items] - Елементи дерева
+ *
+ * Події:
+ * - 'select' ({ item, id })
+ * - 'toggle' ({ item, id, open })
+ */
+```
+
+#### 1.4. `FooterContract`
+Завершення контексту (копірайт, допоміжні посилання, системний статус).
+```javascript
+/**
+ * @typedef {Object} FooterLink
+ * @property {string} label
+ * @property {string} url
+ *
+ * @typedef {Object} FooterProps
+ * @property {string} [copyright]
+ * @property {string} [status] - Системний статус (наприклад, стан підключення до мережі)
+ * @property {FooterLink[]} [links]
+ */
+```
 
 ---
 
-## 3. Дії та Ввід (Interaction Contracts)
+### 2. Доменна група: Контент та Повідомлення (Content & Feedback)
 
-### `ActionContract` (ButtonContract)
-Інтерактивна кнопка дії, швидка команда або голосовий тригер.
-- **Props**:
-  - `label: string` — Текст дії.
-  - `action?: string` — Ідентифікатор наміру (Intent).
-  - `variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'brand' | 'default'` — Варіант оформлення.
-  - `role?: 'action' | 'submit' | 'cancel'` — Семантична роль.
-  - `disabled?: boolean` — Стан блокування.
-  - `icon?: string` — Назва іконки або SVG markup.
-  - `shortcut?: string` — Клавіатурне скорочення або голосовий тригер.
-- **Events**:
-  - `'trigger'`, `'click'` — Виклик дії.
+#### 2.1. `MarkdownContract`
+Відображення та структуризація форматованого тексту.
+```javascript
+/**
+ * @typedef {Object} MarkdownProps
+ * @property {string} content - Сирий Markdown текст
+ * @property {boolean} [toc] - Чи формувати зміст (Table of Contents)
+ * @property {string} [baseUrl] - Базовий URL для резолвінгу посилань
+ */
+```
 
-### `InputContract`
-Поле вільного вводу скалярних даних (текст, пароль, число, слайдер, колір).
-- **Props**:
-  - `name: string` — Ідентифікатор поля форми в моделі.
-  - `label?: string` — Підпис поля.
-  - `type?: 'text' | 'number' | 'secret' | 'search' | 'multiline' | 'email' | 'tel' | 'url' | 'password' | string` — Тип вводу.
-  - `value?: any` — Поточне значення.
-  - `placeholder?: string` — Текст-підказка.
-  - `required?: boolean` — Чи обов'язкове поле.
-  - `disabled?: boolean` — Чи заблоковане поле.
-  - `error?: string` — Повідомлення або ключ помилки валідації.
-- **Events**:
-  - `'change'`, `'input'`, `'submit'`, `'focus'`, `'blur'`.
+#### 2.2. `AlertContract` (Notice)
+Семантичне сповіщення або попередження.
+```javascript
+/**
+ * @typedef {'info' | 'warn' | 'error' | 'success'} AlertVariant
+ *
+ * @typedef {Object} AlertProps
+ * @property {AlertVariant} [variant='info'] - Рівень важливості сповіщення
+ * @property {string} [title] - Опціональний заголовок сповіщення
+ * @property {string} content - Тіло повідомлення
+ * @property {string} [icon] - Семантична іконка
+ * @property {boolean} [dismissible] - Чи може користувач закрити сповіщення
+ *
+ * Події:
+ * - 'dismiss' ()
+ */
+```
 
-### `ChoiceContract` (SelectContract)
-Дискретний вибір із множини (select, dropdown, radio, toggle, autocomplete, зв'язок на модель).
-- **Props**:
-  - `name: string` — Ідентифікатор поля.
-  - `label?: string` — Підпис або запитання.
-  - `options: FieldOptions` — Опції вибору (масив або динамічна функція-резолвер).
-  - `value?: any` — Обране значення (або масив значень при `multiple`).
-  - `multiple?: boolean` — Дозвіл множинного вибору.
-  - `placeholder?: string` — Підказка при порожньому виборі.
-  - `required?: boolean` — Обов'язковість вибору.
-  - `disabled?: boolean` — Чи заблоковано селект.
-- **Events**:
-  - `'change'` — Вибір нової опції.
+#### 2.3. `BadgeContract`
+Компактний індикатор стану, тег або підпис.
+```javascript
+/**
+ * @typedef {'default' | 'primary' | 'success' | 'warning' | 'danger' | 'outline'} BadgeVariant
+ *
+ * @typedef {Object} BadgeProps
+ * @property {string} label - Текст мітки
+ * @property {BadgeVariant | string} [variant='default'] - Стильовий варіант
+ * @property {string} [icon] - Опціональна іконка або піктограма
+ */
+```
+
+#### 2.4. `TableContract`
+Двовимірні структуровані табличні дані.
+```javascript
+/**
+ * @typedef {Object} TableColumn
+ * @property {string} key - Ключ властивості в об'єкті даних
+ * @property {string} label - Назва колонки для шапки/озвучення
+ * @property {'left' | 'center' | 'right'} [align='left'] - Вирівнювання даних
+ * @property {number} [width] - Відносна чи фіксована ширина
+ * @property {'text' | 'number' | 'date' | 'badge'} [type='text'] - Тип відображення
+ *
+ * @typedef {Object} TableProps
+ * @property {TableColumn[]} [columns] - Опис колонок
+ * @property {Array<Record<string, any>>} [rows] - Масив даних
+ * @property {string} [keyField='id'] - Поле унікального ідентифікатора рядка
+ *
+ * Події:
+ * - 'sort' ({ key, direction: 'asc' | 'desc' })
+ * - 'select-row' ({ row, index })
+ */
+```
 
 ---
 
-## 4. Оркестрація Форм (Form Contracts)
+### 3. Доменна група: Дії та Ввід (Action & Input)
 
-### `FormContract` & `FormFieldContract`
-Оркестратор динамічної форми, який автоматично конвертує схему `Model-as-Schema` у набір полів:
-- **Props**:
-  - `title?: string` — Заголовок форми.
-  - `fields: FormFieldContract[]` — Набір полів форми.
-  - `initialState?: Record<string, any>` — Початковий стан моделі.
-  - `submitLabel?: string` — Підпис кнопки збереження.
-  - `cancelLabel?: string` — Підпис кнопки скасування.
-  - `disabled?: boolean` — Блокування форми.
-  - `loading?: boolean` — Індикатор завантаження.
-- **Events**:
-  - `'submit'`, `'change'`, `'cancel'`.
+#### 3.1. `ActionContract` (Button)
+Ініціація наміру, підтвердження або команда.
+```javascript
+/**
+ * @typedef {'primary' | 'secondary' | 'danger' | 'ghost'} ActionVariant
+ * @typedef {'action' | 'submit' | 'cancel'} ActionRole
+ *
+ * @typedef {Object} ActionProps
+ * @property {string} label - Текст дії (для відображення, озвучення або голосової команди)
+ * @property {string} [action] - Ідентифікатор наміру (Intent)
+ * @property {ActionVariant} [variant='primary']
+ * @property {ActionRole} [role='action']
+ * @property {boolean} [disabled] - Чи заблокована дія
+ * @property {string} [icon] - Іконка
+ * @property {string} [shortcut] - Клавіатурне скорочення (напр. 'Enter', 'ctrl+s')
+ *
+ * Події:
+ * - 'trigger' ({ action })
+ */
+```
 
-### Типізація `FieldOptions`
+#### 3.2. `InputContract`
+Вільне введення скалярних даних (текст, число, секрет, пошук).
+```javascript
+/**
+ * @typedef {'text' | 'number' | 'secret' | 'search' | 'multiline'} InputType
+ *
+ * @typedef {Object} InputProps
+ * @property {string} name - Ідентифікатор поля моделі
+ * @property {string} [label] - Підпис поля
+ * @property {InputType} [type='text'] - Семантичний тип вводу
+ * @property {any} [value] - Поточне значення
+ * @property {string} [placeholder] - Текст-підказка
+ * @property {boolean} [required] - Обов'язковість заповнення
+ * @property {boolean} [disabled] - Стан блокування
+ * @property {string} [error] - Текст або ключ помилки валідації
+ *
+ * Події:
+ * - 'change' ({ name, value })
+ * - 'input' ({ name, value })
+ * - 'submit' ({ name, value })
+ */
+```
+
+#### 3.3. `ChoiceContract` (Select)
+Дискретний вибір із множини варіантів.
+```javascript
+/**
+ * @typedef {Object} ChoiceOption
+ * @property {string} label - Текстовий опис варіанту
+ * @property {any} value - Значення опції
+ * @property {string} [hint] - Додаткова підказка (наприклад, для голосового асистента або CLI)
+ * @property {boolean} [disabled] - Чи заблокована ця конкретна опція
+ *
+ * @typedef {Object} ChoiceProps
+ * @property {string} name - Ідентифікатор вибору
+ * @property {string} [label] - Запитання або заголовок вибору
+ * @property {ChoiceOption[]} options - Перелік доступних варіантів
+ * @property {any} [value] - Поточне обране значення (або масив значень при multiple)
+ * @property {boolean} [multiple] - Дозвіл множинного вибору
+ * @property {boolean} [required] - Чи обов'язковий вибір
+ * @property {boolean} [disabled] - Чи заблоковано весь компонент
+ *
+ * Події:
+ * - 'change' ({ name, value, selectedOption })
+ */
+```
+
+---
+
+### 4. Доменна група: Діалог та Прогрес (Dialog & Progress)
+
+#### 4.1. `DialogContract` (Modal)
+Фокусування уваги на ізольованому рішенні або підтвердженні.
+```javascript
+/**
+ * @typedef {Object} DialogProps
+ * @property {string} title - Заголовок діалогу / запитання
+ * @property {string} content - Пояснення або тіло діалогу
+ * @property {boolean} [open=true] - Стан видимості
+ * @property {ActionProps[]} [actions] - Кнопки/дії (наприклад, «Підтвердити», «Скасувати»)
+ *
+ * Події:
+ * - 'confirm' ()
+ * - 'cancel' ()
+ */
+```
+
+#### 4.2. `ProgressContract` (Spinner / ProgressBar)
+Індикація виконання тривалої операції.
+```javascript
+/**
+ * @typedef {Object} ProgressProps
+ * @property {number} [value] - Прогрес від 0 до 1 (якщо відомий)
+ * @property {number} [total] - Абсолютний тотал (наприклад, кількість файлів)
+ * @property {string} [message] - Текстове повідомлення стану
+ * @property {'running' | 'paused' | 'success' | 'failed'} [status='running']
+ */
+```
+
+---
+
+### 5. Доменна група: Форми та Зв'язки Моделей (Forms & Model Relations)
+
+#### 5.1. Поліморфний Синтаксис Опису Полів та Референсів у Моделях
+У парадигмі **Model-as-Schema** та **Model-as-App** поле моделі оголошується максимально лаконічно:
+1. **Одиничні референси (Relationship)**:
+   - `category = { help: 'Category', type: CategoryModel }`
+   - `category = { help: 'Category', type: 'model', model: CategoryModel }`
+   - Назва колекції цільової моделі автоматично береться з `CategoryModel.$collection || CategoryModel.$alias`, її не потрібно дублювати в полі.
+2. **Множинні референси (Has Many)**:
+   - `attachments = { help: 'Documents', type: [Attachment] }`
+   - `attachments = { help: 'Documents', type: 'array', model: Attachment }`
+   - `attachments = { help: 'Documents', type: 'model[]', model: Attachment }`
+
+#### 5.2. `FormContract` та `FormFieldContract`
 ```javascript
 /**
  * Одиничний опис опції вибору:
@@ -199,58 +353,35 @@
  * Об'єднаний тип опцій:
  * @typedef {OptionObject[] | OptionResolver} FieldOptions
  */
+
+/**
+ * @typedef {Object} FormFieldContract
+ * @property {string} name - Назва поля в моделі
+ * @property {string} label - Локалізований підпис
+ * @property {'Input' | 'Choice' | 'Table' | 'Markdown' | 'Dialog'} contract - Цільовий контракт поля
+ * @property {string | Function | Array<Function>} [type] - Базовий тип ('string', 'number', CategoryModel, [Attachment])
+ * @property {any} [default] - Дефолтне значення
+ * @property {boolean} [required] - Обов'язковість
+ * @property {FieldOptions} [options] - Статичні опції або функція-резолвер
+ * @property {Function} [model] - Конструктор цільової моделі для референсів
+ * @property {boolean} [multiple] - Прапорець множинного вибору (hasMany)
+ * @property {string} [hint] - Хінт для вибору кастомного віджета
+ * @property {(val: any) => true | string} [validate] - Функція валідації
+ */
+
+/**
+ * @typedef {Object} FormProps
+ * @property {string} [title] - Заголовок форми
+ * @property {FormFieldContract[]} fields - Сконвертовані поля моделі
+ * @property {Record<string, any>} [initialState] - Початковий стан
+ * @property {string} [submitLabel] - Кнопка підтвердження
+ * @property {string} [cancelLabel] - Кнопка скасування
+ * @property {boolean} [disabled]
+ * @property {boolean} [loading]
+ *
+ * Події:
+ * - 'submit' ({ values, modelInstance })
+ * - 'change' ({ field, value, values })
+ * - 'cancel' ()
+ */
 ```
-
-### Підтримка `$collection` та `$alias`
-Щоб уникнути конфліктів із системними полями екземпляра сутності, назва колекції цільової моделі резолвиться за правилом:
-```javascript
-const collectionName = TargetModel.$collection || TargetModel.$alias || TargetModel.alias
-```
-Опис зв'язку в схемі залишається гранично лаконічним:
-- Одиничний: `category = { help: 'Category', type: CategoryModel }`
-- Множинний: `attachments = { help: 'Documents', type: [Attachment] }`
-
----
-
-## 5. Діалог та Прогрес (Dialog & Progress Contracts)
-
-### `DialogContract` (ModalContract)
-Фокусування уваги на ізольованому рішенні або підтвердженні (`Confirm`).
-- **Props**:
-  - `title: string` — Заголовок діалогу / запитання.
-  - `content: string` — Пояснення або тіло діалогу.
-  - `open?: boolean` — Стан видимості.
-  - `actions?: Array<ActionProps>` — Кнопки дій (наприклад, «Підтвердити», «Скасувати»).
-- **Events**:
-  - `'confirm'`, `'cancel'`.
-
-### `ProgressContract`
-Індикація виконання тривалої операції (лінійний прогрес або спінер).
-- **Props**:
-  - `value?: number` — Прогрес від 0 до 1 (або відсоток).
-  - `total?: number` — Абсолютна кількість (наприклад, файлів).
-  - `message?: string` — Текстовий статус етапу.
-  - `status?: 'running' | 'paused' | 'success' | 'failed'` — Стан операції.
-- **Events**: немає.
-
----
-
-## 6. Порівняльний Аналіз з Іншими Платформами
-
-| Критерій / Платформа | **OLMUI (@nan0web/ui)** | **Payload CMS** | **Shadcn UI + Radix** | **Odoo / ERPNext** | **Flutter / Compose** |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Парадигма ядра** | **Data & Intent First** (агностичні JS-контракти) | Admin-First Config (Node + React) | DOM-First (React + Tailwind) | XML Search/Form View + Python ORM | Widget/Tree First (Dart/Kotlin) |
-| **Мультимодальність** | **100% (CLI, Web, Mobile, Watch, Voice, Chat)** | Тільки Web Admin | Тільки Web Browser | Web + спрощений мобільний | Тільки Screen UI (Mobile/Desktop/Web) |
-| **Динамічні форми** | Автоматично з `Model-as-Schema` | Автоматично з `CollectionConfig.fields` | Вручну через `react-hook-form` + Zod | Автоматично з Python Model fields | Вручну через Reactive Forms / State |
-| **Зв'язки між сутностями** | Поліморфний `Choice` / `Dialog` (`type: Model`) | `relationship` field (`relationTo`) | Custom Async Select Combobox | `Many2one` / `Many2many` Select | Custom Bloc/Repository loader |
-| **Zero-Hardcode & i18n** | Strict Model i18n (`t(Model.field)`) | JSON словники в адмінці | `next-intl` через хардкод ключів | `_('String')` gettext у коді | `intl` / `strings.xml` |
-| **Рантайм вага** | **0 KB dependencies** (чистий JS) | Повний Next.js/React стек | React + Radix + Tailwind runtime | Важкий JS/Python рантайм | Окремий движок відмальовки (Skia) |
-
----
-
-## 7. Каталог для 99% Бізнес-Додатків (Business Matrix)
-
-1. **Макет та Навігація**: `PageContract` (5 регіонів: `header`, `navigation`, `main`, `aside`, `footer`), `NavContract`, `SidebarContract` (`Tree`, `Accordion`), `FooterContract`.
-2. **Збір Даних та Форми**: `FormContract` (автоконверсія з `Model-as-Schema`), `InputContract` (text, number, secret, range/slider, color), `ChoiceContract` (select, toggle, autocomplete), `ActionContract` (buttons, shortcuts).
-3. **Відображення Даних та Звіти**: `TableContract` (сортування, пагінація, фільтри), `BadgeContract` (статуси), `MarkdownContract` (`CodeBlock`), `SortableContract` (пріоритизація черг).
-4. **Зворотний Зв'язок та Діалог**: `AlertContract` (`Toast`, Notice), `DialogContract` (`Modal`, `Confirm`), `ProgressContract` (`Spinner`, `ProgressBar`).

@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import path from 'node:path'
 import DB, { DocumentStat, DocumentEntry } from '@nan0web/db'
 import FS from './FSAdapter.js'
 import FSDriver from './FSDriver.js'
@@ -188,13 +189,15 @@ class DBFS extends DB {
 				const resolvedCwd = this.cwd ? this.FS.resolve(this.cwd) : ''
 				if (resolvedCwd && p.startsWith(resolvedCwd)) return true
 
-				// Check if the FULL path exists on disk (file or directory).
-				// Previously only the first segment was checked (e.g. /tmp),
-				// which over-matched subUri paths like /tmp/file.txt from
-				// mount routing (e.g. @app/tmp/file.txt → /tmp/file.txt).
-				try {
-					if (fs.statSync(p)) return true
-				} catch (e) {}
+				// Check if the path or any existing ancestor exists on disk.
+				// This correctly detects absolute paths whose subdirectories may not yet exist (e.g. /tmp/... or /var/folders/...).
+				let cur = p
+				while (cur && cur !== '/') {
+					try {
+						if (fs.statSync(cur)) return true
+					} catch (e) {}
+					cur = path.dirname(cur)
+				}
 			}
 			return false
 		}

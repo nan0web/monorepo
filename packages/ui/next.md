@@ -1,8 +1,8 @@
 # 🏁 План релізу та наступних кроків — v3.5.0 (Fractal OLMUI & Terminal Separation)
 
-> **Статус:** В процесі планування та декомпозиції  
+> **Статус:** В процесі розробки (Сесія 1)  
 > **Концепція:** One Logic — Multiple User Interfaces (OLMUI)  
-> **Директорії реалізації:** `packages/ui` (`@nan0web/ui`), `packages/ui-cli` (`@nan0web/ui-cli`), `packages/ui-tui` (`@nan0web/ui-tui`)
+> **Директорії реалізації:** `packages/ui` (`@nan0web/ui`), `packages/ui-react` (`@nan0web/ui-react`), `packages/ui-cli` (`@nan0web/ui-cli`), `packages/ui-tui` (`@nan0web/ui-tui`)
 
 ---
 
@@ -12,42 +12,44 @@
 
 ---
 
-### 🔹 Сесія 1: Ядро Моделі та Фрактальний $content (Workspace: `packages/ui`)
-**Мета:** Підтримка довільного порядку блоків `$content` у `Document` та розгортання посилань на навігацію.
-- **Вхідні workflows:** `docs/uk/workflows/model-schema.md`, `docs/uk/workflows/data-architecture.md`, `docs/uk/workflows/fix.md`.
+### 🔹 Сесія 1: Ядро Моделі, Фрактальний $content та Метадані Колекцій (Workspace: `packages/ui`)
+**Мета:** Підтримка довільного порядку блоків `$content` у `Document`, розгортання посилань на навігацію та стандартизація метаданих колекцій (`$collection`, `$slug`, `$title`).
+- **Вхідні workflows:** `docs/uk/workflows/model-schema.md`, `docs/uk/workflows/data-architecture.md`, `docs/uk/workflows/release.md`.
 - **Задачі:**
-  - [ ] **DOC-1**: Додати в `Document` та `Content` резолвер посилань для `nav: headerNav` та `nav: { $ref: '#headerNav' }`.
-  - [ ] **DOC-2**: Переконатися, що якщо блок у `$content` має значення `true`, він автоматично бере дані однойменного поля з документа (наприклад, `Header: true` бере `this.header`).
-  - [ ] **DOC-3**: Додати сценарний контрактний тест `src/domain/DocumentContent.test.js` на рекурсивне розгортання `$content` зверху-вниз.
-  - [ ] **DOC-4**: Валідація через `pnpm test` (100% Green).
+  - [x] **DOC-1**: Додати в `Document` та `Content` резолвер посилань для `nav: headerNav` та прямих Navigation об'єктів/масивів.
+  - [x] **DOC-2**: Булеве розгортання блоків `$content` (`{ Banner: true }` бере `this.banner`), розбиття множинних булевих ключів у плоский масив.
+  - [x] **META-1**: Стандартизація геттерів/метаполів `$collection`, `$alias`, `$slug`, `$title` у моделях.
+  - [x] **DOC-3**: Сценарні контрактні тести у `releases/3/5/v3.5.0/task.spec.js` та `src/domain/DocumentContent.test.js`.
+  - [x] **DOC-4**: Валідація через `pnpm test` (100% Green).
 
 ---
 
-### 🔹 Сесія 2: Мультимодальні Контракти та Мобільна Адаптація (Workspace: `packages/ui`)
-**Мета:** Фіксація контракту `ShellContract` / `DocumentContract` та правила трансформації Header Navigation ➔ Mobile Bottom Bar.
+### 🔹 Сесія 2: Асинхронні Віджети-Раннери для Вебу (React AppRunner & Scoped UI)
+**Мета:** Реалізація концепції "Додаток як Віджет у Документі": асинхронний неблокуючий генератор для React, ізольований Scoped Feedback (Alert/Toast/Spinner).
 - **Вхідні workflows:** `docs/uk/workflows/olm-ui-architecture-adapters.md`, `docs/uk/workflows/release.md`.
 - **Задачі:**
-  - [ ] **MOB-1**: Зафіксувати в `Structure.js` контракт `DocumentContract` / `ShellContract` як контейнер `$content` замість фіксованих слотів `PageContract`.
-  - [ ] **MOB-2**: Описати правила адаптерної проекції: десктопний `Header` на мобільному стає `Bottom Navigation Bar` під великий палець руки, спираючись на єдину модель `Navigation`.
-  - [ ] **MOB-3**: Оновити документацію в `packages/ui/docs/uk/contracts/README.md`.
-  - [ ] **MOB-4**: Валідація через `pnpm run test:docs` та `pnpm run test`.
+  - [ ] **RUN-1**: Контракт `AppRunnerContract` та хук/компонент `AppRunner` для `@nan0web/ui-react` з підтримкою життєвого циклу генератора (`idle`, `waiting_input`, `processing`, `completed`, `error`).
+  - [ ] **RUN-2**: Неблокуючий `yield ask`: відображення форми всередині віджета без блокування іншого контенту сторінки.
+  - [ ] **RUN-3**: Scoped Feedback: вивід повідомлень (`show`, `progress`) локально в контейнері відповідного блоку сторінки.
+  - [ ] **RUN-4**: Паралельна робота декількох інтерактивних віджетів-моделей на одній сторінці.
 
 ---
 
-### 🔹 Сесія 3: Розділення Термінальних Інтерфейсів CLI vs TUI (Workspace: `packages/ui-cli` & `packages/ui-tui`)
-**Мета:** Чітке технологічне та пакетне розмежування потокового CLI та повноекранного псевдографічного TUI.
+### 🔹 Сесія 3: Мультимодальні Проекції та Розділення Термінальних Інтерфейсів (CLI vs TUI)
+**Мета:** Трансформація Header ➔ Mobile Bottom Bar та відокремлення потокового CLI від повноекранного TUI.
 - **Вхідні workflows:** `docs/uk/workflows/ui-cli-standards.md`, `docs/uk/workflows/model-as-app-cli.md`.
 - **Задачі:**
+  - [ ] **MOB-1**: Правило адаптерної проекції: десктопний `Header` на мобільному стає `Bottom Navigation Bar` під великий палець руки, спираючись на єдину модель `Navigation`.
   - [ ] **TERM-1**: Зафіксувати специфікацію `@nan0web/ui-cli` як виключно потокового генераторного діалогу (stream-based: `stdout`/`stderr`, `ask`, `show`, `progress`) для CLI-утиліт та CI/CD.
-  - [ ] **TERM-2**: Ініціалізувати або виділити концепт `@nan0web/ui-tui` (Terminal User Interface) для повноекранного режиму (Alternate screen buffer, вікна, скрол, статус-бар як Midnight Commander / VIBE CLI та **підтримка подій миші**).
-  - [ ] **TERM-3**: Написати контрактні тести взаємодії моделей з TUI-адаптером.
+  - [ ] **TERM-2**: Специфікація `@nan0web/ui-tui` для повноекранного режиму (Alternate screen buffer, вікна, статус-бар як Midnight Commander / VIBE CLI та миша).
+  - [ ] **TERM-3**: Контрактні тести та фінальний `pnpm run test:all`.
 
 ---
 
 ## 📊 Поточний статус завдань (Task Pool)
 
-- [x] Очищено зайвий синтаксис JSON Pointer (`#/nav`). Залишено `nav: headerNav` та `nav: { $ref: '#headerNav' }`.
-- [x] Оновлено та верифіковано офіційний архітектурний план у `implementation_plan.md`.
-- [ ] Виконати Сесію 1: Резолвінг `$content` у `packages/ui`.
-- [ ] Виконати Сесію 2: Мультимодальна проекція Mobile Bottom Bar у `packages/ui`.
-- [ ] Виконати Сесію 3: Специфікація та відокремлення TUI у `packages/ui-tui`.
+- [x] Ініціалізовано паспорт релізу `releases/3/5/v3.5.0/task.md`.
+- [x] Ініціалізовано журнал архітектора `releases/3/5/v3.5.0/user.md`.
+- [x] Створено контрактний тест `releases/3/5/v3.5.0/task.spec.js` (4/4 tests passed).
+- [x] Оновлено `releases/README.md` із занесенням версії v3.5.0.
+- [ ] Перейти до виконання задач Сесії 2 (React AppRunner & Scoped UI).

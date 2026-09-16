@@ -16,6 +16,13 @@ export class ModelAsApp extends Model {
         help: string;
         default: boolean;
     };
+    /** @typedef {{ [key: string]: string }} UIMap */
+    /** @type {UIMap} */
+    /** @typedef {{ [key: string]: string }} UIMap */
+    /** @type {UIMap} */
+    static UI: {
+        [key: string]: string;
+    };
     /**
      * Execute the model programmatically without a UI adapter.
      * @param {any} [data]
@@ -30,6 +37,13 @@ export class ModelAsApp extends Model {
     constructor(data?: Partial<ModelAsApp> | Record<string, any>, options?: Partial<ModelAsAppOptions>);
     /** @type {boolean} Show help */
     help: boolean;
+    /** Unified UI getter */
+    get $UI(): any;
+    /**
+     * Guaranteed DB instance getter with localized error.
+     * @returns {import('@nan0web/db').DB}
+     */
+    get $db(): import("@nan0web/db").DB;
     _: {
         adapter: InputAdapter;
         parentPath: string;

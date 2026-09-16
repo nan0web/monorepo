@@ -1,0 +1,7 @@
+{
+	"$schema": "https://unpkg.com/knip@latest/schema.json",
+	"entry": ["src/index.js", "src/richtext/client/index.js", "src/richtext/Nan0HTMLFeature.js"],
+	"project": ["src/**/*.{js,jsx,ts,tsx}"],
+	"ignore": ["types/**", "src/**/*.spec.js", "src/**/*.test.js"],
+	"ignoreDependencies": ["typescript", "vitest"]
+}

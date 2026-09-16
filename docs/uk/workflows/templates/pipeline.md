@@ -5,17 +5,22 @@
 nan0ai check task.spec.js
 ```
 
-## 2. Run Release Spec Contract Tests
+## 2. Fast-Fail Type Check (Zero .d.ts)
+```bash
+tsc --project tsconfig.check.json
+```
+
+## 3. Run Release Spec Contract Tests
 ```bash
 node --test task.spec.js
 ```
 
-## 3. Execute Release Task (Direct)
+## 4. Execute Release Task (Direct)
 ```bash
 nan0ai task task.md --max-turns=30
 ```
 
-## 4. Run Full Verification Suite in Web Package
+## 5. Run Full Verification Suite in Web Package
 ```bash
 pnpm --filter @my-scope/web run test
 ```

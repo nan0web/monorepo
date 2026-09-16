@@ -85,6 +85,18 @@ export function show(message: string | any, level?: ShowLevel | ShowData, data?:
  */
 export function agent(task: string, context?: AgentContext): AgentIntent;
 /**
+ * Base fields common to all intents.
+ * @typedef {Object} IntentBase
+ * @property {any} [$value] - Optional value returned by adapters, often used in tests.
+ * @property {boolean} [$success] - Indicates success of the step; false means failure.
+ * @property {string} [$message] - Optional message for UI or logging.
+ */
+/**
+ * Files attached to an intent (used only by AgentIntent).
+ * @typedef {Object} IntentFiles
+ * @property {Record<string, string>} [$files] - Map of file paths to new content.
+ */
+/**
  * @typedef {Object} FieldSchema
  * @property {string} help - Human-readable label / i18n key.
  * @property {*} default - Default value for the field.
@@ -166,12 +178,7 @@ export function agent(task: string, context?: AgentContext): AgentIntent;
  */
 /**
  * Union of all possible yielded intents.
- * @typedef {(AskIntent | ProgressIntent | LogIntent | ShowIntent | RenderIntent | AgentIntent | ResultIntent) & {
- *   $value?: any;
- *   $success?: boolean;
- *   $files?: Record<string, string>;
- *   $message?: string;
- * }} Intent
+ * @typedef {(AskIntent | ProgressIntent | LogIntent | ShowIntent | RenderIntent | (AgentIntent & IntentFiles) | ResultIntent) & IntentBase} Intent
  */
 /**
  * Response to an AskIntent. Adapter provides the collected value.
@@ -261,6 +268,32 @@ export type ProgressOptions = {
 export type ShowData = {
     component?: any;
     model?: import("@nan0web/types").Model | undefined;
+};
+/**
+ * Base fields common to all intents.
+ */
+export type IntentBase = {
+    /**
+     * - Optional value returned by adapters, often used in tests.
+     */
+    $value?: any;
+    /**
+     * - Indicates success of the step; false means failure.
+     */
+    $success?: boolean | undefined;
+    /**
+     * - Optional message for UI or logging.
+     */
+    $message?: string | undefined;
+};
+/**
+ * Files attached to an intent (used only by AgentIntent).
+ */
+export type IntentFiles = {
+    /**
+     * - Map of file paths to new content.
+     */
+    $files?: Record<string, string> | undefined;
 };
 export type FieldSchema = {
     /**
@@ -431,12 +464,7 @@ export type AgentIntent = {
 /**
  * Union of all possible yielded intents.
  */
-export type Intent = (AskIntent | ProgressIntent | LogIntent | ShowIntent | RenderIntent | AgentIntent | ResultIntent) & {
-    $value?: any;
-    $success?: boolean;
-    $files?: Record<string, string>;
-    $message?: string;
-};
+export type Intent = (AskIntent | ProgressIntent | LogIntent | ShowIntent | RenderIntent | (AgentIntent & IntentFiles) | ResultIntent) & IntentBase;
 /**
  * Response to an AskIntent. Adapter provides the collected value.
  * The value MUST conform to the type described in the requested FieldSchema.

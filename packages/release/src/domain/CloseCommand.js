@@ -27,9 +27,7 @@ export default class CloseCommand extends ModelAsApp {
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
 	 */
 	async *run() {
-		const { renameSync, mkdirSync } = await import('node:fs')
-		const { join, dirname } = await import('node:path')
-
+		const db = this._.db
 		const v = this.version || ''
 		yield show(`🛜 nan0release close ${v || 'all'}`)
 
@@ -53,18 +51,22 @@ export default class CloseCommand extends ModelAsApp {
 
 		let movedCount = 0
 		for (const spec of specs) {
-			const relativePath = spec.path.substring(process.cwd().length + 1)
+			const relativePath = spec.path.replace(/^.*?releases\//, 'releases/')
 			const destRelative = relativePath
 				.replace(/^releases\//, 'src/releases/')
 				.replace('.spec.js', '.test.js')
-			const destPath = join(process.cwd(), destRelative)
 
-			mkdirSync(dirname(destPath), { recursive: true })
-			renameSync(spec.path, destPath)
+			if (db) {
+				const content = await db.loadDocument(relativePath, null)
+				if (content !== null) {
+					await db.saveDocument(destRelative, content)
+					await db.dropDocument(relativePath)
+				}
+			}
 			movedCount++
 		}
 
 		yield show(`✅ Successfully closed ${movedCount} specs and moved to src/releases/`, 'success')
-		return result({})
+		return result({ movedCount })
 	}
 }

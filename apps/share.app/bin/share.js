@@ -9,8 +9,12 @@
 
 import { bootstrapApp } from '@nan0web/ui-cli'
 import { ShareAppCLI } from '../src/index.js'
+import { ToolCheckerPort } from '../src/ports/ToolCheckerPort.js'
 
-bootstrapApp(ShareAppCLI, {}).catch((err) => {
+bootstrapApp(ShareAppCLI, {
+	toolChecker: ToolCheckerPort,
+}).catch((err) => {
 	console.error(err)
 	process.exit(1)
 })
+

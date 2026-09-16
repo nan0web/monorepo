@@ -7,10 +7,18 @@ import PublishCommand from './PublishCommand.js'
 import SpecCommand from './SpecCommand.js'
 import StatusCommand from './StatusCommand.js'
 import BumpCommand from './BumpCommand.js'
+import WebCommand from './WebCommand.js'
+import PreviewCommand from './PreviewCommand.js'
+import ViewCommand from './ViewCommand.js'
+import ListCommand from './ListCommand.js'
+import ServeCommand from './ServeCommand.js'
 
 export class ReleaseApp extends ModelAsApp {
-	/** @type {ModelAsApp | null} Subcommand to run */
-	command = null
+	static alias = 'release'
+
+	static UI = {
+		title: 'PM-as-Code Release Protocol (nan0release)',
+	}
 
 	static command = {
 		help: 'Subcommand to run',
@@ -23,9 +31,14 @@ export class ReleaseApp extends ModelAsApp {
 			SpecCommand,
 			StatusCommand,
 			BumpCommand,
+			WebCommand,
+			PreviewCommand,
+			ViewCommand,
+			ListCommand,
+			ServeCommand,
 		],
 		positional: true,
-		default: null,
+		default: ViewCommand,
 	}
 
 	/**
@@ -35,4 +48,18 @@ export class ReleaseApp extends ModelAsApp {
 	constructor(data = {}, options = {}) {
 		super(data, options)
 	}
+
+	/**
+	 * Run the main controller logic.
+	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}
+	 */
+	async *run() {
+		if (this.help || !this.command || typeof this.command.run !== 'function') {
+			return yield* super.run()
+		}
+		return yield* this.command.run()
+	}
 }
+
+export default ReleaseApp
+

@@ -15,6 +15,9 @@
 import { ModelError } from '@nan0web/types'
 
 export class IntentErrorModel {
+	/**
+	 * @typedef {'intent_not_object'|'intent_unknown_type'|'ask_missing_field'|'ask_missing_schema_help'|'intent_missing_message'|'render_missing_component'|'agent_missing_task'|'adapter_missing_ask'|'ask_wrong_response'|'validation_failed'|'unhandled_intent'|'timeout'|'aborted'} IntentErrorField
+	 */
 	// ─── Intent Validation Errors ───
 
 	static intent_not_object = {
@@ -39,7 +42,7 @@ export class IntentErrorModel {
 
 	static intent_missing_message = {
 		help: 'Progress and Log intents require a message',
-		error: "'{type}' intent requires a \"message\" string",
+		error: '\'{type}\' intent requires a "message" string',
 	}
 
 	static render_missing_component = {
@@ -85,7 +88,7 @@ export class IntentErrorModel {
 	/**
 	 * Build a ModelError for a specific error field.
 	 *
-	 * @param {string} field - Static field name on IntentErrorModel.
+	 * @param {IntentErrorField} field - Static field name on IntentErrorModel.
 	 * @param {Record<string, *>} [params] - Template parameters to substitute {key} placeholders.
 	 * @returns {ModelError}
 	 */

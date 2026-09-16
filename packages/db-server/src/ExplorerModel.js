@@ -55,6 +55,31 @@ export class ExplorerModel extends Model {
 		default: 'Оберіть документ зі списку ліворуч',
 	}
 
+	static searchPlaceholder = {
+		help: 'Search input placeholder in files panel',
+		default: 'Пошук файлів (поточна папка або весь проєкт)...',
+	}
+
+	static searchGlobal = {
+		help: 'Tooltip or title for global search mode',
+		default: 'Глобальний пошук у всіх підпапках',
+	}
+
+	static fileInfoSize = {
+		help: 'File size indicator label in editor toolbar',
+		default: 'Розмір: {{size}}',
+	}
+
+	static tabRaw = {
+		help: 'Tab label for raw YAML/JSON editor',
+		default: '📝 Текст / YAML',
+	}
+
+	static tabTree = {
+		help: 'Tab label for interactive collapsible tree view',
+		default: '🌳 Дерево обʼєкта',
+	}
+
 	static statusReady = {
 		help: 'Status bar message when ready',
 		default: 'Готовий до роботи',
@@ -187,6 +212,11 @@ export class ExplorerModel extends Model {
 		this.deleteButton = data.deleteButton ?? ExplorerModel.deleteButton.default
 		this.noFileSelected = data.noFileSelected ?? ExplorerModel.noFileSelected.default
 		this.emptyStatePrompt = data.emptyStatePrompt ?? ExplorerModel.emptyStatePrompt.default
+		this.searchPlaceholder = data.searchPlaceholder ?? ExplorerModel.searchPlaceholder.default
+		this.searchGlobal = data.searchGlobal ?? ExplorerModel.searchGlobal.default
+		this.fileInfoSize = data.fileInfoSize ?? ExplorerModel.fileInfoSize.default
+		this.tabRaw = data.tabRaw ?? ExplorerModel.tabRaw.default
+		this.tabTree = data.tabTree ?? ExplorerModel.tabTree.default
 		this.statusReady = data.statusReady ?? ExplorerModel.statusReady.default
 		this.statusLoadingDir = data.statusLoadingDir ?? ExplorerModel.statusLoadingDir.default
 		this.statusLoadError = data.statusLoadError ?? ExplorerModel.statusLoadError.default

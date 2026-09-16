@@ -5,6 +5,7 @@ export class WorkflowIndexApp extends ModelAsApp {
 	static alias = 'workflow-index'
 
 	static UI = {
+		...ModelAsApp.UI,
 		title: 'Workflow Index Generator',
 		starting: 'Scanning workflows directory...',
 		done: 'Generated README.md with {count} workflows.',
@@ -47,15 +48,21 @@ export class WorkflowIndexApp extends ModelAsApp {
 
 				const content = await db.loadDocumentAs('.txt', entry.path).catch(() => '')
 				let description = '*No description found*'
-                
+
 				// Parse frontmatter and headers
 				const lines = content.split('\n')
 				let isYaml = false
 				for (let i = 0; i < lines.length; i++) {
 					const line = lines[i].trim()
-					if (i === 0 && line === '---') { isYaml = true; continue; }
+					if (i === 0 && line === '---') {
+						isYaml = true
+						continue
+					}
 					if (isYaml) {
-						if (line === '---') { isYaml = false; continue; }
+						if (line === '---') {
+							isYaml = false
+							continue
+						}
 						if (line.startsWith('description:')) {
 							description = line.slice(12).trim().replace(/^['"]|['"]$/g, '')
 							break

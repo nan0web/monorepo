@@ -10,4 +10,4 @@
  * @param {(data: string, error?: boolean) => void} [onChunk]
  * @returns {Promise<string>} absolute path to the package root inside the temp dir
  */
-export declare function clonePackage(repoUrl: string, pkg: string, onChunk?: (data: string, error?: boolean) => void): Promise<string>;
+export function clonePackage(repoUrl: string, pkg: string, onChunk?: (data: string, error?: boolean) => void): Promise<string>;

@@ -119,6 +119,7 @@ export default class DBServer {
 				{ method: 'PUT', path: '/api/documents/:uri', description: 'Save document content at specified URI' },
 				{ method: 'DELETE', path: '/api/documents/:uri', description: 'Remove document at specified URI' },
 				{ method: 'GET', path: '/api/directory/:path', description: 'List directory contents for specified path' },
+				{ method: 'GET', path: '/api/search?q=...', description: 'Search files recursively across all subdirectories' },
 				{ method: 'GET', path: '/api/stat/:uri', description: 'Get document or folder statistics (size, modified time, isFile, etc.)' },
 			],
 		}
@@ -316,7 +317,8 @@ export default class DBServer {
 					/** @type {ServerResponse} */ res
 				) => {
 					try {
-						const uri = req.params['0']
+						const rawUri = req.params['0'] || ''
+						const uri = rawUri.startsWith('/') ? rawUri.slice(1) : rawUri
 						const ok = await this.db.dropDocument(uri)
 						if (!ok) throw new Error('dropDocument returned false')
 						res.statusCode = 204
@@ -379,6 +381,31 @@ export default class DBServer {
 			)
 		)
 
+		// Recursive search endpoint across all files and directories
+		s.get(
+			'/api/search',
+			/** @type {any} */ (
+				async (
+					/** @type {ServerRequest} */ req,
+					/** @type {ServerResponse} */ res
+				) => {
+					try {
+						const query = String(req.query?.q || '').toLowerCase().trim()
+						const root = String(req.query?.dir || '')
+						const all = await this.scanFiles(root)
+						const matched = query ? all.filter(item => item.path.toLowerCase().includes(query)) : all
+						res.setHeader('Content-Type', 'application/json')
+						res.end(JSON.stringify(matched), 'utf8')
+					} catch (/** @type {any} */ err) {
+						this.logger.error('[db-server] GET /api/search', err.message)
+						res.statusCode = 500
+						res.setHeader('Content-Type', 'application/json')
+						res.end(JSON.stringify({ error: err.message }), 'utf8')
+					}
+				}
+			)
+		)
+
 		// Document stat (exact match for simple filenames)
 		s.get(
 			'/api/stat/:uri',
@@ -424,6 +451,51 @@ export default class DBServer {
 				}
 			)
 		)
+	}
+
+	/**
+	 * Recursively scan directories and files from given root path.
+	 * Supports both in-memory DB and file-system backed DB (DBFs).
+	 * @param {string} [dir='']
+	 * @param {number} [maxDepth=8]
+	 * @param {number} [currentDepth=0]
+	 * @returns {Promise<Array<{ path: string, name: string, isDir: boolean }>>}
+	 */
+	async scanFiles(dir = '', maxDepth = 8, currentDepth = 0) {
+		if (currentDepth > maxDepth) return []
+		const results = []
+
+		// If DB has in-memory data map (e.g. unit tests or memory store)
+		if (this.db?.data && this.db.data.size > 0 && currentDepth === 0) {
+			for (const key of this.db.data.keys()) {
+				if (!key.endsWith('index.txt') && !key.endsWith('index.txtl')) {
+					const name = key.includes('/') ? key.split('/').pop() : key
+					results.push({ path: key, name: name || key, isDir: false })
+				}
+			}
+			if (results.length > 0) return results
+		}
+
+		let entries
+		try {
+			entries = await this.db.listDir(dir || '.')
+		} catch {
+			return []
+		}
+
+		if (!Array.isArray(entries)) return results
+
+		for (const e of entries) {
+			const rawPath = dir ? `${dir}/${e.name}` : e.name
+			const isDir = Boolean(e.isDirectory || e.isDir || e.stat?.isDirectory || e.path?.endsWith('/'))
+			results.push({ path: rawPath, name: e.name, isDir })
+			if (isDir && !e.name.startsWith('.')) {
+				const sub = await this.scanFiles(rawPath, maxDepth, currentDepth + 1)
+				results.push(...sub)
+			}
+		}
+
+		return results
 	}
 
 	/**

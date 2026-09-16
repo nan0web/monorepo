@@ -46,6 +46,19 @@ export default class DBServer {
     /** @type {any} */
     model: any;
     /**
+     * Recursively scan directories and files from given root path.
+     * Supports both in-memory DB and file-system backed DB (DBFs).
+     * @param {string} [dir='']
+     * @param {number} [maxDepth=8]
+     * @param {number} [currentDepth=0]
+     * @returns {Promise<Array<{ path: string, name: string, isDir: boolean }>>}
+     */
+    scanFiles(dir?: string, maxDepth?: number, currentDepth?: number): Promise<Array<{
+        path: string;
+        name: string;
+        isDir: boolean;
+    }>>;
+    /**
      * Start listening.
      * @returns {Promise<DBServer>}
      */

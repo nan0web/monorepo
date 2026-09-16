@@ -73,3 +73,6 @@ logs/
 
 # Build artifacts
 *.tsbuildinfo
+
+# Releases dashboard
+/releases.txt

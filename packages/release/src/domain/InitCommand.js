@@ -27,8 +27,11 @@ export default class InitCommand extends ModelAsApp {
 	 */
 	async *run() {
 		const { t, db } = this._
+		if (!db) {
+			throw new Error('Database instance ({ db }) is required in InitCommand')
+		}
 		if (!this.version) {
-			throw new Error(t(InitCommand.version.errorRequired))
+			throw new Error(t ? t(InitCommand.version.errorRequired) : InitCommand.version.errorRequired)
 		}
 		const v = this.version.startsWith('v') ? this.version : `v${this.version}`
 
@@ -36,24 +39,21 @@ export default class InitCommand extends ModelAsApp {
 		const major = parts[0] || '0'
 		const minor = parts[1] || '0'
 
-		const { mkdirSync, writeFileSync } = await import('node:fs')
-		const { join } = await import('node:path')
+		const taskPath = `releases/${major}/${minor}/${v}/task.md`
+		await db.saveDocument(taskPath, `# Release ${v}\n\n- [ ] Task 1\n`)
 
-		const dir = join(process.cwd(), 'releases', major, minor, v)
-		mkdirSync(dir, { recursive: true })
-
-		const taskPath = join(dir, 'task.md')
-		writeFileSync(taskPath, `# Release ${v}\n\n- [ ] Task 1`, 'utf8')
-
-		const specPath = join(dir, 'test.spec.js')
-		writeFileSync(
+		const specPath = `releases/${major}/${minor}/${v}/task.spec.js`
+		await db.saveDocument(
 			specPath,
-			`import test from 'node:test'\nimport assert from 'node:assert'\n\ntest('Sample spec', () => {\n\tassert.ok(true)\n})\n`,
-			'utf8',
+			`import test from 'node:test'\nimport assert from 'node:assert'\n\ntest('Release ${v} Specification', () => {\n\tassert.ok(true)\n})\n`,
 		)
 
-		yield show(`✅ Initialized release ${v} in ${dir}`, 'success')
+		yield show(`✅ Initialized release ${v} in releases/${major}/${minor}/${v}`, 'success')
 
-		return result({})
+		return result({
+			version: v,
+			taskPath,
+			specPath,
+		})
 	}
 }

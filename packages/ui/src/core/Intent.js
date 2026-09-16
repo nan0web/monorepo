@@ -11,7 +11,19 @@
 import { IntentErrorModel } from './IntentErrorModel.js'
 
 // ─── Intent Types (Model → Adapter) ───
+/**
+ * Base fields common to all intents.
+ * @typedef {Object} IntentBase
+ * @property {any} [$value] - Optional value returned by adapters, often used in tests.
+ * @property {boolean} [$success] - Indicates success of the step; false means failure.
+ * @property {string} [$message] - Optional message for UI or logging.
+ */
 
+/**
+ * Files attached to an intent (used only by AgentIntent).
+ * @typedef {Object} IntentFiles
+ * @property {Record<string, string>} [$files] - Map of file paths to new content.
+ */
 /**
  * @typedef {Object} FieldSchema
  * @property {string} help - Human-readable label / i18n key.
@@ -105,12 +117,7 @@ import { IntentErrorModel } from './IntentErrorModel.js'
 
 /**
  * Union of all possible yielded intents.
- * @typedef {(AskIntent | ProgressIntent | LogIntent | ShowIntent | RenderIntent | AgentIntent | ResultIntent) & {
- *   $value?: any;
- *   $success?: boolean;
- *   $files?: Record<string, string>;
- *   $message?: string;
- * }} Intent
+ * @typedef {(AskIntent | ProgressIntent | LogIntent | ShowIntent | RenderIntent | (AgentIntent & IntentFiles) | ResultIntent) & IntentBase} Intent
  */
 
 // ─── Response Types (Adapter → Model) ───

@@ -1,5 +1,4 @@
-import { ModelAsApp } from '@nan0web/ui-cli';
-export declare class WorkflowIndexApp extends ModelAsApp {
+export class WorkflowIndexApp extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -16,13 +15,10 @@ export declare class WorkflowIndexApp extends ModelAsApp {
      * @param {Partial<WorkflowIndexApp>} [data]
      * @param {import('@nan0web/ui').ModelAsAppOptions} [options]
      */
-    constructor(data?: Partial<WorkflowIndexApp>, options?: import('@nan0web/ui').ModelAsAppOptions);
-    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ProgressIntent | import("@nan0web/ui/src/core/Intent.js").ShowIntent | (import("@nan0web/ui").AgentIntent & {
-        $value?: any;
-        $success?: boolean;
-        $files?: Record<string, string>;
-        $message?: string;
-    }) | (import("@nan0web/ui/src/core/Intent.js").AskIntent & {
+    constructor(data?: Partial<WorkflowIndexApp>, options?: import("@nan0web/ui").ModelAsAppOptions);
+    /** @type {string} Target directory */
+    dir: string;
+    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ProgressIntent | import("@nan0web/ui/src/core/Intent.js").ShowIntent | (import("@nan0web/ui/src/core/Intent.js").AskIntent & {
         $value?: any;
         $success?: boolean;
         $files?: Record<string, string>;
@@ -37,6 +33,11 @@ export declare class WorkflowIndexApp extends ModelAsApp {
         $success?: boolean;
         $files?: Record<string, string>;
         $message?: string;
+    }) | (import("@nan0web/ui").AgentIntent & {
+        $value?: any;
+        $success?: boolean;
+        $files?: Record<string, string>;
+        $message?: string;
     }) | (import("@nan0web/ui/src/core/Intent.js").ResultIntent & {
         $value?: any;
         $success?: boolean;
@@ -44,3 +45,4 @@ export declare class WorkflowIndexApp extends ModelAsApp {
         $message?: string;
     }), import("@nan0web/ui/src/core/Intent.js").ResultIntent | undefined, any>;
 }
+import { ModelAsApp } from '@nan0web/ui-cli';

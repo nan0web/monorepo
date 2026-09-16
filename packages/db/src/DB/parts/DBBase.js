@@ -30,8 +30,14 @@ class TTLMap extends Map {
 		super()
 		this.ttl = ttl
 		if (entries) {
-			for (const [k, v] of entries) {
-				this.set(k, v)
+			if (typeof entries[Symbol.iterator] === 'function') {
+				for (const [k, v] of entries) {
+					this.set(k, v)
+				}
+			} else if (typeof entries === 'object') {
+				for (const [k, v] of Object.entries(entries)) {
+					this.set(k, v)
+				}
 			}
 		}
 	}

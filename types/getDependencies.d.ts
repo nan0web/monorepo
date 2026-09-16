@@ -5,7 +5,7 @@
  * @param {{loadDocument:(path:string)=>Promise<any>, absolute?: (path:string)=>string}} db
  * @returns {Promise<string[]>}
  */
-export declare function getDependencies(db: {
+export function getDependencies(db: {
     loadDocument: (path: string) => Promise<any>;
     absolute?: (path: string) => string;
 }): Promise<string[]>;

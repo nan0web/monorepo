@@ -9,11 +9,13 @@ description: Архітектура Даних (YAML + DB-FS), структур�
 
 ## 1. Заборона на `fs` та `path`
 
+> 💡 **Живий рецепт переходу на $db:** [docs/uk/recipes/db-zero-fs.md](../recipes/db-zero-fs.md)
+
 При роботі з початковими даними пакету (`data/`), перекладами, або конфігурацією інтерфейсу:
 
-- ❌ **НЕ** використовуйте `fs.readFile('data/index.yaml')`
+- ❌ **НЕ** використовуйте `fs.readFile('data/index.yaml')` чи методи `node:path`
 - ❌ **НЕ** пишіть власні парсери YAML або механізми об'єднання (merge) локалей і файлів.
-- ✅ **ВИКОРИСТОВУЙТЕ** `@nan0web/db-fs` (в середовищі Node.js) або `BrowserDB` з пакета `@nan0web/db-browser` (в браузері). База сама резолвить ієрархію, мерджить об'єкти та обробляє `$ref`.
+- ✅ **ВИКОРИСТОВУЙТЕ** `@nan0web/db-fs` (в середовищі Node.js) або `BrowserDB` з пакета `@nan0web/db-browser` (в браузері). Усі методи читання, запису (`saveDocument`, `loadDocument`, `stat`, `listDir`, `browse`) та резолву шляхів (`resolveSync`, `basename`, `dirname`, `normalize`) надаються базою `$db`. База сама резолвить ієрархію, мерджить об'єкти та обробляє `$ref`.
 
 ## 2. Уніфікована Структура `data/`
 

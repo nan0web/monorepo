@@ -26,6 +26,10 @@ declare class ReleaseDocument extends Markdown {
     version: string;
     /** @type {Date | undefined} */
     date: Date | undefined;
+    sections: {
+        title: string;
+        tasks: any[];
+    }[] | undefined;
 }
 import Markdown from '@nan0web/markdown';
 import Person from './Person.js';

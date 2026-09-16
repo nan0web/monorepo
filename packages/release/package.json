@@ -7,17 +7,19 @@
   "type": "module",
   "bin": {
     "nan0release": "./bin/nan0release.js",
-    "release": "./bin/nan0release.js"
+    "release": "./bin/nan0release.js",
+    "serve": "./bin/serve.js"
   },
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf .cache/ && rm -rf dist/",
     "clean:modules": "rm -rf node_modules",
-    "test": "node --test \"src/**/*.test.js\"",
-    "test1": "node --test \"src/**/*.test.js\" | nan0test parse --fail",
+    "test": "node --test \"src/**/*.{test,story}.js\"",
+    "test:stories": "node --test \"src/**/*.story.js\"",
+    "test1": "node --test \"src/**/*.{test,story}.js\" | nan0test parse --fail",
     "test:docs": "node --test \"src/README.md.js\"",
     "test:release": "node --test \"releases/**/*.test.js\"",
-    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.{test,story}.js\" --test \"src/**/*.{test,story}.js\"",
     "test:coverage:collect": "nan0test coverage",
     "test:status": "nan0test status",
     "test:all": "npm run test && npm run test:docs && npm run build && npm run knip",
@@ -29,11 +31,37 @@
     "prepare": "husky",
     "playground": "node playground/main.js"
   },
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./domain/inspect/ReleaseAuditor": {
+      "import": "./src/domain/inspect/ReleaseAuditor.js",
+      "types": "./types/domain/inspect/ReleaseAuditor.d.ts"
+    },
+    "./domain/CheckCommand": {
+      "import": "./src/domain/CheckCommand.js",
+      "types": "./types/domain/CheckCommand.d.ts"
+    },
+    "./domain/StatusCommand": {
+      "import": "./src/domain/StatusCommand.js",
+      "types": "./types/domain/StatusCommand.d.ts"
+    },
+    "./domain/App": {
+      "import": "./src/domain/App.js",
+      "types": "./types/domain/App.d.ts"
+    },
+    "./domain/*": {
+      "import": "./src/domain/*.js"
+    }
+  },
   "dependencies": {
     "@nan0web/changelog": "workspace:*",
     "@nan0web/co": "workspace:*",
     "@nan0web/db": "workspace:*",
     "@nan0web/db-fs": "workspace:*",
+    "@nan0web/inspect": "workspace:*",
     "@nan0web/log": "workspace:*",
     "@nan0web/logos": "workspace:*",
     "@nan0web/markdown": "workspace:*",

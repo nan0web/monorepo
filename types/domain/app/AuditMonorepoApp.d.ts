@@ -1,20 +1,3 @@
-import { ModelAsApp } from '@nan0web/ui';
-export type TaskSummary = {
-    total: number;
-    completed: number;
-};
-export type ModuleAuditResult = {
-    name: string;
-    type: string;
-    path: string;
-    files: Record<string, TaskSummary>;
-    isCommercial: boolean;
-    license: string;
-    goal?: string;
-    version: string;
-    langs?: any[];
-    archScore?: any;
-};
 /**
  * @typedef {Object} TaskSummary
  * @property {number} total
@@ -58,11 +41,9 @@ export default class AuditMonorepoApp extends ModelAsApp {
         lab: string;
         seeds: string;
         missingPurpose: string;
+        errorNoDb?: string;
     };
-    /**
-     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
-     */
-    run(): AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>;
+    static errorNoDb: string;
     /**
      * @param {any} content
      * @returns {string|null}
@@ -92,3 +73,20 @@ export default class AuditMonorepoApp extends ModelAsApp {
      */
     runArchAudit(pkgPath: string): Promise<any | null>;
 }
+export type TaskSummary = {
+    total: number;
+    completed: number;
+};
+export type ModuleAuditResult = {
+    name: string;
+    type: string;
+    path: string;
+    files: Record<string, TaskSummary>;
+    isCommercial: boolean;
+    license: string;
+    goal?: string | undefined;
+    version: string;
+    langs?: any[] | undefined;
+    archScore?: any;
+};
+import { ModelAsApp } from '@nan0web/ui';

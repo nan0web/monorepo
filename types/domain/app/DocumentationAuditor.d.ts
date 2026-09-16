@@ -1,5 +1,4 @@
-import { Model } from '@nan0web/types';
-export declare class DocumentationAuditor extends Model {
+export class DocumentationAuditor extends Model {
     static UI: {
         checking: string;
         readmeJsNotFound: string;
@@ -15,5 +14,7 @@ export declare class DocumentationAuditor extends Model {
         default: string;
     };
     constructor(data?: {}, options?: {});
+    /** @type {string} */ dir: string;
     run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ProgressIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
 }
+import { Model } from '@nan0web/types';

@@ -1,0 +1,34 @@
+export default `<!DOCTYPE html>
+<html lang="uk" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Releases Catalog — NaN•Web</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --text-dim: #94a3b8;
+      --border: #334155;
+    }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 2.5rem 1.5rem; display: flex; justify-content: center; line-height: 1.6; }
+    .container { max-width: 880px; width: 100%; }
+    h1, h2, h3 { color: #fff; font-weight: 700; margin-top: 1.5rem; }
+    h1 { font-size: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: var(--surface); border-radius: 8px; overflow: hidden; }
+    th, td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: rgba(0,0,0,0.2); font-weight: 600; color: var(--accent); }
+    pre { background: var(--surface); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; color: #a5b4fc; font-family: monospace; }
+    blockquote { border-left: 4px solid var(--accent); margin: 1rem 0; padding: 0.5rem 1rem; background: var(--surface); border-radius: 0 8px 8px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    {{CONTENT}}
+  </div>
+</body>
+</html>`

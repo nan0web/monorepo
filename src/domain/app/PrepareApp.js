@@ -19,21 +19,14 @@ export default class PrepareApp extends ModelAsApp {
 		type: 'number',
 	}
 
-	static UI = {
-		title: '⚙️ NaN0Web Workspace Context Preparator',
-		starting: 'Compiling workflows manifest...',
-		compiled: 'Compiled workflows manifest.',
-		sessionSaved: 'Saved session config to .agent/active_session.json (Step {step})',
-		promptSaved: 'Prompt synthesized and saved to .gemini/prompt.md',
-		errorNoDb: 'No database found',
-	}
+	static UI = { ...ModelAsApp.UI, title: '⚙️ NaN0Web Workspace Context Preparator', starting: 'Compiling workflows manifest...', compiled: 'Compiled workflows manifest.', sessionSaved: 'Saved session config to .agent/active_session.json (Step {step})', promptSaved: 'Prompt synthesized and saved to .gemini/prompt.md', errorNoDb: 'No database found' }
 
 	/**
 	 * @param {Partial<PrepareApp>} [data]
 	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
 	 */
 	constructor(data = {}, options = {}) {
-		super(data, options)
+		super(data, { db: null, plugins: [], t: () => '', ...options })
 		/** @type {string} Target package directory (e.g. packages/ui). */
 		this.target
 		/** @type {number} Target step number (1 to 9). */

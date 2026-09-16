@@ -29,7 +29,7 @@ import { Markdown } from '@nan0web/markdown'
  */
 function resolveData(data, path) {
 	if (!path || !data) return undefined
-	const segments = path.split('.')
+	const segments = path.includes('/') ? path.split('/') : path.split('.')
 	let current = data
 	for (const seg of segments) {
 		if (current == null || typeof current !== 'object') return undefined
@@ -170,6 +170,16 @@ export default class Renderer {
 			if (Array.isArray(doc)) return doc
 			if (doc && Array.isArray(doc.$content)) return doc.$content
 			if (doc && typeof doc.content === 'string' && doc.content.trim()) return this.#renderMarkdown(doc.content)
+			if (doc && doc.document && typeof doc.document.toString === 'function') {
+				const mdStr = doc.document.toString()
+				if (mdStr.trim()) return this.#renderMarkdown(mdStr)
+			}
+			if (doc && typeof doc === 'object' && !(doc instanceof Object.getPrototypeOf(this.constructor))) {
+				if (typeof doc.toString === 'function' && doc.toString() !== '[object Object]') {
+					const mdStr = doc.toString()
+					if (mdStr.trim()) return this.#renderMarkdown(mdStr)
+				}
+			}
 
 			if (doc && typeof doc === 'object') {
 				return [{ section: true, data: doc }]

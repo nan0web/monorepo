@@ -50,7 +50,8 @@ export async function buildNavTree(db, rootPath = '.', options = {}) {
 				if (children.length > 0) {
 					// Fetch directory index for metadata (title, icon, order)
 					const indexUri = `${absPath}/${indexName}`
-					const doc = await db.fetch(indexUri) ?? {}
+					const rawDoc = await db.fetch(indexUri) ?? {}
+					const doc = normalizeDocument(rawDoc)
 
 					const title = doc.title || name.charAt(0).toUpperCase() + name.slice(1)
 					
@@ -74,7 +75,8 @@ export async function buildNavTree(db, rootPath = '.', options = {}) {
 
 					// Fetch document for metadata
 					const docUri = absPath.slice(0, -extMatch[0].length)
-					const doc = await db.fetch(docUri) ?? {}
+					const rawDoc = await db.fetch(docUri) ?? {}
+					const doc = normalizeDocument(rawDoc)
 
 					const title = doc.title 
 						|| (basename === indexName

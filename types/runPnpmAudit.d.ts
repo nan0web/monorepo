@@ -6,4 +6,4 @@
  *
  * @returns {Promise<import("./AuditIssue.js").default[]>}
  */
-export declare function runPnpmAudit(): Promise<import("./AuditIssue.js").default[]>;
+export function runPnpmAudit(): Promise<import("./AuditIssue.js").default[]>;

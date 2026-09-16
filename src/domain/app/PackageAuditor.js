@@ -1,4 +1,4 @@
-import { progress, result } from '@nan0web/ui'
+import { ModelAsApp, progress, result } from '@nan0web/ui'
 import {
 	AuditorModel,
 	CircularDependencyAuditor,
@@ -10,11 +10,7 @@ import {
 export class PackageAuditor extends AuditorModel {
 	static $id = '@nan0web/nan0web/PackageAuditor'
 
-	static UI = {
-		errorDbConnection: 'Cannot connect to database',
-		auditing: 'Auditing package in {dir}',
-		complete: 'Audit complete for {dir}',
-	}
+	static UI = { ...ModelAsApp.UI, errorDbConnection: 'Cannot connect to database', auditing: 'Auditing package in {dir}', complete: 'Audit complete for {dir}' }
 
 	/**
 	 * @param {Partial<PackageAuditor>} [data]
@@ -36,9 +32,8 @@ export class PackageAuditor extends AuditorModel {
 		yield progress(t(PackageAuditor.UI.auditing, { dir: this.dir }))
 
 		// 0. Stack Detection
-		const detector = new StackDetector({ dir: this.dir })
-		const detectorResult = await detector.run().next()
-		const stack = detectorResult.value.payload.stack
+		const platform = await StackDetector.detectPlatform(this._.db, this.dir);
+        const stack = platform === 'js' ? 'npm' : platform === 'python' ? 'python' : 'unknown';
 
 		// 1. No TypeScript in src (if JS stack)
 		if (['npm', 'pnpm', 'yarn'].includes(stack)) {

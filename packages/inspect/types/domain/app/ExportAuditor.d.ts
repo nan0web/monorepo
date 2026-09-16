@@ -7,10 +7,6 @@
  * ExportAuditor — Verifies named exports, domain facades, and UI adapter exports.
  */
 export class ExportAuditor extends AuditorModel {
-    /** @type {Object<string, string>} UI messages for export steps */
-    static UI: {
-        [x: string]: string;
-    };
     /**
      * Runs the export integrity audit.
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}

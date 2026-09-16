@@ -1,9 +1,4 @@
-import { ModelAsApp } from '@nan0web/ui';
 export default class BumpMonorepoApp extends ModelAsApp {
-    static help: {
-        help: string;
-        default: boolean;
-    };
     static version: {
         positional: boolean;
         help: string;
@@ -26,14 +21,16 @@ export default class BumpMonorepoApp extends ModelAsApp {
         versionUpdatedDry: string;
         wouldNotBump: string;
         noDB: string;
+        errorNoDb?: string;
     };
     /**
      * @param {Partial<BumpMonorepoApp>} [data]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
-    constructor(data?: Partial<BumpMonorepoApp>, options?: Partial<import('@nan0web/ui').ModelAsAppOptions>);
-    /**
-     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
-     */
-    run(): AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>;
+    constructor(data?: Partial<BumpMonorepoApp>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    /** @type {string} */
+    version: string;
+    /** @type {boolean} */
+    dryRun: boolean;
 }
+import { ModelAsApp } from '@nan0web/ui';

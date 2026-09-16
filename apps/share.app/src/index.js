@@ -51,7 +51,19 @@ export class ShareAppCLI extends ModelAsApp {
 		positional: true,
 	}
 
+	/**
+	 * @param {Partial<ShareAppCLI>} [data]
+
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions & { toolChecker?: typeof import('./ports/ToolCheckerPort.js').ToolCheckerPort }>} [options]
+	 */
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		/** @type {typeof import('./ports/ToolCheckerPort.js').ToolCheckerPort | undefined} */
+		this.toolChecker = options?.toolChecker
+	}
+
 	async *run() {
 		yield* super.run()
 	}
 }
+

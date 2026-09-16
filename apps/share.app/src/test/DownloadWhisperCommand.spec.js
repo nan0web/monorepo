@@ -63,4 +63,22 @@ describe('DownloadWhisperCommand', () => {
 		// We verify the proper error message was yielded
 		assert.ok(errorShow.message.includes('Usage:'))
 	})
+
+	it('run — uses injected toolChecker and reports missing tools', async () => {
+		const { DownloadWhisperCommand } = await import('../domain/commands/DownloadWhisperCommand.js')
+		const customToolChecker = {
+			require: async () => [{ tool: 'ffmpeg', hint: 'brew install ffmpeg' }],
+		}
+		const cmd = new DownloadWhisperCommand(
+			{ url: 'https://youtube.com/watch?v=test' },
+			{ toolChecker: /** @type {any} */ (customToolChecker) }
+		)
+		const results = []
+		for await (const intent of cmd.run()) {
+			results.push(intent)
+		}
+		const errorShow = results.find(r => r.type === 'show' && r.level === 'error')
+		assert.ok(errorShow, 'should yield an error show for missing tools')
+		assert.ok(errorShow.message.includes('ffmpeg'))
+	})
 })

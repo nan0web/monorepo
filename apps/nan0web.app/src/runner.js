@@ -187,6 +187,9 @@ export class AppRunner extends EventEmitter {
 		if (this.options.locale) {
 			this.config.locale = this.options.locale
 		}
+		if (this.options.directoryIndex) {
+			this.config.directoryIndex = this.options.directoryIndex
+		}
 		yield `📂 Data Source: ${this.config.dsn}`
 
 		// DSN Factory: Initialize appropriate DB driver based on URI scheme
@@ -417,7 +420,7 @@ export class AppRunner extends EventEmitter {
 		// Phase 5: Dynamic Source Data Fetching
 		// If page has a source but its not in state, load it from DB
 		if (page.source) {
-			const segments = page.source.split('.')
+			const segments = page.source.includes('/') ? page.source.split('/') : page.source.split('.')
 			let current = this.state
 			let missing = false
 			for (const seg of segments) {
@@ -430,7 +433,8 @@ export class AppRunner extends EventEmitter {
 
 			if (missing) {
 				try {
-					const doc = this.dataDb ? await this.dataDb.fetch(page.source.replace(/\./g, '/')) : null
+					const fetchPath = page.source.includes('/') ? page.source : page.source.replace(/\./g, '/')
+					const doc = this.dataDb ? await this.dataDb.fetch(fetchPath) : null
 					if (doc) {
 						// Inject into state under its path
 						let target = this.state

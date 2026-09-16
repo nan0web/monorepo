@@ -1,0 +1,31 @@
+# Default English vocabulary for v3.4.0 Release Showcase
+
+# Titles & Navigation
+Universal UI Component Contracts: Universal UI Component Contracts
+Session 1: Model Core & Fractal $content: Session 1: Model Core & Fractal $content
+Session 2: Multimodal OLMUI Contracts: Session 2: Multimodal OLMUI Contracts
+Main Menu: Main Menu
+Home: Home
+Catalog: Catalog
+About Us: About Us
+
+# Showcase Demos
+DOC-1: resolveNav() — Navigation reference resolver: DOC-1: resolveNav() — Navigation reference resolver
+DOC-2: resolveContent() — Boolean block expansion: DOC-2: resolveContent() — Boolean block expansion
+Case-insensitive lookup: lookupField(): Case-insensitive lookup: lookupField()
+Mixed boolean & non-boolean props: Mixed boolean & non-boolean props
+Edge cases (null, empty, missing): Edge cases (null, empty, missing)
+Full Pipeline (nav + $content): Full Pipeline (nav + $content)
+Run all demos: Run all demos
+Exit: Exit
+
+# Content Blocks
+Welcome to NaN•Web!: Welcome to NaN•Web!
+Quick Start: Quick Start
+One Logic — Multiple User Interfaces: One Logic — Multiple User Interfaces
+Modules: Modules
+Platforms: Platforms
+Home Page: Home Page
+Welcome to the platform.: Welcome to the platform.
+© 2026 NaN•Web: © 2026 NaN•Web
+online: online

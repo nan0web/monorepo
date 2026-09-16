@@ -17,17 +17,7 @@ export default class BumpMonorepoApp extends ModelAsApp {
 		default: false,
 	}
 
-	static UI = {
-		title: 'Bump Monorepo Version',
-		newVersionIn: 'New version {version} in {dir}',
-		searchingPackages: 'Searching for packages',
-		searchingApps: 'Searching for apps',
-		updatingVersions: 'Updating versions',
-		versionUpdated: '{name}@{old} -> {new}',
-		versionUpdatedDry: '[DRY RUN] Would bump {name}@{old} -> {new}',
-		wouldNotBump: '{name} is already at {version}',
-		noDB: 'No DB found',
-	}
+	static UI = { ...ModelAsApp.UI, title: 'Bump Monorepo Version', newVersionIn: 'New version {version} in {dir}', searchingPackages: 'Searching for packages', searchingApps: 'Searching for apps', updatingVersions: 'Updating versions', versionUpdated: '{name}@{old} -> {new}', versionUpdatedDry: '[DRY RUN] Would bump {name}@{old} -> {new}', wouldNotBump: '{name} is already at {version}', noDB: 'No DB found' }
 
 	/**
 	 * @param {Partial<BumpMonorepoApp>} [data]

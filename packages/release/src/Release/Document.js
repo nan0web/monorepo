@@ -83,6 +83,7 @@ class ReleaseDocument extends Markdown {
 			}
 		}
 
+		this.sections = sections
 		return result
 	}
 

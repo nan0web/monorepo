@@ -11,5 +11,8 @@
 		"@nan0web/types",
 		"string-width"
 	],
-	"ignoreBinaries": ["nan0test", "nan0release", "knip"]
+	"ignoreBinaries": ["nan0test", "nan0release", "knip"],
+	"rules": {
+		"duplicates": "off"
+	}
 }

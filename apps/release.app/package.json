@@ -1,0 +1,42 @@
+{
+  "name": "@nan0web/release.app",
+  "version": "0.1.0",
+  "description": "Global PM-as-Code Release Dashboard and Monitoring Hub",
+  "main": "src/index.js",
+  "type": "module",
+  "bin": {
+    "release-app": "./bin/release-app.js",
+    "nan0release": "./bin/release-app.js",
+    "release": "./bin/release-app.js"
+  },
+  "scripts": {
+    "test": "node --test \"src/**/*.{test,story}.js\"",
+    "test:stories": "node --test \"src/**/*.story.js\"",
+    "test:spec": "node --test \"releases/**/*.spec.js\"",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "release:status": "node ./bin/release-app.js status",
+    "release:check": "node ./bin/release-app.js check",
+    "preview": "node ./bin/preview.js",
+    "dev": "node ./bin/release-app.js",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./ui/web": "./src/ui/lit/index.js",
+    "./ui/lit": "./src/ui/lit/index.js",
+    "./ui/cli": "./src/ui/cli/index.js"
+  },
+  "dependencies": {
+    "@nan0web/types": "workspace:*",
+    "@nan0web/release": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*",
+    "@nan0web/ui-lit": "workspace:*",
+    "@nan0web/db": "workspace:*",
+    "@nan0web/db-fs": "workspace:*"
+  },
+  "devDependencies": {
+    "@nan0web/test": "workspace:*",
+    "@types/node": "^25.6.0"
+  }
+}

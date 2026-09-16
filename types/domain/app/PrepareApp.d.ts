@@ -1,9 +1,4 @@
-import { ModelAsApp } from '@nan0web/ui';
 export default class PrepareApp extends ModelAsApp {
-    static help: {
-        help: string;
-        default: boolean;
-    };
     static target: {
         help: string;
         default: string;
@@ -26,9 +21,10 @@ export default class PrepareApp extends ModelAsApp {
      * @param {Partial<PrepareApp>} [data]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
-    constructor(data?: Partial<PrepareApp>, options?: Partial<import('@nan0web/ui').ModelAsAppOptions>);
-    /**
-     * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
-     */
-    run(): AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>;
+    constructor(data?: Partial<PrepareApp>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
+    /** @type {string} Target package directory (e.g. packages/ui). */
+    target: string;
+    /** @type {number} Target step number (1 to 9). */
+    step: number;
 }
+import { ModelAsApp } from '@nan0web/ui';

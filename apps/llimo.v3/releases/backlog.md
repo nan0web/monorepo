@@ -88,16 +88,44 @@ transport = "stdio"
 
 ---
 
+## Варіант D: LLMAgent Self-Healing Loop & Quality Gates Engine (Автономне самовідновлення)
+
+Інтеграція доменного процесу `packages/ai/src/domain/process/logic.js` (`LLMAgent` на базі `ModelAsApp`) безпосередньо в ранер `llimo.v3`.
+
+### Архітектура шлюзів якості (Quality Gates)
+1. **Pre-flight Baseline Gate**: перевірка стану тестів проєкту до початку чату. Якщо репозиторій вже зламаний — агент сигналізує та зупиняється, уникаючи плутанини між існуючими багами та новими змінами.
+2. **Fast Per-File Gates (Атомарні шлюзи)**:
+   - `checkFile(file)`: перевірка валідності синтаксису (`node --check`).
+   - `prettyFile(file)`: перевірка гігієни коду (`prettier --check`).
+   - `testFile(file)`: вибірковий запуск відповідного unit-тесту (`node --test`).
+   - `buildFile(file)`: валідація TypeScript/JSDoc сигнатур (`tsc --noEmit`).
+3. **Context Integration Gate (`testContext`)**: запуск усіх пов'язаних тестів із контексту завдання (викликається лише якщо атомарні шлюзи зелені).
+4. **Full Project Test Gate (`testProject`)**: повний прогін тестів проєкту (`pnpm test`), якщо не вимкнено конфігурацією (`skipProjectTests: false`).
+5. **Architectural Inspection Gate (`inspectProject`)**: перевірка проєкту інспекторами `@nan0web/inspect` (Model-as-Schema v2, JSDoc, i18n, структура).
+6. **Self-Healing Iteration Loop**:
+   - Автоматичний повтор спроб через `chat.canContinue()`.
+   - Запит дозволу користувача через OLMUI `yield ask('autoContinue')` у разі вичерпання ліміту (`maxRetries`).
+
+**Завдання:**
+- [ ] Підключити `LLMAgent` як ядро автономної кодогенерації для `llimo3`.
+- [ ] Додати CLI та Web адаптери для OLMUI-подій (`yield show`, `yield ask`).
+- [ ] Експортувати команду `llimo3 agent run <task>`.
+
+---
+
 ## Пріоритет
 
-1. **B (MCP)** — прямий шлях, мінімум залежностей
-2. **A (Custom Tool)** — якщо MCP з якихось причин не підходить
-3. **C (Subagent)** — після того, як Mistral додасть API для кастомних субагентів
+1. **D (LLMAgent Self-Healing Gates)** — надійна автономна кодогенерація без галюцинацій.
+2. **B (MCP)** — прямий шлях інтеграції з IDE та Vibe, мінімум залежностей.
+3. **A (Custom Tool)** — швидкий fallback.
+4. **C (Subagent)** — після того, як Mistral додасть API для кастомних субагентів.
 
 ---
 
 ## Посилання
 
+- `packages/ai/src/domain/process/logic.js` — LLMAgent OLMUI Model
+- `packages/ai/src/domain/ChatSession.js` — ChatSession з контекстом та збереженням помилок
 - `src/domain/pipeline/PipelineRunner.js` — запуск pipeline
 - `src/domain/pipeline/pipelines/AppPipelineModel.js` — 9-фазний конвеєр
 - `src/domain/pipeline/PipelineApp.js` — CLI команда

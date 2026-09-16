@@ -1,8 +1,3 @@
-import Logger from '@nan0web/log';
-export type createProgressOptions = {
-    startTime?: number;
-    fps?: number;
-};
 /**
  * @typedef {Object} createProgressOptions
  * @property {number} [startTime=Date.now()]
@@ -14,29 +9,7 @@ export type createProgressOptions = {
  * @param {createProgressOptions} param1
  * @returns {NodeJS.Timeout}
  */
-export declare function createProgress(fn: ({ startTime, elapsed }: any) => void, { startTime, fps }: createProgressOptions): NodeJS.Timeout;
-export type OutputProgressInput = {
-    /**
-     * Logger instance as a console processor
-     */
-    logger?: Logger;
-    /**
-     * Number of lines to print out
-     */
-    maxLines?: number;
-    /**
-     * Array of chunks to print out
-     */
-    chunks?: string[];
-    /**
-     * Frames per second
-     */
-    fps?: number;
-    /**
-     * Recent printed amount of lines
-     */
-    printed?: number;
-};
+export function createProgress(fn: ({ startTime, elapsed }: any) => void, { startTime, fps }: createProgressOptions): NodeJS.Timeout;
 /**
  * @typedef {Object} OutputProgressInput
  * @property {Logger} [logger] Logger instance as a console processor
@@ -49,7 +22,7 @@ export type OutputProgressInput = {
  * @param {OutputProgressInput} input
  * @returns {NodeJS.Timeout}
  */
-export declare function createOutputProgress(input: OutputProgressInput): NodeJS.Timeout;
+export function createOutputProgress(input: OutputProgressInput): NodeJS.Timeout;
 /**
  * Pause execution for a given number of milliseconds.
  *
@@ -59,4 +32,31 @@ export declare function createOutputProgress(input: OutputProgressInput): NodeJS
  * @example
  *   await pause(10); // pauses for ~10 ms
  */
-export declare function pause(ms?: number): Promise<void>;
+export function pause(ms?: number): Promise<void>;
+export type createProgressOptions = {
+    startTime?: number | undefined;
+    fps?: number | undefined;
+};
+export type OutputProgressInput = {
+    /**
+     * Logger instance as a console processor
+     */
+    logger?: Logger | undefined;
+    /**
+     * Number of lines to print out
+     */
+    maxLines?: number | undefined;
+    /**
+     * Array of chunks to print out
+     */
+    chunks?: string[] | undefined;
+    /**
+     * Frames per second
+     */
+    fps?: number | undefined;
+    /**
+     * Recent printed amount of lines
+     */
+    printed?: number | undefined;
+};
+import Logger from '@nan0web/log';

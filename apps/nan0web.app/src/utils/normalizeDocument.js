@@ -35,9 +35,9 @@ export function normalizeDocument(doc) {
 	}
 
 	// Case 3: Plain object (NaN0/YAML/JSON)
-	return {
-		...doc,
-		content: doc.content || '', // Ensure content exists
-		$content: doc.$content || [], // Ensure $content exists
+	const normalized = { ...doc }
+	if (Array.isArray(doc.content)) {
+		normalized.$content = doc.content
 	}
+	return normalized
 }

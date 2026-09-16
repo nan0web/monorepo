@@ -225,7 +225,8 @@ export default class StatusCommand extends CLI {
 
 		const cols = Object.keys(TestPackage.COLUMNS).filter((c) => !statusMsg.body['hide_' + c])
 
-		const md = await db.loadDocument('README.md')
+		const mdDoc = await db.loadDocument('README.md')
+		const md = mdDoc ? String(mdDoc) : ''
 		if (md.includes('<!-- %PACKAGE_STATUS% -->')) {
 			const table = pkg.render(rrs, { head: true, body: true, cols, features })
 			const text = md

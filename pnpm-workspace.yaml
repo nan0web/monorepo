@@ -1,7 +1,5 @@
 packages:
   - 'apps/*'
-  - 'apps/3rdparty/*'
-  - 'apps/3rdparty/*/*'
   - 'packages/*'
 allowBuilds:
   '@nan0web/i18n': true
@@ -36,8 +34,7 @@ overrides:
   nodemailer@<8.0.4: '>=8.0.4'
   path-to-regexp@>=8.0.0 <8.4.0: '>=8.4.0'
   picomatch@<2.3.2: '>=2.3.2'
-  picomatch@>=4.0.0 <4.0.4: '>=4.0.4'
-  postcss@<8.5.10: '>=8.5.10'
+  postcss: '>=8.5.23'
   protobufjs@<7.5.5: '>=7.5.5'
   serialize-javascript@<7.0.5: '>=7.0.5'
   serialize-javascript@<=7.0.2: '>=7.0.3'
@@ -45,3 +42,6 @@ overrides:
   vite@<=6.4.1: '>=6.4.2'
   ws@>=8.0.0 <8.20.1: '>=8.20.1'
   yaml@>=2.0.0 <2.8.3: '>=2.8.3'
+  js-yaml: '>=5.2.2'
+  '@ai-sdk/provider-utils': '>=4.0.33'
+

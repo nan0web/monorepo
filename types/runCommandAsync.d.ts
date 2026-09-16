@@ -1,14 +1,3 @@
-export type onChunkFn = (data: string, error?: boolean) => void;
-export type runCommandOptions = {
-    cwd?: string;
-    maxLines?: number;
-    keepOutput?: boolean;
-    onChunk?: onChunkFn;
-};
-export type CommandResult = {
-    code: number;
-    output: string;
-};
 /**
  * @typedef {(data: string, error?: boolean) => void} onChunkFn
  */
@@ -35,4 +24,15 @@ export type CommandResult = {
  * @param {runCommandOptions} [options]
  * @returns {Promise<CommandResult>}
  */
-export declare function runCommandAsync(command: string, args: string[], options?: runCommandOptions): Promise<CommandResult>;
+export function runCommandAsync(command: string, args: string[], options?: runCommandOptions): Promise<CommandResult>;
+export type onChunkFn = (data: string, error?: boolean) => void;
+export type runCommandOptions = {
+    cwd?: string | undefined;
+    maxLines?: number | undefined;
+    keepOutput?: boolean | undefined;
+    onChunk?: onChunkFn | undefined;
+};
+export type CommandResult = {
+    code: number;
+    output: string;
+};

@@ -26,6 +26,41 @@ export class ModelAsApp extends Model {
 		default: false,
 	}
 
+	/** @typedef {{ [key: string]: string }} UIMap */
+	/**
+	 * Default UI message templates and i18n keys.
+	 * All keys and default fallback phrases MUST be written in English.
+	 * Translations are stored in data dictionaries (`data/*`) or database storage
+	 * in the `t` variable (e.g. `[locale]/_/t.{nan0|yaml|json}`) and can be overridden
+	 * by any document down the hierarchy via DB inheritance and `fetch()`.
+	 *
+	 * @type {UIMap}
+	 */
+	static UI = {
+		errorNoDb: 'Database instance ($db) is required for {alias}',
+	}
+
+	/** Unified UI getter */
+	get $UI() {
+		/** @type {ModelAsApp} */
+		return (this.constructor).UI ?? {};
+	}
+
+	/**
+	 * Guaranteed DB instance getter with localized error.
+	 * @returns {import('@nan0web/db').DB}
+	 */
+	get $db() {
+		const db = this._?.db
+		if (!db) {
+			const Class = /** @type {typeof ModelAsApp} */ (this.constructor)
+			const alias = Class.$alias || Class.alias || Class.name
+			const errorTemplate = Class.UI?.errorNoDb || ModelAsApp.UI.errorNoDb
+			throw new Error(this._.t(errorTemplate, { alias }))
+		}
+		return db
+	}
+
 	/**
 	 * @param {Partial<ModelAsApp> | Record<string, any>} [data={}]
 	 * @param {Partial<ModelAsAppOptions>} [options={}]
@@ -75,6 +110,7 @@ export class ModelAsApp extends Model {
 				if (typeof C !== 'function') return false
 				const className = typeof C.name === 'string' ? C.name : ''
 				const alias =
+					(typeof C.$alias === 'string' ? C.$alias : null) ||
 					(typeof C.alias === 'string' ? C.alias : null) ||
 					className.replace(/Command|App/g, '').toLowerCase()
 				return alias === val
@@ -85,6 +121,7 @@ export class ModelAsApp extends Model {
 		if (SubClass) {
 			const className = typeof Class.name === 'string' ? Class.name : ''
 			const myAlias =
+				(typeof /** @type {any} */ (Class).$alias === 'string' ? /** @type {any} */ (Class).$alias : null) ||
 				(typeof /** @type {any} */ (Class).alias === 'string' ? /** @type {any} */ (Class).alias : null) ||
 				className.replace(/Command|App/g, '').toLowerCase()
 			const fullPath = this._.parentPath ? `${this._.parentPath} ${myAlias}` : myAlias
@@ -117,6 +154,7 @@ export class ModelAsApp extends Model {
 			if (val instanceof ModelAsApp && val['help'] && val._._isExplicit) {
 				const className = typeof Class.name === 'string' ? Class.name : ''
 				const myAlias =
+					(typeof /** @type {any} */ (Class).$alias === 'string' ? /** @type {any} */ (Class).$alias : null) ||
 					(typeof /** @type {any} */ (Class).alias === 'string' ? /** @type {any} */ (Class).alias : null) ||
 					className.replace(/Command|App/g, '').toLowerCase()
 				const fullPath = parentPath ? `${parentPath} ${myAlias}` : myAlias
@@ -126,6 +164,7 @@ export class ModelAsApp extends Model {
 
 		const className = typeof Class.name === 'string' ? Class.name : ''
 		const myAlias =
+			(typeof /** @type {any} */ (Class).$alias === 'string' ? /** @type {any} */ (Class).$alias : null) ||
 			(typeof /** @type {any} */ (Class).alias === 'string' ? /** @type {any} */ (Class).alias : null) ||
 			className.replace(/Command|App/g, '').toLowerCase()
 		const fullPath = parentPath ? `${parentPath} ${myAlias}` : myAlias
@@ -176,7 +215,7 @@ export class ModelAsApp extends Model {
 					for (const SubCmd of subcommands) {
 						if (SubCmd && SubCmd.prototype && SubCmd.prototype.generateHelp) {
 							const subClassName = typeof SubCmd.name === 'string' ? SubCmd.name : ''
-							const cmdName = SubCmd.alias || subClassName.replace(/Command|App/g, '').toLowerCase()
+							const cmdName = SubCmd.$alias || SubCmd.alias || subClassName.replace(/Command|App/g, '').toLowerCase()
 							const desc = SubCmd.UI?.title ? t(SubCmd.UI.title) : ''
 							usageExamples.push(`${fullPath} ${cmdName} ${desc ? `— ${desc}` : ''}`.trim())
 						}

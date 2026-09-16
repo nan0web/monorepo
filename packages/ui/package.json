@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "NaN•Web UI. One application logic (algorithm) and many UI.",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -21,6 +21,7 @@
     "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
     "test:coverage:collect": "nan0test coverage",
     "test:docs": "node --test --test-timeout=3333 'src/docs/**/*.md.js'",
+    "test:types": "tsc --project tsconfig.check.json",
     "release:spec": "node --test \"src/test/releases/**/*.test.js\"",
     "test:release": "node --test \"src/test/releases/**/*.test.js\"",
     "test:status": "nan0test status --hide-name",

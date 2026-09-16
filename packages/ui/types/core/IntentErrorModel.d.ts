@@ -1,4 +1,7 @@
 export class IntentErrorModel {
+    /**
+     * @typedef {'intent_not_object'|'intent_unknown_type'|'ask_missing_field'|'ask_missing_schema_help'|'intent_missing_message'|'render_missing_component'|'agent_missing_task'|'adapter_missing_ask'|'ask_wrong_response'|'validation_failed'|'unhandled_intent'|'timeout'|'aborted'} IntentErrorField
+     */
     static intent_not_object: {
         help: string;
         error: string;
@@ -50,10 +53,10 @@ export class IntentErrorModel {
     /**
      * Build a ModelError for a specific error field.
      *
-     * @param {string} field - Static field name on IntentErrorModel.
+     * @param {IntentErrorField} field - Static field name on IntentErrorModel.
      * @param {Record<string, *>} [params] - Template parameters to substitute {key} placeholders.
      * @returns {ModelError}
      */
-    static error(field: string, params?: Record<string, any>): ModelError;
+    static error(field: "intent_not_object" | "intent_unknown_type" | "ask_missing_field" | "ask_missing_schema_help" | "intent_missing_message" | "render_missing_component" | "agent_missing_task" | "adapter_missing_ask" | "ask_wrong_response" | "validation_failed" | "unhandled_intent" | "timeout" | "aborted", params?: Record<string, any>): ModelError;
 }
 import { ModelError } from '@nan0web/types';

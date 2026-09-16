@@ -1,7 +1,7 @@
 import { ExplorerModel } from './ExplorerModel.js'
 
 /**
- * Render Web Explorer HTML using ExplorerModel for i18n localization.
+ * Render Web Explorer HTML with Collapsible Interactive Tree Inspector and Global Recursive Search.
  * @param {{ model?: ExplorerModel, lang?: string }} [options]
  * @returns {string} HTML markup
  */
@@ -33,6 +33,11 @@ export const renderExplorerHTML = (options = {}) => {
 			--text-bright: #f0f6fc;
 			--font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
 			--font-mono: 'JetBrains Mono', monospace;
+			--tree-key: #79c0ff;
+			--tree-str: #a5d6ff;
+			--tree-num: #ffa657;
+			--tree-bool: #ff7b72;
+			--tree-null: #8b949e;
 		}
 
 		* { box-sizing: border-box; margin: 0; padding: 0; }
@@ -89,6 +94,8 @@ export const renderExplorerHTML = (options = {}) => {
 			flex-grow: 1;
 			max-width: 600px;
 			margin: 0 20px;
+			overflow-x: auto;
+			white-space: nowrap;
 		}
 
 		.breadcrumb-item {
@@ -107,6 +114,7 @@ export const renderExplorerHTML = (options = {}) => {
 
 		.actions {
 			display: flex;
+			align-items: center;
 			gap: 10px;
 		}
 
@@ -177,7 +185,7 @@ export const renderExplorerHTML = (options = {}) => {
 		}
 
 		.tree-panel {
-			width: 320px;
+			width: 340px;
 			background: var(--panel);
 			border-right: 1px solid var(--border);
 			display: flex;
@@ -194,6 +202,52 @@ export const renderExplorerHTML = (options = {}) => {
 			color: var(--text-dim);
 			border-bottom: 1px solid var(--border);
 			background: rgba(0,0,0,0.15);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.search-container {
+			padding: 8px 12px;
+			border-bottom: 1px solid var(--border);
+			background: var(--bg);
+			display: flex;
+			gap: 6px;
+			align-items: center;
+		}
+
+		.search-input {
+			flex-grow: 1;
+			background: var(--panel);
+			color: var(--text-bright);
+			border: 1px solid var(--border);
+			border-radius: 6px;
+			padding: 6px 10px;
+			font-family: var(--font-mono);
+			font-size: 0.8rem;
+			outline: none;
+			transition: border-color 0.15s;
+		}
+
+		.search-input:focus {
+			border-color: var(--accent);
+		}
+
+		.btn-icon-toggle {
+			padding: 6px 10px;
+			border-radius: 6px;
+			font-size: 0.8rem;
+			font-weight: 600;
+			background: var(--panel);
+			border: 1px solid var(--border);
+			color: var(--text-dim);
+			cursor: pointer;
+		}
+
+		.btn-icon-toggle.active {
+			background: var(--accent);
+			color: #0d1117;
+			border-color: var(--accent);
 		}
 
 		.file-list {
@@ -226,12 +280,14 @@ export const renderExplorerHTML = (options = {}) => {
 		}
 
 		.file-icon { font-size: 1rem; width: 20px; text-align: center; }
+		.file-subpath { font-size: 0.72rem; color: var(--text-dim); display: block; }
 
 		.editor-container {
 			flex-grow: 1;
 			display: flex;
 			flex-direction: column;
 			background: var(--bg);
+			overflow: hidden;
 		}
 
 		.editor-toolbar {
@@ -241,12 +297,44 @@ export const renderExplorerHTML = (options = {}) => {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			flex-wrap: wrap;
+			gap: 8px;
 		}
 
 		.active-doc-info {
 			font-family: var(--font-mono);
 			font-size: 0.85rem;
 			color: var(--accent);
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.tab-buttons {
+			display: flex;
+			gap: 4px;
+			background: var(--bg);
+			padding: 3px;
+			border-radius: 6px;
+			border: 1px solid var(--border);
+		}
+
+		.tab-btn {
+			padding: 5px 12px;
+			font-size: 0.8rem;
+			font-weight: 500;
+			background: transparent;
+			border: none;
+			color: var(--text-dim);
+			border-radius: 4px;
+			cursor: pointer;
+			transition: all 0.15s;
+		}
+
+		.tab-btn.active {
+			background: var(--panel-hover);
+			color: var(--text-bright);
+			font-weight: 600;
 		}
 
 		textarea#editor {
@@ -262,6 +350,77 @@ export const renderExplorerHTML = (options = {}) => {
 			resize: none;
 			white-space: pre;
 			tab-size: 2;
+		}
+
+		/* Interactive Collapsible Tree Styles */
+		.tree-inspector-container {
+			flex-grow: 1;
+			background: var(--bg);
+			padding: 16px 20px;
+			overflow: auto;
+			font-family: var(--font-mono);
+			font-size: 0.85rem;
+			line-height: 1.6;
+		}
+
+		.tree-node {
+			margin-left: 18px;
+			border-left: 1px dashed rgba(255,255,255,0.12);
+			padding-left: 8px;
+		}
+
+		.tree-header {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			cursor: pointer;
+			user-select: none;
+			padding: 2px 4px;
+			border-radius: 4px;
+			transition: background 0.1s;
+		}
+
+		.tree-header:hover {
+			background: var(--panel-hover);
+		}
+
+		.tree-toggle {
+			display: inline-block;
+			width: 14px;
+			height: 14px;
+			line-height: 14px;
+			text-align: center;
+			font-size: 0.75rem;
+			color: var(--text-dim);
+			transition: transform 0.15s ease;
+		}
+
+		.tree-toggle.collapsed {
+			transform: rotate(-90deg);
+		}
+
+		.tree-key { color: var(--tree-key); font-weight: 600; }
+		.tree-colon { color: var(--text-dim); }
+		.tree-type-badge {
+			font-size: 0.72rem;
+			color: var(--text-dim);
+			background: var(--panel);
+			padding: 1px 6px;
+			border-radius: 4px;
+			border: 1px solid var(--border);
+		}
+
+		.tree-val-str { color: var(--tree-str); }
+		.tree-val-num { color: var(--tree-num); }
+		.tree-val-bool { color: var(--tree-bool); font-weight: 600; }
+		.tree-val-null { color: var(--tree-null); font-style: italic; }
+
+		.tree-actions-bar {
+			display: flex;
+			gap: 8px;
+			margin-bottom: 12px;
+			padding-bottom: 8px;
+			border-bottom: 1px solid var(--border);
 		}
 
 		.empty-state {
@@ -311,18 +470,40 @@ export const renderExplorerHTML = (options = {}) => {
 
 	<main>
 		<div class="tree-panel">
-			<div class="panel-header">${m.filesPanelTitle}</div>
+			<div class="panel-header">
+				<span>${m.filesPanelTitle}</span>
+				<button class="btn-icon-toggle" id="btnGlobalSearch" onclick="toggleGlobalSearch()" title="${m.searchGlobal}">🌐 Всюди</button>
+			</div>
+			<div class="search-container">
+				<input type="text" id="searchInput" class="search-input" placeholder="${m.searchPlaceholder}" oninput="onSearchInput(this.value)" />
+			</div>
 			<ul class="file-list" id="fileList"></ul>
 		</div>
 
 		<div class="editor-container">
 			<div class="editor-toolbar" id="editorToolbar">
-				<div class="active-doc-info" id="activeDocInfo">${m.editorNoFile}</div>
+				<div class="active-doc-info" id="activeDocInfo">
+					<span>${m.editorNoFile}</span>
+				</div>
 				<div class="actions">
+					<div class="tab-buttons" id="viewTabs" style="display:none;">
+						<button class="tab-btn active" id="tabRawBtn" onclick="switchEditorTab('raw')">${m.tabRaw}</button>
+						<button class="tab-btn" id="tabTreeBtn" onclick="switchEditorTab('tree')">${m.tabTree}</button>
+					</div>
 					<button class="danger" id="btnDelete" onclick="deleteActiveFile()" style="display:none;">${m.deleteButton}</button>
 				</div>
 			</div>
+
 			<textarea id="editor" placeholder="${m.noFileSelected}" disabled></textarea>
+			
+			<div id="treeInspector" class="tree-inspector-container" style="display:none;">
+				<div class="tree-actions-bar">
+					<button onclick="expandAllTreeNodes()">➕ Розгорнути все</button>
+					<button onclick="collapseAllTreeNodes()">➖ Згорнути все</button>
+				</div>
+				<div id="treeRoot"></div>
+			</div>
+
 			<div class="empty-state" id="emptyState">
 				<span class="empty-icon">📁</span>
 				<div>${m.emptyStatePrompt}</div>
@@ -338,6 +519,10 @@ export const renderExplorerHTML = (options = {}) => {
 	<script id="explorerScript">
 		const I18N = {
 			breadcrumbsRoot: ${JSON.stringify(m.breadcrumbsRoot)},
+			searchPlaceholder: ${JSON.stringify(m.searchPlaceholder)},
+			fileInfoSize: ${JSON.stringify(m.fileInfoSize)},
+			tabRaw: ${JSON.stringify(m.tabRaw)},
+			tabTree: ${JSON.stringify(m.tabTree)},
 			statusReady: ${JSON.stringify(m.statusReady)},
 			statusLoadingDir: ${JSON.stringify(m.statusLoadingDir)},
 			statusLoadError: ${JSON.stringify(m.statusLoadError)},
@@ -356,7 +541,11 @@ export const renderExplorerHTML = (options = {}) => {
 
 		let currentPath = '';
 		let activeFileUri = null;
+		let activeDocData = null;
+		let activeTab = 'raw';
 		let viewMode = localStorage.getItem('nan0db-explorer-view-mode') || 'fetch';
+		let isGlobalSearch = false;
+		let searchDebounceTimer = null;
 
 		function t(tmpl, vars = {}) {
 			let str = String(tmpl);
@@ -371,6 +560,16 @@ export const renderExplorerHTML = (options = {}) => {
 			localStorage.setItem('nan0db-explorer-view-mode', viewMode);
 			document.getElementById('viewMode').value = viewMode;
 			setStatus('View Mode: ' + viewMode);
+			if (activeFileUri) loadFile(activeFileUri);
+		}
+
+		function toggleGlobalSearch() {
+			isGlobalSearch = !isGlobalSearch;
+			const btn = document.getElementById('btnGlobalSearch');
+			if (isGlobalSearch) btn.classList.add('active');
+			else btn.classList.remove('active');
+			const query = document.getElementById('searchInput').value;
+			onSearchInput(query);
 		}
 
 		async function loadDir(path = '') {
@@ -393,27 +592,54 @@ export const renderExplorerHTML = (options = {}) => {
 		function renderBreadcrumbs() {
 			const container = document.getElementById('breadcrumbs');
 			const parts = currentPath.split('/').filter(Boolean);
-			let html = \`<span class="breadcrumb-item" onclick="loadDir('')">\${I18N.breadcrumbsRoot}</span>\`;
+			let html = '<span class="breadcrumb-item" onclick="loadDir(\\'\\')">' + I18N.breadcrumbsRoot + '</span>';
 			let accum = '';
 
 			for (const part of parts) {
 				accum += (accum ? '/' : '') + part;
 				const p = accum;
-				html += \` <span class="breadcrumb-sep">/</span> <span class="breadcrumb-item" onclick="loadDir('\\\`\${p}\\\`')">\${part}</span>\`;
+				html += ' <span class="breadcrumb-sep">/</span> <span class="breadcrumb-item" onclick="loadDir(\\'' + p + '\\')">' + part + '</span>';
 			}
 			container.innerHTML = html;
 		}
 
 		let currentEntries = [];
+		let searchQuery = '';
 
-		function renderFileList(entries) {
+		function filterFiles(query) {
+			onSearchInput(query);
+		}
+
+		function onSearchInput(query) {
+			searchQuery = (query || '').toLowerCase().trim();
+			clearTimeout(searchDebounceTimer);
+
+			if (isGlobalSearch && searchQuery) {
+				setStatus('Пошук по всіх папках: ' + searchQuery + '...');
+				searchDebounceTimer = setTimeout(async () => {
+					try {
+						const res = await fetch('/api/search?q=' + encodeURIComponent(searchQuery));
+						if (!res.ok) throw new Error('Помилка глобального пошуку');
+						const results = await res.json();
+						renderFileList(results, true);
+						setStatus(t(I18N.statusLoadedCount, { count: results.length }));
+					} catch (err) {
+						setStatus('Помилка пошуку: ' + err.message, true);
+					}
+				}, 250);
+			} else {
+				renderFileList();
+			}
+		}
+
+		function renderFileList(entries, isGlobalList = false) {
 			if (Array.isArray(entries)) currentEntries = entries;
 			else entries = currentEntries;
 
 			const list = document.getElementById('fileList');
 			list.innerHTML = '';
 
-			if (currentPath) {
+			if (currentPath && !isGlobalList && !isGlobalSearch) {
 				const parentPath = currentPath.split('/').slice(0, -1).join('/');
 				const li = document.createElement('li');
 				li.className = 'file-item';
@@ -422,34 +648,54 @@ export const renderExplorerHTML = (options = {}) => {
 				list.appendChild(li);
 			}
 
-			entries.forEach(entry => {
+			const visibleEntries = (!isGlobalList && searchQuery)
+				? entries.filter(e => {
+					const raw = typeof e === 'string' ? e : (e.name || e.path || '');
+					return raw.toLowerCase().includes(searchQuery);
+				})
+				: entries;
+
+			visibleEntries.forEach(entry => {
 				let rawName = typeof entry === 'string' ? entry : (entry.name || entry.path || '');
 				if (!rawName) return;
 
 				const isDir = Boolean(entry.isDirectory || entry.isDir || entry.stat?.isDirectory || rawName.endsWith('/'));
 				if (rawName.endsWith('/')) rawName = rawName.slice(0, -1);
-				const name = rawName.includes('/') ? rawName.split('/').pop() : rawName;
+				
+				const fullPath = entry.path || (currentPath ? currentPath + '/' + rawName : rawName);
+				const displayName = rawName.includes('/') ? rawName.split('/').pop() : rawName;
 				const icon = isDir ? '📁' : '📄';
 
 				const li = document.createElement('li');
 				li.className = 'file-item';
-				const itemUri = currentPath ? currentPath + '/' + name : name;
-				if (activeFileUri === itemUri) {
+				if (activeFileUri === fullPath) {
 					li.classList.add('active');
 				}
 
-				li.innerHTML = \`<span class="file-icon">\${icon}</span> <span>\${name}</span>\`;
+				if (isGlobalList || isGlobalSearch) {
+					li.innerHTML = '<span class="file-icon">' + icon + '</span> <div><strong>' + displayName + '</strong><span class="file-subpath">' + fullPath + '</span></div>';
+				} else {
+					li.innerHTML = '<span class="file-icon">' + icon + '</span> <span>' + displayName + '</span>';
+				}
 
 				li.onclick = () => {
 					if (isDir) {
-						loadDir(itemUri);
+						loadDir(fullPath);
 					} else {
-						loadFile(itemUri);
+						loadFile(fullPath);
 					}
 				};
 
 				list.appendChild(li);
 			});
+		}
+
+		function formatBytes(bytes) {
+			if (!bytes || bytes === 0) return '0 B';
+			const k = 1024;
+			const sizes = ['B', 'KB', 'MB', 'GB'];
+			const i = Math.floor(Math.log(bytes) / Math.log(k));
+			return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 		}
 
 		function encodePath(uri) {
@@ -462,23 +708,160 @@ export const renderExplorerHTML = (options = {}) => {
 			renderFileList();
 
 			try {
-				const res = await fetch(\`/api/documents/\${encodePath(uri)}?mode=\${viewMode}\`);
+				const [res, statRes] = await Promise.all([
+					fetch('/api/documents/' + encodePath(uri) + '?mode=' + viewMode),
+					fetch('/api/stat/' + encodePath(uri)).catch(() => null)
+				]);
 				if (!res.ok) throw new Error('Failed to fetch document');
 				const data = await res.json();
+				activeDocData = data;
+
+				let sizeText = '';
+				if (statRes && statRes.ok) {
+					const statData = await statRes.json();
+					if (statData && statData.size !== undefined) {
+						sizeText = ' (' + formatBytes(statData.size) + ')';
+					}
+				}
 
 				const editor = document.getElementById('editor');
 				editor.value = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
 				editor.disabled = false;
 
 				document.getElementById('emptyState').style.display = 'none';
-				document.getElementById('editor').style.display = 'block';
-				document.getElementById('activeDocInfo').innerText = uri;
+				document.getElementById('viewTabs').style.display = (typeof data === 'object' && data !== null) ? 'inline-flex' : 'none';
+				document.getElementById('activeDocInfo').innerText = uri + sizeText;
 				document.getElementById('btnDelete').style.display = 'inline-flex';
+
+				renderTreeInspector(data);
+				switchEditorTab(activeTab);
 
 				setStatus(t(I18N.statusFileLoaded, { uri }));
 			} catch (err) {
 				setStatus(t(I18N.statusFileLoadError, { error: err.message }), true);
 			}
+		}
+
+		function switchEditorTab(tab) {
+			activeTab = tab;
+			const rawBtn = document.getElementById('tabRawBtn');
+			const treeBtn = document.getElementById('tabTreeBtn');
+			const editorEl = document.getElementById('editor');
+			const treeEl = document.getElementById('treeInspector');
+
+			if (tab === 'tree' && activeDocData && typeof activeDocData === 'object') {
+				treeBtn.classList.add('active');
+				rawBtn.classList.remove('active');
+				editorEl.style.display = 'none';
+				treeEl.style.display = 'block';
+			} else {
+				rawBtn.classList.add('active');
+				treeBtn.classList.remove('active');
+				editorEl.style.display = 'block';
+				treeEl.style.display = 'none';
+			}
+		}
+
+		/* Collapsible Interactive JSON Tree Renderer */
+		function renderTreeInspector(data) {
+			const container = document.getElementById('treeRoot');
+			container.innerHTML = '';
+			if (data === null || typeof data !== 'object') {
+				container.innerHTML = renderPrimitive(data);
+				return;
+			}
+			const rootNode = createTreeNode(null, data, true);
+			container.appendChild(rootNode);
+		}
+
+		function createTreeNode(key, value, isRoot = false) {
+			const isArray = Array.isArray(value);
+			const isObj = value !== null && typeof value === 'object';
+
+			const wrapper = document.createElement('div');
+			if (!isRoot) wrapper.className = 'tree-node';
+
+			if (isObj) {
+				const header = document.createElement('div');
+				header.className = 'tree-header';
+
+				const toggle = document.createElement('span');
+				toggle.className = 'tree-toggle';
+				toggle.innerHTML = '▼';
+
+				let keyLabel = '';
+				if (key !== null) {
+					keyLabel = '<span class="tree-key">' + escapeHtml(key) + '</span><span class="tree-colon">: </span>';
+				}
+
+				const count = isArray ? value.length : Object.keys(value).length;
+				const badge = '<span class="tree-type-badge">' + (isArray ? '[' + count + ']' : '{' + count + '}') + '</span>';
+
+				header.innerHTML = keyLabel + badge;
+				header.prepend(toggle);
+
+				const childrenContainer = document.createElement('div');
+				childrenContainer.className = 'tree-children';
+
+				const entries = isArray ? value.map((v, i) => [i, v]) : Object.entries(value);
+				entries.forEach(([k, v]) => {
+					childrenContainer.appendChild(createTreeNode(k, v, false));
+				});
+
+				header.onclick = (e) => {
+					e.stopPropagation();
+					const isCollapsed = childrenContainer.style.display === 'none';
+					childrenContainer.style.display = isCollapsed ? 'block' : 'none';
+					toggle.classList.toggle('collapsed', !isCollapsed);
+				};
+
+				wrapper.appendChild(header);
+				wrapper.appendChild(childrenContainer);
+			} else {
+				const item = document.createElement('div');
+				item.style.padding = '2px 0';
+				let keyLabel = '';
+				if (key !== null) {
+					keyLabel = '<span class="tree-key">' + escapeHtml(key) + '</span><span class="tree-colon">: </span>';
+				}
+				item.innerHTML = keyLabel + renderPrimitive(value);
+				wrapper.appendChild(item);
+			}
+
+			return wrapper;
+		}
+
+		function renderPrimitive(val) {
+			if (typeof val === 'string') {
+				return '<span class="tree-val-str">"' + escapeHtml(val) + '"</span>';
+			} else if (typeof val === 'number') {
+				return '<span class="tree-val-num">' + val + '</span>';
+			} else if (typeof val === 'boolean') {
+				return '<span class="tree-val-bool">' + val + '</span>';
+			} else if (val === null) {
+				return '<span class="tree-val-null">null</span>';
+			} else if (val === undefined) {
+				return '<span class="tree-val-null">undefined</span>';
+			}
+			return escapeHtml(String(val));
+		}
+
+		function escapeHtml(str) {
+			return String(str)
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;');
+		}
+
+		function expandAllTreeNodes() {
+			document.querySelectorAll('.tree-children').forEach(el => el.style.display = 'block');
+			document.querySelectorAll('.tree-toggle').forEach(el => el.classList.remove('collapsed'));
+		}
+
+		function collapseAllTreeNodes() {
+			document.querySelectorAll('.tree-children').forEach(el => el.style.display = 'none');
+			document.querySelectorAll('.tree-toggle').forEach(el => el.classList.add('collapsed'));
 		}
 
 		async function saveActiveFile() {
@@ -500,6 +883,8 @@ export const renderExplorerHTML = (options = {}) => {
 					body: JSON.stringify(parsedData)
 				});
 				if (!res.ok) throw new Error('Save failed');
+				activeDocData = parsedData;
+				renderTreeInspector(parsedData);
 				setStatus(t(I18N.statusSaved, { uri: activeFileUri }));
 			} catch (err) {
 				setStatus(t(I18N.statusSaveError, { error: err.message }), true);
@@ -513,8 +898,11 @@ export const renderExplorerHTML = (options = {}) => {
 				if (!res.ok) throw new Error('Delete failed');
 				setStatus(t(I18N.statusDeleted, { uri: activeFileUri }));
 				activeFileUri = null;
+				activeDocData = null;
 				document.getElementById('editor').value = '';
 				document.getElementById('editor').disabled = true;
+				document.getElementById('treeRoot').innerHTML = '';
+				document.getElementById('viewTabs').style.display = 'none';
 				document.getElementById('btnDelete').style.display = 'none';
 				document.getElementById('activeDocInfo').innerText = I18N.editorNoFile;
 				refreshCurrentDir();

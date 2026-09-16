@@ -1,0 +1,31 @@
+# Українська локалізація для вітрини релізу v3.4.0
+
+# Titles & Navigation
+Universal UI Component Contracts: Універсальні Мультимодальні Контракти UI
+Session 1: Model Core & Fractal $content: Сесія 1: Ядро Моделі та Фрактальний $content
+Session 2: Multimodal OLMUI Contracts: Сесія 2: Мультимодальні OLMUI Контракти
+Main Menu: Головне Меню
+Home: Головна
+Catalog: Каталог
+About Us: Про нас
+
+# Showcase Demos
+DOC-1: resolveNav() — Navigation reference resolver: DOC-1: resolveNav() — Резолвер посилань для nav
+DOC-2: resolveContent() — Boolean block expansion: DOC-2: resolveContent() — Розгортання булевих блоків $content
+Case-insensitive lookup: lookupField(): Регістронезалежний пошук: lookupField()
+Mixed boolean & non-boolean props: Змішані boolean та non-boolean пропси
+Edge cases (null, empty, missing): Граничні випадки (null, empty, missing)
+Full Pipeline (nav + $content): Повний Конвеєр (nav + $content)
+Run all demos: ▶ Усі демо разом
+Exit: ← Вихід
+
+# Content Blocks
+Welcome to NaN•Web!: 🎉 Вітаємо в NaN•Web!
+Quick Start: Швидкий старт
+One Logic — Multiple User Interfaces: Одна логіка — багато інтерфейсів
+Modules: Модулів
+Platforms: Платформ
+Home Page: Головна сторінка
+Welcome to the platform.: Ласкаво просимо до платформи.
+© 2026 NaN•Web: © 2026 NaN•Web
+online: онлайн

@@ -18,6 +18,7 @@
 
 - [індекс інструкцій](/docs/uk/workflows/README.md)
 - [architechnomag](/docs/uk/workflows/architechnomag.md)
+- [llimo](/docs/uk/workflows/llimo.md)
 - [release](/docs/uk/workflows/release.md)
 - [model-as-app](/docs/uk/workflows/model-as-app.md)
 - [робота з кодовою базою](/docs/uk/workflows/codebase.md)

@@ -5,4 +5,4 @@
  *
  * @param {string} cwd
  */
-export declare function installDependencies(cwd: string): Promise<void>;
+export function installDependencies(cwd: string): Promise<void>;

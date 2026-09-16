@@ -7,10 +7,6 @@
  * DomainAuditor — Enforces Model-as-Schema strictness and domain isolation.
  */
 export class DomainAuditor extends AuditorModel {
-    /** @type {Object<string, string>} UI messages for domain steps */
-    static UI: {
-        [x: string]: string;
-    };
     /**
      * Runs the domain strictness audit.
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}

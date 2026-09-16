@@ -43,6 +43,26 @@ export class ExplorerModel extends Model {
         help: string;
         default: string;
     };
+    static searchPlaceholder: {
+        help: string;
+        default: string;
+    };
+    static searchGlobal: {
+        help: string;
+        default: string;
+    };
+    static fileInfoSize: {
+        help: string;
+        default: string;
+    };
+    static tabRaw: {
+        help: string;
+        default: string;
+    };
+    static tabTree: {
+        help: string;
+        default: string;
+    };
     static statusReady: {
         help: string;
         default: string;
@@ -150,6 +170,11 @@ export class ExplorerModel extends Model {
     deleteButton: any;
     noFileSelected: any;
     emptyStatePrompt: any;
+    searchPlaceholder: any;
+    searchGlobal: any;
+    fileInfoSize: any;
+    tabRaw: any;
+    tabTree: any;
     statusReady: any;
     statusLoadingDir: any;
     statusLoadError: any;

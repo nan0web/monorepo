@@ -21,6 +21,8 @@ export async function main() {
 		args: process.argv.slice(2),
 		options: {
 			dsn: { type: 'string', short: 'd' },
+			data: { type: 'string' },
+			index: { type: 'string', short: 'i' },
 			port: { type: 'string', short: 'p' },
 			locale: { type: 'string', short: 'l' },
 			lang: { type: 'string' },
@@ -53,7 +55,8 @@ export async function main() {
 		NaN0WebConfig,
 		DBwithFSDriver,
 		spawn,
-		dsn: initialData.data || values.dsn || 'data/',
+		dsn: initialData.data || values.data || values.dsn || 'data/',
+		index: initialData.index || values.index,
 		port: values.port,
 		locale: values.lang || values.locale,
 		apps: values.apps,

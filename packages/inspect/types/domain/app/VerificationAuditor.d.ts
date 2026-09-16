@@ -7,10 +7,6 @@
  * VerificationAuditor — Verifies existence of play/, unit tests, and ProvenDocs.
  */
 export class VerificationAuditor extends AuditorModel {
-    /** @type {Object<string, string>} UI messages for verification steps */
-    static UI: {
-        [x: string]: string;
-    };
     /**
      * Abstract check for test files, should be implemented by child classes.
      * @param {import('@nan0web/db').DocumentEntry} entry

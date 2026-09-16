@@ -1,0 +1,7 @@
+# Supported languages registry for @nan0web/ui releases
+- title: English
+  locale: en
+  icon: 🇺🇸
+- title: Українська
+  locale: uk
+  icon: 🇺🇦

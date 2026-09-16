@@ -7,10 +7,6 @@
  * HygieneAuditor — Verifies required package scripts and configuration files.
  */
 export class HygieneAuditor extends AuditorModel {
-    /** @type {Object<string, string>} UI messages for hygiene steps */
-    static UI: {
-        [x: string]: string;
-    };
     /**
      * Runs the hygiene audit.
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}

@@ -4,7 +4,11 @@ description: Формалізація Model-as-App архітектури (OLMUI
 
 # 🚀 Ворклоу: Model-as-App (Консольні додатки OLMUI)
 
+> 💡 **Живий еталонний рецепт (Runable Recipe):** [docs/uk/recipes/model-as-app.js](../../recipes/model-as-app.js)  
+> Можна безпосередньо запустити: `node docs/uk/recipes/model-as-app.js`
+
 Цей workflow формалізує правила побудови та проектування консольних утиліт (CLI) на базі архітектури **Model-as-App** в екосистемі `NaN•Web`. Дотримання цього стандарту гарантує відсутність циклічних імпортів, чистоту типізації та безпомилкову поведінку інтерфейсу.
+
 
 ---
 
@@ -174,3 +178,23 @@ export class SetupModel extends Model {
 Для уникнення примусового приведення типів (`any`):
 1. **Локалізація**: Отримуйте функцію перекладу через `const { t } = this._`. Для цього достатньо правильно вказати тип `options` у конструкторі: `import('@nan0web/types').ModelOptions`.
 2. **Аргументи**: Якщо вам потрібен доступ до системних властивостей (наприклад, `this._argv`), просто оголосіть їх у конструкторі вашого класу (`/** @type {string[] | undefined} */ this._argv`).
+
+---
+
+## 5. Доступ до Бази Даних та Віртуальної Файлової Системи (`this.$db`)
+
+Усі операції з файлами, конфігураціями та побудовою шляхів здійснюються **ВИКЛЮЧНО** через гарантований гетер `this.$db`.
+
+### ⚠️ Правила безпеки та відмови від Node.js I/O:
+1. **СУВОРО ЗАБОРОНЕНО** імпортувати `node:fs`, `node:fs/promises` або `node:path`.
+2. Усі методи роботи зі шляхами виконуються виключно через базу:
+   - `this.$db.resolveSync(dir, file)` — замість `path.resolve`
+   - `this.$db.dirname(uri)` — замість `path.dirname`
+   - `this.$db.basename(uri)` — замість `path.basename`
+   - `this.$db.extname(uri)` — замість `path.extname`
+   - `this.$db.relative(from, to)` — замість `path.relative`
+3. Усі операції з даними здійснюються через асинхронні методи:
+   - `await this.$db.loadDocument(path)` — читання документу (замість `readFile`)
+   - `await this.$db.saveDocument(path, data)` — збереження документу (замість `writeFile`)
+   - `await this.$db.stat(path)` — перевірка існування (замість `existsSync`)
+4. **Локалізовані помилки**: Якщо база даних не була передана в `options.db`, виклик `this.$db` автоматично викидає локалізовану помилку через `this._.t(this.constructor.UI?.errorNoDb || ModelAsApp.UI.errorNoDb)`.

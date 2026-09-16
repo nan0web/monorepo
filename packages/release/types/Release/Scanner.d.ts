@@ -19,9 +19,9 @@
  */
 export default class Scanner {
     /**
-     * @param {string} root - Root directory of the project
+     * @param {string} [root] - Root directory of the project
      */
-    constructor(root: string);
+    constructor(root?: string);
     /** @type {string} */
     root: string;
     /**

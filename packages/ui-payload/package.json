@@ -1,22 +1,67 @@
 {
   "name": "@nan0web/ui-payload",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "NaN0Web Universal Payload CMS UI Components Package (ImageCell, MapCell, BooleanCell, richtext)",
   "type": "module",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
+  "files": [
+    "src/**/*.js",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "!src/**/*.spec.js",
+    "!src/**/*.spec.tsx",
+    "types/**/*.d.ts"
+  ],
   "exports": {
-    ".": "./src/index.ts",
-    "./ui/payload": "./src/index.ts",
-    "./components/*": "./src/components/*",
-    "./templates": "./src/templates/PayloadCollectionTemplate.js",
-    "./templates/*": "./src/templates/*",
-    "./richtext": "./src/richtext/index.js",
-    "./richtext/client": "./src/richtext/client/index.js",
-    "./richtext/*": "./src/richtext/*"
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./ui/payload": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./components/*": {
+      "types": "./types/components/*.d.ts",
+      "import": "./src/components/*.js"
+    },
+    "./templates": {
+      "types": "./types/templates/PayloadCollectionTemplate.d.ts",
+      "import": "./src/templates/PayloadCollectionTemplate.js"
+    },
+    "./templates/*": {
+      "types": "./types/templates/*.d.ts",
+      "import": "./src/templates/*.js"
+    },
+    "./richtext": {
+      "types": "./types/richtext/index.d.ts",
+      "import": "./src/richtext/index.js"
+    },
+    "./richtext/client": {
+      "types": "./types/richtext/client/index.d.ts",
+      "import": "./src/richtext/client/index.js"
+    },
+    "./richtext/Nan0HTMLFeature.js": {
+      "types": "./types/richtext/Nan0HTMLFeature.d.ts",
+      "import": "./src/richtext/Nan0HTMLFeature.js"
+    },
+    "./richtext/*": {
+      "types": "./types/richtext/*.d.ts",
+      "import": "./src/richtext/*.js"
+    }
   },
   "scripts": {
-    "test": "node --test src/test/*.spec.tsx src/templates/*.spec.js"
+    "prebuild": "rm -rf types/",
+    "build": "tsc",
+    "clean": "rm -rf .cache/ && rm -rf dist/",
+    "clean:modules": "rm -rf node_modules",
+    "test": "node --test \"src/**/*.test.js\"",
+    "test:release": "node --test \"src/test/releases/**/*.test.js\"",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "knip": "knip --production || true",
+    "audit": "pnpm audit --prod || true",
+    "test:all": "npm run test && npm run build && npm run test:release && npm run knip && npm run audit"
   },
   "dependencies": {
     "@payloadcms/richtext-lexical": "3.86.0",
@@ -27,6 +72,9 @@
     "payload": "^3.0.0",
     "@payloadcms/ui": "^3.0.0",
     "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   },
   "license": "MIT"
 }

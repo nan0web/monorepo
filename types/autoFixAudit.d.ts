@@ -5,7 +5,7 @@
  *
  * @returns {Promise<{code:number, output:string}>}
  */
-export declare function autoFixAudit(): Promise<{
+export function autoFixAudit(): Promise<{
     code: number;
     output: string;
 }>;

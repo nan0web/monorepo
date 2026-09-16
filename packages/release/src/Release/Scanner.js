@@ -27,10 +27,11 @@ export default class Scanner {
 	root
 
 	/**
-	 * @param {string} root - Root directory of the project
+	 * @param {string} [root] - Root directory of the project
 	 */
 	constructor(root) {
-		this.root = resolve(root)
+		const targetRoot = root || process.env.INIT_CWD || process.cwd()
+		this.root = resolve(targetRoot)
 	}
 
 	/**

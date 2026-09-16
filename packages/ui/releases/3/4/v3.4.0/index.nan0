@@ -1,0 +1,30 @@
+title: Universal UI Component Contracts (v3.4.0)
+version: 3.4.0
+banner:
+  type: banner
+  message: Welcome to NaN•Web!
+  variant: info
+hero:
+  type: hero
+  title: Quick Start
+  subtitle: One Logic — Multiple User Interfaces
+stats:
+  type: stats
+  items:
+    - label: Modules
+      value: 24
+    - label: Platforms
+      value: 6
+footer:
+  type: footer
+  copyright: © 2026 NaN•Web
+  status: online
+$content:
+  - Banner: true
+  - Hero: true
+    Stats: true
+  - Markdown:
+      content: |
+        # Home Page
+        Welcome to the platform.
+  - Footer: true

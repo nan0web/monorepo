@@ -13,6 +13,9 @@ description: Гігієна пакету — обовʼязкові скрипт
 
 ## 2. Повний конвеєр (`test:all`)
 
+> 💡 **Рецепт налаштування типів та конвеєру:** [`docs/uk/recipes/package-types-build.md`](../recipes/package-types-build.md)  
+> Правило порядку: **Спочатку `test`, потім `build`** (не білдити типи, якщо тести падають).
+
 ```
 test → test:docs → build → test:release → knip → audit
 ```
