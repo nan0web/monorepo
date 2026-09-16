@@ -1,0 +1,7 @@
+{
+	"$schema": "https://unpkg.com/knip@latest/schema.json",
+	"entry": ["src/index.js", "bin/ssg-gallery.js", "e2e/web-gallery.test.js"],
+	"project": ["src/**/*.js", "bin/**/*.js", "e2e/**/*.js"],
+	"ignore": ["types/**", "src/README.md.js"],
+	"ignoreDependencies": ["@nan0web/types", "@nan0web/ui"]
+}

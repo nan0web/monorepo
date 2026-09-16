@@ -192,7 +192,7 @@ export class CommentModel {
 		if (res?.data?.status !== 'ok') return res
 
 		// After creation, trigger the list view (via specific intent)
-		yield ask('mode', { value: 'list_only', hidden: true })
+		yield ask('mode', { help: 'Trigger list view', value: 'list_only', hidden: true })
 
 		return res
 	}
@@ -227,7 +227,11 @@ export class CommentModel {
 		// Step 3: Capture context
 		this.timestamp = new Date().toISOString()
 		this.viewport = env.getViewport ? env.getViewport() : null
-		this.url = env.getUrl ? env.getUrl() : (typeof window !== 'undefined' ? window.location.pathname : '')
+		this.url = env.getUrl
+			? env.getUrl()
+			: typeof window !== 'undefined'
+				? window.location.pathname
+				: ''
 
 		// Step 4: Save
 		yield progress(CommentModel.UI.progress_saving)

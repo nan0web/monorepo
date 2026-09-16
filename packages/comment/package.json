@@ -4,25 +4,41 @@
   "description": "Universal comment & feedback overlay for QA auditing and page annotation. Activate via URL param, hotkey, or nav toggle.",
   "type": "module",
   "main": "src/index.js",
+  "types": "types/index.d.ts",
   "exports": {
-    ".": "./src/index.js",
-    "./domain": "./src/domain/CommentModel.js",
-    "./ui": "./src/ui/WebCommentAdapter.js",
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./domain": {
+      "types": "./types/domain/index.d.ts",
+      "import": "./src/domain/index.js"
+    },
+    "./ui": {
+      "types": "./types/ui/WebCommentAdapter.d.ts",
+      "import": "./src/ui/WebCommentAdapter.js"
+    },
     "./ui/style": "./src/ui/comment.css"
   },
   "files": [
     "src/**/*.js",
     "!src/**/*.test.js",
     "!src/README.md.js",
+    "types/**/*.d.ts",
     "data/**/*.yaml",
     "!data/**/demo.yaml"
   ],
   "scripts": {
+    "prebuild": "rm -rf types",
+    "build": "tsc",
     "test": "node --test src/domain/*.test.js",
     "test:docs": "node --test src/README.md.js",
     "test:web-gallery": "playwright test e2e/web-gallery.test.js --workers=1",
     "test:ssg-gallery": "node bin/ssg-gallery.js",
-    "test:all": "npm run test && npm run test:docs && npm run test:web-gallery && npm run test:ssg-gallery",
+    "lint": "prettier --check \"src/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\"",
+    "knip": "knip --production",
+    "test:all": "npm run test && npm run test:docs && npm run build && npm run lint && npm run test:web-gallery && npm run test:ssg-gallery",
     "play:web": "vite"
   },
   "keywords": [

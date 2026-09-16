@@ -15,7 +15,9 @@ function createMockDb() {
 			const idx = store.findIndex((c) => c.targetRef === ref)
 			if (idx >= 0) store.splice(idx, 1)
 		},
-		clear: async () => { store.length = 0 },
+		clear: async () => {
+			store.length = 0
+		},
 	}
 }
 
@@ -138,10 +140,16 @@ describe('CommentModel — Validation', () => {
 describe('CommentModel — UI Dictionary', () => {
 	it('11. should define all required UI keys', () => {
 		const requiredKeys = [
-			'label_title', 'label_spotlight', 'label_saved',
-			'label_dashboard', 'label_export', 'label_import',
-			'error_text_required', 'error_no_target',
-			'progress_init', 'progress_saving',
+			'label_title',
+			'label_spotlight',
+			'label_saved',
+			'label_dashboard',
+			'label_export',
+			'label_import',
+			'error_text_required',
+			'error_no_target',
+			'progress_init',
+			'progress_saving',
 		]
 		for (const key of requiredKeys) {
 			assert.ok(CommentModel.UI[key], `Missing UI key: ${key}`)
@@ -277,7 +285,9 @@ describe('CommentModel — Intent Structure', () => {
 			dashboard: { value: 'close' },
 		})
 
-		const spotlight = intents.find((i) => i.type === 'progress' && i.message === CommentModel.UI.label_spotlight)
+		const spotlight = intents.find(
+			(i) => i.type === 'progress' && i.message === CommentModel.UI.label_spotlight
+		)
 		assert.ok(spotlight, 'Should yield spotlight progress')
 	})
 
@@ -378,7 +388,9 @@ describe('CommentModel — Error Handling', () => {
 	it('26. should error when db.save throws', async () => {
 		const env = createEnv({
 			db: {
-				save: async () => { throw new Error('IndexedDB write failed') },
+				save: async () => {
+					throw new Error('IndexedDB write failed')
+				},
 				loadAll: async () => [],
 				clear: async () => {},
 			},
@@ -426,7 +438,7 @@ describe('CommentModel — Export', () => {
 		const db = createMockDb()
 		db.store.push(
 			{ targetRef: '#a', text: 'First', author: 'X', timestamp: '2026-01-01', viewport: null },
-			{ targetRef: '#b', text: 'Second', author: 'Y', timestamp: '2026-01-02', viewport: null },
+			{ targetRef: '#b', text: 'Second', author: 'Y', timestamp: '2026-01-02', viewport: null }
 		)
 		const model = new CommentModel()
 
@@ -456,8 +468,20 @@ describe('CommentModel — Import', () => {
 		const model = new CommentModel()
 
 		const importData = [
-			{ targetRef: '#a', text: 'Imported 1', author: 'QA', timestamp: '2026-01-01', viewport: null },
-			{ targetRef: '#b', text: 'Imported 2', author: 'QA', timestamp: '2026-01-02', viewport: null },
+			{
+				targetRef: '#a',
+				text: 'Imported 1',
+				author: 'QA',
+				timestamp: '2026-01-01',
+				viewport: null,
+			},
+			{
+				targetRef: '#b',
+				text: 'Imported 2',
+				author: 'QA',
+				timestamp: '2026-01-02',
+				viewport: null,
+			},
 		]
 
 		const { result } = await runSubGenerator(model.importComments({ db }), {

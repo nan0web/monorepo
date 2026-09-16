@@ -73,14 +73,18 @@ export class WebCommentAdapter {
 
 		this.#controller = new AbortController()
 
-		const result = await runGenerator(model.run(env), {
-			ask: (intent) => this.#handleAsk(intent),
-			progress: (intent) => this.#handleProgress(intent),
-			log: (intent) => this.#handleLog(intent),
-			result: (intent) => this.#handleResult(intent),
-		}, {
-			signal: this.#controller.signal,
-		})
+		const result = await runGenerator(
+			model.run(env),
+			{
+				ask: (intent) => this.#handleAsk(intent),
+				progress: (intent) => this.#handleProgress(intent),
+				log: (intent) => this.#handleLog(intent),
+				result: (intent) => this.#handleResult(intent),
+			},
+			{
+				signal: this.#controller.signal,
+			}
+		)
 
 		this.#cleanup()
 		return result
@@ -103,7 +107,7 @@ export class WebCommentAdapter {
 		let comments = await this.#db.loadAll()
 		if (typeof window !== 'undefined') {
 			const currentUrl = window.location.pathname
-			comments = comments.filter(c => c.url === currentUrl || !c.url)
+			comments = comments.filter((c) => c.url === currentUrl || !c.url)
 		}
 		this.#createCommentList(comments)
 	}
@@ -188,7 +192,7 @@ export class WebCommentAdapter {
 				intent.schema?.help || CommentModel.UI.label_form_title,
 				'textarea',
 				(value) => resolve({ value }),
-				() => resolve({ value: '', cancelled: true }),
+				() => resolve({ value: '', cancelled: true })
 			)
 		})
 	}
@@ -280,9 +284,7 @@ export class WebCommentAdapter {
 			const el = /** @type {HTMLElement} */ (getElementUnder(e.clientX, e.clientY))
 			cleanup()
 
-			const ref = el?.id
-				? `#${el.id}`
-				: this.#buildSelector(el)
+			const ref = el?.id ? `#${el.id}` : this.#buildSelector(el)
 
 			onSelect({ value: ref })
 		}
@@ -326,9 +328,10 @@ export class WebCommentAdapter {
 		title.textContent = this.#t(label)
 		container.append(title)
 
-		const input = inputType === 'textarea'
-			? document.createElement('textarea')
-			: document.createElement('input')
+		const input =
+			inputType === 'textarea'
+				? document.createElement('textarea')
+				: document.createElement('input')
 		input.className = 'nan0-comment-input'
 		input.setAttribute('placeholder', this.#t(CommentModel.text.help))
 		if (input instanceof HTMLInputElement) input.type = 'text'
@@ -426,8 +429,7 @@ export class WebCommentAdapter {
 		header.className = 'nan0-comment-list-header'
 
 		const heading = document.createElement('span')
-		heading.textContent = this.#t(CommentModel.UI.label_dashboard)
-			+ ` (${comments.length})`
+		heading.textContent = this.#t(CommentModel.UI.label_dashboard) + ` (${comments.length})`
 		header.append(heading)
 
 		const closeBtn = document.createElement('button')
@@ -613,20 +615,23 @@ export class WebCommentAdapter {
 		try {
 			const comments = await this.#db.loadAll()
 			if (!comments || comments.length === 0) return
-			
+
 			const blob = new Blob([JSON.stringify(comments, null, 2)], { type: 'application/json' })
 			const url = URL.createObjectURL(blob)
 			const a = document.createElement('a')
 			a.href = url
 			a.download = `nan0-comments-${new Date().toISOString().split('T')[0]}.json`
-			
+
 			// Small hack to ensure click works in all browsers before removing
 			document.body.appendChild(a)
 			a.click()
 			document.body.removeChild(a)
-			
+
 			URL.revokeObjectURL(url)
-			const msg = this.#t(CommentModel.UI.label_exported).replace('{count}', comments.length.toString())
+			const msg = this.#t(CommentModel.UI.label_exported).replace(
+				'{count}',
+				comments.length.toString()
+			)
 			this.#showToast(msg, 'success')
 		} catch (error) {
 			console.error(error)
@@ -651,10 +656,13 @@ export class WebCommentAdapter {
 				for (const item of items) {
 					await this.#db.save(item)
 				}
-				
-				const msg = this.#t(CommentModel.UI.label_imported).replace('{count}', items.length.toString())
+
+				const msg = this.#t(CommentModel.UI.label_imported).replace(
+					'{count}',
+					items.length.toString()
+				)
 				this.#showToast(msg, 'success')
-				
+
 				// Refresh the view
 				if (this.#listPanel) {
 					this.showCommentList()
@@ -678,7 +686,8 @@ export class WebCommentAdapter {
 			if (!el) return
 
 			// Remove previous highlights
-			document.querySelectorAll('.nan0-comment-highlight')
+			document
+				.querySelectorAll('.nan0-comment-highlight')
 				.forEach((h) => h.classList.remove('nan0-comment-highlight'))
 
 			// Minimize list panel so the highlighted element is visible

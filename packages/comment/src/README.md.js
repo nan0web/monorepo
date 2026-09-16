@@ -50,16 +50,20 @@ function docs() {
 	 * ## Usage
 	 * ### Basic Implementation
 	 *
-	 * Wrap any simple persistence mechanism (like `localStorage` or `IndexedDB`) 
+	 * Wrap any simple persistence mechanism (like `localStorage` or `IndexedDB`)
 	 * into a basic DB interface `{ save, loadAll, remove, clear }` and pass it to the adapter.
 	 */
 	it('How to initialize and start the comment overlay?', async () => {
 		//import { WebCommentAdapter } from '@nan0web/comment'
-		
+
 		// 1. Create a dummy DB for storing comments
 		class DemoDB {
-			async save(comment) { console.info('Saved:', comment.text) }
-			async loadAll() { return [] }
+			async save(comment) {
+				console.info('Saved:', comment.text)
+			}
+			async loadAll() {
+				return []
+			}
 			async clear() {}
 			async remove() {}
 		}
@@ -67,12 +71,12 @@ function docs() {
 		// 2. Initialize the adapter
 		const adapter = new WebCommentAdapter({
 			db: new DemoDB(),
-			t: (key) => key // simple mock translator
+			t: (key) => key, // simple mock translator
 		})
 
 		// 3. Start the flow programmatically
 		// adapter.start().then(result => console.info(result.action))
-		
+
 		assert.ok(adapter)
 	})
 
@@ -88,13 +92,20 @@ function docs() {
 	it('How to open the Comments Dashboard?', () => {
 		//import { WebCommentAdapter } from '@nan0web/comment'
 		const adapter = new WebCommentAdapter({
-			db: { async loadAll() { return [] }, async save() {}, async clear() {}, async remove() {} },
-			t: (k) => k
+			db: {
+				async loadAll() {
+					return []
+				},
+				async save() {},
+				async clear() {},
+				async remove() {},
+			},
+			t: (k) => k,
 		})
-		
+
 		// Programmatically open the List Panel
 		// adapter.showCommentList()
-		
+
 		assert.ok(adapter)
 	})
 
@@ -107,7 +118,7 @@ function docs() {
 	it('How to use CommentModel generator?', async () => {
 		//import { CommentModel } from '@nan0web/comment/domain'
 		const model = new CommentModel()
-		
+
 		assert.equal(typeof model.run, 'function')
 	})
 
