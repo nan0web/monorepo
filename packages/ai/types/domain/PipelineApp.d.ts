@@ -1,10 +1,7 @@
-import { ModelAsApp } from '@nan0web/ui-cli';
 /**
  * PipelineApp — OLMUI Pipeline runner for executing sequence of steps defined in pipeline.md.
  */
-export declare class PipelineApp extends ModelAsApp {
-    /** @type {string} */ file: string;
-    /** @type {string} */ output: string;
+export class PipelineApp extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -27,6 +24,8 @@ export declare class PipelineApp extends ModelAsApp {
      * @param {any} [options] Model options
      */
     constructor(data?: Partial<PipelineApp> | Record<string, any>, options?: any);
+    /** @type {string} */ file: string;
+    /** @type {string} */ output: string;
     /**
      * @returns {AsyncGenerator<any, any, any>}
      */
@@ -52,3 +51,4 @@ export declare class PipelineApp extends ModelAsApp {
         error?: string;
     }>;
 }
+import { ModelAsApp } from '@nan0web/ui-cli';

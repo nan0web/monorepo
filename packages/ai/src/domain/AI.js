@@ -1,4 +1,3 @@
-import { streamText, generateText } from 'ai'
 import { ModelProvider } from './ModelProvider.js'
 import { ModelInfo } from './ModelInfo.js'
 import { Usage } from './Usage.js'
@@ -491,6 +490,7 @@ export class AI {
 		const triedModels = new Set()
 		let lastError = null
 
+		const { streamText } = await import('ai')
 		while (true) {
 			const provider = await this.getProvider(currentModel.provider)
 			try {
@@ -606,6 +606,7 @@ export class AI {
 		let attempts = this.strategy.rateLimitRetries || 0
 		const triedModels = new Set()
 		let lastError = null
+		const { generateText } = await import('ai')
 
 		while (true) {
 			const provider = await this.getProvider(currentModel.provider)

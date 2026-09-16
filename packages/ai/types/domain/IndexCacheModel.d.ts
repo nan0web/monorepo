@@ -1,15 +1,8 @@
-import { Model } from '@nan0web/types';
-export type ChunkHashEntry = {
-    /**
-     * Array of chunk checksums for a specific file
-     */
-    hashes: string[];
-};
 /**
  * @typedef {Object} ChunkHashEntry
  * @property {string[]} hashes Array of chunk checksums for a specific file
  */
-export declare class IndexCacheModel extends Model {
+export class IndexCacheModel extends Model {
     static entries: {
         help: string;
         type: string;
@@ -19,7 +12,9 @@ export declare class IndexCacheModel extends Model {
      * @param {Partial<IndexCacheModel> | Record<string, any>} [data] Initial state
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options] Model options
      */
-    constructor(data?: Partial<IndexCacheModel> | Record<string, any>, options?: Partial<import('@nan0web/types').ModelOptions>);
+    constructor(data?: Partial<IndexCacheModel> | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
+    /** @type {Record<string, string[]>} Map of path to chunk checksums */
+    entries: Record<string, string[]>;
     /**
      * Retrieves the array of text hashes for a given file.
      * @param {string} filePath
@@ -40,3 +35,10 @@ export declare class IndexCacheModel extends Model {
      */
     isUnchanged(filePath: string, newHashes: string[]): boolean;
 }
+export type ChunkHashEntry = {
+    /**
+     * Array of chunk checksums for a specific file
+     */
+    hashes: string[];
+};
+import { Model } from '@nan0web/types';

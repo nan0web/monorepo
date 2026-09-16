@@ -4,12 +4,27 @@ import { ChatSession } from '../ChatSession.js'
 /**
  * @typedef {Object} TestedFile
  * @property {boolean} ok
- * @property {string[]} [errors=[]]
+ * @property {string[]} [errors]
  */
+
+/**
+ * @typedef {Object} LLMRunner
+ * @property {(file: string) => Promise<TestedFile>} [checkFile] Node.js syntax checker
+ * @property {(file: string) => Promise<TestedFile>} [prettyFile] Prettier/code style checker
+ * @property {(file: string) => Promise<TestedFile>} [testFile] Unit/Story test runner
+ * @property {(file: string) => Promise<TestedFile>} [buildFile] Type/bundler build runner
+ * @property {(chat: ChatSession) => Promise<TestedFile>} [testProject] Full project test runner
+ */
+
+/**
+ * @typedef {Object} LLMInspector
+ * @property {(chat: ChatSession) => Promise<TestedFile>} [inspectProject] Project architectural inspector
+ */
+
 /**
  * @typedef {Object} LLMAgentOptions
- * @property {import('@nan0web/runner').Runner} runner Execution runner adapter for processes
- * @property {import('@nan0web/inspect').Inspector} inspector Inspector runner adapter for @nan0web/inspect
+ * @property {LLMRunner} [runner] Execution runner adapter for processes
+ * @property {LLMInspector} [inspector] Inspector runner adapter for architecture inspection
  */
 
 export class LLMAgent extends ModelAsApp {
@@ -43,8 +58,8 @@ export class LLMAgent extends ModelAsApp {
 		/** @type {string} Continue automatically after errors (Yes/No) */ this.autoContinue
 		/** @type {boolean} Skip full project tests */ this.skipProjectTests
 		/** @type {boolean} Skip pre-flight baseline check before chat */ this.skipPreflight
-		/** @type {import('@nan0web/runner').Runner} */ this.runner = options.runner || null
-		/** @type {import('@nan0web/inspect').Inspector} */ this.inspector = options.inspector || null
+		/** @type {LLMRunner | null} */ this.runner = options.runner || null
+		/** @type {LLMInspector | null} */ this.inspector = options.inspector || null
 	}
 
 	createChat(input = {}) {

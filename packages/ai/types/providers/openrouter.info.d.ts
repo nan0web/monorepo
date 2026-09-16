@@ -1,10 +1,10 @@
-import { ModelInfo } from '../domain/ModelInfo.js';
+declare namespace _default {
+    export { makeFlat };
+}
+export default _default;
 /**
  * @param {object[]} models
  * @returns {ModelInfo[]}
  */
 declare function makeFlat(models: object[]): ModelInfo[];
-declare const _default: {
-    makeFlat: typeof makeFlat;
-};
-export default _default;
+import { ModelInfo } from '../domain/ModelInfo.js';

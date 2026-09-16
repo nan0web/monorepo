@@ -1,10 +1,8 @@
-import { ModelInfo } from '../domain/ModelInfo.js';
-/**
- * @returns {{ models: readonly Array<[string, object]> }}
- */
-declare function getModels(): {
-    models: readonly Array<[string, object]>;
-};
+declare namespace _default {
+    export { getModels };
+    export { makeFlat };
+}
+export default _default;
 export type HuggingFaceArchitecture = {
     /**
      * - List of input modalities (e.g., ["text"], ["text","image"])
@@ -82,6 +80,12 @@ export type HuggingFaceModelInfo = {
     providers: HuggingFaceProviderInfo[];
 };
 /**
+ * @returns {{ models: readonly Array<[string, object]> }}
+ */
+declare function getModels(): {
+    models: readonly Array<[string, object]>;
+};
+/**
  * @typedef {Object} HuggingFaceArchitecture
  * @property {string[]} input_modalities - List of input modalities (e.g., ["text"], ["text","image"])
  * @property {string[]} output_modalities - List of output modalities (e.g., ["text"])
@@ -115,8 +119,4 @@ export type HuggingFaceModelInfo = {
  * @returns {ModelInfo[]}
  */
 declare function makeFlat(models: HuggingFaceModelInfo[]): ModelInfo[];
-declare const _default: {
-    getModels: typeof getModels;
-    makeFlat: typeof makeFlat;
-};
-export default _default;
+import { ModelInfo } from '../domain/ModelInfo.js';

@@ -1,21 +1,3 @@
-import { ModelInfo } from './ModelInfo.js';
-import { Usage } from './Usage.js';
-import { AiStrategy } from './AiStrategy.js';
-export type AiStrategyFinance = "free" | "cheap" | "expensive";
-export type AiStrategyVolume = "low" | "mid" | "high";
-export type AiStrategySpeed = "slow" | "fast";
-export type AiStrategyLevel = "simple" | "smart" | "expert";
-export type StreamOptions = {
-    /**
-     * aborts the request when signaled
-     */
-    abortSignal?: AbortSignal;
-    onChunk?: import('ai').StreamTextOnChunkCallback<import('ai').ToolSet>;
-    onStepFinish?: import('ai').StreamTextOnStepFinishCallback<import('ai').ToolSet>;
-    onError?: import('ai').StreamTextOnErrorCallback;
-    onFinish?: () => void;
-    onAbort?: () => void;
-};
 /** @typedef {"free" | "cheap" | "expensive"} AiStrategyFinance */
 /** @typedef {"low" | "mid" | "high"} AiStrategyVolume */
 /** @typedef {"slow" | "fast"} AiStrategySpeed */
@@ -38,17 +20,12 @@ export type StreamOptions = {
  *
  * @class
  */
-export declare class AI {
-    #private;
-    /** @type {AiStrategy} Active strategy */ strategy: AiStrategy;
-    _: any;
+export class AI {
     static Strategy: typeof AiStrategy;
     static UI: {
         errorModelNotFound: string;
         errorDbMissing: string;
     };
-    /** @type {ModelInfo?} */
-    selectedModel: ModelInfo | null;
     /**
      * @param {Object} input
      * @param {readonly[string, ModelInfo] | readonly [string, ModelInfo] | Map<string, ModelInfo>} [input.models=[]] List of available models
@@ -61,6 +38,10 @@ export declare class AI {
         selectedModel?: ModelInfo;
         strategy?: AiStrategy;
     }, options?: any);
+    /** @type {ModelInfo?} */
+    selectedModel: ModelInfo | null;
+    /** @type {AiStrategy} Active strategy */ strategy: AiStrategy;
+    _: any;
     /**
      * Flatten and normalize models to Map<string, ModelInfo[]>. Handles:
      * - Map: Pass-through.
@@ -170,11 +151,11 @@ export declare class AI {
      * @param {import('ai').UIMessageStreamOptions<import('ai').UIMessage> & StreamOptions & { tools?: import('ai').ToolSet, maxSteps?: number, system?: string }} [options={}]
      * @returns {Promise<import('ai').StreamTextResult<import('ai').ToolSet, any>>}
      */
-    streamText(model: ModelInfo, messages: import('ai').ModelMessage[], options?: import('ai').UIMessageStreamOptions<import('ai').UIMessage> & StreamOptions & {
-        tools?: import('ai').ToolSet;
+    streamText(model: ModelInfo, messages: import("ai").ModelMessage[], options?: import("ai").UIMessageStreamOptions<import("ai").UIMessage> & StreamOptions & {
+        tools?: import("ai").ToolSet;
         maxSteps?: number;
         system?: string;
-    }): Promise<import('ai').StreamTextResult<import('ai').ToolSet, any>>;
+    }): Promise<import("ai").StreamTextResult<import("ai").ToolSet, any>>;
     /**
      * Async generator for streaming text tokens.
      * Yields text deltas as they arrive and returns full result on finish.
@@ -185,8 +166,8 @@ export declare class AI {
      * @param {StreamOptions & { tools?: import('ai').ToolSet, maxSteps?: number, system?: string }} [options]
      * @returns {AsyncGenerator<string, {text: string, usage: Usage, usedModel: string, usedProvider: string}>}
      */
-    streamTextGenerator(model: ModelInfo, messages: import('ai').ModelMessage[], options?: StreamOptions & {
-        tools?: import('ai').ToolSet;
+    streamTextGenerator(model: ModelInfo, messages: import("ai").ModelMessage[], options?: StreamOptions & {
+        tools?: import("ai").ToolSet;
         maxSteps?: number;
         system?: string;
     }): AsyncGenerator<string, {
@@ -246,4 +227,26 @@ export declare class AI {
         format: string;
         filePaths: string[];
     }>;
+    #private;
 }
+export type AiStrategyFinance = "free" | "cheap" | "expensive";
+export type AiStrategyVolume = "low" | "mid" | "high";
+export type AiStrategySpeed = "slow" | "fast";
+export type AiStrategyLevel = "simple" | "smart" | "expert";
+/**
+ * callbacks and abort signal
+ */
+export type StreamOptions = {
+    /**
+     * aborts the request when signaled
+     */
+    abortSignal?: AbortSignal;
+    onChunk?: import("ai").StreamTextOnChunkCallback<import("ai").ToolSet>;
+    onStepFinish?: import("ai").StreamTextOnStepFinishCallback<import("ai").ToolSet>;
+    onError?: import("ai").StreamTextOnErrorCallback;
+    onFinish?: () => void;
+    onAbort?: () => void;
+};
+import { ModelInfo } from './ModelInfo.js';
+import { AiStrategy } from './AiStrategy.js';
+import { Usage } from './Usage.js';

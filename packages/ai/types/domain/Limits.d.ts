@@ -1,16 +1,9 @@
-import { Model } from '@nan0web/types';
 /**
  * Limits — represents rate limits for AI requests and tokens.
  * Inherits from Model to follow the universal Model-as-Schema pattern.
  * Supports provider-specific aliases for mapping during instantiation.
  */
-export declare class Limits extends Model {
-    rpd: number;
-    rph: number;
-    rpm: number;
-    tpd: number;
-    tph: number;
-    tpm: number;
+export class Limits extends Model {
     static rpd: {
         help: string;
         default: number;
@@ -45,7 +38,14 @@ export declare class Limits extends Model {
      * @param {Partial<Limits> | Record<string, any>} [data] Initial state with optional aliased headers
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options] Model options
      */
-    constructor(data?: Partial<Limits> | Record<string, any>, options?: Partial<import('@nan0web/types').ModelOptions>);
+    constructor(data?: Partial<Limits> | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
+    rpd: number;
+    rph: number;
+    rpm: number;
+    tpd: number;
+    tph: number;
+    tpm: number;
     /** @returns {boolean} */
     get empty(): boolean;
 }
+import { Model } from '@nan0web/types';

@@ -17,7 +17,7 @@
  * @throws {Error} If a boundary is not closed or snippet constraints are violated.
  * @returns {Record<string, string>} Hash map of updated file contents.
  */
-export declare function parseBoundaries(text: string): Record<string, string>;
+export function parseBoundaries(text: string): Record<string, string>;
 /**
  * Applies parsed boundaries (full files or line-range snippets) to a set of original files.
  *
@@ -26,4 +26,4 @@ export declare function parseBoundaries(text: string): Record<string, string>;
  * @throws {Error} If snippet boundaries fall out of bounds of the original file.
  * @returns {Record<string, string>} Map of updated file contents.
  */
-export declare function applyBoundaries(originalFiles: Record<string, string>, parsedBoundaries: Record<string, string>): Record<string, string>;
+export function applyBoundaries(originalFiles: Record<string, string>, parsedBoundaries: Record<string, string>): Record<string, string>;

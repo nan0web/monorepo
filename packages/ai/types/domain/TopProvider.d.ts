@@ -1,11 +1,7 @@
-import { Model } from '@nan0web/types';
 /**
  * TopProvider — represents provider-specific configuration and constraints.
  */
-export declare class TopProvider extends Model {
-    context_length: number;
-    is_moderated: boolean;
-    max_completion_tokens: number;
+export class TopProvider extends Model {
     static context_length: {
         help: string;
         default: number;
@@ -22,5 +18,9 @@ export declare class TopProvider extends Model {
      * @param {Partial<TopProvider>} [data]
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
      */
-    constructor(data?: Partial<TopProvider>, options?: Partial<import('@nan0web/types').ModelOptions>);
+    constructor(data?: Partial<TopProvider>, options?: Partial<import("@nan0web/types").ModelOptions>);
+    context_length: number;
+    is_moderated: boolean;
+    max_completion_tokens: number;
 }
+import { Model } from '@nan0web/types';

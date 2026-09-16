@@ -1,10 +1,7 @@
-import { ModelAsApp } from '@nan0web/ui-cli';
 /**
  * CheckIntent — Universal Multi-Format Contract & Syntax Validator (JS/TS, JSON, JSONL, SRT, VTT, Markdown).
  */
-export declare class CheckIntent extends ModelAsApp {
-    /** @type {string[]} */
-    files: string[];
+export class CheckIntent extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -24,6 +21,8 @@ export declare class CheckIntent extends ModelAsApp {
      * @param {any} [options] Model options
      */
     constructor(data?: Partial<CheckIntent> | Record<string, any>, options?: any);
+    /** @type {string[]} */
+    files: string[];
     /**
      * @returns {AsyncGenerator<any, any, any>}
      */
@@ -73,3 +72,4 @@ export declare class CheckIntent extends ModelAsApp {
         error?: string;
     }>;
 }
+import { ModelAsApp } from '@nan0web/ui-cli';

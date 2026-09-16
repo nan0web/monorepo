@@ -1,5 +1,4 @@
-import { Model } from '@nan0web/types';
-export declare class BatchTaskModel extends Model {
+export class BatchTaskModel extends Model {
     static id: {
         help: string;
         default: string;
@@ -16,4 +15,8 @@ export declare class BatchTaskModel extends Model {
         type: string;
     };
     constructor(data?: {}, options?: {});
+    /** @type {string} */ id: string;
+    /** @type {string} */ task: string;
+    /** @type {object} */ context: object;
 }
+import { Model } from '@nan0web/types';

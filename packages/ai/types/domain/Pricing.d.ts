@@ -1,19 +1,8 @@
-import { Model } from '@nan0web/types';
-import { Usage } from './Usage.js';
 /**
  * Pricing — represents pricing information for a model.
  * Inherits from Model to follow the universal Model-as-Schema pattern.
  */
-export declare class Pricing extends Model {
-    /** @type {number} Completion cost / 1M tokens */ completion: number;
-    /** @type {number} Cost per image generated */ image: number;
-    /** @type {number} Cache reading cost */ input_cache_read: number;
-    /** @type {number} Cache writing cost */ input_cache_write: number;
-    /** @type {number} LLM thinking cost */ internal_reasoning: number;
-    /** @type {number} Prompt cost / 1M tokens */ prompt: number;
-    /** @type {number} Fixed price per API call */ request: number;
-    /** @type {number} Tool-call search cost */ web_search: number;
-    /** @type {number} Avg speed in tokens/sec */ speed: number;
+export class Pricing extends Model {
     static completion: {
         help: string;
         default: number;
@@ -57,7 +46,16 @@ export declare class Pricing extends Model {
     constructor(data?: (Partial<Pricing> & {
         input?: number;
         output?: number;
-    }) | Record<string, any>, options?: Partial<import('@nan0web/types').ModelOptions>);
+    }) | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
+    /** @type {number} Completion cost / 1M tokens */ completion: number;
+    /** @type {number} Cost per image generated */ image: number;
+    /** @type {number} Cache reading cost */ input_cache_read: number;
+    /** @type {number} Cache writing cost */ input_cache_write: number;
+    /** @type {number} LLM thinking cost */ internal_reasoning: number;
+    /** @type {number} Prompt cost / 1M tokens */ prompt: number;
+    /** @type {number} Fixed price per API call */ request: number;
+    /** @type {number} Tool-call search cost */ web_search: number;
+    /** @type {number} Avg speed in tokens/sec */ speed: number;
     /**
      * Returns the Batch discount in %.
      * @returns {[inputDiscount: number, outputDiscount: number]}
@@ -75,3 +73,5 @@ export declare class Pricing extends Model {
         output?: number;
     }): number;
 }
+import { Model } from '@nan0web/types';
+import { Usage } from './Usage.js';

@@ -1,9 +1,8 @@
-import { ModelAsApp } from '@nan0web/ui-cli';
 /**
  * SyncWorkspaceApp — command to synchronize workspace state and re-index agents.
  * Syncs workflows from packages to global AI assistant storage.
  */
-export declare class SyncWorkspaceApp extends ModelAsApp {
+export class SyncWorkspaceApp extends ModelAsApp {
     static alias: string;
     static locale: {
         help: string;
@@ -19,3 +18,4 @@ export declare class SyncWorkspaceApp extends ModelAsApp {
      */
     run(): AsyncGenerator<any, any, any>;
 }
+import { ModelAsApp } from '@nan0web/ui-cli';

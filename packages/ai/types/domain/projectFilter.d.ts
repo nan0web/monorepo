@@ -12,11 +12,11 @@
  * @param {Map<string, string>} [nameToDir]  Package name → dir mapping from store
  * @returns {boolean}
  */
-export declare function matchProject(projectId: string, filter: string | undefined, nameToDir?: Map<string, string>): boolean;
+export function matchProject(projectId: string, filter: string | undefined, nameToDir?: Map<string, string>): boolean;
 /**
  * Loads the store CSV and builds a name→dir mapping.
  *
  * @param {import('@nan0web/db').DB} db
  * @returns {Promise<Map<string, string>>}  Map of lowercase package name → dir
  */
-export declare function loadNameToDir(db: import('@nan0web/db').DB): Promise<Map<string, string>>;
+export function loadNameToDir(db: import("@nan0web/db").DB): Promise<Map<string, string>>;

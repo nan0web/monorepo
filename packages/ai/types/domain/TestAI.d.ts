@@ -1,12 +1,4 @@
 /**
- * @typedef {import('ai').StreamTextResult<any, any>} StreamTextResult
- * @typedef {import('ai').ModelMessage} ModelMessage
- */
-export type StreamTextResult = import('ai').StreamTextResult<any, any>;
-export type ModelMessage = import('ai').ModelMessage;
-import { AI } from './AI.js';
-import { Usage } from './Usage.js';
-/**
  * TestAI extends AI to simulate chat responses without real API calls.
  *
  * Responses can be provided in-memory via the constructor.
@@ -16,14 +8,13 @@ import { Usage } from './Usage.js';
  * const result = await ai.streamText(null, [])
  * // result.text === 'Hello!'
  */
-export declare class TestAI extends AI {
-    #private;
+export class TestAI extends AI {
     /**
      * @param {string[]} [responses] Pre-recorded text responses.
      */
     constructor(responses?: string[]);
     streamText(model: any, messages: any, options?: {}): Promise<{
-        id: any;
+        id: `${string}-${string}-${string}-${string}-${string}`;
         text: string;
         reasoning: string;
         content: string;
@@ -33,7 +24,7 @@ export declare class TestAI extends AI {
         };
         usage: Usage;
         rawCall: {
-            messageId: any;
+            messageId: `${string}-${string}-${string}-${string}-${string}`;
         };
         experimental_output: any[];
         warnings: any[];
@@ -48,7 +39,7 @@ export declare class TestAI extends AI {
             timestamp: Date;
             modelId: string;
             headers: {};
-            messages: undefined[];
+            messages: any[];
         };
     }>;
     /**
@@ -77,4 +68,9 @@ export declare class TestAI extends AI {
         usedModel: any;
         usedProvider: any;
     }>;
+    #private;
 }
+export type StreamTextResult = import("ai").StreamTextResult<any, any>;
+export type ModelMessage = import("ai").ModelMessage;
+import { AI } from './AI.js';
+import { Usage } from './Usage.js';

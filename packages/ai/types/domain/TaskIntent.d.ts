@@ -1,13 +1,7 @@
-import { ModelAsApp } from '@nan0web/ui-cli';
 /**
  * TaskIntent — OLMUI Intent for executing release tasks (task.md) via agents or test contracts.
  */
-export declare class TaskIntent extends ModelAsApp {
-    file: any;
-    dryRun: boolean;
-    autoApprove: any;
-    agent: any;
-    maxTurns: number;
+export class TaskIntent extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -34,7 +28,12 @@ export declare class TaskIntent extends ModelAsApp {
      * @param {Partial<TaskIntent> | Record<string, any>} [data] Initial state
      * @param {import('@nan0web/ui').ModelAsAppOptions & Record<string, any>} [options] Model options
      */
-    constructor(data?: Partial<TaskIntent> | Record<string, any>, options?: import('@nan0web/ui').ModelAsAppOptions & Record<string, any>);
+    constructor(data?: Partial<TaskIntent> | Record<string, any>, options?: import("@nan0web/ui").ModelAsAppOptions & Record<string, any>);
+    file: any;
+    dryRun: boolean;
+    autoApprove: any;
+    agent: any;
+    maxTurns: number;
     /**
      * Parses markdown task document with optional YAML frontmatter.
      * @param {string} content
@@ -51,5 +50,6 @@ export declare class TaskIntent extends ModelAsApp {
     /**
      * Main execution flow for task runner.
      */
-    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ResultIntent | import("@nan0web/ui/src/core/Intent.js").ShowIntent, void, unknown>;
+    run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ShowIntent | import("@nan0web/ui/src/core/Intent.js").ResultIntent, void, unknown>;
 }
+import { ModelAsApp } from '@nan0web/ui-cli';

@@ -1,64 +1,5 @@
-/**
- * ModelProvider – fetches model metadata from supported providers and caches it.
- *
- * Each provider has its own endpoint that returns a list of available models.
- * The result is stored in a JSON file under the project cache directory so that
- * subsequent calls within the cache TTL do not hit the network.
- *
- * The public API:
- *   - `getAll()` – returns a `Map<string, ModelInfo>`
- *     with the union of all provider models (local + remote).
- *
- * @module llm/ModelProvider
- */
-import { ModelInfo } from './ModelInfo.js';
-export type AvailableProvider = "cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral";
-export type HuggingFaceProviderInfo = {
-    provider: string;
-    status: string;
-    context_length: number;
-    pricing: {
-        input: number;
-        output: number;
-    };
-    supports_tools: boolean;
-    supports_structured_output: boolean;
-    is_model_author: boolean;
-};
-/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral"} AvailableProvider */
-/**
- * @typedef {Object} HuggingFaceProviderInfo
- * @property {string} provider
- * @property {string} status
- * @property {number} context_length
- * @property {{ input: number, output: number }} pricing
- * @property {boolean} supports_tools
- * @property {boolean} supports_structured_output
- * @property {boolean} is_model_author
- */
-declare class CacheConfig {
-    /** @type {number} Cache duration – 1 hour (in milliseconds) */
-    ttl: number;
-    file: string;
-    /**
-     * @param {Partial<CacheConfig> | Record<string, any>} [input] Initial cache settings
-     */
-    constructor(input?: Partial<CacheConfig> | Record<string, any>);
-    /**
-     * @param {string} provider
-     * @return {string}
-     */
-    getFile(provider: string): string;
-    /**
-     * @param {number} time File change time in milliseconds
-     * @param {number} [now] Now time in milliseconds
-     * @returns {boolean}
-     */
-    isAlive(time: number, now?: number): boolean;
-}
-export declare const ProviderConfig: {};
-export declare class ModelProvider {
-    #private;
+export const ProviderConfig: {};
+export class ModelProvider {
     /** @type {AvailableProvider[]} */
     static AvailableProviders: AvailableProvider[];
     static ui: {
@@ -142,12 +83,62 @@ export declare class ModelProvider {
      * @param {boolean} [options.noCache]
      * @returns {Promise<Map<string, ModelInfo>>}
      */
-    getAll(options?: object): Promise<Map<string, ModelInfo>>;
+    getAll(options?: {
+        onBefore?: (arg0: string, arg1: string[]) => void;
+        onData?: (arg0: string, arg1: any, arg2: ModelInfo[]) => void;
+        noCache?: boolean;
+    }): Promise<Map<string, ModelInfo>>;
     /**
      * @param {Array} raw
      * @param {AvailableProvider} name
      * @returns {ModelInfo[]}
      */
     flatten(raw: any[], name: AvailableProvider): ModelInfo[];
+    #private;
 }
+export type AvailableProvider = "cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral";
+export type HuggingFaceProviderInfo = {
+    provider: string;
+    status: string;
+    context_length: number;
+    pricing: {
+        input: number;
+        output: number;
+    };
+    supports_tools: boolean;
+    supports_structured_output: boolean;
+    is_model_author: boolean;
+};
+/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral"} AvailableProvider */
+/**
+ * @typedef {Object} HuggingFaceProviderInfo
+ * @property {string} provider
+ * @property {string} status
+ * @property {number} context_length
+ * @property {{ input: number, output: number }} pricing
+ * @property {boolean} supports_tools
+ * @property {boolean} supports_structured_output
+ * @property {boolean} is_model_author
+ */
+declare class CacheConfig {
+    /**
+     * @param {Partial<CacheConfig> | Record<string, any>} [input] Initial cache settings
+     */
+    constructor(input?: Partial<CacheConfig> | Record<string, any>);
+    /** @type {number} Cache duration – 1 hour (in milliseconds) */
+    ttl: number;
+    file: string;
+    /**
+     * @param {string} provider
+     * @return {string}
+     */
+    getFile(provider: string): string;
+    /**
+     * @param {number} time File change time in milliseconds
+     * @param {number} [now] Now time in milliseconds
+     * @returns {boolean}
+     */
+    isAlive(time: number, now?: number): boolean;
+}
+import { ModelInfo } from './ModelInfo.js';
 export {};

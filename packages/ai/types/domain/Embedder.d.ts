@@ -1,12 +1,8 @@
-import { Model } from '@nan0web/types';
 /**
  * Embedder — computes text embeddings via an OpenAI-compatible endpoint.
  * Inherits from Model to follow Model-as-Schema v2.
  */
-export declare class Embedder extends Model {
-    /** @type {string} API root without slash */ baseURL: string;
-    /** @type {typeof globalThis.fetch} Fetch platform override */
-    _fetch: typeof globalThis.fetch;
+export class Embedder extends Model {
     static UI: {
         errorFetchFailed: string;
     };
@@ -24,7 +20,11 @@ export declare class Embedder extends Model {
      */
     constructor(data?: (Partial<Embedder> & {
         fetch?: typeof globalThis.fetch;
-    }) | Record<string, any>, options?: Partial<import('@nan0web/types').ModelOptions>);
+    }) | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
+    /** @type {string} API root without slash */ baseURL: string;
+    /** @type {string} Target embedding model ID */ model: string;
+    /** @type {typeof globalThis.fetch} Fetch platform override */
+    _fetch: typeof globalThis.fetch;
     /**
      * Checks whether the current model is an E5-Instruct variant
      * that requires query:/passage: prefix injection.
@@ -38,7 +38,7 @@ export declare class Embedder extends Model {
      * @returns {string[]}
      */
     prefixInput(texts: string[], opts?: {
-        type?: 'query' | 'passage';
+        type?: "query" | "passage";
     }): string[];
     /**
      * Computes embeddings for single or multiple inputs.
@@ -47,7 +47,7 @@ export declare class Embedder extends Model {
      * @returns {Promise<number[] | number[][]>}
      */
     embed(input: string | string[], opts?: {
-        type?: 'query' | 'passage';
+        type?: "query" | "passage";
     }): Promise<number[] | number[][]>;
     /**
      * @param {string[]} texts
@@ -55,6 +55,7 @@ export declare class Embedder extends Model {
      * @returns {Promise<number[][]>}
      */
     embedBatch(texts: string[], opts?: {
-        type?: 'query' | 'passage';
+        type?: "query" | "passage";
     }): Promise<number[][]>;
 }
+import { Model } from '@nan0web/types';

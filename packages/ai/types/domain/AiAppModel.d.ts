@@ -1,17 +1,7 @@
-import { ModelAsApp } from '@nan0web/ui-cli';
-import { IndexWorkspaceApp } from './IndexWorkspaceApp.js';
-import { SyncWorkspaceApp } from './SyncWorkspaceApp.js';
-import { StoreApp } from './StoreApp.js';
-import { SearchSourcesIntent } from './SearchSourcesIntent.js';
-import { GetSourceIntent } from './GetSourceIntent.js';
-import { ListIndexIntent } from './ListIndexIntent.js';
-import { PipelineApp } from './PipelineApp.js';
-import { CheckIntent } from './CheckIntent.js';
-import { TaskIntent } from './TaskIntent.js';
 /**
  * AiAppModel — domain model for AI toolkit management (RAG, Indexing, MCP).
  */
-export declare class AiAppModel extends ModelAsApp {
+export class AiAppModel extends ModelAsApp {
     static alias: string;
     static UI: {
         title: string;
@@ -26,7 +16,9 @@ export declare class AiAppModel extends ModelAsApp {
      * @param {Partial<AiAppModel> | Record<string, any>} [data] Initial state
      * @param {import('@nan0web/ui').ModelAsAppOptions & Record<string, any>} [options] Model options
      */
-    constructor(data?: Partial<AiAppModel> | Record<string, any>, options?: import('@nan0web/ui').ModelAsAppOptions & Record<string, any>);
+    constructor(data?: Partial<AiAppModel> | Record<string, any>, options?: import("@nan0web/ui").ModelAsAppOptions & Record<string, any>);
+    /** @type {InstanceType<typeof IndexWorkspaceApp> | InstanceType<typeof SyncWorkspaceApp> | InstanceType<typeof StoreApp> | SearchSourcesIntent | GetSourceIntent | TaskIntent} */
+    command: InstanceType<typeof IndexWorkspaceApp> | InstanceType<typeof SyncWorkspaceApp> | InstanceType<typeof StoreApp> | SearchSourcesIntent | GetSourceIntent | TaskIntent;
     /**
      * Main execution entry point for AiAppModel.
      * Acts as a router, delegating execution to the appropriate subcommand (Executor).
@@ -41,3 +33,13 @@ export declare class AiAppModel extends ModelAsApp {
      */
     internalSearch(vector: number[] | Float32Array, opts?: object): Promise<Array<any>>;
 }
+import { ModelAsApp } from '@nan0web/ui-cli';
+import { IndexWorkspaceApp } from './IndexWorkspaceApp.js';
+import { SyncWorkspaceApp } from './SyncWorkspaceApp.js';
+import { StoreApp } from './StoreApp.js';
+import { SearchSourcesIntent } from './SearchSourcesIntent.js';
+import { GetSourceIntent } from './GetSourceIntent.js';
+import { TaskIntent } from './TaskIntent.js';
+import { ListIndexIntent } from './ListIndexIntent.js';
+import { PipelineApp } from './PipelineApp.js';
+import { CheckIntent } from './CheckIntent.js';

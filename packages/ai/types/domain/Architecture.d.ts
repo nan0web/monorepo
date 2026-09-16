@@ -1,16 +1,7 @@
-import { Model } from '@nan0web/types';
 /**
  * Architecture — represents model architecture and modality information.
  */
-export declare class Architecture extends Model {
-    /** @type {string[]} Input modes (text/img) */
-    input_modalities: string[];
-    /** @type {string[]} Output modes (text/img) */
-    output_modalities: string[];
-    /** @type {string} Type of instruction kit */ instruct_type: string;
-    /** @type {string} Primary model modality */ modality: string;
-    /** @type {string} Tokenizer used by model */ tokenizer: string;
-    /** @type {number} Native context window */ context_length: number;
+export class Architecture extends Model {
     /** @type {{ help: string, default: string[] }} */
     static input_modalities: {
         help: string;
@@ -41,5 +32,14 @@ export declare class Architecture extends Model {
      * @param {Record<string, any>} [data] Input data
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options] Model options
      */
-    constructor(data?: Record<string, any>, options?: Partial<import('@nan0web/types').ModelOptions>);
+    constructor(data?: Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
+    /** @type {string[]} Input modes (text/img) */
+    input_modalities: string[];
+    /** @type {string[]} Output modes (text/img) */
+    output_modalities: string[];
+    /** @type {string} Type of instruction kit */ instruct_type: string;
+    /** @type {string} Primary model modality */ modality: string;
+    /** @type {string} Tokenizer used by model */ tokenizer: string;
+    /** @type {number} Native context window */ context_length: number;
 }
+import { Model } from '@nan0web/types';

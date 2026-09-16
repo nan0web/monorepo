@@ -1,21 +1,10 @@
-import { Model } from '@nan0web/types';
-import hnswlib from 'hnswlib-node';
 /**
  * VectorDB — HNSW vector index with metadata storage.
  * Inherits from Model to follow Model-as-Schema v2.
  *
  * Uses `this._.db` for file persistence (save/load).
  */
-export declare class VectorDB extends Model {
-    /** @type {number} Embedding vector dimension */ dim: number;
-    /** @type {number} Max element capacity */ maxElements: number;
-    /** @type {hnswlib.HierarchicalNSW} Native HNSW index instance */
-    _index: hnswlib.HierarchicalNSW;
-    /** @type {Map<number, object>} ID to metadata mapping */
-    _metadata: Map<number, object>;
-    /** @type {number} Auto-incrementing index ID */
-    _nextId: number;
-    space: string;
+export class VectorDB extends Model {
     static UI: {
         errorDimensionMismatch: string;
     };
@@ -36,7 +25,16 @@ export declare class VectorDB extends Model {
      * @param {Partial<VectorDB> | Record<string, any>} [data] Initial state
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options] Model options
      */
-    constructor(data?: Partial<VectorDB> | Record<string, any>, options?: Partial<import('@nan0web/types').ModelOptions>);
+    constructor(data?: Partial<VectorDB> | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
+    /** @type {number} Embedding vector dimension */ dim: number;
+    /** @type {string} Distance metric to use */ space: string;
+    /** @type {number} Max element capacity */ maxElements: number;
+    /** @type {hnswlib.HierarchicalNSW} Native HNSW index instance */
+    _index: hnswlib.HierarchicalNSW;
+    /** @type {Map<number, object>} ID to metadata mapping */
+    _metadata: Map<number, object>;
+    /** @type {number} Auto-incrementing index ID */
+    _nextId: number;
     /**
      * @param {number[] | Float32Array} vector
      * @param {object} [meta]
@@ -69,3 +67,5 @@ export declare class VectorDB extends Model {
     }): Promise<boolean>;
     _applyMeta(metaObj: any, init?: boolean): void;
 }
+import { Model } from '@nan0web/types';
+import hnswlib from 'hnswlib-node';

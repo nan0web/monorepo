@@ -27,5 +27,6 @@ export * from './domain/batch.js'
 export * from './domain/BatchTaskModel.js'
 export * from './domain/discovery.js'
 export * from './domain/WorkspaceInspectorModel.js'
+export * from './domain/process/logic.js'
 
 export const UI = ui
