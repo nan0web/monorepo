@@ -44,15 +44,15 @@ describe('Release v1.4.6: Domain Models Integration', () => {
 		const db = new DB()
 		// We pretend `data/` is a local json. We just test the explicit parsing/hydration.
 		// DB internally uses Model.from() ? No, we removed from(). It uses `new ModelClass(data)`.
-		
+
 		const dataFromDb = {
 			url: 'data/',
-			maxRetries: 10
+			maxRetries: 10,
 		}
 
 		// When db hydrates `DBConfig`:
 		const hydratedConfig = new DBConfig(dataFromDb)
-		
+
 		// Verification: Data is intact and default configuration supplements missing parameters
 		assert.equal(hydratedConfig.protocol, 'fs') // because data/ auto-resolves to fs
 		assert.equal(hydratedConfig.url, 'data/')

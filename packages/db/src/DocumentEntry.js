@@ -68,7 +68,7 @@ class DocumentEntry {
 			this.parent = arr.join('/')
 		}
 		this.fulfilled = Boolean(
-			undefined === fulfilledInit ? this.path && this.stat.exists : fulfilledInit,
+			undefined === fulfilledInit ? this.path && this.stat.exists : fulfilledInit
 		)
 	}
 

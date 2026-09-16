@@ -599,4 +599,3 @@ export default class DBDir extends DBDoc {
 		}
 	}
 }
-

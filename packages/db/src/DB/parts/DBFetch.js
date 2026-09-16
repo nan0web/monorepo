@@ -108,7 +108,9 @@ export default class DBFetch extends DBDir {
 			// Check if this is a directory
 			if (opts.allowDirs && uri.endsWith('/')) {
 				try {
-					const indexes = Array.isArray(this.Directory.INDEX) ? this.Directory.INDEX : [this.Directory.INDEX]
+					const indexes = Array.isArray(this.Directory.INDEX)
+						? this.Directory.INDEX
+						: [this.Directory.INDEX]
 					for (const idx of indexes) {
 						for (const extname of this.Directory.DATA_EXTNAMES) {
 							const path = this.resolveSync(uri, idx + extname)
@@ -462,4 +464,3 @@ export default class DBFetch extends DBDir {
 		return this.Data.unflatten(newFlat)
 	}
 }
-

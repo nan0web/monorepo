@@ -153,13 +153,13 @@ suite('DB index functions', () => {
 			await output.connect()
 
 			const times = Object.fromEntries(
-				Array.from(db.meta.entries()).map(([uri, stat]) => [uri, stat.mtimeMs]),
+				Array.from(db.meta.entries()).map(([uri, stat]) => [uri, stat.mtimeMs])
 			)
 			await new Promise((resolve) => setTimeout(resolve, 33))
 			await db.dump(output)
 
 			const updated = Object.fromEntries(
-				Array.from(output.meta.entries()).map(([uri, stat]) => [uri, stat.mtimeMs]),
+				Array.from(output.meta.entries()).map(([uri, stat]) => [uri, stat.mtimeMs])
 			)
 
 			assert.ok(times['index.html'] < updated['index.html'])

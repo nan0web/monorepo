@@ -49,7 +49,9 @@ description: Канонічний рецепт налаштування TypeScri
     "test": "node --test \"src/**/*.test.js\"",
     "test:release": "node --test \"src/test/releases/**/*.test.js\"",
     "release:spec": "node --test \"releases/**/*.spec.js\"",
-    "test:all": "npm run test && npm run build && npm run test:release"
+    "lint": "prettier --check \"src/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\"",
+    "test:all": "npm run test && npm run build && npm run test:release && npm run lint"
   }
 }
 ```

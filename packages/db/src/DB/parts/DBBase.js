@@ -501,7 +501,9 @@ export default class DBBase {
 		}
 
 		const isDir = normalized.endsWith('/') || normalized === '' || normalized === '.'
-		const primaryIndex = Array.isArray(DirectoryClass.INDEX) ? DirectoryClass.INDEX[0] : DirectoryClass.INDEX
+		const primaryIndex = Array.isArray(DirectoryClass.INDEX)
+			? DirectoryClass.INDEX[0]
+			: DirectoryClass.INDEX
 
 		let targetExt = ext ? (ext.startsWith('.') ? ext : '.' + ext) : ''
 
@@ -515,9 +517,12 @@ export default class DBBase {
 
 		const base = this.basename(normalized, true)
 		const dir = this.dirname(normalized)
-		const isIndex = typeof DirectoryClass.isIndex === 'function'
-			? DirectoryClass.isIndex(base)
-			: (Array.isArray(DirectoryClass.INDEX) ? DirectoryClass.INDEX.includes(base) : base === DirectoryClass.INDEX)
+		const isIndex =
+			typeof DirectoryClass.isIndex === 'function'
+				? DirectoryClass.isIndex(base)
+				: Array.isArray(DirectoryClass.INDEX)
+					? DirectoryClass.INDEX.includes(base)
+					: base === DirectoryClass.INDEX
 
 		if (targetExt) {
 			const dirPrefix = dir && dir !== '.' ? dir : ''
@@ -569,7 +574,7 @@ export default class DBBase {
 		if (this.#sealed) {
 			throw new Error(`Mount registry is sealed. Cannot mount '${path}' after seal().`)
 		}
-		if (!/** @type {typeof DBBase} */ (this.constructor).isDB(db)) {
+		if (!(/** @type {typeof DBBase} */ (this.constructor).isDB(db))) {
 			throw new TypeError('Mounted instance must be a DB')
 		}
 		const normalized = this.normalize(path).replace(/\/$/, '')
@@ -648,7 +653,7 @@ export default class DBBase {
 	 * @throws {TypeError} If non-DB instance is provided
 	 */
 	attach(db) {
-		if (!/** @type {typeof DBBase} */ (this.constructor).isDB(db)) {
+		if (!(/** @type {typeof DBBase} */ (this.constructor).isDB(db))) {
 			this.console.error('Attempted to attach a non-DB instance')
 			throw new TypeError('It is possible to attach only DB or extended databases')
 		}
@@ -1026,8 +1031,6 @@ export default class DBBase {
 		}
 	}
 
-
-
 	/**
 	 * Synchronize data with persistent storage
 	 * Saves changed documents where local mtime > remote stat mtime.
@@ -1085,7 +1088,6 @@ export default class DBBase {
 			current = parent
 		}
 	}
-
 
 	/**
 	 * Checks if the given URI contains data in the in-memory cache.

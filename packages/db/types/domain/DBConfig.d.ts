@@ -98,6 +98,7 @@ export default class DBConfig extends Model {
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options={}]
      */
     constructor(data?: Partial<DBConfigType> | string | Record<string, any>, options?: Partial<import("@nan0web/types").ModelOptions>);
+    /** @type {DBConfigType} */ protocol: DBConfigType;
     /**
      * Build a sanitized DSN string (without credentials).
      * Safe for logging and diagnostics.

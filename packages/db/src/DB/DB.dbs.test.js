@@ -36,7 +36,7 @@ describe('DB.dbs multiple databases', () => {
 				mainDB.attach({})
 			},
 			TypeError,
-			'It is possible to attach only DB or extended databases',
+			'It is possible to attach only DB or extended databases'
 		)
 	})
 

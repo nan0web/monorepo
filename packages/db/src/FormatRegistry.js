@@ -14,8 +14,16 @@ export default class FormatRegistry {
 
 	constructor() {
 		// Register built-in JSON and raw fallbacks
-		this.register('.json', (str) => JSON.parse(str), (doc) => JSON.stringify(doc, null, 2))
-		this.register('*', (str) => str, (doc) => String(doc))
+		this.register(
+			'.json',
+			(str) => JSON.parse(str),
+			(doc) => JSON.stringify(doc, null, 2)
+		)
+		this.register(
+			'*',
+			(str) => str,
+			(doc) => String(doc)
+		)
 	}
 
 	/**
@@ -35,7 +43,10 @@ export default class FormatRegistry {
 	 * @returns {(str: string, ext: string) => any}
 	 */
 	resolveLoader(ext) {
-		return this.#loaders.get(ext) || /** @type {(str: string, ext: string) => any} */ (this.#loaders.get('*'))
+		return (
+			this.#loaders.get(ext) ||
+			/** @type {(str: string, ext: string) => any} */ (this.#loaders.get('*'))
+		)
 	}
 
 	/**
@@ -44,6 +55,9 @@ export default class FormatRegistry {
 	 * @returns {(doc: any, ext: string) => string}
 	 */
 	resolveSaver(ext) {
-		return this.#savers.get(ext) || /** @type {(doc: any, ext: string) => string} */ (this.#savers.get('*'))
+		return (
+			this.#savers.get(ext) ||
+			/** @type {(doc: any, ext: string) => string} */ (this.#savers.get('*'))
+		)
 	}
 }

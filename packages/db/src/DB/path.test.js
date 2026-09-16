@@ -82,14 +82,14 @@ suite('Path Utilities', () => {
 		it('handles multiple arguments with cwd', () => {
 			assert.strictEqual(
 				normalize('/current/working/dir', 'root', 'a/b', '../c', 'd'),
-				'root/a/c/d',
+				'root/a/c/d'
 			)
 		})
 
 		it('handles multiple arguments with cwd and root', () => {
 			assert.strictEqual(
 				normalize('/current/working/dir', 'root', 'a/b', '../c', 'd'),
-				'root/a/c/d',
+				'root/a/c/d'
 			)
 		})
 
@@ -129,14 +129,14 @@ suite('Path Utilities', () => {
 		it('converts virtual URI to physical path', () => {
 			assert.strictEqual(
 				absolute('/cwd/', 'root/dir/fixtures', 'nested/file'),
-				'/cwd/root/dir/fixtures/nested/file',
+				'/cwd/root/dir/fixtures/nested/file'
 			)
 		})
 
 		it('strips trailing slash from root', () => {
 			assert.strictEqual(
 				absolute('/cwd/', 'root/dir/fixtures/with-slash/', 'file'),
-				'/cwd/root/dir/fixtures/with-slash/file',
+				'/cwd/root/dir/fixtures/with-slash/file'
 			)
 		})
 
@@ -160,11 +160,11 @@ suite('Path Utilities', () => {
 		it('should handle remote URLs correctly', () => {
 			assert.equal(
 				absolute('https://example.com', 'api', 'v1/users'),
-				'https://example.com/api/v1/users',
+				'https://example.com/api/v1/users'
 			)
 			assert.equal(
 				absolute('https://example.com/base/', 'api', 'v1/users'),
-				'https://example.com/base/api/v1/users',
+				'https://example.com/base/api/v1/users'
 			)
 		})
 	})

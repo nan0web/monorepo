@@ -53,17 +53,20 @@ suite('ReferenceValidator', () => {
 		it('should validate references inside a document', async () => {
 			const predefined = [
 				['good.json', { value: 'ok' }],
-				['doc.json', { 
-					goodLink: { $ref: 'good.json' },
-					badLink: { $ref: 'missing.json' }
-				}]
+				[
+					'doc.json',
+					{
+						goodLink: { $ref: 'good.json' },
+						badLink: { $ref: 'missing.json' },
+					},
+				],
 			]
 			const db = new BaseDB({ predefined, console: new NoConsole() })
 			await db.connect()
-			
+
 			const validator = new ReferenceValidator(db)
 			const broken = await validator.validateDocument('doc.json')
-			
+
 			assert.strictEqual(broken.length, 1)
 			assert.strictEqual(broken[0].path, 'badLink/$ref')
 			assert.strictEqual(broken[0].ref, 'missing.json')
@@ -73,18 +76,21 @@ suite('ReferenceValidator', () => {
 		it('should validate relative references correctly', async () => {
 			const predefined = [
 				['folder/target.json', { value: 'ok' }],
-				['folder/doc.json', { 
-					relative: { $ref: 'target.json' },
-					parent: { $ref: '../target.json' }, // missing because it resolves to root/target.json
-					root: { $ref: '/folder/target.json' }
-				}]
+				[
+					'folder/doc.json',
+					{
+						relative: { $ref: 'target.json' },
+						parent: { $ref: '../target.json' }, // missing because it resolves to root/target.json
+						root: { $ref: '/folder/target.json' },
+					},
+				],
 			]
 			const db = new BaseDB({ predefined, console: new NoConsole() })
 			await db.connect()
-			
+
 			const validator = new ReferenceValidator(db)
 			const broken = await validator.validateDocument('folder/doc.json')
-			
+
 			// parent is broken because it resolves to /target.json which doesn't exist
 			assert.strictEqual(broken.length, 1)
 			assert.strictEqual(broken[0].path, 'parent/$ref')
@@ -100,13 +106,13 @@ suite('ReferenceValidator', () => {
 			]
 			const db = new BaseDB({ predefined, console: new NoConsole() })
 			await db.connect()
-			
+
 			const validator = new ReferenceValidator(db)
 			const allBroken = await validator.validateAll()
-			
+
 			const keys = Object.keys(allBroken).sort()
 			assert.deepEqual(keys, ['b.json', 'dir/d.json'])
-			
+
 			assert.strictEqual(allBroken['b.json'][0].ref, 'c.json')
 			assert.strictEqual(allBroken['dir/d.json'][0].ref, 'e.json')
 			assert.strictEqual(allBroken['dir/d.json'][0].resolvedUri, 'dir/e.json')

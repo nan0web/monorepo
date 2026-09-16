@@ -133,7 +133,11 @@ describe('Release v3.4.0: HydratedModel & Caching in @nan0web/db', () => {
 			const firstCallCount = listDirCalls
 
 			const g2 = await db.getGlobals('deep/nested/path/item.json')
-			assert.equal(listDirCalls, firstCallCount, 'Expected negative / directory cache to prevent subsequent listDir calls')
+			assert.equal(
+				listDirCalls,
+				firstCallCount,
+				'Expected negative / directory cache to prevent subsequent listDir calls'
+			)
 			assert.deepEqual(g1, g2)
 		})
 	})

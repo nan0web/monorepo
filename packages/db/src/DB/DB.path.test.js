@@ -112,7 +112,7 @@ suite('DB URI Core', () => {
 			assert.strictEqual(blogDb.resolveSync('post1.json'), 'post1.json')
 			assert.strictEqual(
 				blogDb.absolute('post1.json'),
-				'https://example.com/content/blog/post1.json',
+				'https://example.com/content/blog/post1.json'
 			)
 		})
 
@@ -139,7 +139,7 @@ suite('DB URI Core', () => {
 			assert.strictEqual(usersDb.resolveSync('john.json'), 'john.json')
 			assert.strictEqual(
 				usersDb.absolute('john.json'),
-				'https://example.com/api/v1/users/john.json',
+				'https://example.com/api/v1/users/john.json'
 			)
 		})
 
@@ -192,7 +192,7 @@ suite('DB URI Core', () => {
 			assert.strictEqual(userDb.resolveSync('profile.json'), 'profile.json')
 			assert.strictEqual(
 				userDb.absolute('profile.json'),
-				'https://example.com/private/user/profile.json',
+				'https://example.com/private/user/profile.json'
 			)
 		})
 
@@ -243,7 +243,7 @@ suite('DB URI Core', () => {
 			assert.strictEqual(extracted.resolveSync('alice.json'), 'alice.json')
 			assert.strictEqual(
 				extracted.absolute('alice.json'),
-				'https://example.com/api/v1/users/profiles/alice.json',
+				'https://example.com/api/v1/users/profiles/alice.json'
 			)
 		})
 

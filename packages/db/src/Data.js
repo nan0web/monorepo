@@ -127,7 +127,7 @@ class Data {
 			if (acc === undefined || acc === null) return undefined
 			if (typeof key?.match === 'function') {
 				const arrayMatch = key.match(
-					new RegExp(`^\\${this.ARRAY_WRAPPER[0] || ''}(\\d+)\\${this.ARRAY_WRAPPER[1] || ''}$`),
+					new RegExp(`^\\${this.ARRAY_WRAPPER[0] || ''}(\\d+)\\${this.ARRAY_WRAPPER[1] || ''}$`)
 				)
 				if (arrayMatch) {
 					key = String(parseInt(arrayMatch[1], 10))
@@ -185,7 +185,7 @@ class Data {
 	static unflatten(data) {
 		const result = {}
 		const noRegExp = new RegExp(
-			`^\\${this.ARRAY_WRAPPER[0] || ''}(\\d+)\\${this.ARRAY_WRAPPER[1] || ''}$`,
+			`^\\${this.ARRAY_WRAPPER[0] || ''}(\\d+)\\${this.ARRAY_WRAPPER[1] || ''}$`
 		)
 
 		// Sort keys to ensure we create objects before assigning properties to them
@@ -241,7 +241,7 @@ class Data {
 						parentValue[pathKey] = data[flatKey]
 					} else {
 						throw new TypeError(
-							`Cannot set property '${pathKey}' on non-object value '${parentValue}' at path '${p.join(this.OBJECT_DIVIDER)}'`,
+							`Cannot set property '${pathKey}' on non-object value '${parentValue}' at path '${p.join(this.OBJECT_DIVIDER)}'`
 						)
 					}
 				} else {
@@ -394,7 +394,7 @@ class Data {
 		const path = '' === parentKey ? '' : parentKey + this.OBJECT_DIVIDER
 		const level = key.split(this.OBJECT_DIVIDER).length
 		return flat.filter(
-			([k]) => k.startsWith(path) && k !== key && k.split(this.OBJECT_DIVIDER).length >= level,
+			([k]) => k.startsWith(path) && k !== key && k.split(this.OBJECT_DIVIDER).length >= level
 		)
 	}
 
@@ -419,7 +419,7 @@ class Data {
 			 * @param {number} index
 			 * @returns {string}
 			 */
-			(_, index) => segments.slice(0, index + 1).join('/') + suffix,
+			(_, index) => segments.slice(0, index + 1).join('/') + suffix
 		)
 
 		if (avoidRoot) {

@@ -22,7 +22,7 @@ class DB extends BaseDB {
 		this.accessLevels.push({ uri, level })
 		if (!['r', 'w', 'd'].includes(level)) {
 			throw new TypeError(
-				['Access level must be one of [r, w, d]', 'r = read', 'w = write', 'd = delete'].join('\n'),
+				['Access level must be one of [r, w, d]', 'r = read', 'w = write', 'd = delete'].join('\n')
 			)
 		}
 		return true
@@ -289,7 +289,7 @@ suite('DB', () => {
 				predefined: [
 					['index.json', { value: 'found-file' }],
 					['index/', null],
-					['index/subfile.json', { value: 'sub' }]
+					['index/subfile.json', { value: 'sub' }],
 				],
 			})
 			await dbInstance.connect()
@@ -385,7 +385,7 @@ suite('DB', () => {
 			const db = new BaseDB()
 			await assert.rejects(
 				() => db.ensureAccess('uri', 'x'),
-				/Access level must be one of \[r, w, d\]/,
+				/Access level must be one of \[r, w, d\]/
 			)
 		})
 
@@ -674,8 +674,8 @@ suite('DB', () => {
 			const dbInstance = new DB({
 				predefined: [
 					['dir1/', null],
-					['dir1.json', { key: 'val' }]
-				]
+					['dir1.json', { key: 'val' }],
+				],
 			})
 			await dbInstance.connect()
 			const res = await dbInstance.fetch('dir1')
@@ -1116,8 +1116,14 @@ suite('DB', () => {
 
 		it('should compute route with custom extension', () => {
 			const db = new DB()
-			assert.strictEqual(db.route('en/docs/architecture.yaml', 'html'), '/en/docs/architecture.html')
-			assert.strictEqual(db.route('en/docs/architecture.yaml', '.html'), '/en/docs/architecture.html')
+			assert.strictEqual(
+				db.route('en/docs/architecture.yaml', 'html'),
+				'/en/docs/architecture.html'
+			)
+			assert.strictEqual(
+				db.route('en/docs/architecture.yaml', '.html'),
+				'/en/docs/architecture.html'
+			)
 			assert.strictEqual(db.route('index.md', 'html'), '/index.html')
 			assert.strictEqual(db.route('en/docs/index.md', '.html'), '/en/docs/index.html')
 			assert.strictEqual(db.route('en/docs/', 'html'), '/en/docs/index.html')

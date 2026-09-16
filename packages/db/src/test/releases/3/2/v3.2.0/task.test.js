@@ -12,15 +12,15 @@ describe('DB Core Expansion (v3.2.0)', () => {
 		root.mount('~', mount2)
 
 		const mounts = root.getMounts()
-		
+
 		assert.equal(Array.isArray(mounts), true)
 		assert.equal(mounts.length, 2)
-		
-		const appMount = mounts.find(m => m.prefix === '@app')
+
+		const appMount = mounts.find((m) => m.prefix === '@app')
 		assert.ok(appMount)
 		assert.strictEqual(appMount.db, mount1)
 
-		const homeMount = mounts.find(m => m.prefix === '~')
+		const homeMount = mounts.find((m) => m.prefix === '~')
 		assert.ok(homeMount)
 		assert.strictEqual(homeMount.db, mount2)
 	})

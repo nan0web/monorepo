@@ -84,10 +84,7 @@ describe('Release v1.4.0: Aliases Protocol and Stabilization', () => {
 			const { existsSync } = await import('node:fs')
 			const { resolve } = await import('node:path')
 
-			const regressionPath = resolve(
-				import.meta.dirname,
-				'../../../1/3/v1.3.1/task.test.js',
-			)
+			const regressionPath = resolve(import.meta.dirname, '../../../1/3/v1.3.1/task.test.js')
 
 			assert.ok(existsSync(regressionPath), `Regression test must exist: ${regressionPath}`)
 		})

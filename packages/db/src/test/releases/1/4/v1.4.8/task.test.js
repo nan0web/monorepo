@@ -14,7 +14,7 @@ describe('v1.4.8: Domain Export & Types Refinement', () => {
 		// Перевірка інстанціації
 		const config = new DomainIndex.DBConfig({ protocol: 'memory' })
 		assert.equal(config.protocol, 'memory')
-		
+
 		const revision = new DomainIndex.RevisionInfo({ message: 'chore: test' })
 		assert.equal(revision.message, 'chore: test')
 	})

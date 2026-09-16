@@ -450,7 +450,7 @@ describe('DirectoryIndex - generateAllIndexes', () => {
 			resolveSync,
 			loaded: true,
 			meta: new Map(
-				entries.map((entry) => [new FilterString(entry.path).trimEnd('/'), entry.stat]),
+				entries.map((entry) => [new FilterString(entry.path).trimEnd('/'), entry.stat])
 			),
 			readDir: async function* (uri, options = { depth: -1 }) {
 				// Filter entries based on the uri and depth
@@ -503,13 +503,13 @@ describe('DirectoryIndex - generateAllIndexes', () => {
 				'dir1/subdir/file3.txt',
 				'dir2/',
 				'dir2/file4.txt',
-			].sort(),
+			].sort()
 		)
 		const r3 = await toArray(db.readDir('dir1', { depth: -1 }))
 		const p3 = r3.map((r) => r.path)
 		assert.deepStrictEqual(
 			p3.sort(),
-			['dir1/file2.txt', 'dir1/subdir/', 'dir1/subdir/file3.txt'].sort(),
+			['dir1/file2.txt', 'dir1/subdir/', 'dir1/subdir/file3.txt'].sort()
 		)
 		const r4 = await toArray(db.readDir('dir1/subdir', { depth: 0 }))
 		const p4 = r4.map((r) => r.path)

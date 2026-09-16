@@ -25,10 +25,7 @@ import FormatRegistry from '../FormatRegistry.js'
 export default class DBDriverProtocol {
 	static Formats = {
 		get loaders() {
-			return [
-				(str, ext) => ('.json'.includes(ext) ? JSON.parse(str) : false),
-				(str) => str,
-			]
+			return [(str, ext) => ('.json'.includes(ext) ? JSON.parse(str) : false), (str) => str]
 		},
 		get savers() {
 			return [
@@ -41,7 +38,7 @@ export default class DBDriverProtocol {
 		},
 		save(doc, ext) {
 			return FormatRegistry.default.resolveSaver(ext)(doc, ext)
-		}
+		},
 	}
 	/** @type {string} */
 	cwd = '.'
@@ -57,7 +54,14 @@ export default class DBDriverProtocol {
 	 * @param {DriverConfig} config
 	 */
 	constructor(config = {}) {
-		const { cwd = this.cwd, root = this.root, Directory = this.Directory, driver, formats, registry } = config
+		const {
+			cwd = this.cwd,
+			root = this.root,
+			Directory = this.Directory,
+			driver,
+			formats,
+			registry,
+		} = config
 		this.cwd = String(cwd)
 		this.root = String(root)
 		this.Directory = Directory
@@ -136,7 +140,7 @@ export default class DBDriverProtocol {
 	/**
 	 * Formats a raw stream into a line-by-line stream based on extension.
 	 * @param {any} _stream - Raw stream
-	 * @param {string} absoluteURI - Document URI 
+	 * @param {string} absoluteURI - Document URI
 	 * @returns {any} Formatted stream
 	 */
 	parseStream(_stream, absoluteURI) {
@@ -171,7 +175,7 @@ export default class DBDriverProtocol {
 					try {
 						JSON.parse(buffer)
 						yield buffer
-					} catch(e) {
+					} catch (e) {
 						yield buffer // flush whatever is left
 					}
 				}
@@ -272,7 +276,8 @@ export default class DBDriverProtocol {
 	 * @returns {DBDriverProtocol}
 	 */
 	static from(input) {
-		if (input && (input instanceof DBDriverProtocol || typeof input.read === 'function')) return input
+		if (input && (input instanceof DBDriverProtocol || typeof input.read === 'function'))
+			return input
 		return new DBDriverProtocol(input)
 	}
 }

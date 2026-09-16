@@ -91,7 +91,11 @@ describe('Release v1.3.1: Contract Tests', () => {
 
 			// Deep validation check
 			const validation = await db.validate('deep/item', { name: 'test', level: 'wrong' })
-			assert.equal(validation.valid, false, 'Validation must detect invalid field in inherited model')
+			assert.equal(
+				validation.valid,
+				false,
+				'Validation must detect invalid field in inherited model'
+			)
 		})
 	})
 })

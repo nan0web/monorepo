@@ -79,7 +79,7 @@ describe('Stream Architecture Refactoring (v1.5.0)', () => {
 
 		await assert.rejects(
 			async () => await db.stream('access_denied.jsonl'),
-			/EACCES: permission denied/,
+			/EACCES: permission denied/
 		)
 	})
 })

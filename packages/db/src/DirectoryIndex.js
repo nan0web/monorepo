@@ -322,7 +322,7 @@ export default class DirectoryIndex {
 			// Generate one TXTL full index at the root level
 			const allEntries = db.loaded
 				? Array.from(db.meta.entries()).filter(
-						([path, stat]) => stat.isFile && !this.isFullIndex(path) && !this.isIndex(path),
+						([path, stat]) => stat.isFile && !this.isFullIndex(path) && !this.isIndex(path)
 					)
 				: await this._getAllEntriesFallback(db, dirPath)
 

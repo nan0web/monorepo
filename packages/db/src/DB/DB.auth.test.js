@@ -89,7 +89,7 @@ describe('DB Authorization', () => {
 			},
 			{
 				message: 'Access denied to secret/data.json { level: r }',
-			},
+			}
 		)
 	})
 
@@ -141,7 +141,7 @@ describe('DB Authorization', () => {
 			},
 			{
 				message: 'Access denied to public/info.txt { level: w }',
-			},
+			}
 		)
 	})
 
@@ -201,7 +201,7 @@ describe('DB Authorization', () => {
 			},
 			{
 				message: 'Access denied to private/data.txt { level: w }',
-			},
+			}
 		)
 	})
 })

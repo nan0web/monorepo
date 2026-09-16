@@ -116,7 +116,8 @@ export default class DBConfig extends Model /** @implements {DBConfigType} */ {
 	static parseDsn(dsn) {
 		if (!dsn || typeof dsn !== 'string') return /** @type {Partial<DBConfigType>} */ ({})
 		try {
-			if (!dsn.includes('://')) return /** @type {Partial<DBConfigType>} */ ({ url: dsn, protocol: 'fs' })
+			if (!dsn.includes('://'))
+				return /** @type {Partial<DBConfigType>} */ ({ url: dsn, protocol: 'fs' })
 			const parsed = new URL(dsn)
 			return /** @type {Partial<DBConfigType>} */ ({
 				url: dsn,
@@ -141,8 +142,10 @@ export default class DBConfig extends Model /** @implements {DBConfigType} */ {
 		super(data, options)
 
 		// Auto-detect protocol from URL if not explicitly set
-		if (!/** @type {DBConfigType} */ (this).protocol && /** @type {DBConfigType} */ (this).url) {
-			/** @type {DBConfigType} */ (this).protocol = DBConfig.detectProtocol(/** @type {DBConfigType} */ (this).url)
+		if (!(/** @type {DBConfigType} */ (this).protocol) && /** @type {DBConfigType} */ (this).url) {
+			/** @type {DBConfigType} */ this.protocol = DBConfig.detectProtocol(
+				/** @type {DBConfigType} */ (this).url
+			)
 		}
 	}
 

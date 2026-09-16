@@ -16,7 +16,7 @@ suite('Cross-driver integration (db ↔ db-fs)', () => {
 
 	beforeEach(async () => {
 		tmpDir = fs.mkdtempSync(join(os.tmpdir(), 'nan0web-cross-'))
-		
+
 		fsDb = new DBFS({ root: tmpDir, cwd: tmpDir, console })
 		memDb = new DB({
 			console,
@@ -64,7 +64,7 @@ suite('Cross-driver integration (db ↔ db-fs)', () => {
 		// the value may be resolved or left as $ref string)
 		assert.ok(
 			memData.reference.fromMem === 'mem instance' || typeof memData.reference.fromMem === 'string',
-			'fromMem should be resolved or remain as string',
+			'fromMem should be resolved or remain as string'
 		)
 	})
 
@@ -83,7 +83,7 @@ suite('Cross-driver integration (db ↔ db-fs)', () => {
 		// the original ref or the resolved target's ref
 		assert.ok(
 			data.$ref === '/fs/fs_circular.json' || data.$ref === '/mem/mem_circular.json',
-			'$ref should be one of the circular references in the chain',
+			'$ref should be one of the circular references in the chain'
 		)
 	})
 
