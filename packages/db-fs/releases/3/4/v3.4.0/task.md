@@ -1,7 +1,7 @@
 ---
 version: 3.4.0
 type: refactoring
-status: planned
+status: completed
 locale: uk
 models: ["DBFS", "DBFSBase", "DBFSPath", "DBFSDoc", "DBFSDir", "DBFSStream"]
 ---
@@ -32,42 +32,42 @@ models: ["DBFS", "DBFSBase", "DBFSPath", "DBFSDoc", "DBFSDir", "DBFSStream"]
 ## 🎯 Scope (Задачі)
 
 ### Блок 1: Створення шарів `packages/db-fs/src/DBFS/parts/*`
-- [ ] `DBFSBase.js`:
+- [x] `DBFSBase.js`:
   - Наслідується від `DB` (`@nan0web/db`).
   - Ініціалізація `FS`, `Driver`, реєстрація форматів (`.jsonl`, `.txt`, `.md`, `.csv`, `.tsv`, `.csv0`, `.tsv0`, `.yaml`, `.json`).
-- [ ] `DBFSPath.js`:
+- [x] `DBFSPath.js`:
   - Наслідується від `DBFSBase`.
   - Фізична перевірка `isPhysical()`, побудова директорій `_buildPath()`, методи `location()`, `resolveSync()`, `relative()`, `realpath()`, `getVolumes()`.
-- [ ] `DBFSDoc.js`:
+- [x] `DBFSDoc.js`:
   - Наслідується від `DBFSPath`.
   - Операції збереження й завантаження: `statDocument()`, `loadDocumentAs()`, `saveDocumentAs()`, `saveFile()`, `saveDocument()`, `writeDocument()`, `dropDocument()`, `drop()`, `stream()`.
-- [ ] `DBFSDir.js`:
+- [x] `DBFSDir.js`:
   - Наслідується від `DBFSDoc`.
   - Робота з каталогами: `loadDirectory()`, виявлення та сортування локалей `loadLocales()`.
-- [ ] `DBFSStream.js`:
+- [x] `DBFSStream.js`:
   - Наслідується від `DBFSDir`.
   - Потоковий обхід файлової системи `findStream()` та генерація подій.
-- [ ] `DBFS.js` (головний фасад у `src/DBFS.js`):
+- [x] `DBFS.js` (головний фасад у `src/DBFS.js`):
   - Наслідується від `DBFSStream`.
   - Статичні властивості: `static FS = FS`, `static Driver = FSDriver`.
   - Статичні фабричні методи: `static from(input)`.
 
 ### Блок 2: Оновлення експортів та точки входу
-- [ ] Перевірити `packages/db-fs/src/index.js` на сумісність реекспорту `DBFS`, `FSDriver`, `load`, `save` тощо.
-- [ ] Перевірити `package.json` та `exports` пакета `@nan0web/db-fs`.
+- [x] Перевірити `packages/db-fs/src/index.js` на сумісність реекспорту `DBFS`, `FSDriver`, `load`, `save` тощо.
+- [x] Перевірити `package.json` та `exports` пакета `@nan0web/db-fs`.
 
 ### Блок 3: Тестування та верифікація (TDD First)
-- [ ] Створити сценарний/релізний тест `releases/3/4/v3.4.0/task.spec.js` для перевірки всіх шарів успадкування та методів `DBFS`.
-- [ ] Запустити `pnpm --filter @nan0web/db-fs run test:all`.
-- [ ] Запустити генерацію типів `tsc` і перевірити валідність `types/index.d.ts`.
-- [ ] Прогнати повний monorepo build `pnpm -r run build` та `pnpm test:status`.
+- [x] Створити сценарний/релізний тест `src/test/releases/3/4/v3.4.0/task.test.js` для перевірки всіх шарів успадкування та методів `DBFS`.
+- [x] Запустити `pnpm --filter @nan0web/db-fs run test:all`.
+- [x] Запустити генерацію типів `tsc` і перевірити валідність `types/index.d.ts`.
+- [x] Прогнати повний monorepo build `pnpm -r run build` та `pnpm test:status`.
 
 ---
 
 ## ✅ Acceptance Criteria (DoD)
 
-- [ ] Усі шари `DBFS` ізольовані у `packages/db-fs/src/DBFS/parts/` і мають єдину відповідальність.
-- [ ] Розмір кожного файлу шару не перевищує 150–200 рядків коду.
-- [ ] Усі сценарні та юніт-тести `@nan0web/db-fs` проходять успішно (`pnpm --filter @nan0web/db-fs run test:all`).
-- [ ] TypeScript збірка `tsc` збирає типи без помилок.
-- [ ] Жоден зовнішній пакет чи додаток (`@nan0web/ui-cli`, `apps/llimo.app` тощо) не зазнає регресії.
+- [x] Усі шари `DBFS` ізольовані у `packages/db-fs/src/DBFS/parts/` і мають єдину відповідальність.
+- [x] Розмір кожного файлу шару не перевищує 150–200 рядків коду.
+- [x] Усі сценарні та юніт-тести `@nan0web/db-fs` проходять успішно (`pnpm --filter @nan0web/db-fs run test:all`).
+- [x] TypeScript збірка `tsc` збирає типи без помилок.
+- [x] Жоден зовнішній пакет чи додаток (`@nan0web/ui-cli`, `apps/llimo.app` тощо) не зазнає регресії.
