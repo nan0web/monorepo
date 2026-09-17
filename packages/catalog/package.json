@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/catalog",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Universal catalog engine for NaN0Web — filtering, search, and data thinkers",
   "type": "module",
   "main": "./src/index.js",

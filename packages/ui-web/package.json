@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui-web",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Base web UI utilities for NaN0Web.",
   "main": "src/index.js",
   "type": "module",

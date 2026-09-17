@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/news",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "CnAI News Collector - Aggregates latest CnAI news from popular internet sources (HackerNews, Reddit, Twitter) with no API keys required",
   "type": "module",
   "main": "src/domain/index.js",

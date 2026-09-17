@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/inspect",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Engineering inspection and quality control for the NaN0Web ecosystem.",
   "type": "module",
   "files": [
@@ -45,7 +45,6 @@
     "lint:fix": "prettier --write \"src/**/*.js\"",
     "knip": "knip --production",
     "test:all": "npm run test && npm run test:docs && npm run build && npm run lint && npm run knip"
-
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
