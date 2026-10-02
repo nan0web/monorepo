@@ -1,12 +1,12 @@
 ---
-version: 3.3.1
+version: 3.4.1
 type: fix
-status: active
+status: done
 locale: uk
 models: ["Nan0HTMLFeature", "PayloadCollectionTemplate"]
 ---
 
-# 🚀 Mission: TypeScript Declarations & Exports у @nan0web/ui-payload (v3.3.1)
+# 🚀 Mission: TypeScript Declarations & Exports у @nan0web/ui-payload (v3.4.1)
 
 ## 🏁 Overview (Огляд)
 Забезпечення повної TypeScript типізації та конфігурації subpath експортів для безшовної інтеграції з Next.js App Router без локальних костилів та декларацій.
@@ -19,7 +19,7 @@ models: ["Nan0HTMLFeature", "PayloadCollectionTemplate"]
 - [x] Додати `Nan0HTMLFeature.d.ts` для типізації Lexical серверного провайдера.
 - [x] Додати декларації `.d.ts` для клієнтських та UI компонентів (`ImageCell.d.ts`, `BooleanCell.d.ts`, `MapCell.d.ts`, `PayloadCollectionTemplate.d.ts`).
 - [x] Сконфігурувати `package.json` `exports` з підтримкою `types` для кожного subpath.
-- [x] Написати контрактні тести для перевірки експортів v3.3.1.
+- [x] Написати контрактні тести для перевірки експортів v3.4.1.
 
 ## ✅ Acceptance Criteria (DoD)
 - [x] Контрактні тести (`task.spec.js`) успішно проходять (Green).

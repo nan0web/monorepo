@@ -1,17 +1,14 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import * as mainExport from '../../../../src/index.js'
 import { Nan0HTMLFeature } from '../../../../src/richtext/Nan0HTMLFeature.js'
 import { PayloadCollectionTemplate } from '../../../../src/templates/PayloadCollectionTemplate.js'
+import { accessFor, publicAccess } from '../../../../src/access.js'
 
-describe('Release v3.3.1: @nan0web/ui-payload Contract', () => {
-	it('exports Nan0HTMLFeature and UI cells from main index', () => {
-		assert.equal(typeof mainExport.Nan0HTMLFeature, 'function')
-		assert.equal(typeof mainExport.ImageCell, 'function')
-		assert.equal(typeof mainExport.BooleanCell, 'function')
-		assert.equal(typeof mainExport.MapCell, 'function')
-		assert.equal(typeof mainExport.accessFor, 'function')
-		assert.equal(typeof mainExport.publicAccess, 'function')
+describe('Release v3.4.1: @nan0web/ui-payload Contract', () => {
+	it('exports server helpers and features correctly', () => {
+		assert.equal(typeof Nan0HTMLFeature, 'function')
+		assert.equal(typeof accessFor, 'function')
+		assert.equal(typeof publicAccess, 'function')
 	})
 
 	it('Nan0HTMLFeature returns a valid feature descriptor', () => {

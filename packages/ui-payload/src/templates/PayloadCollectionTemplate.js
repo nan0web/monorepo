@@ -69,11 +69,11 @@ const group = { uk: 'Content', en: 'Content' }
 const fields = []
 /** @replace */
 
-import { accessFor, publicAccess } from '@nan0web/ui-payload'
+import { accessFor, publicAccess } from '@nan0web/ui-payload/access'
 
 /** @type {import('payload').CollectionConfig} */
 export const collectionConfig = {
-	slug: collectionSlug,
+	slug: 'item',
 	labels,
 	admin: {
 		useAsTitle,
@@ -158,10 +158,9 @@ export const collectionConfig = {
 		let output = templateContent
 		for (const [key, replacement] of Object.entries(input)) {
 			const blockRegex = new RegExp(`(\\/\\*\\*\\s*\\n?\\s*\\*\\s*@replace\\s+${key}\\s*\\n?[\\s\\S]*?\\*\\/)([\\s\\S]*?)(\\/\\*\\*\\s*@replace\\s*\\*\\/)`, 'g')
-			if (blockRegex.test(output)) {
-				output = output.replace(blockRegex, `$1\n${replacement}\n$3`)
-			}
+			output = output.replace(blockRegex, `$1\n${replacement}\n$3`)
 		}
+		output = output.replace(/slug:\s*('item'|collectionSlug),/, `slug: '${this.collectionSlug}',`)
 		return output
 	}
 }

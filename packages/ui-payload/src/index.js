@@ -1,6 +1,6 @@
-export { ImageCell } from './components/ImageCell.js'
-export { BooleanCell } from './components/BooleanCell.js'
-export { MapCell } from './components/MapCell.js'
+export { ImageCell } from './components/ImageCell.jsx'
+export { BooleanCell } from './components/BooleanCell.jsx'
+export { MapCell } from './components/MapCell.jsx'
 
 // richtext — pure functions only & Nan0HTMLFeature
 export { fromNan0Html, inventoryNan0Html, FORMAT } from './richtext/fromNan0Html.js'

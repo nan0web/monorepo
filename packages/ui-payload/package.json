@@ -1,15 +1,17 @@
 {
   "name": "@nan0web/ui-payload",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "description": "NaN0Web Universal Payload CMS UI Components Package (ImageCell, MapCell, BooleanCell, richtext)",
   "type": "module",
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
   "files": [
     "src/**/*.js",
+    "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
     "!src/**/*.spec.js",
+    "!src/**/*.spec.jsx",
     "!src/**/*.spec.tsx",
     "types/**/*.d.ts"
   ],
@@ -22,6 +24,10 @@
       "types": "./types/index.d.ts",
       "import": "./src/index.js"
     },
+    "./access": {
+      "types": "./types/access.d.ts",
+      "import": "./src/access.js"
+    },
     "./components/*": {
       "types": "./types/components/*.d.ts",
       "import": "./src/components/*.js"
@@ -33,6 +39,14 @@
     "./templates/*": {
       "types": "./types/templates/*.d.ts",
       "import": "./src/templates/*.js"
+    },
+    "./domain": {
+      "types": "./types/domain/PayloadApp.d.ts",
+      "import": "./src/domain/PayloadApp.js"
+    },
+    "./domain/*": {
+      "types": "./types/domain/*.d.ts",
+      "import": "./src/domain/*.js"
     },
     "./richtext": {
       "types": "./types/richtext/index.d.ts",
