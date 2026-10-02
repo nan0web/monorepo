@@ -1,30 +1,28 @@
-import { ModelAsApp } from '@nan0web/ui-cli'
-import { show, progress, result } from '@nan0web/ui/core'
-import DB from '@nan0web/db-fs'
-import fs from 'node:fs/promises'
-import path from 'node:path'
+import { ModelAsApp, show, progress, result } from '@nan0web/ui'
 
 /**
- * SeedModel - Subcommand to seed DB-FS data (YAML, NANO, JSON) into Payload CMS
+ * @typedef {import('@nan0web/ui').ModelAsAppOptions & {
+ *   payload?: import('payload').BasePayload,
+ * }} SeedAppOptions
  */
-export class SeedModel extends ModelAsApp {
+
+/**
+ * SeedApp - Application controller & subcommand to seed DB data (YAML, NAN0, JSON) into Payload CMS
+ */
+export class SeedApp extends ModelAsApp {
 	static alias = 'seed'
 
 	static UI = {
 		title: 'Seed DB-FS Data into Payload CMS',
 		start: 'Starting Payload CMS data seeding...',
-		scanning: 'Scanning data directories: {target}...',
+		scanning: 'Scanning data sources...',
 		loading: 'Seeding record [{domain}] ({index}/{total}): {uri}...',
 		done: 'Data seeding completed successfully! Seeded {count} records across {collections} collections.',
-		errorDb: 'No DB instance found. Cannot run SeedModel command.',
+		errorPayload: 'Payload instance ($payload) is required for {alias}',
+		errorPayloadHint: 'No payload.config found. Run with --cwd <path-to-cms-project> pointing to a project with payload.config.ts',
 	}
 
-	static dataDir = {
-		help: 'Target directory containing SSOT data files (.yaml, .nan0, .json)',
-		default: 'data',
-		positional: true,
-	}
-
+	/** @type {import('@nan0web/ui').FieldSchema} */
 	static output = {
 		help: 'Output directory or config path',
 		default: 'web',
@@ -32,166 +30,56 @@ export class SeedModel extends ModelAsApp {
 	}
 
 	/**
-	 * @param {Partial<SeedModel>} [data = {}]
-	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options = {}]
+	 * @param {Partial<SeedApp>} [data = {}]
+	 * @param {Partial<SeedAppOptions>} [options = {}]
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.dataDir
-		/** @type {string} */ this.output
-		/** @type {boolean} */ this.help
+		/** @type {string} Output directory or config path */ this.output
+		if (options.payload && !this._?.payload) {
+			this._ = { ...this._, payload: options.payload }
+		}
 	}
 
 	/**
-	 * Resolves DB instance from context or creates new DB-FS instance.
-	 * @returns {Promise<{ db: any, rootDir: string }>}
+	 * Guaranteed Payload instance getter.
+	 * @throws {Error} If Payload instance is not available.
+	 * @returns {import('payload').BasePayload}
 	 */
-	async getDb() {
-		let rootDir = process.cwd()
-		// If running inside cms/ subdirectory, ascend to project root if cards/branches exist in parent
-		for (const checkDir of [path.resolve(rootDir, '..'), rootDir]) {
-			try {
-				await fs.access(path.resolve(checkDir, 'cards'))
-				rootDir = checkDir
-				break
-			} catch {}
+	get $payload() {
+		const { t, payload } = this._
+		if (!payload) {
+			const errorTemplate = this.$UI.errorPayload || SeedApp.UI.errorPayload
+			throw new Error(t(errorTemplate, { alias: SeedApp.alias }))
 		}
-
-		if (this._?.db && rootDir === process.cwd()) {
-			return { db: this._.db, rootDir }
-		}
-
-		return { db: new DB({ cwd: rootDir }), rootDir }
+		return payload
 	}
 
 	/**
-	 * Resolves initialized Payload CMS instance.
-	 * @returns {Promise<any>}
-	 */
-	async getPayloadInstance() {
-		if (this._?.payload) return this._.payload
-
-		const potentialConfigPaths = [
-			path.resolve(process.cwd(), 'src/payload.config.js'),
-			path.resolve(process.cwd(), 'src/payload.config.ts'),
-			path.resolve(process.cwd(), 'payload.config.js'),
-			path.resolve(process.cwd(), 'payload.config.ts'),
-		]
-
-		for (const configPath of potentialConfigPaths) {
-			try {
-				await fs.access(configPath)
-				const { getPayload } = await import('payload')
-				const imported = await import(configPath)
-				const configPromise = imported.default || imported.config || imported
-				const payload = await getPayload({ config: configPromise })
-				return payload
-			} catch {
-				// Try next candidate
-			}
-		}
-
-		return null
-	}
-
-	/**
-	 * Discovers candidate data directories or domains.
-	 * @param {string} rootDir
-	 * @param {string} [specifiedTarget]
+	 * Reads seed files via DB instance using browse from root.
 	 * @returns {Promise<string[]>}
 	 */
-	async resolveScanTargets(rootDir, specifiedTarget) {
-		if (specifiedTarget && specifiedTarget !== 'data' && specifiedTarget !== '.') {
-			return [specifiedTarget]
-		}
-
-		const targets = []
-		const standardDirs = [
-			'data',
-			'cards/data',
-			'cards',
-			'branches/data',
-			'branches',
-			'credits/data',
-			'credits',
-			'currencies/data',
-			'currencies',
-			'deposits/data',
-			'deposits',
-			'metals/data',
-			'metals',
-		]
-
-		for (const dir of standardDirs) {
-			try {
-				const fullPath = path.resolve(rootDir, dir)
-				const stat = await fs.stat(fullPath)
-				if (stat.isDirectory()) {
-					targets.push(dir)
-				}
-			} catch {
-				// directory does not exist
-			}
-		}
-
-		return targets.length > 0 ? targets : ['.']
-	}
-
-	/**
-	 * Reads seed files via filesystem / DB instance across targets.
-	 * @param {any} db
-	 * @param {string[]} targets
-	 * @param {string} rootDir
-	 * @returns {Promise<string[]>}
-	 */
-	async readSeedFiles(db, targets, rootDir) {
+	async readSeedFiles() {
+		const db = this.$db
 		const items = []
 		const seen = new Set()
-		const ignoredFiles = new Set(['package.json', 'tsconfig.json', 'nan0web.config.yaml', 'redirects.yaml', 'nav.yaml', 'langs.yaml', 't.yaml', 't.json'])
 
-		// If db is injected/mocked with browse implementation
-		if (db && typeof db.browse === 'function' && (!rootDir || db === this._?.db)) {
-			for (const target of targets) {
-				try {
-					for await (const entry of db.browse(target)) {
-						if (db.Directory?.isConfig?.(entry.path)) continue
-						if (db.Directory?.isDirectory?.(entry.path)) continue
-						const ext = entry.path.split('.').pop()?.toLowerCase()
-						if (['yaml', 'nan0', 'json', 'yml'].includes(ext || '')) {
-							if (!seen.has(entry.path)) {
-								seen.add(entry.path)
-								items.push(entry.path)
-							}
-						}
-					}
-				} catch {}
-			}
-			if (items.length > 0) return items
-		}
+		for await (const entry of db.browse('.')) {
+			const entryPath = entry.path || entry.name
+			if (!entryPath) continue
+			if (db.Directory?.isConfig?.(entryPath)) continue
+			if (db.Directory?.isDirectory?.(entryPath)) continue
+			if (db.Directory?.isGlobal?.(entryPath)) continue
+			if (db.Directory?.isIndex?.(entryPath)) continue
 
-		for (const target of targets) {
-			const targetPath = path.resolve(rootDir, target)
-			try {
-				const entries = await fs.readdir(targetPath, { recursive: true, withFileTypes: true })
-				for (const entry of entries) {
-					if (entry.isFile()) {
-						if (ignoredFiles.has(entry.name) || entry.name.startsWith('_') || entry.name.startsWith('.')) {
-							continue
-						}
-						const ext = path.extname(entry.name).toLowerCase().slice(1)
-						if (['yaml', 'nan0', 'json', 'yml'].includes(ext)) {
-							const parent = entry.parentPath || entry.path || targetPath
-							const full = path.join(parent, entry.name)
-							const rel = path.relative(rootDir, full)
-							if (!seen.has(rel)) {
-								seen.add(rel)
-								items.push(rel)
-							}
-						}
-					}
+			const ext = db.extname
+				? db.extname(entryPath).toLowerCase().replace(/^\./, '')
+				: entryPath.split('.').pop()?.toLowerCase()
+			if (['yaml', 'nan0', 'json', 'yml'].includes(ext || '')) {
+				if (!seen.has(entryPath)) {
+					seen.add(entryPath)
+					items.push(entryPath)
 				}
-			} catch (e) {
-				// Ignore non-existing targets
 			}
 		}
 
@@ -210,23 +98,20 @@ export class SeedModel extends ModelAsApp {
 			if (doc.model && typeof doc.model === 'string') return doc.model.toLowerCase() + 's'
 		}
 		const parts = uri.split('/').filter(Boolean)
-		const fileName = parts[parts.length - 1] || ''
-		if (fileName.includes('departments') || uri.includes('branches')) return 'branches'
-		if (fileName.includes('currencies') || uri.includes('currencies')) return 'currencies'
-		if (fileName.includes('metal') || uri.includes('metals')) return 'metals'
-		if (uri.includes('cards')) return 'cards'
-		if (uri.includes('credits')) return 'credits'
-		if (uri.includes('deposits')) return 'deposits'
-		return parts[parts.length - 2] || 'items'
+		if (parts.length > 1) {
+			return parts[parts.length - 2]
+		}
+		const base = parts[0] || 'items'
+		const name = base.split('.')[0]
+		return name || 'items'
 	}
 
 	/**
-	 * Base default normalization for DB-FS records.
+	 * Base default normalization for DB records.
 	 * @param {any} rawRecord
-	 * @param {{ domain?: string, uri?: string }} [context={}]
 	 * @returns {Object}
 	 */
-	normalizeRecord(rawRecord, context = {}) {
+	normalizeRecord(rawRecord) {
 		const entity = rawRecord.page || rawRecord.doc || rawRecord
 		return {
 			title: entity.title || rawRecord.title || '',
@@ -241,25 +126,27 @@ export class SeedModel extends ModelAsApp {
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
 	 */
 	async *run() {
-		const t = this._?.t || ((str, params) => {
-			if (!params) return str
-			return Object.entries(params).reduce((acc, [k, v]) => acc.replaceAll(`{${k}}`, String(v)), str)
-		})
+		const { t } = this._
 
-		const { db, rootDir } = await this.getDb()
-		const payload = await this.getPayloadInstance()
+		// Guard: payload must be initialized by withPayload plugin before run()
+		if (!this._.payload) {
+			const errorMsg = this.$UI.errorPayloadHint || SeedApp.UI.errorPayloadHint
+			yield show(t(errorMsg), 'error')
+			return result({ status: 'error', reason: 'no-payload' })
+		}
 
-		const availableCollections = payload?.config?.collections
+		const payload = this.$payload
+		const db = this.$db
+
+		const availableCollections = payload.config?.collections
 			? new Set(payload.config.collections.map((c) => c.slug))
 			: null
 
-		const initialTarget = this.dataDir || this.target
-		const scanTargets = await this.resolveScanTargets(rootDir, initialTarget)
+		yield progress(t(SeedApp.UI.start))
+		yield progress(t(SeedApp.UI.scanning))
 
-		yield progress(t(SeedModel.UI.start))
-		yield progress(t(SeedModel.UI.scanning, { target: scanTargets.join(', ') }))
+		const items = await this.readSeedFiles()
 
-		const items = await this.readSeedFiles(db, scanTargets, rootDir)
 		const touchedCollections = new Set()
 		let count = 0
 		let i = 0
@@ -275,9 +162,10 @@ export class SeedModel extends ModelAsApp {
 
 				touchedCollections.add(collection)
 
+				const fileName = db.basename ? db.basename(uri) : uri.split('/').pop()
 				yield progress(
-					t(SeedModel.UI.loading, {
-						uri: path.basename(uri),
+					t(SeedApp.UI.loading, {
+						uri: fileName,
 						domain: collection,
 						index: i,
 						total: items.length,
@@ -290,15 +178,7 @@ export class SeedModel extends ModelAsApp {
 				if (Array.isArray(doc)) {
 					rawList = doc
 				} else if (typeof doc === 'object') {
-					rawList =
-						doc.departments ||
-						doc.currencies ||
-						doc.metals ||
-						doc.news ||
-						doc.cards ||
-						doc.credits ||
-						doc.deposits ||
-						[doc]
+					rawList = doc.items || doc.records || doc.docs || doc.data || [doc]
 				}
 
 				if (!Array.isArray(rawList)) {
@@ -310,13 +190,15 @@ export class SeedModel extends ModelAsApp {
 						if (!rawRecord || typeof rawRecord !== 'object') continue
 						try {
 							const normalizedRecord = this.normalizeRecord(rawRecord, { domain: collection, uri })
-							
+
 							// Upsert / Create record in payload
 							const where = normalizedRecord.cardId
 								? { cardId: { equals: normalizedRecord.cardId } }
-								: normalizedRecord.title
-									? { title: { equals: normalizedRecord.title } }
-									: null
+								: normalizedRecord.slug
+									? { slug: { equals: normalizedRecord.slug } }
+									: normalizedRecord.title
+										? { title: { equals: normalizedRecord.title } }
+										: null
 
 							const existing = where
 								? await payload.find({ collection, limit: 1, where })
@@ -343,7 +225,7 @@ export class SeedModel extends ModelAsApp {
 		}
 
 		yield show(
-			t(SeedModel.UI.done, {
+			t(SeedApp.UI.done, {
 				count,
 				collections: touchedCollections.size,
 			}),
@@ -358,3 +240,8 @@ export class SeedModel extends ModelAsApp {
 		})
 	}
 }
+
+/**
+ * Backward compatibility export alias.
+ */
+export { SeedApp as SeedModel }

@@ -1,6 +1,6 @@
 {
 	"name": "@nan0web/payload-cms.app",
-	"version": "3.3.1",
+	"version": "3.4.0",
 	"description": "Universal Model-as-App Model-as-Schema to Payload CMS Bridge & Generator Application",
 	"type": "module",
 	"main": "./src/index.js",
@@ -11,7 +11,9 @@
 		"./media": "./src/domain/models/MediaMigrateModel.js",
 		"./news": "./src/domain/models/NewsMigrateModel.js",
 		"./verifier": "./src/domain/models/MediaVerifyModel.js",
-		"./utils": "./src/domain/utils/mediaUtils.js"
+		"./utils": "./src/domain/utils/mediaUtils.js",
+		"./plugin": "./src/plugins/withPayload.js",
+		"./domain": "./src/domain/index.js"
 	},
 	"bin": {
 		"nan0cms": "./bin/app.js"
@@ -24,19 +26,29 @@
 		"LICENSE"
 	],
 	"scripts": {
-		"start": "node bin/app.js",
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"cli": "node bin/app.js",
 		"test": "node --test src/test/*.spec.js src/test/*.story.js src/test/*.test.js"
 	},
 	"dependencies": {
-		"@nan0web/db": "^3.3.0",
-		"@nan0web/types": "^3.3.0",
-		"@nan0web/ui": "^3.3.0",
-		"@nan0web/ui-cli": "^3.3.0",
-		"@nan0web/ui-payload": "^3.3.0",
+		"@nan0web/db": "workspace:*",
+		"@nan0web/types": "workspace:*",
+		"@nan0web/ui": "workspace:*",
+		"@nan0web/ui-cli": "workspace:*",
+		"@nan0web/ui-payload": "workspace:*",
+		"@payloadcms/db-mongodb": "^3.90.2",
+		"@payloadcms/next": "^3.90.2",
+		"@payloadcms/richtext-lexical": "3.90.2",
+		"graphql": "^17.0.2",
+		"next": "^16.3.7",
+		"react": "19.2.5",
+		"react-dom": "19.2.5",
 		"typescript": "^5.9.3"
 	},
 	"license": "MIT",
 	"devDependencies": {
-		"payload": "3.86.0"
+		"payload": "3.90.2"
 	}
 }

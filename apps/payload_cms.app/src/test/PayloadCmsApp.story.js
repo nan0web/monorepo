@@ -104,7 +104,8 @@ describe('PayloadCmsApp User Stories', () => {
 		const indexFile = await db.get('@app/src/collections/collections/index.js') || await db.get('@app/src/collections/index.js')
 		assert.ok(indexFile, 'Index file should be generated in DB')
 		assert.ok(
-			indexFile.includes("export { collectionConfig as TestArticle } from './TestArticle.js'") ||
+			indexFile.includes("export { collectionConfig as TestArticle } from './collections/TestArticle.js'") ||
+				indexFile.includes("export { collectionConfig as TestArticle } from './TestArticle.js'") ||
 				indexFile.includes("export * from './TestArticle.js'")
 		)
 	})
@@ -161,5 +162,45 @@ describe('PayloadCmsApp User Stories', () => {
 
 	})
 
+	it('Story: TransformModel converts Showcase Models properly', async () => {
+		const { AdminUser } = await import('../domain/models/AdminUser.js')
+		const { DocPage } = await import('../domain/models/DocPage.js')
+
+		const db = new DB({ predefined: [] })
+		const appDb = new DB({
+			predefined: [
+				[
+					'package.json',
+					{
+						exports: {
+							'./domain': { AdminUser, DocPage },
+						},
+					},
+				],
+			],
+		})
+		await appDb.connect()
+		db.mount('@app', appDb)
+		await db.connect()
+
+		const transform = new TransformModel(
+			{
+				target: 'src/domain',
+				output: 'src/collections',
+				force: true,
+			},
+			{ db }
+		)
+
+		for await (const intent of transform.run()) {}
+
+		const generatedAdmin = await db.get('@app/src/collections/collections/AdminUser.js') || await db.get('@app/src/collections/AdminUser.js')
+		assert.ok(generatedAdmin, 'AdminUser should be generated')
+		assert.ok(generatedAdmin.includes('auth: true'))
+		
+		const payloadConfig = await db.get('@app/payload.config.js') || await db.get('payload.config.js')
+		assert.ok(payloadConfig, 'payload.config.js should be generated')
+		assert.ok(payloadConfig.includes('AdminUser'))
+	})
 })
 

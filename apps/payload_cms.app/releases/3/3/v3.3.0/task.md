@@ -1,7 +1,7 @@
 ---
 version: 3.3.0
 type: feature
-status: planning
+status: done
 locale: uk
 models: ["TransformModel"]
 ---
@@ -27,10 +27,10 @@ models: ["TransformModel"]
 - [x] Повне видалення суфікса `Model` з назв класів, файлів та slugs в `TransformModel.js`.
 - [x] Зміна розширення вихідних файлів з `.ts` на `.js`.
 - [x] Додавання JSDoc типізації `@type {import('payload').CollectionConfig}` та `@type {import('payload').GlobalConfig}`.
-- [ ] Додавання генерації Globals для `static $single = true`.
-- [ ] Додавання генерації Blocks для `static $isBlock = true`.
-- [ ] Додавання генерації Upload Collections для `static $upload = true`.
+- [x] Додавання генерації Globals для `static $single = true`.
+- [x] Додавання генерації Blocks для `static $isBlock = true`.
+- [x] Додавання генерації Upload Collections для `static $upload = true`.
 
 ## ✅ Acceptance Criteria (DoD)
-- [ ] Контрактні тести (`task.spec.js`) написані і успішно проходять (Green).
-- [ ] Сценарні тести `PayloadCmsApp.story.js` повністю проходять ("зелені").
+- [x] Контрактні тести (`task.spec.js`) написані і успішно проходять (Green).
+- [x] Сценарні тести `PayloadCmsApp.story.js` повністю проходять ("зелені").

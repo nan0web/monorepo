@@ -1,8 +1,6 @@
 import { ModelAsApp } from '@nan0web/ui-cli'
-import fs from 'node:fs/promises'
-import path from 'node:path'
 import { TransformModel } from '../models/TransformModel.js'
-import { SeedModel } from '../models/SeedModel.js'
+import { SeedApp, SeedModel } from '../models/SeedModel.js'
 import { MediaMigrateModel } from '../models/MediaMigrateModel.js'
 import { NewsMigrateModel } from '../models/NewsMigrateModel.js'
 import { MediaVerifyModel } from '../models/MediaVerifyModel.js'
@@ -47,10 +45,9 @@ export class PayloadCmsApp extends ModelAsApp {
 	async resolveCustomSeedModel() {
 		let modelRelativePath = this.model
 
-		if (!modelRelativePath) {
+		if (!modelRelativePath && this._?.db) {
 			try {
-				const pkgPath = path.resolve(process.cwd(), 'package.json')
-				const pkgContent = JSON.parse(await fs.readFile(pkgPath, 'utf8'))
+				const pkgContent = await this._.db.fetch('@app/package.json')
 				const customSeedExport =
 					pkgContent?.exports?.['./nan0cms/seed/model'] ||
 					pkgContent?.exports?.['./seed/model'] ||
@@ -60,16 +57,27 @@ export class PayloadCmsApp extends ModelAsApp {
 					modelRelativePath = customSeedExport
 				}
 			} catch {
-				// No package.json or unreadable
+				// No package.json or unreadable in DB
 			}
 		}
 
 		if (modelRelativePath) {
 			try {
-				const absolutePath = modelRelativePath.startsWith('/')
-					? modelRelativePath
-					: path.resolve(process.cwd(), modelRelativePath)
-				const importedModule = await import(absolutePath)
+				// Resolve custom SeedModel using real filesystem path via @app mount
+				const db = this._?.db
+				const appMount = db?.mounts?.get('@app')
+				let absPath = null
+				if (appMount && typeof appMount.location === 'function') {
+					absPath = appMount.location(modelRelativePath)
+				}
+				if (!absPath) {
+					const { resolve, isAbsolute } = await import('node:path')
+					const cwd = typeof process.cwd === 'function' ? process.cwd() : '.'
+					absPath = isAbsolute(modelRelativePath) ? modelRelativePath : resolve(cwd, modelRelativePath)
+				}
+				const { pathToFileURL } = await import('node:url')
+				const importTarget = pathToFileURL(absPath).href
+				const importedModule = await import(importTarget)
 				const CustomModelClass =
 					importedModule.BankSeedModel ||
 					importedModule.SeedModel ||

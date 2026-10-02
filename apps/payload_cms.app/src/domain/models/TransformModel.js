@@ -2,6 +2,7 @@ import { Model, ROLES, DEFAULT_ACCESS } from '@nan0web/types'
 import { show, progress, result } from '@nan0web/ui'
 import { createT } from '@nan0web/i18n'
 import { PayloadCollectionTemplate } from '@nan0web/ui-payload/templates'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 /**
  * @typedef {Object} FieldInfo
@@ -257,6 +258,41 @@ export class TransformModel extends Model {
 				case 'json':
 					payloadType = 'json'
 					break
+				case 'group':
+					payloadType = 'group'
+					if (fieldInfo.fields) {
+						payloadField.fields = []
+						for (const [k, v] of Object.entries(fieldInfo.fields)) {
+							const f = this.transformField(k, v)
+							if (f) payloadField.fields.push(f)
+						}
+					}
+					break
+				case 'tabs':
+					payloadType = 'tabs'
+					if (Array.isArray(fieldInfo.tabs)) {
+						payloadField.tabs = fieldInfo.tabs.map(tab => {
+							const fields = []
+							if (tab.fields) {
+								if (Array.isArray(tab.fields)) {
+									for (const f of tab.fields) {
+										const transformed = this.transformField(f.name, f)
+										if (transformed) fields.push(transformed)
+									}
+								} else {
+									for (const [k, v] of Object.entries(tab.fields)) {
+										const f = this.transformField(k, v)
+										if (f) fields.push(f)
+									}
+								}
+							}
+							return { label: tab.label, fields }
+						})
+					}
+					break
+				case 'point':
+					payloadType = 'point'
+					break
 				default:
 					payloadType = 'text'
 			}
@@ -357,7 +393,63 @@ export class TransformModel extends Model {
 			}
 		}
 
-		// 2. Fall back to node:fs resolution relative to target or monorepo root
+		// 2. Fall back to reading domain files directly from DB
+		if (db) {
+			try {
+				/** @type {Record<string, any>} */
+				const domainExports = {}
+				const candidateFiles = []
+
+				// Check data map and predefined map
+				const collectCandidates = (map) => {
+					if (!map) return
+					for (const key of map.keys()) {
+						if (typeof key === 'string' && key.endsWith('.js') && (key.includes(targetDir) || targetDir === '.')) {
+							candidateFiles.push(key)
+						}
+					}
+				}
+				collectCandidates(db.data)
+				collectCandidates(db.predefined)
+
+				for (const filePath of candidateFiles) {
+					const content = await db.get(filePath)
+					if (typeof content === 'string') {
+						const classMatch = content.match(/export\s+class\s+(\w+)\s+extends\s+Model\s*\{([\s\S]*?)\n\}/)
+						if (classMatch) {
+							const [, className, classBody] = classMatch
+							// Construct synthetic Model class or descriptor
+							class DynamicModel extends Model {}
+							Object.defineProperty(DynamicModel, 'name', { value: className })
+							DynamicModel.UI = { $singular: className, $plural: className }
+
+							const fieldRegex = /(?:static\s+)?(\$?\w+)\s*=\s*(\{[\s\S]*?\}|true|false|\d+|'[^']*'|"[^"]*")/g
+							let match
+							while ((match = fieldRegex.exec(classBody)) !== null) {
+								const fieldName = match[1]
+								const rawVal = match[2]
+								try {
+									// Safely evaluate simple static property values or JSON-like objects
+									const evaluated = new Function(`return (${rawVal})`)()
+									DynamicModel[fieldName] = evaluated
+								} catch {
+									DynamicModel[fieldName] = {}
+								}
+							}
+							domainExports[className] = DynamicModel
+						}
+					}
+				}
+
+				if (Object.keys(domainExports).length > 0) {
+					return domainExports
+				}
+			} catch (e) {
+				// Continue to node:fs fallback
+			}
+		}
+
+		// 3. Fall back to node:fs resolution relative to target or monorepo root
 		let resolvedTarget = path.isAbsolute(targetDir)
 			? targetDir
 			: path.resolve(process.cwd(), targetDir)
@@ -426,6 +518,11 @@ export class TransformModel extends Model {
 					className: exportedName,
 					config: {
 						isGlobal: Boolean(exportedItem.$single),
+						isBlock: Boolean(exportedItem.$isBlock),
+						isUpload: Boolean(exportedItem.$upload),
+						isAuth: Boolean(exportedItem.$auth),
+						isDrafts: Boolean(exportedItem.$drafts),
+						uploadConfig: typeof exportedItem.$upload === 'object' ? exportedItem.$upload : null,
 						slug: exportedItem.$collection || null,
 						group: exportedItem.UI?.$group || exportedItem.$group || null,
 					},
@@ -516,6 +613,24 @@ export class TransformModel extends Model {
 
 			const globalsDir = resolvedOutputDir.replace(/collections\/?$/, 'globals')
 			outputPath = db.resolveSync(globalsDir, `${cleanName}.js`)
+		} else if (config.isBlock) {
+			outputCode =
+				`/**\n` +
+				` * ${cleanName} Block\n` +
+				` * Auto-generated from Model-as-Schema\n` +
+				` *\n` +
+				` * @type {import('payload').Block}\n` +
+				` */\n` +
+				`export const ${cleanName} = {\n` +
+				`  slug: '${slug}',\n` +
+				`  labels: {\n` +
+				`    singular: ${singularJSON},\n` +
+				`    plural: ${pluralJSON},\n` +
+				`  },\n` +
+				`  fields: ${fieldsJSON},\n` +
+				`}\n`
+			const blocksDir = resolvedOutputDir.replace(/collections\/?$/, 'blocks')
+			outputPath = db.resolveSync(blocksDir, `${cleanName}.js`)
 		} else {
 			/** @type {Record<string, string>} */
 			const groupMap = {}
@@ -536,6 +651,23 @@ export class TransformModel extends Model {
 				fields: fieldsList,
 			})
 			outputCode = collectionTemplate.compileSync()
+			let extraProps = []
+			if (config.isUpload) {
+				const uploadStr = config.uploadConfig ? JSON.stringify(config.uploadConfig) : 'true'
+				extraProps.push(`upload: ${uploadStr}`)
+			}
+			if (config.isAuth) {
+				extraProps.push(`auth: true`)
+			}
+			if (config.isDrafts) {
+				extraProps.push(`versions: { drafts: true }`)
+			}
+			if (extraProps.length > 0) {
+				outputCode = outputCode.replace(
+					/export const collectionConfig = \{/,
+					`export const collectionConfig = {\n\t${extraProps.join(',\n\t')},`
+				)
+			}
 			outputPath = db.resolveSync(resolvedOutputDir, `${cleanName}.js`)
 		}
 		return { outputCode, outputPath }
@@ -555,19 +687,39 @@ export class TransformModel extends Model {
 				],
 				vocab: {},
 			}
-		let doc = (await db.fetch('@app/index')) ?? (await db.fetch('@app/package.json')) ?? {}
-		if (!doc.langs || !Array.isArray(doc.langs) || doc.langs.length === 0) {
-			doc =
-				(await db.fetch('@app/../bank/app/index')) ??
-				(await db.fetch('bank/app/index')) ??
-				(await db.fetch('../bank/app/index')) ??
-				doc
+		const hasAppMount = Boolean(db.mounts?.has('@app'))
+		let doc = {}
+		if (hasAppMount) {
+			try {
+				doc = (await db.fetch('@app/index')) ?? (await db.fetch('@app/package.json')) ?? {}
+			} catch {
+				doc = {}
+			}
 		}
 		let supportedLangs = Array.isArray(doc.langs) ? doc.langs : []
+
+		if (supportedLangs.length === 0) {
+			const tryFetch = async (uri) => {
+				try {
+					if (uri.startsWith('@') && !db.mounts?.has(uri.split('/')[0])) return null
+					return await db.fetch(uri)
+				} catch {
+					return null
+				}
+			}
+			const langsFile =
+				(await tryFetch('_/langs')) ??
+				(hasAppMount ? await tryFetch('@app/_/langs') : null) ??
+				(await tryFetch('langs'))
+			if (Array.isArray(langsFile)) {
+				supportedLangs = langsFile
+			}
+		}
+
 		if (supportedLangs.length === 0) {
 			supportedLangs = [
-				{ locale: 'uk', title: 'Українська' },
 				{ locale: 'en', title: 'English' },
+				{ locale: 'uk', title: 'Ukrainian' },
 			]
 		}
 		const vocab = doc.t || {}
@@ -602,14 +754,35 @@ export class TransformModel extends Model {
 		const t = this._.t
 		let count = 0
 		const generatedExports = []
+		const collectionsImports = []
+		const globalsImports = []
 
-		for (const { cleanName, outputCode, isGlobal } of definitions) {
-			const subDir = isGlobal ? 'globals' : 'collections'
+		for (const { cleanName, outputCode, isGlobal, isBlock } of definitions) {
+			const subDir = isGlobal ? 'globals' : isBlock ? 'blocks' : 'collections'
 			const uri = `@app/${outputDir}/${subDir}/${cleanName}.js`
+			
+			if (isGlobal) globalsImports.push(cleanName)
+			else if (!isBlock) collectionsImports.push(cleanName)
+
 			if (db) {
-				await db.saveDocument(uri, outputCode)
+				if (db.mounts?.has('@app')) {
+					await db.saveDocument(uri, outputCode)
+				}
+				// Also save to normalized target path in db root (for In-Memory DBs without mounts)
+				const directPath = `${outputDir}/${cleanName}.js`
+				await db.saveDocument(directPath, outputCode)
+				await db.saveDocument(`/${directPath}`, outputCode)
+				if (outputDir.includes('/')) {
+					const subPath = `${outputDir}/${subDir}/${cleanName}.js`
+					await db.saveDocument(subPath, outputCode)
+					await db.saveDocument(`/${subPath}`, outputCode)
+				}
 			}
-			generatedExports.push(`export { collectionConfig as ${cleanName} } from './${cleanName}.js'`)
+			if (isGlobal || isBlock) {
+				generatedExports.push(`export { ${cleanName} } from './${subDir}/${cleanName}.js'`)
+			} else {
+				generatedExports.push(`export { collectionConfig as ${cleanName} } from './${subDir}/${cleanName}.js'`)
+			}
 			count++
 			yield show(t(TransformModel.UI.generated, { className: cleanName, output: uri }), 'success')
 		}
@@ -620,7 +793,41 @@ export class TransformModel extends Model {
 				`// Do not edit manually\n\n` +
 				generatedExports.join('\n') +
 				'\n'
-			await db.saveDocument(`@app/${outputDir}/collections/index.js`, indexContent)
+			if (db.mounts?.has('@app')) {
+				await db.saveDocument(`@app/${outputDir}/index.js`, indexContent)
+			}
+			await db.saveDocument(`${outputDir}/index.js`, indexContent)
+			await db.saveDocument(`/${outputDir}/index.js`, indexContent)
+			
+			let payloadConfig = `import { buildConfig } from 'payload'\n`
+			payloadConfig += `import { mongooseAdapter } from '@payloadcms/db-mongodb'\n`
+			payloadConfig += `import { lexicalEditor } from '@payloadcms/richtext-lexical'\n`
+			if (collectionsImports.length > 0) {
+				payloadConfig += `import { ${collectionsImports.join(', ')} } from './${outputDir}/index.js'\n`
+			}
+			if (globalsImports.length > 0) {
+				globalsImports.forEach(g => {
+					payloadConfig += `import { ${g} } from './${outputDir}/globals/${g}.js'\n`
+				})
+			}
+			
+			payloadConfig += `\nexport default buildConfig({\n`
+			payloadConfig += `  secret: process.env.PAYLOAD_SECRET || 'test-secret',\n`
+			payloadConfig += `  editor: lexicalEditor({}),\n`
+			payloadConfig += `  db: mongooseAdapter({\n`
+			payloadConfig += `    url: process.env.DATABASE_URI || 'mongodb://127.0.0.1/payload',\n`
+			payloadConfig += `  }),\n`
+			payloadConfig += `  collections: [${collectionsImports.join(', ')}],\n`
+			if (globalsImports.length > 0) {
+				payloadConfig += `  globals: [${globalsImports.join(', ')}],\n`
+			}
+			payloadConfig += `})\n`
+			
+			if (db.mounts?.has('@app')) {
+				await db.saveDocument(`@app/payload.config.js`, payloadConfig)
+			}
+			await db.saveDocument(`payload.config.js`, payloadConfig)
+			await db.saveDocument(`/payload.config.js`, payloadConfig)
 		}
 
 		return count
@@ -658,10 +865,15 @@ export class TransformModel extends Model {
 		// 3. Generate model code definitions
 		const definitions = []
 		for (const model of modelsToProcess) {
-			if (Object.keys(model.staticFields).length === 0 && !model.config.isGlobal) continue
+			if (Object.keys(model.staticFields).length === 0 && !model.config.isGlobal && !model.config.isBlock && !model.config.isAuth && !model.config.isDrafts && !model.config.isUpload) continue
 			const { outputCode } = this.generateModel(model, supportedLangs, this.output, translators)
 			const cleanName = model.className.replace(/Model$/i, '')
-			definitions.push({ cleanName, outputCode, isGlobal: Boolean(model.config.isGlobal) })
+			definitions.push({
+				cleanName,
+				outputCode,
+				isGlobal: Boolean(model.config.isGlobal),
+				isBlock: Boolean(model.config.isBlock),
+			})
 		}
 
 		// 4. Write outputs agnostically
