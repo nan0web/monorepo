@@ -60,20 +60,20 @@ export class CircularDependencyAuditor extends AuditorModel {
 
 			// If DB is virtual (like in tests), madge cannot scan it via filesystem
 			if (this._.db.constructor.name.includes('Mock') || !absolutePath.startsWith('/')) {
-				return result({ success: true, circular: [] })
+				return result({ ok: true, success: true, circular: [] })
 			}
 			const res = await this._runMadgeAsync(absolutePath, timeout)
 
 			if (res.timeout) {
 				const msg = t(CircularDependencyAuditor.UI.errorTimeout, { timeout, dir: scanPath })
 				yield show(msg, 'warn')
-				return result({ success: false, errors: [{ check: 'circular', error: msg }] })
+				return result({ ok: false, success: false, errors: [{ check: 'circular', error: msg }] })
 			}
 
 			if (res.error) {
 				const msg = `Circular check failed: ${res.error}`
 				yield show(msg, 'error')
-				return result({ success: false, errors: [{ check: 'circular', error: msg }] })
+				return result({ ok: false, success: false, errors: [{ check: 'circular', error: msg }] })
 			}
 
 			const circular = res.circular || []
@@ -88,6 +88,7 @@ export class CircularDependencyAuditor extends AuditorModel {
 				})
 
 				return result({
+					ok: false,
 					circular,
 					success: false,
 					errors: [{ check: 'circular', error: `${error}: ${cycles}` }],
@@ -96,12 +97,15 @@ export class CircularDependencyAuditor extends AuditorModel {
 
 			const msg = t(CircularDependencyAuditor.UI.noCycles, {})
 			yield render('Alert', { children: msg, variant: 'success' })
-			return result({ success: true, errors: [] })
+			return result({ ok: true, success: true, errors: [] })
 		} catch (e) {
 			const error = e instanceof Error ? e : new Error(String(e))
 			const msg = `Circular check failed: ${error.message}`
 			yield show(msg, 'error')
-			return result({ success: false, errors: [{ check: 'circular', error: msg }] }, false)
+			return result(
+				{ ok: false, success: false, errors: [{ check: 'circular', error: msg }] },
+				false
+			)
 		}
 	}
 

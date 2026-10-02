@@ -8,4 +8,5 @@ import Parser from './Parser/index.js';
 import { Node } from './Parser/index.js';
 import NaN0 from './NaN0.js';
 import ModelError from './ModelError.js';
-export { FilterString, FullObject, UndefinedObject, ObjectWithAlias, ContainerObject, NonEmptyObject, Parser, Node, NaN0, ModelError };
+import { Format } from './Format.js';
+export { FilterString, FullObject, UndefinedObject, ObjectWithAlias, ContainerObject, NonEmptyObject, Parser, Node, NaN0, ModelError, Format };

@@ -59,7 +59,16 @@ describe('v1.0.0 Release Task Suite — Hermetic Isolation', () => {
 				['CONTRIBUTING.md', ''],
 				['LICENSE', ''],
 				['.editorconfig', ''],
-				['tsconfig.json', {}],
+				[
+					'tsconfig.json',
+					{
+						compilerOptions: {
+							declaration: true,
+							emitDeclarationOnly: true,
+							outDir: './types',
+						},
+					},
+				],
 				['knip.json', {}],
 				['src/index.js', 'export const x = 1'],
 				['src/domain/index.js', 'export const y = 2'],

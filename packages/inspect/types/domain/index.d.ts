@@ -9,5 +9,7 @@ export { ExportAuditor } from "./app/ExportAuditor.js";
 export { DomainAuditor } from "./app/DomainAuditor.js";
 export { VerificationAuditor } from "./app/VerificationAuditor.js";
 export { StackDetector } from "./StackDetector.js";
+export { ModuleRegistry } from "./modules/ModuleRegistry.js";
+export { ModuleItem } from "./modules/ModuleItem.js";
 export type LanguagePlatform = import("./AuditorModel.js").LanguagePlatform;
 export { BuildWorkflowsApp, parseFrontMatter, parseNan0Config } from "./app/BuildWorkflowsApp.js";

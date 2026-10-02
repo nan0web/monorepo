@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/inspect",
-  "version": "3.4.0",
+  "version": "3.6.0",
   "description": "Engineering inspection and quality control for the NaN0Web ecosystem.",
   "type": "module",
   "files": [
@@ -29,6 +29,10 @@
     "./domain/AuditorModel": {
       "import": "./src/domain/AuditorModel.js",
       "types": "./types/domain/AuditorModel.d.ts"
+    },
+    "./domain/modules/ModuleRegistry": {
+      "import": "./src/domain/modules/ModuleRegistry.js",
+      "types": "./types/domain/modules/ModuleRegistry.d.ts"
     }
   },
   "scripts": {
@@ -44,7 +48,7 @@
     "lint": "prettier --check \"src/**/*.js\"",
     "lint:fix": "prettier --write \"src/**/*.js\"",
     "knip": "knip --production",
-    "test:all": "npm run test && npm run test:docs && npm run build && npm run lint && npm run knip"
+    "test:all": "npm run test && npm run test:release && npm run test:docs && npm run build && npm run lint && npm run knip"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

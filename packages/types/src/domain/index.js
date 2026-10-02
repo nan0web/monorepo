@@ -7,6 +7,7 @@ import UndefinedObject from './Object/UndefinedObject.js'
 import NaN0 from './NaN0.js'
 import Parser, { Node } from './Parser/index.js'
 import ModelError from './ModelError.js'
+import { Format } from './Format.js'
 
 export {
 	FilterString,
@@ -19,4 +20,5 @@ export {
 	Node,
 	NaN0,
 	ModelError,
+	Format,
 }

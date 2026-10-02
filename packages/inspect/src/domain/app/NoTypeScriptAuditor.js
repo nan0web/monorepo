@@ -55,10 +55,10 @@ export class NoTypeScriptAuditor extends AuditorModel {
 			for (const file of tsFiles) {
 				yield progress(t(NoTypeScriptAuditor.UI.foundTs, { file }))
 			}
-			return result({ tsFiles, success: false })
+			return result({ ok: false, tsFiles, success: false })
 		}
 
 		yield progress(t(NoTypeScriptAuditor.UI.clean))
-		return result({ success: true })
+		return result({ ok: true, success: true })
 	}
 }

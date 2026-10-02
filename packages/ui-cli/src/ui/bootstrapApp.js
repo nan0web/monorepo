@@ -349,6 +349,10 @@ export async function bootstrapApp(AppModel, config = {}) {
 
 	const adapter = new CLiInputAdapter({ console, t })
 	const appOptions = { db, logger: console, t, adapter, locale: lang, ...config }
+	for (const plugin of appOptions.plugins ?? []) {
+		await plugin(appOptions)
+	}
+
 	const model = modelFromArgv(FinalModel, appArgv, appOptions)
 
 	try {

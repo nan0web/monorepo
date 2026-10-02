@@ -37,6 +37,6 @@ export class StructureAuditor extends AuditorModel {
 			success = false
 		}
 
-		return result({ errors, success })
+		return result({ ok: success, success, errors })
 	}
 }

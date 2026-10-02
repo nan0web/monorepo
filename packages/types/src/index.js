@@ -9,6 +9,7 @@ import {
 	Parser,
 	Node,
 	ModelError,
+	Format,
 } from './domain/index.js'
 
 import clone from './utils/clone.js'
@@ -43,6 +44,7 @@ export {
 	getMetadata,
 	Model,
 	ModelError,
+	Format,
 	createT,
 	createT as TFunction,
 }

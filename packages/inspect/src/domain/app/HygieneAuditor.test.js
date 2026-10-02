@@ -66,7 +66,16 @@ describe('JsHygieneAuditor', () => {
 						},
 					},
 				],
-				['tsconfig.json', {}],
+				[
+					'tsconfig.json',
+					{
+						compilerOptions: {
+							declaration: true,
+							emitDeclarationOnly: true,
+							outDir: './types',
+						},
+					},
+				],
 				['knip.json', {}],
 			],
 		})

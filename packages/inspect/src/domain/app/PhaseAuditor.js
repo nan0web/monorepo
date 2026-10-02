@@ -213,6 +213,7 @@ export class PhaseAuditor extends AuditorModel {
 		}
 
 		return result({
+			ok: errors.length === 0,
 			success: errors.length === 0,
 			errors,
 			phase,

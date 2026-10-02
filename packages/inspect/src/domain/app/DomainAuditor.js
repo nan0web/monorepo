@@ -49,7 +49,7 @@ export class DomainAuditor extends AuditorModel {
 			yield res.value
 		}
 
-		return result({ success: errors.length === 0, errors, ...data })
+		return result({ ok: errors.length === 0, success: errors.length === 0, errors, ...data })
 	}
 
 	/**

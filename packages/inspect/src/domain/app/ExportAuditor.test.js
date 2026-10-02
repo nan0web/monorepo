@@ -80,7 +80,12 @@ describe('ExportAuditor', () => {
 					'package.json',
 					{
 						name: 'test',
-						exports: { './ui/cli': './src/ui/cli/index.js' },
+						exports: {
+							'./ui/cli': {
+								types: './types/ui/cli/index.d.ts',
+								import: './src/ui/cli/index.js',
+							},
+						},
 					},
 				],
 				['src/index.js', 'export const x = 1'],

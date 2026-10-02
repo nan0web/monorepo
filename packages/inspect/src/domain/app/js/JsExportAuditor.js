@@ -78,6 +78,31 @@ export class JsExportAuditor extends ExportAuditor {
 			}
 		}
 
+		// 4. Exports Subpath types check
+		yield progress(
+			t('Checking types in package exports...') || 'Checking types in package exports...'
+		)
+		for (const [subpath, expEntry] of Object.entries(pkgExports)) {
+			// Subpath can be a string (e.g. "./sub": "./src/sub.js") or an object (e.g. { import: "...", types: "..." })
+			if (typeof expEntry === 'string') {
+				const error = `Missing "types" declaration in package.json exports["${subpath}"]`
+				errors.push({
+					check: `exports["${subpath}"].types`,
+					error,
+				})
+				yield show(error, 'warn')
+			} else if (expEntry && typeof expEntry === 'object') {
+				if (!expEntry.types) {
+					const error = `Missing "types" declaration in package.json exports["${subpath}"]`
+					errors.push({
+						check: `exports["${subpath}"].types`,
+						error,
+					})
+					yield show(error, 'warn')
+				}
+			}
+		}
+
 		if (!errors.some((e) => e.check.startsWith('exports'))) {
 			yield show(t(ExportAuditor.UI.ui_ok, {}), 'success')
 		}

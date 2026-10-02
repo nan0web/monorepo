@@ -146,11 +146,89 @@ export class JsHygieneAuditor extends HygieneAuditor {
 			await this._.db.saveDocument(pkgPath, pkg)
 		}
 
-		// 2. Config audit
+		// 2. Config audit & tsconfig profile validation
 		yield progress(t(HygieneAuditor.UI.checking_configs, {}) || 'Checking config files...')
 		const configs = ['tsconfig.json']
 		const hasKnip = (await this.fileExists('knip.json')) || (await this.fileExists('knip.jsonc'))
 		if (!hasKnip) configs.push('knip.json')
+
+		// Detect profile: react, lit, or node
+		const allDeps = { ...pkg.dependencies, ...pkg.devDependencies, ...pkg.peerDependencies }
+		let profile = 'node'
+		if (allDeps.react || allDeps['react-dom'] || allDeps['next']) {
+			profile = 'react'
+		} else if (allDeps.lit || allDeps['lit-element'] || allDeps['lit-html']) {
+			profile = 'lit'
+		}
+
+		/** @type {Record<string, any>} Canonical compilerOptions per profile */
+		const profileCompilerOptions = {
+			node: {
+				target: 'esnext',
+				module: 'nodenext',
+				moduleResolution: 'nodenext',
+				lib: ['esnext'],
+				declaration: true,
+				declarationMap: false,
+				emitDeclarationOnly: true,
+				outDir: './types',
+				rootDir: './src',
+				strict: false,
+				esModuleInterop: true,
+				skipLibCheck: true,
+				forceConsistentCasingInFileNames: true,
+				allowSyntheticDefaultImports: true,
+				allowJs: true,
+				checkJs: false,
+			},
+			react: {
+				target: 'esnext',
+				module: 'esnext',
+				moduleResolution: 'bundler',
+				lib: ['dom', 'dom.iterable', 'esnext'],
+				jsx: 'react-jsx',
+				declaration: true,
+				declarationMap: false,
+				emitDeclarationOnly: true,
+				outDir: './types',
+				rootDir: './src',
+				strict: false,
+				esModuleInterop: true,
+				skipLibCheck: true,
+				forceConsistentCasingInFileNames: true,
+				allowSyntheticDefaultImports: true,
+				allowJs: true,
+				checkJs: false,
+			},
+			lit: {
+				target: 'esnext',
+				module: 'esnext',
+				moduleResolution: 'bundler',
+				lib: ['esnext', 'dom', 'dom.iterable'],
+				declaration: true,
+				declarationMap: false,
+				emitDeclarationOnly: true,
+				outDir: './types',
+				rootDir: './src',
+				strict: false,
+				esModuleInterop: true,
+				skipLibCheck: true,
+				forceConsistentCasingInFileNames: true,
+				allowSyntheticDefaultImports: true,
+				allowJs: true,
+				checkJs: false,
+			},
+		}
+
+		const defaultExclude = [
+			'node_modules',
+			'src/test',
+			'**/*.spec.js',
+			'**/*.spec.tsx',
+			'**/*.story.js',
+			'**/*.test.js',
+			'src/docs/**/*.md.js',
+		]
 
 		for (const config of configs) {
 			if (!(await this.fileExists(config))) {
@@ -161,7 +239,9 @@ export class JsHygieneAuditor extends HygieneAuditor {
 					const defaults =
 						config === 'tsconfig.json'
 							? {
-									compilerOptions: { target: 'ESNext', module: 'ESNext', moduleResolution: 'node' },
+									compilerOptions: profileCompilerOptions[profile],
+									include: ['src/**/*'],
+									exclude: defaultExclude,
 								}
 							: { $schema: 'https://unpkg.com/knip@5/schema.json', entry: ['src/index.js'] }
 
@@ -183,7 +263,156 @@ export class JsHygieneAuditor extends HygieneAuditor {
 			}
 		}
 
-		if (!errors.some((e) => e.check === 'tsconfig.json' || e.check === 'knip.json')) {
+		// Validate tsconfig compilerOptions if tsconfig exists
+		if (await this.fileExists('tsconfig.json')) {
+			const tsconfigPath = this._.db.resolveSync(this.dir, 'tsconfig.json')
+			let tsconfig = (await this._.db.loadDocument(tsconfigPath).catch(() => ({}))) || {}
+			if (typeof tsconfig === 'string') {
+				try {
+					tsconfig = JSON.parse(tsconfig)
+				} catch {
+					tsconfig = {}
+				}
+			}
+			const comp = tsconfig.compilerOptions || {}
+			let tsconfigChanged = false
+
+			const expectedComp = profileCompilerOptions[profile]
+			const criticalKeys = ['declaration', 'emitDeclarationOnly', 'outDir']
+
+			// Check critical keys
+			for (const key of criticalKeys) {
+				const expVal = expectedComp[key]
+				if (comp[key] !== expVal) {
+					const msg = `tsconfig.json compilerOptions.${key} should be ${JSON.stringify(expVal)} (profile: ${profile})`
+					if (this.fix) {
+						comp[key] = expVal
+						tsconfigChanged = true
+						yield show(`Automatically fixed tsconfig compilerOptions.${key}`, 'success')
+					} else {
+						errors.push({
+							check: `tsconfig.compilerOptions.${key}`,
+							error: msg,
+							boundary: ['tsconfig.json'],
+							context: ['tsconfig.json'],
+							suggestion: `"${key}": ${JSON.stringify(expVal)}`,
+						})
+						yield show(msg, 'warn')
+					}
+				}
+			}
+
+			// Check moduleResolution & lib
+			if (profile === 'node') {
+				if (comp.moduleResolution && comp.moduleResolution.toLowerCase() !== 'nodenext') {
+					const msg = `tsconfig.json compilerOptions.moduleResolution should be "nodenext" for node profile`
+					if (this.fix) {
+						comp.moduleResolution = 'nodenext'
+						tsconfigChanged = true
+						yield show('Automatically fixed tsconfig moduleResolution to "nodenext"', 'success')
+					} else {
+						errors.push({
+							check: 'tsconfig.compilerOptions.moduleResolution',
+							error: msg,
+							boundary: ['tsconfig.json'],
+							context: ['tsconfig.json'],
+						})
+						yield show(msg, 'warn')
+					}
+				}
+			} else if (profile === 'react') {
+				if (comp.jsx !== 'react-jsx') {
+					const msg = `tsconfig.json compilerOptions.jsx should be "react-jsx" for react profile`
+					if (this.fix) {
+						comp.jsx = 'react-jsx'
+						tsconfigChanged = true
+						yield show('Automatically fixed tsconfig jsx to "react-jsx"', 'success')
+					} else {
+						errors.push({
+							check: 'tsconfig.compilerOptions.jsx',
+							error: msg,
+							boundary: ['tsconfig.json'],
+							context: ['tsconfig.json'],
+						})
+						yield show(msg, 'warn')
+					}
+				}
+			}
+
+			if (tsconfigChanged) {
+				tsconfig.compilerOptions = comp
+				await this._.db.saveDocument(tsconfigPath, tsconfig)
+			}
+		}
+
+		// 3. package.json#files audit
+		let files = pkg.files
+		if (files && Array.isArray(files)) {
+			let filesChanged = false
+			// Must include types/**/*.d.ts or types
+			const hasTypes = files.some(
+				(f) => f === 'types' || f === 'types/' || f === 'types/**/*.d.ts' || f.startsWith('types')
+			)
+			if (!hasTypes) {
+				const errorMsg = 'package.json#files missing "types/**/*.d.ts" or "types"'
+				if (this.fix) {
+					files.push('types/**/*.d.ts')
+					filesChanged = true
+					yield show('Automatically added types/**/*.d.ts to package.json#files', 'success')
+				} else {
+					errors.push({
+						check: 'package.json#files.types',
+						error: errorMsg,
+						boundary: ['package.json'],
+						context: ['package.json'],
+						suggestion: '"types/**/*.d.ts"',
+					})
+					yield show(errorMsg, 'warn')
+				}
+			}
+
+			// Prohibit inclusion of test/spec files
+			const hasTestPatterns = files.some(
+				(f) =>
+					(f.includes('test') || f.includes('spec')) && !f.startsWith('!') && !f.endsWith('.md.js')
+			)
+			if (hasTestPatterns) {
+				const errorMsg = 'package.json#files includes test or spec files without exclusion (!)'
+				if (this.fix) {
+					files = files.filter(
+						(f) =>
+							!(
+								(f.includes('test') || f.includes('spec')) &&
+								!f.startsWith('!') &&
+								!f.endsWith('.md.js')
+							)
+					)
+					filesChanged = true
+					yield show('Automatically removed test files from package.json#files', 'success')
+				} else {
+					errors.push({
+						check: 'package.json#files.tests',
+						error: errorMsg,
+						boundary: ['package.json'],
+						context: ['package.json'],
+					})
+					yield show(errorMsg, 'warn')
+				}
+			}
+
+			if (filesChanged) {
+				pkg.files = files
+				pkgChanged = true
+				await this._.db.saveDocument(pkgPath, pkg)
+			}
+		}
+
+		if (
+			!errors.some(
+				(e) =>
+					e.check === 'tsconfig.json' || e.check === 'knip.json' || e.check.startsWith('tsconfig.')
+			)
+		) {
 			yield show(t(HygieneAuditor.UI.configs_ok, {}) || 'All config files present.', 'success')
 		}
 
@@ -199,7 +428,9 @@ export class JsHygieneAuditor extends HygieneAuditor {
 			.map((e) => e.check || '')
 
 		return result({
+			ok: errors.length === 0,
 			success: errors.length === 0,
+			profile,
 			errors,
 			scripts: { missing: missingScripts },
 			configs: { missing: missingConfigs },
