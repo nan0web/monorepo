@@ -42,27 +42,10 @@
  * @typedef {'change' | 'input' | 'submit' | 'focus' | 'blur'} InputEventName
  */
 /**
- * Single option object:
- * @typedef {Object} OptionObject
- * @property {string} label - Text label of option for display / voice synthesis.
- * @property {any} value - Underlying value of option.
- * @property {string} [hint] - Extra hint for voice assistant or CLI help.
- * @property {boolean} [disabled] - Whether this specific option is disabled.
- * @property {string} [icon] - Icon identifier.
- */
-/**
- * Asynchronous or synchronous option resolver:
- * @typedef {(query?: string, ctx?: { db?: any, model?: Function }) => Promise<OptionObject[]> | OptionObject[]} OptionResolver
- */
-/**
- * Unified field options:
- * @typedef {OptionObject[] | OptionResolver} FieldOptions
- */
-/**
  * @typedef {Object} ChoiceProps
  * @property {string} name - Field name identifier.
  * @property {string} [label] - Question or prompt label.
- * @property {FieldOptions} options - Selectable options or dynamic resolver.
+ * @property {import('../../core/Intent.js').FieldOptions} options - Selectable options or dynamic resolver.
  * @property {any} [value] - Currently selected value(s).
  * @property {boolean} [multiple] - Multiple choice allowed flag.
  * @property {boolean} [required] - Whether choice is mandatory.
@@ -185,42 +168,6 @@ export type InputProps = {
     error?: string | undefined;
 };
 export type InputEventName = "change" | "input" | "submit" | "focus" | "blur";
-/**
- * Single option object:
- */
-export type OptionObject = {
-    /**
-     * - Text label of option for display / voice synthesis.
-     */
-    label: string;
-    /**
-     * - Underlying value of option.
-     */
-    value: any;
-    /**
-     * - Extra hint for voice assistant or CLI help.
-     */
-    hint?: string | undefined;
-    /**
-     * - Whether this specific option is disabled.
-     */
-    disabled?: boolean | undefined;
-    /**
-     * - Icon identifier.
-     */
-    icon?: string | undefined;
-};
-/**
- * Asynchronous or synchronous option resolver:
- */
-export type OptionResolver = (query?: string, ctx?: {
-    db?: any;
-    model?: Function;
-}) => Promise<OptionObject[]> | OptionObject[];
-/**
- * Unified field options:
- */
-export type FieldOptions = OptionObject[] | OptionResolver;
 export type ChoiceProps = {
     /**
      * - Field name identifier.
@@ -233,7 +180,7 @@ export type ChoiceProps = {
     /**
      * - Selectable options or dynamic resolver.
      */
-    options: FieldOptions;
+    options: import("../../core/Intent.js").FieldOptions;
     /**
      * - Currently selected value(s).
      */

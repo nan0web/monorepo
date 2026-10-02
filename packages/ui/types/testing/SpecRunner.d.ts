@@ -46,7 +46,7 @@ export class SpecRunner extends ModelAsApp {
      * @param {typeof import('node:assert/strict')} [asserter] Custom assertion library
      * @param {Partial<import('../index.js').ModelAsAppOptions>} [options={}] Additional runner options
      */
-    static execute(stream: Array<object>, registry: Record<string, any>, asserter?: typeof import("node:assert/strict"), options?: Partial<import("../index.js").ModelAsAppOptions>): Promise<any>;
+    static execute(stream: Array<object>, registry: Record<string, any>, asserter?: typeof import("node:assert/strict"), options?: Partial<import("../index.js").ModelAsAppOptions>): Promise<import("../core/Intent.js").ResultData>;
     /**
      * @param {Partial<SpecRunner>} [data={}]
      * @param {Partial<import('../index.js').ModelAsAppOptions> & { assert?: typeof import('node:assert/strict') }} [options={}]

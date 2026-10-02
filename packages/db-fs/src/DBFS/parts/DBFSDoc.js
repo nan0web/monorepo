@@ -33,9 +33,12 @@ export default class DBFSDoc extends DBFSPath {
 	 * NO ACCESS CHECK!
 	 * ```
 	 * @param {string} uri The URI to stat the document from.
+	 * @param {any} [context=this.context]
 	 * @returns {Promise<DocumentStat>} The document stat.
 	 */
-	async statDocument(uri) {
+	async statDocument(uri, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) return mount.db.statDocument(mount.subUri, context)
 		this.console.debug('Getting document statistics', { uri })
 		const path = this.location(uri)
 		try {
@@ -69,9 +72,12 @@ export default class DBFSDoc extends DBFSPath {
 	 * @param {string} ext The extension of the document.
 	 * @param {string} uri The URI to load the document from.
 	 * @param {any} defaultValue The default value to return if the document does not exist.
+	 * @param {any} [context=this.context]
 	 * @returns {Promise<any>} The loaded document or the default value.
 	 */
-	async loadDocumentAs(ext, uri, defaultValue = undefined) {
+	async loadDocumentAs(ext, uri, defaultValue = undefined, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) return mount.db.loadDocumentAs(ext, mount.subUri, defaultValue, context)
 		this.console.debug('Loading document as', { uri, ext, defaultValue })
 		await this.ensureAccess(uri, 'r')
 		const file = this.resolveSync(this.resolveAlias(uri))
@@ -88,9 +94,9 @@ export default class DBFSDoc extends DBFSPath {
 			if (!ext || isDataExt) {
 				for (const fallbackExt of this.Directory.DATA_EXTNAMES) {
 					if (fallbackExt === ext) continue
-					const stats = await this.statDocument(baseUri + fallbackExt)
+					const stats = await this.statDocument(baseUri + fallbackExt, context)
 					if (stats.exists && stats.isFile) {
-						const data = await this.loadDocument(baseUri + fallbackExt, null)
+						const data = await this.loadDocument(baseUri + fallbackExt, null, context)
 						if (null !== data) {
 							return data
 						}
@@ -115,9 +121,18 @@ export default class DBFSDoc extends DBFSPath {
 	 * @param {string} ext The extension/format of the document (e.g. '.txt').
 	 * @param {string} uri The URI to save the document to.
 	 * @param {any} document The document to save.
+	 * @param {any} [context=this.context]
 	 * @returns {Promise<boolean>} True if saved successfully, false otherwise.
 	 */
-	async saveDocumentAs(ext, uri, document) {
+	async saveDocumentAs(ext, uri, document, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) {
+			const anyDb = /** @type {any} */ (mount.db)
+			if (typeof anyDb.saveDocumentAs === 'function') {
+				return anyDb.saveDocumentAs(ext, mount.subUri, document, context)
+			}
+			return anyDb.saveDocument(mount.subUri, document, context)
+		}
 		this.console.debug('Saving document as', { uri, ext, document })
 		await this.ensureAccess(uri, 'w')
 		await this._buildPath(uri)
@@ -145,9 +160,21 @@ export default class DBFSDoc extends DBFSPath {
 	 * Saves raw file content directly to disk without registry savers/formatters.
 	 * @param {string} uri The URI to save the file to.
 	 * @param {string|Buffer} content The raw content to save.
+	 * @param {any} [context=this.context]
 	 * @returns {Promise<boolean>} True if saved successfully, false otherwise.
 	 */
-	async saveFile(uri, content) {
+	async saveFile(uri, content, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) {
+			const anyDb = /** @type {any} */ (mount.db)
+			if (typeof anyDb.saveFile === 'function') {
+				return anyDb.saveFile(mount.subUri, content, context)
+			}
+			if (typeof anyDb.saveDocumentAs === 'function') {
+				return anyDb.saveDocumentAs('.txt', mount.subUri, content, context)
+			}
+			return anyDb.saveDocument(mount.subUri, content, context)
+		}
 		this.console.debug('Saving raw file', { uri })
 		await this.ensureAccess(uri, 'w')
 		await this._buildPath(uri)
@@ -169,9 +196,12 @@ export default class DBFSDoc extends DBFSPath {
 	 * @throws {Error} If the document cannot be saved.
 	 * @param {string} uri The URI to save the document to.
 	 * @param {any} document The document to save.
+	 * @param {any} [context=this.context]
 	 * @returns {Promise<boolean>} True if saved successfully, false otherwise.
 	 */
-	async saveDocument(uri, document) {
+	async saveDocument(uri, document, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) return mount.db.saveDocument(mount.subUri, document, context)
 		this.console.debug('Saving document', { uri, document })
 		await this.ensureAccess(uri, 'w')
 		await this._buildPath(uri)
@@ -196,9 +226,12 @@ export default class DBFSDoc extends DBFSPath {
 	 * @throws {Error} If the document cannot be written.
 	 * @param {string} uri The URI to write the document to.
 	 * @param {string} chunk The chunk to write.
+	 * @param {any} [context=this.context]
 	 * @returns {Promise<boolean>} True if written successfully, false otherwise.
 	 */
-	async writeDocument(uri, chunk) {
+	async writeDocument(uri, chunk, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) return mount.db.writeDocument(mount.subUri, chunk, context)
 		this.console.debug('Writing document', { uri, chunk })
 		await this.ensureAccess(uri, 'w')
 		await this._buildPath(uri)
@@ -213,9 +246,14 @@ export default class DBFSDoc extends DBFSPath {
 	 * Creates a read stream for a document at the given URI.
 	 * @throws {Error} If the document cannot be read.
 	 * @param {string} uri The URI to read from.
+	 * @param {any} [context=this.context]
 	 * @returns {Promise<any>} An asynchronous iterator or stream.
 	 */
-	async stream(uri) {
+	async stream(uri, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount && typeof mount.db.stream === 'function') {
+			return mount.db.stream(mount.subUri, context)
+		}
 		this.console.debug('Streaming document', { uri })
 		await this.ensureAccess(uri, 'r')
 		const abs = this.location(uri)
@@ -231,9 +269,12 @@ export default class DBFSDoc extends DBFSPath {
 	 * @param {string} uri The URI(s) of the document(s) to drop.
 	 * @param {object} [options={}]
 	 * @param {boolean} [options.recursive=false]
+	 * @param {any} [context=this.context]
 	 * @returns {Promise<boolean>} True if dropped successfully, false otherwise.
 	 */
-	async dropDocument(uri, options = {}) {
+	async dropDocument(uri, options = {}, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) return mount.db.dropDocument(mount.subUri, context)
 		const { recursive = false } = options
 		this.console.debug('Deleting document', { uri, options })
 		await this.ensureAccess(uri, 'd')

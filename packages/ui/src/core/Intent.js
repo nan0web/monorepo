@@ -10,6 +10,26 @@
 
 import { IntentErrorModel } from './IntentErrorModel.js'
 
+/**
+ * Single option object:
+ * @typedef {Object} OptionObject
+ * @property {string} label - Text label of option for display / voice synthesis.
+ * @property {any} value - Underlying value of option.
+ * @property {string} [hint] - Extra hint for voice assistant or CLI help.
+ * @property {boolean} [disabled] - Whether this specific option is disabled.
+ * @property {string} [icon] - Icon identifier.
+ */
+
+/**
+ * Asynchronous or synchronous option resolver:
+ * @typedef {(query?: string, ctx?: { db?: any, model?: Function }) => Promise<OptionObject[]> | OptionObject[]} OptionResolver
+ */
+
+/**
+ * Unified field options:
+ * @typedef {OptionObject[] | OptionResolver} FieldOptions
+ */
+
 // ─── Intent Types (Model → Adapter) ───
 /**
  * Base fields common to all intents.
@@ -29,9 +49,10 @@ import { IntentErrorModel } from './IntentErrorModel.js'
  * @property {string} help - Human-readable label / i18n key.
  * @property {*} default - Default value for the field.
  * @property {string} [type] - Field type hint ('text', 'number', 'text/markdown').
- * @property {Array<{value: *, label: string}>} [options] - Enum options for select.
+ * @property {FieldOptions} [options] - Enum options or resolver for select.
  * @property {(val: *) => true | string} [validate] - Validator: true = ok, string = error key from Model.
  * @property {boolean} [hidden] - If true, field is excluded from UI forms.
+ * @property {string} [alias] - Alias for the field.
  */
 
 /**
@@ -80,10 +101,21 @@ import { IntentErrorModel } from './IntentErrorModel.js'
  */
 
 /**
+ * @typedef {Object} ResultData
+ * @property {boolean} [ok] - Success (`true`) or failed (`false` | `undefined`) result.
+ * @property {string} [message] - Human-readable localized result message for the UI adapter.
+ * @property {string} [reason] - Machine-readable failure reason code (e.g. `'no_path'`, `'invalid_file'`).
+ * @property {string | number} [error] - Localized error message OR numeric error code:
+ *   positive integer → HTTP error code (e.g. `404`),
+ *   negative integer → CLI exit code (e.g. `-1`).
+ * @property {*} [data] - Any additional arbitrary JSON-serializable data fields.
+ */
+
+/**
  * Final return value from the generator.
  * @typedef {Object} ResultIntent
  * @property {'result'} type
- * @property {*} data - The raw result data (JSON-serializable).
+ * @property {ResultData} data - The raw result data (JSON-serializable).
  * @property {boolean} [raw] - If true, Adapter MUST output data raw (no UI decorations).
  */
 
@@ -331,7 +363,7 @@ export function render(component, props = {}) {
 
 /**
  * Create a result intent.
- * @param {*} data - The raw result data.
+ * @param {ResultData} data - The raw result data.
  * @param {boolean} [raw=false] - If true, result is printed raw.
  * @returns {ResultIntent}
  */

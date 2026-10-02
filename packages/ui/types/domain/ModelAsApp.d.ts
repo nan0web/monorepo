@@ -43,10 +43,16 @@ export class ModelAsApp extends Model {
     constructor(data?: Partial<ModelAsApp> | Record<string, any>, options?: Partial<ModelAsAppOptions>);
     /** @type {boolean} Show help */
     help: boolean;
-    /** Unified UI getter */
-    get $UI(): any;
+    /**
+     * Unified UI getter
+     * @returns {{ [key: string]: string }}
+     */
+    get $UI(): {
+        [key: string]: string;
+    };
     /**
      * Guaranteed DB instance getter with localized error.
+     * @throws {Error} If DB instance is not available.
      * @returns {import('@nan0web/db').DB}
      */
     get $db(): import("@nan0web/db").DB;

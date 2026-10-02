@@ -54,30 +54,10 @@
  */
 
 /**
- * Single option object:
- * @typedef {Object} OptionObject
- * @property {string} label - Text label of option for display / voice synthesis.
- * @property {any} value - Underlying value of option.
- * @property {string} [hint] - Extra hint for voice assistant or CLI help.
- * @property {boolean} [disabled] - Whether this specific option is disabled.
- * @property {string} [icon] - Icon identifier.
- */
-
-/**
- * Asynchronous or synchronous option resolver:
- * @typedef {(query?: string, ctx?: { db?: any, model?: Function }) => Promise<OptionObject[]> | OptionObject[]} OptionResolver
- */
-
-/**
- * Unified field options:
- * @typedef {OptionObject[] | OptionResolver} FieldOptions
- */
-
-/**
  * @typedef {Object} ChoiceProps
  * @property {string} name - Field name identifier.
  * @property {string} [label] - Question or prompt label.
- * @property {FieldOptions} options - Selectable options or dynamic resolver.
+ * @property {import('../../core/Intent.js').FieldOptions} options - Selectable options or dynamic resolver.
  * @property {any} [value] - Currently selected value(s).
  * @property {boolean} [multiple] - Multiple choice allowed flag.
  * @property {boolean} [required] - Whether choice is mandatory.

@@ -18,9 +18,7 @@ import { resolvePositionalArgs } from '../core/resolvePositionalArgs.js'
  * @extends {Model}
  */
 export class ModelAsApp extends Model {
-	/** @type {boolean} Show help */
-	help
-
+	/** @type {import('../index.js').FieldSchema} */
 	static help = {
 		help: 'Show help',
 		default: false,
@@ -40,23 +38,27 @@ export class ModelAsApp extends Model {
 		errorNoDb: 'Database instance ($db) is required for {alias}',
 	}
 
-	/** Unified UI getter */
+	/**
+	 * Unified UI getter
+	 * @returns {{ [key: string]: string }}
+	 */
 	get $UI() {
 		/** @type {ModelAsApp} */
-		return (this.constructor).UI ?? {};
+		return this.constructor.UI ?? {}
 	}
 
 	/**
 	 * Guaranteed DB instance getter with localized error.
+	 * @throws {Error} If DB instance is not available.
 	 * @returns {import('@nan0web/db').DB}
 	 */
 	get $db() {
-		const db = this._?.db
+		const { db, t } = this._
 		if (!db) {
 			const Class = /** @type {typeof ModelAsApp} */ (this.constructor)
 			const alias = Class.$alias || Class.alias || Class.name
-			const errorTemplate = Class.UI?.errorNoDb || ModelAsApp.UI.errorNoDb
-			throw new Error(this._.t(errorTemplate, { alias }))
+			const errorTemplate = this.$UI.errorNoDb || ModelAsApp.UI.errorNoDb
+			throw new Error(t(errorTemplate, { alias }))
 		}
 		return db
 	}
@@ -67,8 +69,8 @@ export class ModelAsApp extends Model {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {boolean} Show help */ this.help = Boolean(data.help)
-		this._ =  {
+		/** @type {boolean} Show help */ this.help
+		this._ = {
 			...this._,
 			adapter: options.adapter || new InputAdapter(),
 			parentPath: String(options.parentPath || ''),
@@ -121,17 +123,22 @@ export class ModelAsApp extends Model {
 		if (SubClass) {
 			const className = typeof Class.name === 'string' ? Class.name : ''
 			const myAlias =
-				(typeof /** @type {any} */ (Class).$alias === 'string' ? /** @type {any} */ (Class).$alias : null) ||
-				(typeof /** @type {any} */ (Class).alias === 'string' ? /** @type {any} */ (Class).alias : null) ||
+				(typeof (/** @type {any} */ (Class).$alias) === 'string'
+					? /** @type {any} */ (Class).$alias
+					: null) ||
+				(typeof (/** @type {any} */ (Class).alias) === 'string'
+					? /** @type {any} */ (Class).alias
+					: null) ||
 				className.replace(/Command|App/g, '').toLowerCase()
 			const fullPath = this._.parentPath ? `${this._.parentPath} ${myAlias}` : myAlias
 
 			const cleanSubData = { ...data }
 			delete cleanSubData[key]
 
-			const subPos = (data._positionals && data._positionals[0] === val)
-				? data._positionals.slice(1)
-				: (data._positionals || [])
+			const subPos =
+				data._positionals && data._positionals[0] === val
+					? data._positionals.slice(1)
+					: data._positionals || []
 			const finalData = resolvePositionalArgs(SubClass, subPos, cleanSubData)
 			return new SubClass(finalData, { ...this._, parentPath: fullPath, _isExplicit: isExplicit })
 		}
@@ -154,8 +161,12 @@ export class ModelAsApp extends Model {
 			if (val instanceof ModelAsApp && val['help'] && val._._isExplicit) {
 				const className = typeof Class.name === 'string' ? Class.name : ''
 				const myAlias =
-					(typeof /** @type {any} */ (Class).$alias === 'string' ? /** @type {any} */ (Class).$alias : null) ||
-					(typeof /** @type {any} */ (Class).alias === 'string' ? /** @type {any} */ (Class).alias : null) ||
+					(typeof (/** @type {any} */ (Class).$alias) === 'string'
+						? /** @type {any} */ (Class).$alias
+						: null) ||
+					(typeof (/** @type {any} */ (Class).alias) === 'string'
+						? /** @type {any} */ (Class).alias
+						: null) ||
 					className.replace(/Command|App/g, '').toLowerCase()
 				const fullPath = parentPath ? `${parentPath} ${myAlias}` : myAlias
 				return val.generateHelp(fullPath)
@@ -164,8 +175,12 @@ export class ModelAsApp extends Model {
 
 		const className = typeof Class.name === 'string' ? Class.name : ''
 		const myAlias =
-			(typeof /** @type {any} */ (Class).$alias === 'string' ? /** @type {any} */ (Class).$alias : null) ||
-			(typeof /** @type {any} */ (Class).alias === 'string' ? /** @type {any} */ (Class).alias : null) ||
+			(typeof (/** @type {any} */ (Class).$alias) === 'string'
+				? /** @type {any} */ (Class).$alias
+				: null) ||
+			(typeof (/** @type {any} */ (Class).alias) === 'string'
+				? /** @type {any} */ (Class).alias
+				: null) ||
 			className.replace(/Command|App/g, '').toLowerCase()
 		const fullPath = parentPath ? `${parentPath} ${myAlias}` : myAlias
 
@@ -215,7 +230,10 @@ export class ModelAsApp extends Model {
 					for (const SubCmd of subcommands) {
 						if (SubCmd && SubCmd.prototype && SubCmd.prototype.generateHelp) {
 							const subClassName = typeof SubCmd.name === 'string' ? SubCmd.name : ''
-							const cmdName = SubCmd.$alias || SubCmd.alias || subClassName.replace(/Command|App/g, '').toLowerCase()
+							const cmdName =
+								SubCmd.$alias ||
+								SubCmd.alias ||
+								subClassName.replace(/Command|App/g, '').toLowerCase()
 							const desc = SubCmd.UI?.title ? t(SubCmd.UI.title) : ''
 							usageExamples.push(`${fullPath} ${cmdName} ${desc ? `— ${desc}` : ''}`.trim())
 						}

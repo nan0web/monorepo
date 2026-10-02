@@ -59,11 +59,11 @@ export function log(level: LogLevel, message: string, data?: object): LogIntent;
 export function render(component: string, props?: object): RenderIntent;
 /**
  * Create a result intent.
- * @param {*} data - The raw result data.
+ * @param {ResultData} data - The raw result data.
  * @param {boolean} [raw=false] - If true, result is printed raw.
  * @returns {ResultIntent}
  */
-export function result(data: any, raw?: boolean): ResultIntent;
+export function result(data: ResultData, raw?: boolean): ResultIntent;
 /**
  * @typedef {Object} ShowData
  * @property {any} [component]
@@ -85,6 +85,23 @@ export function show(message: string | any, level?: ShowLevel | ShowData, data?:
  */
 export function agent(task: string, context?: AgentContext): AgentIntent;
 /**
+ * Single option object:
+ * @typedef {Object} OptionObject
+ * @property {string} label - Text label of option for display / voice synthesis.
+ * @property {any} value - Underlying value of option.
+ * @property {string} [hint] - Extra hint for voice assistant or CLI help.
+ * @property {boolean} [disabled] - Whether this specific option is disabled.
+ * @property {string} [icon] - Icon identifier.
+ */
+/**
+ * Asynchronous or synchronous option resolver:
+ * @typedef {(query?: string, ctx?: { db?: any, model?: Function }) => Promise<OptionObject[]> | OptionObject[]} OptionResolver
+ */
+/**
+ * Unified field options:
+ * @typedef {OptionObject[] | OptionResolver} FieldOptions
+ */
+/**
  * Base fields common to all intents.
  * @typedef {Object} IntentBase
  * @property {any} [$value] - Optional value returned by adapters, often used in tests.
@@ -101,7 +118,7 @@ export function agent(task: string, context?: AgentContext): AgentIntent;
  * @property {string} help - Human-readable label / i18n key.
  * @property {*} default - Default value for the field.
  * @property {string} [type] - Field type hint ('text', 'number', 'text/markdown').
- * @property {Array<{value: *, label: string}>} [options] - Enum options for select.
+ * @property {FieldOptions} [options] - Enum options or resolver for select.
  * @property {(val: *) => true | string} [validate] - Validator: true = ok, string = error key from Model.
  * @property {boolean} [hidden] - If true, field is excluded from UI forms.
  */
@@ -145,10 +162,20 @@ export function agent(task: string, context?: AgentContext): AgentIntent;
  * @property {string} message - Internal log message.
  */
 /**
+ * @typedef {Object} ResultData
+ * @property {boolean} [ok] - Success (`true`) or failed (`false` | `undefined`) result.
+ * @property {string} [message] - Human-readable localized result message for the UI adapter.
+ * @property {string} [reason] - Machine-readable failure reason code (e.g. `'no_path'`, `'invalid_file'`).
+ * @property {string | number} [error] - Localized error message OR numeric error code:
+ *   positive integer → HTTP error code (e.g. `404`),
+ *   negative integer → CLI exit code (e.g. `-1`).
+ * @property {*} [data] - Any additional arbitrary JSON-serializable data fields.
+ */
+/**
  * Final return value from the generator.
  * @typedef {Object} ResultIntent
  * @property {'result'} type
- * @property {*} data - The raw result data (JSON-serializable).
+ * @property {ResultData} data - The raw result data (JSON-serializable).
  * @property {boolean} [raw] - If true, Adapter MUST output data raw (no UI decorations).
  */
 /**
@@ -270,6 +297,42 @@ export type ShowData = {
     model?: import("@nan0web/types").Model | undefined;
 };
 /**
+ * Single option object:
+ */
+export type OptionObject = {
+    /**
+     * - Text label of option for display / voice synthesis.
+     */
+    label: string;
+    /**
+     * - Underlying value of option.
+     */
+    value: any;
+    /**
+     * - Extra hint for voice assistant or CLI help.
+     */
+    hint?: string | undefined;
+    /**
+     * - Whether this specific option is disabled.
+     */
+    disabled?: boolean | undefined;
+    /**
+     * - Icon identifier.
+     */
+    icon?: string | undefined;
+};
+/**
+ * Asynchronous or synchronous option resolver:
+ */
+export type OptionResolver = (query?: string, ctx?: {
+    db?: any;
+    model?: Function;
+}) => Promise<OptionObject[]> | OptionObject[];
+/**
+ * Unified field options:
+ */
+export type FieldOptions = OptionObject[] | OptionResolver;
+/**
  * Base fields common to all intents.
  */
 export type IntentBase = {
@@ -309,12 +372,9 @@ export type FieldSchema = {
      */
     type?: string | undefined;
     /**
-     * - Enum options for select.
+     * - Enum options or resolver for select.
      */
-    options?: {
-        value: any;
-        label: string;
-    }[] | undefined;
+    options?: FieldOptions | undefined;
     /**
      * - Validator: true = ok, string = error key from Model.
      */
@@ -395,6 +455,30 @@ export type LogIntent = {
      */
     message: string;
 };
+export type ResultData = {
+    /**
+     * - Success (`true`) or failed (`false` | `undefined`) result.
+     */
+    ok?: boolean | undefined;
+    /**
+     * - Human-readable localized result message for the UI adapter.
+     */
+    message?: string | undefined;
+    /**
+     * - Machine-readable failure reason code (e.g. `'no_path'`, `'invalid_file'`).
+     */
+    reason?: string | undefined;
+    /**
+     * - Localized error message OR numeric error code:
+     * positive integer → HTTP error code (e.g. `404`),
+     * negative integer → CLI exit code (e.g. `-1`).
+     */
+    error?: string | number | undefined;
+    /**
+     * - Any additional arbitrary JSON-serializable data fields.
+     */
+    data?: any;
+};
 /**
  * Final return value from the generator.
  */
@@ -403,7 +487,7 @@ export type ResultIntent = {
     /**
      * - The raw result data (JSON-serializable).
      */
-    data: any;
+    data: ResultData;
     /**
      * - If true, Adapter MUST output data raw (no UI decorations).
      */

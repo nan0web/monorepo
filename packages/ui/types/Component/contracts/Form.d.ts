@@ -68,7 +68,7 @@ export type FormFieldContract = {
     /**
      * - Static options or dynamic resolver.
      */
-    options?: import("./Interaction.js").FieldOptions | undefined;
+    options?: import("./Interaction.js").FieldOptions;
     /**
      * - Target model constructor for relationships.
      */

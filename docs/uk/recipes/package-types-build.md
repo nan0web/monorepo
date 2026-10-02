@@ -58,36 +58,15 @@ description: Канонічний рецепт налаштування TypeScri
 
 ---
 
-## 2. Конфігурація `tsconfig.json`
+## 2. Конфігурація `tsconfig.json` (3 канонічні профілі)
 
-Для пакетів, які пишуться на JS з JSDoc або TSX, налаштовується генерація `.d.ts` у папку `./types`:
+Залежно від цільового середовища пакету використовується один із трьох стандартизованих профілів:
+1. [Node.js / CLI / DB (`node`)](./tsconfig-node.md) — для бекенд-пакетів та інструментів (`module: nodenext`, `moduleResolution: nodenext`, `lib: ["esnext"]`).
+2. [React / JSX / Next.js (`react`)](./tsconfig-react.md) — для UI-бібліотек та React-компонентів (`moduleResolution: bundler`, `jsx: react-jsx`, `lib: ["dom", "dom.iterable", "esnext"]`).
+3. [Lit / Web Components (`lit`)](./tsconfig-lit.md) — для Web Components без JSX (`moduleResolution: bundler`, `lib: ["esnext", "dom", "dom.iterable"]`).
 
-```json
-{
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "nodenext",
-    "lib": ["esnext", "dom"],
-    "declaration": true,
-    "declarationMap": false,
-    "emitDeclarationOnly": true,
-    "outDir": "./types",
-    "rootDir": "./src",
-    "jsx": "react-jsx",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "nodenext",
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false,
-    "allowJs": true,
-    "checkJs": false
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "src/test", "**/*.spec.js", "**/*.spec.tsx", "**/*.test.js"]
-}
-```
+Усі профілі суворо дотримуються правила генерації типізації:
+`declaration: true`, `emitDeclarationOnly: true`, `outDir: "./types"`.
 
 ---
 

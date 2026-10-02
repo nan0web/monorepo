@@ -44,9 +44,29 @@ export default class DBFSDir extends DBFSDoc {
 	 * Lists the contents of a directory.
 	 * @param {string} uri The directory URI to list.
 	 * @param {{depth?: number, skipStat?: boolean}} [options={}] Options for listing.
+	 * @param {any} [context=this.context]
 	 * @returns {Promise<DocumentEntry[]>} The list of directory entries.
 	 */
-	async listDir(uri, { depth = 0, skipStat = false } = {}) {
+	async listDir(uri, { depth = 0, skipStat = false } = {}, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) {
+			const entries = await mount.db.listDir(mount.subUri, { depth, skipStat }, context)
+			const normalized = this.normalize(uri)
+			let prefix = ''
+			for (const [p] of this.mounts) {
+				if (p === '' || normalized === p || normalized.startsWith(p + '/')) {
+					prefix = p
+					break
+				}
+			}
+			return entries.map((e) => {
+				e.path = this.resolveSync(prefix, e.path)
+				if (e.parent) {
+					e.parent = this.resolveSync(prefix, e.parent)
+				}
+				return e
+			})
+		}
 		this.console.debug('Listing directory', { uri, depth, skipStat })
 		const path = this.location(uri)
 		const entries = /** @type {import("node:fs").Dirent[]} */ (

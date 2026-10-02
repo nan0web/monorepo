@@ -37,23 +37,27 @@ export { resolvePositionalArgs } from './core/resolvePositionalArgs.js'
 export { tokens } from './Theme/tokens.js'
 
 // OLMUI Generator Engine
-/** @typedef {import('./core/Intent.js').LogLevel} LogLevel */
-/** @typedef {import('./core/Intent.js').ShowLevel} ShowLevel */
-/** @typedef {import('./core/Intent.js').FieldSchema} FieldSchema */
-/** @typedef {import('./core/Intent.js').Intent} Intent */
-/** @typedef {import('./core/Intent.js').IntentResponse} IntentResponse */
-/** @typedef {import('./core/Intent.js').AskIntent} AskIntent */
-/** @typedef {import('./core/Intent.js').ProgressIntent} ProgressIntent */
-/** @typedef {import('./core/Intent.js').ProgressOptions} ProgressOptions */
-/** @typedef {import('./core/Intent.js').LogIntent} LogIntent */
-/** @typedef {import('./core/Intent.js').ShowIntent} ShowIntent */
-/** @typedef {import('./core/Intent.js').RenderIntent} RenderIntent */
-/** @typedef {import('./core/Intent.js').ResultIntent} ResultIntent */
-/** @typedef {import('./core/Intent.js').IntentType} IntentType */
-/** @typedef {import('./core/Intent.js').AskResponse} AskResponse */
-/** @typedef {import('./core/Intent.js').AbortResponse} AbortResponse */
-/** @typedef {import('./core/Intent.js').ShowData} ShowData */
-/** @typedef {import('./core/InputAdapter.js').AskOptions} AskOptions */
+/** @typedef {import('./core/index.js').LogLevel} LogLevel */
+/** @typedef {import('./core/index.js').ShowLevel} ShowLevel */
+/** @typedef {import('./core/index.js').FieldSchema} FieldSchema */
+/** @typedef {import('./core/index.js').FieldOptions} FieldOptions */
+/** @typedef {import('./core/index.js').OptionObject} OptionObject */
+/** @typedef {import('./core/index.js').OptionResolver} OptionResolver */
+/** @typedef {import('./core/index.js').Intent} Intent */
+/** @typedef {import('./core/index.js').IntentResponse} IntentResponse */
+/** @typedef {import('./core/index.js').AskIntent} AskIntent */
+/** @typedef {import('./core/index.js').ProgressIntent} ProgressIntent */
+/** @typedef {import('./core/index.js').ProgressOptions} ProgressOptions */
+/** @typedef {import('./core/index.js').LogIntent} LogIntent */
+/** @typedef {import('./core/index.js').ShowIntent} ShowIntent */
+/** @typedef {import('./core/index.js').RenderIntent} RenderIntent */
+/** @typedef {import('./core/index.js').ResultIntent} ResultIntent */
+/** @typedef {import('./core/index.js').ResultData} ResultData */
+/** @typedef {import('./core/index.js').IntentType} IntentType */
+/** @typedef {import('./core/index.js').AskResponse} AskResponse */
+/** @typedef {import('./core/index.js').AbortResponse} AbortResponse */
+/** @typedef {import('./core/index.js').ShowData} ShowData */
+/** @typedef {import('./core/index.js').AskOptions} AskOptions */
 export * from './core/Intent.js'
 
 export { IntentErrorModel } from './core/IntentErrorModel.js'
