@@ -47,7 +47,7 @@ export class SeedModel extends PayloadApp {
 	 * @returns {Promise<string[]>}
 	 */
 	async readSeedFiles(target) {
-		const db = this._.db
+		const db = this.$db
 		if (!db) return []
 		let prefix = ''
 		if (target && target !== '.') {
@@ -105,10 +105,8 @@ export class SeedModel extends PayloadApp {
 	 * @returns {AsyncGenerator<import('@nan0web/ui/core').Intent, import('@nan0web/ui/core').ResultIntent, any>}
 	 */
 	async *run() {
-		const { db, t } = this._
-		if (!db) {
-			throw new Error(t(SeedModel.UI.errorDb))
-		}
+		const { t } = this._
+		const db = this.$db
 
 		const payload = await this.getPayloadInstance().catch(() => this._.payload)
 		const target = this.dataDir || 'data'

@@ -19,6 +19,10 @@ export class AuditorModel extends ModelAsApp {
         default: string;
         positional: boolean;
     };
+    static help: {
+        help: string;
+        default: boolean;
+    };
     static fix: {
         help: string;
         default: boolean;

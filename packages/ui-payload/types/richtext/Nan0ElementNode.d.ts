@@ -1,6 +1,6 @@
 export function $createNan0ElementNode({ tag, attributes }: {
     tag: any;
-    attributes?: {} | undefined;
+    attributes?: {};
 }): Nan0ElementNode;
 export function $isNan0ElementNode(node: any): node is Nan0ElementNode;
 export class Nan0ElementNode extends ElementNode {
@@ -8,7 +8,7 @@ export class Nan0ElementNode extends ElementNode {
     static importJSON(serializedNode: any): Nan0ElementNode;
     constructor({ tag, attributes, key }: {
         tag: any;
-        attributes?: {} | undefined;
+        attributes?: {};
         key: any;
     });
     /** @type {string} */ __tag: string;
@@ -18,7 +18,7 @@ export class Nan0ElementNode extends ElementNode {
         version: number;
         tag: string;
         attributes: Record<string, any>;
-        $?: Record<string, unknown> | undefined;
+        $?: Record<string, unknown>;
         children: import("lexical").SerializedLexicalNode[];
         direction: "ltr" | "rtl" | null;
         format: import("lexical").ElementFormatType;

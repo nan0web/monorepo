@@ -49,12 +49,14 @@ export class ArchitectureAuditor extends AuditorModel {
     /** @type {string} Auditors to skip */ skip: string;
     /** @type {typeof AuditorModel | null} Current command */ command: typeof AuditorModel | null;
     /** @type {number} Timeout for audit */ timeout: number;
+    /** @type {InspectConfig} Injected inspect configuration */ config: InspectConfig;
     /**
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
      */
     run(): AsyncGenerator<import("@nan0web/ui").Intent, import("@nan0web/ui").ResultIntent, any>;
 }
 import { AuditorModel } from '../AuditorModel.js';
+import { InspectConfig } from '../config/InspectConfig.js';
 import { PhaseAuditor } from './PhaseAuditor.js';
 import { CircularDependencyAuditor } from './CircularDependencyAuditor.js';
 import { SnapshotAuditor } from '@nan0web/ui/inspect';

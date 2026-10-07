@@ -3,6 +3,8 @@ export class InspectorApp extends ModelAsApp {
     static UI: {
         title: string;
         description: string;
+        stepCapped: string;
+        unknownCommand: string;
     };
     static command: {
         type: typeof ModelAsApp;
@@ -31,8 +33,9 @@ export class InspectorApp extends ModelAsApp {
     /** @type {string} Target directory */ dir: string;
     /** @type {boolean} Automatically apply fixes */ fix: boolean;
     /** @type {import('../index.js').LanguagePlatform} Language platform */ platform: import("../index.js").LanguagePlatform;
+    /** @type {InspectConfig} Injected inspect configuration */ config: InspectConfig;
     /**
-     * Detects the project platform based on configuration files.
+     * Detects the project platform based on configuration files and loads InspectConfig.
      */
     init(): Promise<void>;
     /**
@@ -42,6 +45,7 @@ export class InspectorApp extends ModelAsApp {
 }
 import { ModelAsApp } from '@nan0web/ui';
 import { AuditorModel } from '../AuditorModel.js';
+import { InspectConfig } from '../config/InspectConfig.js';
 import { PhaseAuditor } from './PhaseAuditor.js';
 import { CircularDependencyAuditor } from './CircularDependencyAuditor.js';
 import { ArchitectureAuditor } from './ArchitectureAuditor.js';

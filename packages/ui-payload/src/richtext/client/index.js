@@ -16,5 +16,3 @@ export const Nan0HTMLFeatureClient = (props = {}) => ({
     sanitizedClientFeatureProps: props,
   }),
 })
-
-export default Nan0HTMLFeatureClient

@@ -14,10 +14,10 @@ export type ImageCellProps = {
     cellData?: string | {
         url?: string;
         thumbnailURL?: string;
-    } | undefined;
+    };
     value?: string | {
         url?: string;
         thumbnailURL?: string;
-    } | undefined;
+    };
 };
 import React from 'react';

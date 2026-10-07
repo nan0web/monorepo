@@ -14,3 +14,4 @@ export { BuildWorkflowsApp, parseFrontMatter, parseNan0Config } from './app/Buil
 export { StackDetector } from './StackDetector.js'
 export { ModuleRegistry } from './modules/ModuleRegistry.js'
 export { ModuleItem } from './modules/ModuleItem.js'
+export { InspectConfig } from './config/InspectConfig.js'

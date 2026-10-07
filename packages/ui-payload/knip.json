@@ -1,7 +1,22 @@
 {
-	"$schema": "https://unpkg.com/knip@latest/schema.json",
-	"entry": ["src/index.js", "src/richtext/client/index.js", "src/richtext/Nan0HTMLFeature.js"],
-	"project": ["src/**/*.{js,jsx,ts,tsx}"],
-	"ignore": ["types/**", "src/**/*.spec.js", "src/**/*.test.js"],
-	"ignoreDependencies": ["typescript", "vitest"]
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/index.js",
+    "src/access.js",
+    "src/templates/PayloadCollectionTemplate.js",
+    "src/domain/PayloadApp.js",
+    "src/domain/SeedModel.js",
+    "src/components/*.jsx",
+    "play/main.js"
+  ],
+  "project": [
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "play/**/*.js",
+    "play/**/*.jsx"
+  ],
+  "ignoreDependencies": [
+    "@payloadcms/ui",
+    "payload"
+  ]
 }

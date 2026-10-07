@@ -3,6 +3,7 @@ import { show, progress, result, render, log } from '@nan0web/ui'
 import { SnapshotAuditor } from '@nan0web/ui/inspect'
 
 import { AuditorModel } from '../AuditorModel.js'
+import { InspectConfig } from '../config/InspectConfig.js'
 import { PhaseAuditor } from './PhaseAuditor.js'
 import { HygieneAuditor } from './HygieneAuditor.js'
 import { ExportAuditor } from './ExportAuditor.js'
@@ -75,6 +76,7 @@ class ArchitectureAuditor extends AuditorModel {
 		/** @type {string} Auditors to skip */ this.skip = data.skip || ArchitectureAuditor.skip.default
 		/** @type {typeof AuditorModel | null} Current command */ this.command
 		/** @type {number} Timeout for audit */ this.timeout
+		/** @type {InspectConfig} Injected inspect configuration */ this.config = data.config
 	}
 
 	/**
@@ -114,6 +116,10 @@ class ArchitectureAuditor extends AuditorModel {
 		const dir = this.dir
 		await this.init()
 
+		if (!this.config) {
+			this.config = await InspectConfig.load(db, dir || '.')
+		}
+
 		yield progress(t(ArchitectureAuditor.UI.starting, { dir }))
 
 		const scores = {}
@@ -132,10 +138,14 @@ class ArchitectureAuditor extends AuditorModel {
 			...externalAuditors,
 		])
 
-		const skipAliases = (this.skip || '')
-			.split(',')
-			.map((s) => s.trim().toLowerCase())
-			.filter(Boolean)
+		const configInclude = Array.isArray(this.config?.include) ? this.config.include : []
+		const includeAliases = configInclude.map((s) => String(s).trim().toLowerCase()).filter(Boolean)
+
+		const configSkip = Array.isArray(this.config?.skip) ? this.config.skip : []
+		const skipAliases = [
+			...(this.skip || '').split(',').map((s) => s.trim().toLowerCase()),
+			...configSkip.map((s) => String(s).trim().toLowerCase()),
+		].filter(Boolean)
 
 		/**
 		 * @typedef {Object} AuditorConfig
@@ -158,8 +168,15 @@ class ArchitectureAuditor extends AuditorModel {
 				)
 				continue
 			}
-			if (key === 'provendocs' || key === 'audit' || skipAliases.includes(key.toLowerCase()))
+			const lowerKey = key.toLowerCase()
+			if (key === 'provendocs' || key === 'audit') continue
+
+			// If include whitelist is defined, run strictly auditors that match include
+			if (includeAliases.length > 0) {
+				if (!includeAliases.includes(lowerKey)) continue
+			} else if (skipAliases.includes(lowerKey)) {
 				continue
+			}
 
 			let subDir = dir
 			let ActualClass = await ArchitectureAuditor.getAuditorClass(AuditorClass, this.platform)
@@ -175,7 +192,18 @@ class ArchitectureAuditor extends AuditorModel {
 		// Sequential execution for maximum stability and clean output
 		for (const config of auditorsConfig) {
 			const { _, ...data } = this
-			const auditor = new config.Class({ ...data, dir: config.subDir }, _)
+			let extraAuditorOptions = {}
+			if (this.config?.modules && this.config.modules[config.key]) {
+				extraAuditorOptions = { ...this.config.modules[config.key] }
+			} else if (config.key === 'snapshots' && this.config?.snapshots) {
+				extraAuditorOptions = { ...this.config.snapshots }
+			} else if (config.key === 'theming' && this.config?.theming) {
+				extraAuditorOptions = { ...this.config.theming }
+			}
+			const auditor = new config.Class(
+				{ ...data, ...extraAuditorOptions, dir: config.subDir, config: this.config },
+				_
+			)
 
 			if (await auditor.isCapped()) {
 				yield show(

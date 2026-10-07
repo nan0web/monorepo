@@ -23,6 +23,18 @@ export class SnapshotAuditor extends AuditorModel {
 		default: 'data',
 	}
 
+	static optional = {
+		type: 'boolean',
+		help: 'Allow audit to pass if snapshots directory does not exist',
+		default: false,
+	}
+
+	static allowEmpty = {
+		type: 'boolean',
+		help: 'Allow audit to pass if no snapshots are found',
+		default: false,
+	}
+
 	static UI = {
 		title: 'Snapshot Auditor',
 		description: 'Validates UI snapshots against hallucinations and localization leaks.',
@@ -100,6 +112,8 @@ export class SnapshotAuditor extends AuditorModel {
 		super(data, options)
 		/** @type {string} Target directory to audit */ this.dir
 		/** @type {string} Directory to scan for dictionaries */ this.data
+		/** @type {boolean} Allow audit to pass if snapshots directory does not exist */ this.optional
+		/** @type {boolean} Allow audit to pass if no snapshots are found */ this.allowEmpty
 	}
 
 	/**
@@ -198,6 +212,11 @@ export class SnapshotAuditor extends AuditorModel {
 		}
 
 		if (files.length === 0) {
+			const isOptional = this.optional || this.allowEmpty
+			if (isOptional) {
+				yield show(t(SnapshotAuditor.UI.noSnapshots, { dir: snapshotsDir }), 'info')
+				return result({ success: true, skipped: true })
+			}
 			yield show(t(SnapshotAuditor.UI.noSnapshots, { dir: snapshotsDir }), 'error')
 			return result({ success: false })
 		}

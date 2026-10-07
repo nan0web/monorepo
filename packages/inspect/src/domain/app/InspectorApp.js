@@ -9,12 +9,15 @@ import { BuildWorkflowsApp } from './BuildWorkflowsApp.js'
 import { ModelAsApp, show, result } from '@nan0web/ui'
 import { SnapshotAuditor, OlmuiThemingAuditor } from '@nan0web/ui/inspect'
 import { AuditorModel } from '../AuditorModel.js'
+import { InspectConfig } from '../config/InspectConfig.js'
 
 export class InspectorApp extends ModelAsApp {
 	static alias = 'nan0inspect'
 	static UI = {
 		title: '🏗️ NaN0Web Inspector CLI',
 		description: 'Zero-Hallucination Architecture Auditor for the NaN0Web ecosystem.',
+		stepCapped: '[Step-Capped Validation] skipping auditor {alias} (capped by active session step)',
+		unknownCommand: 'Unknown command: {command}',
 	}
 
 	static command = {
@@ -59,34 +62,39 @@ export class InspectorApp extends ModelAsApp {
 		/** @type {string} Target directory */ this.dir
 		/** @type {boolean} Automatically apply fixes */ this.fix
 		/** @type {import('../index.js').LanguagePlatform} Language platform */ this.platform
+		/** @type {InspectConfig} Injected inspect configuration */ this.config = data.config
 	}
 
 	/**
-	 * Detects the project platform based on configuration files.
+	 * Detects the project platform based on configuration files and loads InspectConfig.
 	 */
 	async init() {
-		if (this.platform) return
-		if (!this._.db) return
 		try {
 			const path = await import('node:path')
 			const { default: DBFS } = await import('@nan0web/db-fs')
 			const targetAbs = path.resolve(process.cwd(), this.dir || '.')
 
-			this._.db.mount('@app', new DBFS({ cwd: targetAbs, root: '', console: this._.db.console }))
-			this._.db.mount(
-				'@data',
-				new DBFS({ cwd: targetAbs, root: 'data', console: this._.db.console })
-			)
-			this._.db.mount(
-				'@docs',
-				new DBFS({ cwd: targetAbs, root: 'docs', console: this._.db.console })
-			)
-			this._.db.mount(
-				'@play',
-				new DBFS({ cwd: targetAbs, root: 'play', console: this._.db.console })
-			)
+			if (this._.db && typeof this._.db.mount === 'function') {
+				this._.db.mount('/', new DBFS({ cwd: process.cwd(), root: '', console: this._.db.console }))
+				this._.db.mount('@app', new DBFS({ cwd: targetAbs, root: '', console: this._.db.console }))
+				this._.db.mount(
+					'@data',
+					new DBFS({ cwd: targetAbs, root: 'data', console: this._.db.console })
+				)
+				this._.db.mount(
+					'@docs',
+					new DBFS({ cwd: targetAbs, root: 'docs', console: this._.db.console })
+				)
+				this._.db.mount(
+					'@play',
+					new DBFS({ cwd: targetAbs, root: 'play', console: this._.db.console })
+				)
+			}
 		} catch (e) {
 			// Ignore mount errors
+		}
+		if (this._.db && !this.config) {
+			this.config = await InspectConfig.load(this._.db, this.dir || '.')
 		}
 		try {
 			const hasPkg = (await this._.db.statDocument('package.json')).exists
@@ -119,6 +127,7 @@ export class InspectorApp extends ModelAsApp {
 		// 1. Ambiguity fix: if "command" is a string (positional) and it looks like a path/dir,
 		// and it's not a known auditor alias, move it to "dir".
 		const commandValue = /** @type {any} */ (this.command)
+		let explicitSubcommandClass = null
 		if (typeof commandValue === 'string') {
 			let normalizedCmd = commandValue
 			if (commandValue === 'architecture') {
@@ -130,19 +139,28 @@ export class InspectorApp extends ModelAsApp {
 			if (!isAlias) {
 				// Treat as dir
 				this.dir = commandValue
-				this.command = new ArchitectureAuditor({ dir: this.dir }, this._)
 			} else {
 				// It IS an alias, resolve it to a class
-				const TargetClass = (InspectorApp.command.options || []).find(
+				explicitSubcommandClass = (InspectorApp.command.options || []).find(
 					(o) => o.alias === normalizedCmd
 				)
-				if (TargetClass) {
-					this.command = new TargetClass({ dir: this.dir }, this._)
-				}
 			}
 		}
 
 		await this.init()
+
+		if (explicitSubcommandClass) {
+			this.command = new explicitSubcommandClass({ dir: this.dir, config: this.config }, this._)
+		} else if (typeof commandValue === 'string' && !explicitSubcommandClass) {
+			this.command = new ArchitectureAuditor({ dir: this.dir, config: this.config }, this._)
+		} else if (
+			this.command &&
+			typeof this.command === 'object' &&
+			this.config &&
+			!this.command.config
+		) {
+			this.command.config = this.config
+		}
 
 		// 2. Resolve platform-specific auditor class dynamically
 		if (this.command) {
@@ -150,9 +168,11 @@ export class InspectorApp extends ModelAsApp {
 			const ActualClass = await ArchitectureAuditor.getAuditorClass(CurrentClass, this.platform)
 			if (ActualClass && ActualClass !== CurrentClass) {
 				this.command = new ActualClass(
-					{ ...this.command, platform: this.platform, dir: this.dir },
+					{ ...this.command, platform: this.platform, dir: this.dir, config: this.config },
 					this._
 				)
+			} else if (this.config && !this.command.config) {
+				this.command.config = this.config
 			}
 		}
 
@@ -163,19 +183,12 @@ export class InspectorApp extends ModelAsApp {
 		) {
 			const alias =
 				/** @type {any} */ (this.command.constructor).alias || this.command.constructor.name
-			yield show(
-				`[Step-Capped Validation] skipping auditor ${alias} (capped by active session step)`,
-				'info'
-			)
+			yield show(t(InspectorApp.UI.stepCapped, { alias }), 'info')
 			return result({ ok: true, skipped: true })
 		}
 
 		if (!this.command || !(this.command instanceof ModelAsApp)) {
-			yield show(
-				t(InspectorApp.UI.unknownCommand, { command: this.command }) ||
-					`Unknown command: ${this.command}`,
-				'error'
-			)
+			yield show(t(InspectorApp.UI.unknownCommand, { command: this.command }), 'error')
 			return result({ ok: false })
 		}
 

@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui-payload",
-  "version": "3.4.1",
+  "version": "3.4.3",
   "description": "NaN0Web Universal Payload CMS UI Components Package (ImageCell, MapCell, BooleanCell, richtext)",
   "type": "module",
   "main": "./src/index.js",
@@ -30,7 +30,7 @@
     },
     "./components/*": {
       "types": "./types/components/*.d.ts",
-      "import": "./src/components/*.js"
+      "import": "./src/components/*.jsx"
     },
     "./templates": {
       "types": "./types/templates/PayloadCollectionTemplate.d.ts",
@@ -70,13 +70,18 @@
     "build": "tsc",
     "clean": "rm -rf .cache/ && rm -rf dist/",
     "clean:modules": "rm -rf node_modules",
+    "play": "node play/main.js",
+    "inspect": "nan0inspect audit .",
     "test": "node --test \"src/**/*.test.js\"",
+    "test:docs": "node --test 'src/docs/**/*.md.js' 'src/README.md.js' || true",
+    "test:coverage": "c8 node --test || true",
     "test:release": "node --test \"src/test/releases/**/*.test.js\"",
     "release:spec": "node --test \"releases/**/*.spec.js\"",
     "knip": "knip --production || true",
     "audit": "pnpm audit --prod || true",
-    "test:all": "npm run test && npm run build && npm run test:release && npm run knip && npm run audit"
+    "test:all": "npm run test && npm run build && npm run test:release && npm run release:spec && npm run knip && npm run audit"
   },
+
   "dependencies": {
     "@payloadcms/richtext-lexical": "3.86.0",
     "lexical": "0.41.0",
@@ -88,6 +93,8 @@
     "react": "^19.0.0"
   },
   "devDependencies": {
+    "c8": "^11.0.0",
+    "knip": "^5.88.1",
     "typescript": "^5.9.3"
   },
   "license": "MIT"

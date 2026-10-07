@@ -21,8 +21,11 @@ export class JsOlmuiThemingAuditor extends OlmuiThemingAuditor {
 		try {
 			for await (const entry of fsDb.browse(targetDir, {
 				depth: Infinity,
-				ignore: ['node_modules', 'dist', 'build', 'play', 'test', '.*'],
+				ignore: OlmuiThemingAuditor.IGNORE_DIRS,
 			})) {
+				if (OlmuiThemingAuditor.isIgnored(entry.path) || OlmuiThemingAuditor.isIgnored(entry.name)) {
+					continue
+				}
 				if (entry.isFile && /\.(js|jsx|ts|tsx|css)$/.test(entry.name)) {
 					files.push(entry.path)
 				}

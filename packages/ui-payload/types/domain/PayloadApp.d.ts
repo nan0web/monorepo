@@ -10,13 +10,17 @@
  * @extends {ModelAsApp}
  */
 export class PayloadApp extends ModelAsApp {
+    static UI: {
+        errorNoPayloadOrConfig: string;
+        errorNoDb: string;
+    };
     /**
      * @param {Partial<ModelAsApp> | Record<string, any>} [data={}]
      * @param {Partial<PayloadAppOptions>} [options={}]
      */
     constructor(data?: Partial<ModelAsApp> | Record<string, any>, options?: Partial<PayloadAppOptions>);
     _: {
-        payload: import("payload").BasePayload | null;
+        payload: import("payload").BasePayload;
         config: any;
         adapter: import("@nan0web/ui").InputAdapter;
         parentPath: string;
@@ -26,13 +30,18 @@ export class PayloadApp extends ModelAsApp {
         t: import("@nan0web/types/src/utils/TFunction").TFunction;
     };
     /**
+     * Getter for injected or resolved Payload CMS instance.
+     * @returns {import('payload').Payload}
+     */
+    get $payload(): import("payload").Payload;
+    /**
      * Lazily initializes and returns the Payload Local API instance.
      * @returns {Promise<import('payload').Payload>}
      */
     getPayloadInstance(): Promise<import("payload").Payload>;
 }
 export type AppOptions = {
-    payload?: import("payload").BasePayload | undefined;
+    payload?: import("payload").Payload;
     config?: any;
 };
 export type PayloadAppOptions = import("@nan0web/ui").ModelAsAppOptions & AppOptions;

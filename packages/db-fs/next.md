@@ -1,15 +1,80 @@
-# Architecture Healing Report
+# 🌐 NaN0Web Monorepo Roadmap & Global Synchronization
 
-> **Audit Date**: 5/15/2026, 2:37:20 PM
-> **Health Score**: 43%
+> **Синхронізація (Checkpoint)**: 2026-10-02 (Architechnomag)
+> **Статус**: Релізи `@nan0web/ui-payload@3.4.1` та `@nan0web/payload-cms.app@3.4.0` завершено і верифіковано.
 
-The following architectural issues were detected in @[@app/packages/db-fs].
+---
+
+## 📍 Де ми зупинилися (Global Status):
+
+### 1. `@nan0web/ui-payload` (v3.4.1)
+- **Мета**: Повна TypeScript типізація subpath експортів (`types/*.d.ts`), Lexical Nan0HTMLFeature, UI клітини (`ImageCell`, `BooleanCell`, `MapCell`) та шаблонізатор `PayloadCollectionTemplate`.
+- **Файл релізу**: [`packages/ui-payload/releases/3/4/v3.4.1/task.md`](file:///Users/i/src/nan.web/packages/ui-payload/releases/3/4/v3.4.1/task.md)
+- **Статус**: Реліз v3.4.1 успішно закрито (`test:all` зелений, tsc build, регресійні тести v3.3.0 та v3.4.1 проходять, knip чисто).
+
+
+
+
+
 
 
 ---
 
+### 2. `@nan0web/payload-cms.app` (v3.4.0)
+- **Мета**: Повне покриття Payload CMS v3: структурні типи (`group`, `tabs`, `point`), колекції з `auth: true` та `versions: { drafts: true }`, розширені `upload` (mimeTypes, imageSizes), генерація майстер-конфігу `payload.config.js`, доменні моделі референсного додатку (`AdminUser`, `DocCategory`, `DocPage`, `MediaAsset`, `SiteConfig`).
+- **Файл релізу**: [`apps/payload_cms.app/releases/3/4/v3.4.0/task.md`](file:///Users/i/src/nan.web/apps/payload_cms.app/releases/3/4/v3.4.0/task.md)
+- **Статус**: Всі контрактні та сценарні тести проходять (81/81 pass, tsc чистий). Версію оновлено до 3.4.0.
+
+
+
+
+
+
+
+---
+
+### 3. `@nan0web/csv0` (v3.5.0) & `@nan0web/inspect` (v3.6.0)
+- **`@nan0web/csv0`**: Завершено (8/8 pass, `test:all` зелений, `Format`, `BooleanFormat` 0/1, FrontMatter `columns:`).
+- **`@nan0web/inspect`**: `ModuleRegistry` та `ModuleItem` готові (`9/9 pass`, `test:all` зелений).
+
+
+
+
+
+
+
+---
+
+## 🧭 Порядок дій після перезавантаження (Action Items):
+
+1.- **Релізи `@nan0web/ui-payload@3.4.1` та `@nan0web/payload-cms.app@3.4.0`**:
+
+   - [x] Контракти, специфікації та регресії реалізовано й перевірено.
+   - [x] Паспорти релізів переведено в статус `done`.
+   - [x] Версії у `package.json` синхронізовано.
+
+1.- **Наступний крок**:
+
+   - [ ] Фіксація коміту або інтеграція з наступними завданнями монорепозиторію.
+
+---
+
 ### PhaseAuditor
+- [ ] [phase] .editorconfig: `Missing fundamental file: .editorconfig`
+
+
+
+
+
+**Boundary**: [@[.editorconfig]](./.editorconfig)
+**Context**: [@[project.md]](./project.md), [@[seed.md]](./seed.md)
+
 - [ ] [phase] .npmignore: `Public package is missing .npmignore`
+
+
+
+
+
 **Boundary**: [@[.npmignore]](./.npmignore)
 **Context**: [@[package.json]](./package.json)
 
@@ -17,23 +82,42 @@ The following architectural issues were detected in @[@app/packages/db-fs].
 
 ### JsHygieneAuditor
 - [ ] [hygiene] devDependencies.typescript: `Missing devDependency: typescript (required for npm run build)`
+
+
+
+
+
   - **Suggested Fix**: `npm install -D typescript`
-- [ ] [hygiene] scripts.release:spec: `Missing required script: release:spec`
+
 - [ ] [hygiene] devDependencies.c8: `Missing devDependency: c8 (required for npm run test:coverage)`
+
+
+
+
+
   - **Suggested Fix**: `npm install -D c8`
-- [ ] [hygiene] scripts.prebuild: `Missing prebuild cleanup (rm -rf dist types)`
-  - **Suggested Fix**: `"prebuild": "rm -rf dist types"`
 **Boundary**: [@[package.json]](./package.json)
-
----
-
-### JsDomainAuditor
-- [ ] [domain] @app/packages/db-fs/src/DBFS.js: `Class field outside constructor in @app/packages/db-fs/src/DBFS.js (line 13)`
-- [ ] [domain] @app/packages/db-fs/src/DBFS.js: `Class field outside constructor in @app/packages/db-fs/src/DBFS.js (line 24)`
-
 
 ## Recommended Subagents
 - `nan0inspect phase --fix`
 - `nan0inspect hygiene --fix`
-- `nan0inspect domain --fix`
 - `nan0inspect snapshots --fix`
+
+
+
+---
+
+### JsExportAuditor
+- [ ] [exports] DBFSBase.js: `export default prohibited`
+- [ ] [exports] DBFSDir.js: `export default prohibited`
+- [ ] [exports] DBFSDoc.js: `export default prohibited`
+- [ ] [exports] DBFSPath.js: `export default prohibited`
+- [ ] [exports] DBFSStream.js: `export default prohibited`
+- [ ] [exports] index.js: `export default prohibited`
+- [ ] [exports] DBFS.js: `export default prohibited`
+- [ ] [exports] FS.js: `export default prohibited`
+- [ ] [exports] FSAdapter.js: `export default prohibited`
+- [ ] [exports] FSDriver.js: `export default prohibited`
+- [ ] [exports] test.js: `export default prohibited`
+- `nan0inspect exports --fix`
+

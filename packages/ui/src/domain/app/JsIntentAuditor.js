@@ -6,8 +6,25 @@ import { IntentAuditor } from './IntentAuditor.js'
  * JsIntentAuditor — Specialized auditor for JS/TS output hygiene.
  */
 export class JsIntentAuditor extends AuditorModel {
+	static alias = 'intents'
+
 	/** @type {string[]} Directories to ignore during scanning */
-	static IGNORE_DIRS = ['node_modules', '.git', '.venv', '.datasets', 'dist', 'build', 'types', 'play', 'test', 'examples', 'scripts']
+	static IGNORE_DIRS = [
+		'node_modules',
+		'.git',
+		'.next',
+		'.next-playwright',
+		'.venv',
+		'.datasets',
+		'dist',
+		'build',
+		'coverage',
+		'types',
+		'play',
+		'test',
+		'examples',
+		'scripts',
+	]
 
 	/**
 	 * Checks if a directory or file should be ignored.

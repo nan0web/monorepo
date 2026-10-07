@@ -1,5 +1,4 @@
 import { ModelAsApp } from '@nan0web/ui'
-import { getPayload } from 'payload'
 
 /**
  * @typedef {Object} AppOptions
@@ -28,6 +27,36 @@ export class PayloadApp extends ModelAsApp {
 		}
 	}
 
+	static UI = {
+		errorNoPayloadOrConfig:
+			'PayloadApp: Neither payload instance nor config was provided in options for {alias}.',
+		errorNoDb: 'PayloadApp: DB instance not found in options for {alias}.',
+	}
+
+	/**
+	 * Getter for database instance according to Model-as-App standard.
+	 * @returns {import('@nan0web/db').DB}
+	 */
+	get $db() {
+		if (this._?.db) return this._.db
+		const { t } = this._
+		const alias = this.constructor.alias || this.constructor.name
+		const msg = this.constructor.UI?.errorNoDb || PayloadApp.UI.errorNoDb
+		throw new Error(t ? t(msg, { alias }) : `No DB instance for ${alias}`)
+	}
+
+	/**
+	 * Getter for injected or resolved Payload CMS instance.
+	 * @returns {import('payload').Payload}
+	 */
+	get $payload() {
+		if (this._?.payload) return this._.payload
+		const { t } = this._
+		const alias = this.constructor.alias || this.constructor.name
+		const msg = this.constructor.UI?.errorNoPayloadOrConfig || PayloadApp.UI.errorNoPayloadOrConfig
+		throw new Error(t(msg, { alias }))
+	}
+
 	/**
 	 * Lazily initializes and returns the Payload Local API instance.
 	 * @returns {Promise<import('payload').Payload>}
@@ -37,12 +66,14 @@ export class PayloadApp extends ModelAsApp {
 			return this._.payload
 		}
 		if (this._.config) {
+			const { getPayload } = await import('payload')
 			const resolvedConfig = await Promise.resolve(this._.config)
 			this._.payload = await getPayload({ config: resolvedConfig })
 			return this._.payload
 		}
-		throw new Error(
-			'PayloadApp: Neither payload instance nor config was provided in options.'
-		)
+		const { t } = this._
+		const alias = this.constructor.alias || this.constructor.name
+		const msg = this.constructor.UI?.errorNoPayloadOrConfig || PayloadApp.UI.errorNoPayloadOrConfig
+		throw new Error(t(msg, { alias }))
 	}
 }

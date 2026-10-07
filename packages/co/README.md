@@ -7,7 +7,7 @@ Communication starts here with a simple Message.
 ## Description
 
 The `@nan0web/co` package provides a minimal yet powerful foundation for
-message‑based communication systems and contact handling.
+message‑based communication systems, decentralized identity, and contact handling.
 
 Core classes:
 
@@ -15,6 +15,11 @@ Core classes:
 - `Chat` — represents chat messages and chains.
 - `Contact` — parses and represents contact information with specific URI schemes.
 - `Language` — handles localisation data including name, icon, code and locale.
+- `Identity` — decentralized identity manifest (DID, endpoints, keys).
+- `Connection` — role and context relations between identities.
+- `Post` — rich publication with hybrid media positioning.
+- `Media` — media asset model supporting anchors and placement directives.
+- `Interaction` / `Service` / `Event` — temporal exchanges, offers/requests, and events.
 - `I18nMessage` — extends `Message` with translation support.
 - `InputMessage` / `OutputMessage` — UI‑oriented message adapters.
 - `App` — minimal event‑driven application core.

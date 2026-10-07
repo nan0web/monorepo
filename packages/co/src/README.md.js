@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import FS from '@nan0web/db-fs'
 import { NoConsole } from '@nan0web/log'
 import { DatasetParser, DocsParser, runSpawn } from '@nan0web/test'
-import { Chat, Contact, Language, Message, InputMessage, OutputMessage, App } from './index.js'
+import { Chat, Contact, Language, Message, InputMessage, OutputMessage, App, Identity, Connection, Post, Media, Interaction, Service, Event } from './index.js'
 import { readFile } from 'node:fs/promises'
 
 const fs = new FS()
@@ -31,7 +31,7 @@ function docs() {
 	 * ## Description
 	 *
 	 * The `@nan0web/co` package provides a minimal yet powerful foundation for
-	 * message‑based communication systems and contact handling.
+	 * message‑based communication systems, decentralized identity, and contact handling.
 	 *
 	 * Core classes:
 	 *
@@ -39,6 +39,11 @@ function docs() {
 	 * - `Chat` — represents chat messages and chains.
 	 * - `Contact` — parses and represents contact information with specific URI schemes.
 	 * - `Language` — handles localisation data including name, icon, code and locale.
+	 * - `Identity` — decentralized identity manifest (DID, endpoints, keys).
+	 * - `Connection` — role and context relations between identities.
+	 * - `Post` — rich publication with hybrid media positioning.
+	 * - `Media` — media asset model supporting anchors and placement directives.
+	 * - `Interaction` / `Service` / `Event` — temporal exchanges, offers/requests, and events.
 	 * - `I18nMessage` — extends `Message` with translation support.
 	 * - `InputMessage` / `OutputMessage` — UI‑oriented message adapters.
 	 * - `App` — minimal event‑driven application core.
@@ -402,6 +407,13 @@ function docs() {
 		assert.ok(InputMessage)
 		assert.ok(OutputMessage)
 		assert.ok(App)
+		assert.ok(Identity)
+		assert.ok(Connection)
+		assert.ok(Post)
+		assert.ok(Media)
+		assert.ok(Interaction)
+		assert.ok(Service)
+		assert.ok(Event)
 	})
 
 	it('Uses `d.ts` files for autocompletion', () => {

@@ -12,8 +12,8 @@
 export function BooleanCell({ cellData, value, field }: BooleanCellProps): React.JSX.Element;
 export default BooleanCell;
 export type BooleanCellProps = {
-    cellData?: boolean | undefined;
-    value?: boolean | undefined;
+    cellData?: boolean;
+    value?: boolean;
     field?: any;
 };
 import React from 'react';

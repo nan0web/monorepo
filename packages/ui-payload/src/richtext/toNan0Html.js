@@ -184,5 +184,3 @@ function wrapWithTag(tag, content, attrs = {}) {
 	element[tag] = content
 	return element
 }
-
-export default toNan0Html

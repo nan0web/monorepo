@@ -11,9 +11,12 @@ export function Markdown(props = {}) {
 
 	return createPrompt('Markdown', props, async () => {
 		const title = props.title || 'Markdown View'
+		// In non-interactive or render scenarios, avoid blocking TTY pager
+		const print = props.print !== undefined ? props.print : !props.interactive
 		await markdownViewer({
 			content: props.content || props.message || '',
 			title,
+			print,
 			t: adapter?.t || ((k) => k),
 			console: adapter?.console,
 		})

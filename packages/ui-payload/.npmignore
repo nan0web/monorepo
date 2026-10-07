@@ -1,0 +1,19 @@
+# Tests
+src/**/*.test.js
+src/test/
+types/test/
+releases/
+
+# Dev & Sandbox files
+play/
+docs/
+knip.json
+system.md
+next.md
+tsconfig.json
+.editorconfig
+CONTRIBUTING.md
+
+# Generated
+dist/
+.cache/

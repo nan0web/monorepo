@@ -8,6 +8,16 @@ export class SnapshotAuditor extends AuditorModel {
         help: string;
         default: string;
     };
+    static optional: {
+        type: string;
+        help: string;
+        default: boolean;
+    };
+    static allowEmpty: {
+        type: string;
+        help: string;
+        default: boolean;
+    };
     static UI: {
         title: string;
         description: string;
@@ -103,6 +113,8 @@ export class SnapshotAuditor extends AuditorModel {
      */
     constructor(data?: Partial<SnapshotAuditor> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
     /** @type {string} Directory to scan for dictionaries */ data: string;
+    /** @type {boolean} Allow audit to pass if snapshots directory does not exist */ optional: boolean;
+    /** @type {boolean} Allow audit to pass if no snapshots are found */ allowEmpty: boolean;
 }
 export default SnapshotAuditor;
 import { AuditorModel } from '@nan0web/inspect/domain/AuditorModel';

@@ -1,12 +1,11 @@
-import { Model } from '@nan0web/types'
 import { CodeTemplate } from '@nan0web/ui'
 
 /** @typedef {Object} Field */
 
 /**
- * PayloadCollectionTemplate - Model to generate Payload CMS CollectionConfig using CodeTemplate.
+ * PayloadCollectionTemplate - Generator for Payload CMS CollectionConfig using CodeTemplate.
  */
-export class PayloadCollectionTemplate extends Model {
+export class PayloadCollectionTemplate extends CodeTemplate {
 	static alias = 'payload-collection-template'
 
 	static collectionSlug = {

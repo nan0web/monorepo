@@ -6,6 +6,8 @@ import { IntentAuditor } from './IntentAuditor.js'
  * PyIntentAuditor — Specialized auditor for Python output hygiene.
  */
 export class PyIntentAuditor extends AuditorModel {
+	static alias = 'intents'
+
 	/** @type {string[]} Directories to ignore during scanning */
 	static IGNORE_DIRS = ['node_modules', '.git', '.venv', '.datasets', 'dist', 'build', 'types', 'play', 'test', 'tests']
 

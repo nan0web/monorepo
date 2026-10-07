@@ -16,12 +16,13 @@ export default class DBFSDir extends DBFSDoc {
      * Lists the contents of a directory.
      * @param {string} uri The directory URI to list.
      * @param {{depth?: number, skipStat?: boolean}} [options={}] Options for listing.
+     * @param {any} [context=this.context]
      * @returns {Promise<DocumentEntry[]>} The list of directory entries.
      */
     listDir(uri: string, { depth, skipStat }?: {
         depth?: number;
         skipStat?: boolean;
-    }): Promise<DocumentEntry[]>;
+    }, context?: any): Promise<DocumentEntry[]>;
     /**
      * Detects auto-locales based on first level directory names.
      * Matches against built-in Intl language list.

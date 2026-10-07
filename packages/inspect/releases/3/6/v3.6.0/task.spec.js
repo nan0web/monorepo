@@ -285,4 +285,52 @@ describe('Release v3.6.0: Module Registry, Canonical UI Tags & Fluent Batch Upda
 			assert.ok(writtenCsv.includes('@nan0web/ui-cli'))
 		})
 	})
+
+	describe('§5 Session 2: Auditor Aliases & Exceptions for Payload CMS/Admin Components', () => {
+		it('ensures static alias is defined on JsIntentAuditor and PyIntentAuditor', async () => {
+			const { JsIntentAuditor, PyIntentAuditor } = await import('@nan0web/ui/inspect')
+
+			assert.equal(JsIntentAuditor.alias, 'intents')
+			assert.equal(PyIntentAuditor.alias, 'intents')
+		})
+
+		it('ensures OlmuiThemingAuditor ignores Payload CMS / admin components, tests and configs', async () => {
+			const { OlmuiThemingAuditor } = await import('@nan0web/ui/inspect')
+
+			// Direct ignore rules check
+			assert.ok(OlmuiThemingAuditor.isIgnored('cms/src/components/BooleanCell.tsx'))
+			assert.ok(OlmuiThemingAuditor.isIgnored('cms/src/components/Logo.jsx'))
+			assert.ok(OlmuiThemingAuditor.isIgnored('cms/src/components/MapCell.tsx'))
+			assert.ok(OlmuiThemingAuditor.isIgnored('cms/src/components/Icon.jsx'))
+			assert.ok(OlmuiThemingAuditor.isIgnored('cms/tests/test-all-collections-api.js'))
+			assert.ok(OlmuiThemingAuditor.isIgnored('cms/vitest.setup.ts'))
+		})
+
+		it('ensures SnapshotAuditor gracefully passes when project or component has no snapshots/core directory or is configured as exempt', async () => {
+			const { SnapshotAuditor } = await import('@nan0web/ui/inspect')
+
+			const db = new DB({
+				predefined: [
+					['package.json', { name: 'my-app', version: '1.0.0' }],
+				],
+			})
+			await db.connect()
+
+			const auditor = new SnapshotAuditor({ dir: '.', optional: true }, { db })
+			const gen = auditor.run()
+			let res
+			while (true) {
+				const { done, value } = await gen.next()
+				if (done) {
+					res = value
+					break
+				}
+			}
+
+			assert.ok(res, 'SnapshotAuditor must produce a result')
+			assert.strictEqual(res.data?.success ?? res.success, true, 'Absence of snapshots/core should not fail audit when optional')
+		})
+	})
+
 })
+

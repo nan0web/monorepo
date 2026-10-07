@@ -1,47 +1,16 @@
-# Architecture Healing Report
+# План наступних дій: @nan0web/co
 
-> **Audit Date**: 5/15/2026, 2:32:42 PM
-> **Health Score**: 43%
-
-The following architectural issues were detected in @[@app/packages/co].
-
-
----
-
-### PhaseAuditor
-- [ ] [phase] .npmignore: `Public package is missing .npmignore`
-**Boundary**: [@[.npmignore]](./.npmignore)
-**Context**: [@[package.json]](./package.json)
+## 📌 Поточний стан (Фіксація v3.5.0: Verse & Domain Architecture)
+- ✅ Реорганізовано структуру пакету: всі чисті доменні моделі винесено в `packages/co/src/domain/` (`Identity`, `Connection`, `Post`, `Media`, `Interaction`, `Service`, `Event`, `Message`, `Chat`, `Contact`, `Language`).
+- ✅ Створено модель `Media.js` (extends `Model`) з полями `id`, `url`, `type`, `caption`, `placement`.
+- ✅ Оновлено `Post.js`: `static media = { type: [Media], default: [] }` з підтримкою гібридного формату A + B (anchor shortcodes `::media[id]` / `![[id]]` + директива `placement`).
+- ✅ Налаштовано фасад `src/domain/index.js`, кореневі сумісні ре-експорти `src/*.js` та `package.json` (`./domain`, `./domain/*`).
+- ✅ Збережено 100% зворотну сумісність `Message` (`parseBody`, `static Body`, `validate()`).
+- ✅ Створено релізний паспорт `releases/3/5/v3.5.0/task.md`, `user.md`, контрактний тест `task.spec.js` та регресійний тест `src/test/releases/3/5/v3.5.0/task.test.js`.
+- ✅ Успішно пройдено повну регресію `pnpm run test:all` (70 unit-тестів + 18 docs-тестів + play-тест) та збірку типізації `tsc`.
 
 ---
 
-### JsHygieneAuditor
-- [ ] [hygiene] devDependencies.typescript: `Missing devDependency: typescript (required for npm run build)`
-  - **Suggested Fix**: `npm install -D typescript`
-- [ ] [hygiene] scripts.knip: `Missing required script: knip`
-  - **Suggested Fix**: `"knip": "knip"`
-- [ ] [hygiene] devDependencies.knip: `Missing devDependency: knip (required for npm run knip)`
-  - **Suggested Fix**: `npm install -D knip`
-- [ ] [hygiene] scripts.release:spec: `Missing required script: release:spec`
-- [ ] [hygiene] devDependencies.c8: `Missing devDependency: c8 (required for npm run test:coverage)`
-  - **Suggested Fix**: `npm install -D c8`
-- [ ] [hygiene] scripts.test:all: `Incomplete test:all chain, missing: knip`
-**Boundary**: [@[package.json]](./package.json)
-- [ ] [hygiene] knip.json: `Missing config file: knip.json`
-**Boundary**: [@[knip.json]](./knip.json)
-
----
-
-### JsDomainAuditor
-- [ ] [domain] @app/packages/co/src/Language.js: `Class field outside constructor in @app/packages/co/src/Language.js (line 10)`
-- [ ] [domain] @app/packages/co/src/Language.js: `Class field outside constructor in @app/packages/co/src/Language.js (line 13)`
-- [ ] [domain] @app/packages/co/src/Language.js: `Class field outside constructor in @app/packages/co/src/Language.js (line 16)`
-- [ ] [domain] @app/packages/co/src/Language.js: `Class field outside constructor in @app/packages/co/src/Language.js (line 19)`
-- [ ] [domain] @app/packages/co/src/Message.js: `Class field outside constructor in @app/packages/co/src/Message.js (line 46)`
-
-
-## Recommended Subagents
-- `nan0inspect phase --fix`
-- `nan0inspect hygiene --fix`
-- `nan0inspect domain --fix`
-- `nan0inspect snapshots --fix`
+## 🎯 Наступні кроки (Майбутній беклог / v3.6.0)
+- Розширення інтеграції Verse в `@nan0web/verse` або прикладних сервісах.
+- Додаткові утиліти парсингу гібридних шорткодів медіа (`MarkdownMediaParser`).

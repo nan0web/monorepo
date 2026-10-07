@@ -22,7 +22,7 @@ export class Nan0RawNode extends ElementNode {
             attributes: Record<string, any>;
             children: any[];
         };
-        $?: Record<string, unknown> | undefined;
+        $?: Record<string, unknown>;
         children: import("lexical").SerializedLexicalNode[];
         direction: "ltr" | "rtl" | null;
         format: import("lexical").ElementFormatType;

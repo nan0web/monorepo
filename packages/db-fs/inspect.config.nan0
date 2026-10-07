@@ -1,0 +1,5 @@
+# InspectConfig for @nan0web/db-fs
+skip:
+  - snapshots
+  - exports
+

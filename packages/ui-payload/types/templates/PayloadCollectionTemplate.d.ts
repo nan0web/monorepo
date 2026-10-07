@@ -26,7 +26,7 @@ export class PayloadCollectionTemplate extends Model {
     };
     static fields: {
         help: string;
-        default: never[];
+        default: any[];
     };
     static template: {
         help: string;

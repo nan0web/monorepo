@@ -90,5 +90,3 @@ export const Nan0HTMLFeature = createServerFeature({
     ],
   },
 })
-
-export default Nan0HTMLFeature

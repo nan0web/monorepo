@@ -1,24 +1,31 @@
 {
-	"compilerOptions": {
-		"target": "esnext",
-		"module": "nodenext",
-		"lib": ["esnext", "dom"],
-		"declaration": true,
-		"declarationMap": false,
-		"emitDeclarationOnly": true,
-		"outDir": "./types",
-		"rootDir": "./src",
-		"jsx": "react-jsx",
-		"strict": true,
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "nodenext",
-		"allowSyntheticDefaultImports": true,
-		"noImplicitAny": false,
-		"allowJs": true,
-		"checkJs": false
-	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "src/test", "**/*.spec.js", "**/*.spec.tsx", "**/*.test.js"]
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": true,
+    "outDir": "./types",
+    "rootDir": "./src",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "src/test",
+    "**/*.spec.js",
+    "**/*.spec.tsx",
+    "**/*.story.js",
+    "**/*.test.js",
+    "src/docs/**/*.md.js"
+  ]
 }

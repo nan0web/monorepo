@@ -120,14 +120,16 @@ export class CircularDependencyAuditor extends AuditorModel {
 		const { dirname, join } = await import('node:path')
 		const { writeFileSync, unlinkSync } = await import('node:fs')
 
+		const madgeUrl = import.meta.resolve('madge')
 		// Create a tiny worker script to run madge
 		const workerCode = `
-			import madge from 'madge';
+			import madge from '${madgeUrl}';
 			process.on('message', async (path) => {
 				try {
 					const res = await madge(path, {
 						includeNpm: false,
 						fileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+						excludeRegExp: [/(\\/|^)types\\//, /(\\/|^)dist\\//, /^\\.\\.\\//],
 					});
 					process.send({ circular: res.circular() });
 				} catch (e) {
@@ -149,9 +151,15 @@ export class CircularDependencyAuditor extends AuditorModel {
 				return resolve({ error: `Failed to create worker: ${error.message}` })
 			}
 
-			const child = this.fork(tmpFile, { stdio: 'inherit' })
+			const child = this.fork(tmpFile, {
+				stdio: 'inherit',
+				cwd: import.meta.dirname,
+			})
 			const timer = setTimeout(() => {
 				child.kill()
+				try {
+					unlinkSync(tmpFile)
+				} catch {}
 				resolve({ timeout: true })
 			}, timeout)
 

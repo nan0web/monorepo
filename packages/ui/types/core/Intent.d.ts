@@ -121,6 +121,7 @@ export function agent(task: string, context?: AgentContext): AgentIntent;
  * @property {FieldOptions} [options] - Enum options or resolver for select.
  * @property {(val: *) => true | string} [validate] - Validator: true = ok, string = error key from Model.
  * @property {boolean} [hidden] - If true, field is excluded from UI forms.
+ * @property {string} [alias] - Alias for the field.
  */
 /**
  * Model needs data from the environment (user input, LLM extraction, test fixture).
@@ -383,6 +384,10 @@ export type FieldSchema = {
      * - If true, field is excluded from UI forms.
      */
     hidden?: boolean | undefined;
+    /**
+     * - Alias for the field.
+     */
+    alias?: string | undefined;
 };
 /**
  * Model needs data from the environment (user input, LLM extraction, test fixture).

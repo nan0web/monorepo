@@ -12,10 +12,8 @@
  * @extends {Model}
  */
 export class ModelAsApp extends Model {
-    static help: {
-        help: string;
-        default: boolean;
-    };
+    /** @type {import('../index.js').FieldSchema} */
+    static help: import("../index.js").FieldSchema;
     /** @typedef {{ [key: string]: string }} UIMap */
     /**
      * Default UI message templates and i18n keys.
@@ -41,8 +39,6 @@ export class ModelAsApp extends Model {
      * @param {Partial<ModelAsAppOptions>} [options={}]
      */
     constructor(data?: Partial<ModelAsApp> | Record<string, any>, options?: Partial<ModelAsAppOptions>);
-    /** @type {boolean} Show help */
-    help: boolean;
     /**
      * Unified UI getter
      * @returns {{ [key: string]: string }}
@@ -56,6 +52,7 @@ export class ModelAsApp extends Model {
      * @returns {import('@nan0web/db').DB}
      */
     get $db(): import("@nan0web/db").DB;
+    /** @type {boolean} Show help */ help: boolean;
     _: {
         adapter: InputAdapter;
         parentPath: string;

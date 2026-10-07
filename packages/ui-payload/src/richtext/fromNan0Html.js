@@ -290,5 +290,3 @@ function rawNode(tag, attrs, children) {
     },
   }
 }
-
-export default fromNan0Html

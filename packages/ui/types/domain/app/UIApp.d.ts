@@ -15,6 +15,10 @@ export class UIApp extends ModelAsApp {
         helpText: string;
         unknownCommand: string;
     };
+    static help: {
+        help: string;
+        default: boolean;
+    };
     /**
      * @param {Partial<UIApp> | Record<string, any>} [data={}]
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options={}]

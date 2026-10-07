@@ -118,6 +118,11 @@ models:
   - Експорт `ModuleRegistry`, `ModuleItem` у `packages/inspect/src/index.js` та `package.json`.
 - [x] **Крок 5: Валідація та перехід у Green:**
   - Виконання `node --test releases/3/6/v3.6.0/task.spec.js` та `pnpm run test:all`.
+- [x] **Крок 6 (Сесія 2): Конфігурація та адаптація для монорепозиторію банку:**
+  - Статичні `alias = 'intents'` для `JsIntentAuditor` та `PyIntentAuditor`.
+  - Підтримка виключень для Payload CMS / адмінських компонентів у `OlmuiThemingAuditor` (`IGNORE_PATTERNS`, `isIgnored`).
+  - Підтримка опціонального пропуску у `SnapshotAuditor` (`optional: true` / `allowEmpty: true`) при відсутності `snapshots/core`.
+  - Контрактні тести §5 у `releases/3/6/v3.6.0/task.spec.js`.
 
 ---
 
@@ -127,4 +132,8 @@ models:
 2. **Zero-Procedural Code:** Вся робота з файловою системою та документами здійснюється виключно через інжектований `@nan0web/db`.
 3. **Fluent API:** Ланцюжок `modules.filter(...).updatePackage('scripts', ...).save()` модифікує документи в базі даних та зберігає їх.
 4. **Формати індексів:** `toCsv0()` генерує валідний CSV0 з FrontMatter `columns:`, `toMarkdown()` генерує стандартизовану Markdown-таблицю.
-5. **Тести зелені:** Всі контрактні тести в `releases/3/6/v3.6.0/task.spec.js` проходять з кодом 0.
+5. **Адаптація аудиторів для CMS (Сесія 2):**
+   - `JsIntentAuditor.alias === 'intents'`, `PyIntentAuditor.alias === 'intents'`.
+   - `OlmuiThemingAuditor.isIgnored()` коректно ігнорує адмінські компоненти CMS, тести та `vitest.setup`.
+   - `SnapshotAuditor` коректно проходить зі статусом `success: true, skipped: true`, якщо в проєкті немає `snapshots/core` і ввімкнено `optional: true`.
+6. **Тести зелені:** Всі контрактні тести в `releases/3/6/v3.6.0/task.spec.js` (12/12) проходять з кодом 0.

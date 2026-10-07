@@ -7,6 +7,53 @@ import { AuditorModel } from '@nan0web/inspect/domain/AuditorModel'
 export class OlmuiThemingAuditor extends AuditorModel {
 	static alias = 'theming'
 
+	/** @type {string[]} Directories to ignore during scanning */
+	static IGNORE_DIRS = [
+		'node_modules',
+		'.git',
+		'.next',
+		'.next-playwright',
+		'.venv',
+		'.datasets',
+		'dist',
+		'build',
+		'coverage',
+		'types',
+		'play',
+		'test',
+		'tests',
+		'playwright-report',
+		'test-results',
+	]
+
+	/** @type {(string | RegExp)[]} Files or paths to ignore (e.g. Payload CMS / admin components, tests, setup) */
+	static IGNORE_PATTERNS = [
+		/\/components\/(BooleanCell|Logo|MapCell|Icon|ImageCell)\.(tsx|jsx|js|ts)$/,
+		/cms\/src\/components\//,
+		/\.test\.(js|jsx|ts|tsx)$/,
+		/\.spec\.(js|jsx|ts|tsx)$/,
+		/vitest\.setup\.(js|ts|mts)$/,
+		/\/tests\//,
+		/test-[^/]+\.(js|ts)$/,
+	]
+
+	/**
+	 * Checks if a directory or file path should be ignored by theming audit.
+	 * @param {string} path
+	 * @returns {boolean}
+	 */
+	static isIgnored(path) {
+		const name = path.split('/').pop() || path
+		if (name.startsWith('.') || OlmuiThemingAuditor.IGNORE_DIRS.includes(name)) {
+			return true
+		}
+		for (const pattern of OlmuiThemingAuditor.IGNORE_PATTERNS) {
+			if (typeof pattern === 'string' && path.includes(pattern)) return true
+			if (pattern instanceof RegExp && pattern.test(path)) return true
+		}
+		return false
+	}
+
 	static dir = {
 		type: 'string',
 		help: 'Target directory to scan for styling compliance',
