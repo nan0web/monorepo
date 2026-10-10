@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/db-fs",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "Database provider for nan•web with node:fs",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -73,6 +73,7 @@
     "@nan0web/types": "workspace:*"
   },
   "dependencies": {
+    "@nan0web/csv0": "workspace:*",
     "@nan0web/log": "workspace:*",
     "@nan0web/markdown": "workspace:*",
     "yaml": "^2.8.2"

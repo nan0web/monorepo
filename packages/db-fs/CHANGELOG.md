@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.5.1] — 2026-10-09
+
+### Added
+- **Storage Extension Auto-Determination:** `saveDocument()` automatically determines file extensions when no suffix is provided:
+  - `.nan0` priority when saving structured objects with fields (more metadata than content).
+  - `.md` priority with NaN0 FrontMatter (`--- \n ... \n ---`) when document `content` length exceeds other metadata fields.
+- **NaN0 Frontmatter Serialization:** `.md` saver in `DBFSBase` and `FSDriver` serializes metadata objects as NaN0 frontmatter.
+- **Model Hygiene:** Automatically strips internal `_` property when serializing objects in `nan0Saver`.
+- Release contract suite `releases/3/5/v3.5.1/task.spec.js`.
+
 ## [1.1.2] — 2026-02-25
 
 ### Fixed

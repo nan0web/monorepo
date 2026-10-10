@@ -255,6 +255,40 @@ describe('DBFS saveDocument and indexing tests', () => {
 		// Check that the stat was updated (mtime should be different)
 		assert.ok(updatedStat.mtimeMs >= initialStat.mtimeMs)
 	})
+
+	it('should auto-determine extension as .nan0 when more fields than just content', async () => {
+		const doc = {
+			id: 'assess-sess-101',
+			score: 100,
+			recommendations: ['Keep practicing'],
+		}
+		const saved = await db.saveDocument('assessments/assess-sess-101', doc)
+		assert.ok(saved)
+		assert.ok(existsSync(resolve(root, 'assessments/assess-sess-101.nan0')))
+
+		const loaded = await db.loadDocument('assessments/assess-sess-101')
+		assert.deepEqual(loaded, doc)
+	})
+
+	it('should auto-determine extension as .md with nan0 frontmatter when content is larger than fields', async () => {
+		const doc = {
+			title: 'Lecture Note',
+			content:
+				'# Full Lecture Content\nThis is a comprehensive lecture body that contains way more text than metadata.',
+		}
+		const saved = await db.saveDocument('notes/note-101', doc)
+		assert.ok(saved)
+		assert.ok(existsSync(resolve(root, 'notes/note-101.md')))
+
+		const raw = readFileSync(resolve(root, 'notes/note-101.md'), 'utf-8')
+		assert.ok(raw.startsWith('---\n'))
+		assert.ok(raw.includes('title: Lecture Note'))
+		assert.ok(raw.includes('# Full Lecture Content'))
+
+		const loaded = await db.loadDocument('notes/note-101')
+		assert.equal(loaded.title, 'Lecture Note')
+		assert.ok(loaded.content.includes('Full Lecture Content'))
+	})
 })
 
 /**

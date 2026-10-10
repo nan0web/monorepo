@@ -57,6 +57,19 @@ export default class DBFSDoc extends DBFSPath {
      */
     saveFile(uri: string, content: string | Buffer, context?: any): Promise<boolean>;
     /**
+     * Determines the target file extension when no extension is specified in URI.
+     * Can be overridden or customized to change format priority.
+     * Default priority:
+     * - .nan0 if structured object with multiple fields
+     * - .md with NaN0 frontmatter if content length exceeds other metadata
+     * - .txt for raw strings
+     *
+     * @param {string} uri Document URI
+     * @param {any} document Document content
+     * @returns {string} Determined extension, e.g. '.nan0' or '.md'
+     */
+    determineExtension(uri: string, document: any): string;
+    /**
      * Saves a document to the given URI.
      * @throws {Error} If the document cannot be saved.
      * @param {string} uri The URI to save the document to.

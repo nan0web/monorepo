@@ -18,12 +18,14 @@
 
 
 
+
 ---
 
 ### 2. `@nan0web/payload-cms.app` (v3.4.0)
 - **Мета**: Повне покриття Payload CMS v3: структурні типи (`group`, `tabs`, `point`), колекції з `auth: true` та `versions: { drafts: true }`, розширені `upload` (mimeTypes, imageSizes), генерація майстер-конфігу `payload.config.js`, доменні моделі референсного додатку (`AdminUser`, `DocCategory`, `DocPage`, `MediaAsset`, `SiteConfig`).
 - **Файл релізу**: [`apps/payload_cms.app/releases/3/4/v3.4.0/task.md`](file:///Users/i/src/nan.web/apps/payload_cms.app/releases/3/4/v3.4.0/task.md)
 - **Статус**: Всі контрактні та сценарні тести проходять (81/81 pass, tsc чистий). Версію оновлено до 3.4.0.
+
 
 
 
@@ -43,24 +45,32 @@
 
 
 
+
 ---
 
 ## 🧭 Порядок дій після перезавантаження (Action Items):
 
-1.- **Релізи `@nan0web/ui-payload@3.4.1` та `@nan0web/payload-cms.app@3.4.0`**:
+1.- **Реліз `@nan0web/db-fs@3.5.1` (Completed)**:
 
-   - [x] Контракти, специфікації та регресії реалізовано й перевірено.
-   - [x] Паспорти релізів переведено в статус `done`.
-   - [x] Версії у `package.json` синхронізовано.
+   - [x] Автоматична детермінація розширень сховища (.nan0 / .md з frontmatter).
+   - [x] Очищення внутрішнього поля `_` моделей при збереженні.
+   - [x] Релізний паспорт `releases/3/5/v3.5.1/task.md` закрито (100% тестів пройдено).
 
-1.- **Наступний крок**:
+1.- **Реліз `@nan0web/db-fs@3.6.0` (Completed)**:
 
-   - [ ] Фіксація коміту або інтеграція з наступними завданнями монорепозиторію.
+   - [x] Сформовано ТЗ у `releases/3/6/v3.6.0/task.md`.
+   - [x] Задача: Прозорий Base36 шардинг (`resolveShardedSegment`, 1296 кошиків) та безпечний мапінг `:` -> `~` на рівні `DBFSPath` / `DBFSDoc` / `DBFSDir`.
+   - [x] TDD контракт `releases/3/6/v3.6.0/task.spec.js` (11/11 pass).
+   - [x] nan0inspect audit 100% OK, test:all зелений.
 
----
+1.- **Після `@nan0web/db-fs@3.6.0`**:
+
+   - [ ] Перенесення контракту шардингу в `@nan0web/db-browser` (SSG паритет).
+   - [ ] Інтеграція в `apps/learn.app` (модель `Student`, метод `student.getAnswers(testId)`, оновлення команди `assess`).
 
 ### PhaseAuditor
 - [ ] [phase] .editorconfig: `Missing fundamental file: .editorconfig`
+
 
 
 
@@ -70,6 +80,7 @@
 **Context**: [@[project.md]](./project.md), [@[seed.md]](./seed.md)
 
 - [ ] [phase] .npmignore: `Public package is missing .npmignore`
+
 
 
 
@@ -87,9 +98,11 @@
 
 
 
+
   - **Suggested Fix**: `npm install -D typescript`
 
 - [ ] [hygiene] devDependencies.c8: `Missing devDependency: c8 (required for npm run test:coverage)`
+
 
 
 
@@ -102,6 +115,7 @@
 - `nan0inspect phase --fix`
 - `nan0inspect hygiene --fix`
 - `nan0inspect snapshots --fix`
+
 
 
 
@@ -120,4 +134,9 @@
 - [ ] [exports] FSDriver.js: `export default prohibited`
 - [ ] [exports] test.js: `export default prohibited`
 - `nan0inspect exports --fix`
+---
 
+### JsVerificationAuditor
+- [ ] [verification] test_style: `Test file src/DBFS.aliases.test.js:11 uses flat test() instead of describe()/it() hierarchy`
+- [ ] [verification] test_style: `Test file src/DBFS.locales.test.js:11 uses flat test() instead of describe()/it() hierarchy`
+- `nan0inspect verification --fix`

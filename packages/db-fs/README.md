@@ -9,19 +9,16 @@ ideal for lightweight monorepo tooling.
 ## Installation
 
 How to install with npm?
-
 ```bash
 npm install @nan0web/db-fs
 ```
 
 How to install with pnpm?
-
 ```bash
 pnpm add @nan0web/db-fs
 ```
 
 How to install with yarn?
-
 ```bash
 yarn add @nan0web/db-fs
 ```
@@ -29,7 +26,6 @@ yarn add @nan0web/db-fs
 ## Quick Start
 
 How to save and load a JSON file?
-
 ```js
 import DBFS from "@nan0web/db-fs"
 const db = new DBFS({ root: '__test_quick_start__' })
@@ -41,7 +37,6 @@ console.info(loaded) // ← { name: "Test", value: 42 }
 ```
 
 How to append content to a TXT file?
-
 ```js
 import DBFS from "@nan0web/db-fs"
 const db = new DBFS({ root: '__test_append__' })
@@ -58,7 +53,6 @@ console.info(content) // ← "First line\nSecond line"
 Asynchronously scans directories with configurable limits and sorting.
 
 - **Parameters**
-
   - `uri` (string) – Path to scan
   - `options.limit` (number) – Max entries to return (-1 for all)
   - `options.sort` (string) – Sort by "name", "mtime", or "size"
@@ -67,7 +61,6 @@ Asynchronously scans directories with configurable limits and sorting.
   - `options.skipSymbolicLink` (boolean) – Ignore symbolic links
 
 How to scan directory with findStream?
-
 ```js
 import FS from "@nan0web/db-fs"
 const db = new FS()
@@ -81,15 +74,12 @@ console.info(files) // ← ['file-system', 'DBFS.js', 'DBFS.test.js']
 ## File Formats
 
 Supports automatic handling of:
-
 - `.json` – Pretty-printed
 - `.jsonl` – Array of JSON lines
 - `.csv`, `.tsv` – Delimited tables
 - `.txt` – Plain text
 
-
 How to save and load CSV file?
-
 ```js
 import DBFS from "@nan0web/db-fs"
 const db = new DBFS({ root: '__test_csv__' })
@@ -107,7 +97,6 @@ console.info(loaded) // ← [ { Name: "John", Age: 30 }, { Name: "Jane", Age: 25
 Try examples safely with CLI sandbox:
 
 How to run CLI sandbox?
-
 ```bash
 git clone https://github.com/nan0web/db-fs.git
 cd db-fs
@@ -122,16 +111,13 @@ npm run play
 Saves data to a file with auto-formatting.
 
 - **Parameters**
-
   - `uri` (string) – File path
   - `data` (any) – Data to save, formatted by extension
 
 - **Returns**
-
   - Promise<boolean> – Success status
 
 How to test saveDocument API?
-
 ```js
 import DBFS from "@nan0web/db-fs"
 const db = new DBFS({ root: '__test_save_api__' })
@@ -144,16 +130,13 @@ console.info(result) // ← true
 Loads file content parsed by extension.
 
 - **Parameters**
-
   - `uri` (string) – File path
   - `defaultValue` (any) – Fallback if not found
 
 - **Returns**
-
   - Promise<any> – Parsed content or default
 
 How to test loadDocument API?
-
 ```js
 import DBFS from "@nan0web/db-fs"
 const db = new DBFS({ root: '__test_load_api__' })
@@ -169,16 +152,13 @@ console.info(loaded) // ← { b: 2 }
 Appends raw string chunk to file.
 
 - **Parameters**
-
   - `uri` (string) – File path
   - `chunk` (string) – Text to append
 
 - **Returns**
-
   - Promise<boolean> – Success status
 
 How to test writeDocument API?
-
 ```js
 import DBFS from "@nan0web/db-fs"
 const db = new DBFS({ root: '__test_write_api__' })
@@ -193,19 +173,15 @@ console.info(result) // ← "start\ndone"
 Deletes a file or directory.
 
 - **Parameters**
-
   - `uri` (string) – Path to delete
 
 - **Returns**
-
   - Promise<boolean> – Success status
 
 - **Throws**
-
   - Error if access violation or non-empty directory
 
 How to test dropDocument API?
-
 ```js
 import DBFS from "@nan0web/db-fs"
 const db = new DBFS({ root: '__test_drop_api__' })
@@ -230,5 +206,3 @@ How to contribute? - [check CONTRIBUTING.md](./CONTRIBUTING.md)
 ## License
 
 How to license? – see [LICENSE](./LICENSE)
-
-

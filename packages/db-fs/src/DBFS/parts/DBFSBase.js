@@ -56,6 +56,18 @@ export default class DBFSBase extends DB {
 			(str) => new Markdown(str),
 			(doc) => {
 				if (doc instanceof Markdown) return String(doc)
+				if (typeof doc === 'string') return doc
+				if (doc && typeof doc === 'object') {
+					const { content = '', ...metadata } = doc
+					const keys = Object.keys(metadata).filter((k) => k !== '_')
+					if (keys.length > 0) {
+						const cleanMeta = {}
+						for (const k of keys) cleanMeta[k] = metadata[k]
+						const block = NaN0.stringify(cleanMeta).trimEnd()
+						return ['---', block, '---', '', content].join('\n')
+					}
+					return content
+				}
 				return String(new Markdown(doc))
 			}
 		)
@@ -82,6 +94,10 @@ export default class DBFSBase extends DB {
 			}
 			if (typeof doc !== 'object') {
 				throw new Error('NaN·Web document must be an object')
+			}
+			if (!Array.isArray(doc) && doc._) {
+				const { _, ...cleanDoc } = doc
+				return NaN0.stringify(cleanDoc)
 			}
 			return NaN0.stringify(doc)
 		}

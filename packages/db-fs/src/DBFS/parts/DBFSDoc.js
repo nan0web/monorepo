@@ -192,6 +192,46 @@ export default class DBFSDoc extends DBFSPath {
 	}
 
 	/**
+	 * Determines the target file extension when no extension is specified in URI.
+	 * Can be overridden or customized to change format priority.
+	 * Default priority:
+	 * - .nan0 if structured object with multiple fields
+	 * - .md with NaN0 frontmatter if content length exceeds other metadata
+	 * - .txt for raw strings
+	 *
+	 * @param {string} uri Document URI
+	 * @param {any} document Document content
+	 * @returns {string} Determined extension, e.g. '.nan0' or '.md'
+	 */
+	determineExtension(uri, document) {
+		const ext = this.extname(uri)
+		if (ext) return ext
+
+		if (typeof document === 'string') {
+			return '.txt'
+		}
+
+		if (document && typeof document === 'object') {
+			const isObj = !Array.isArray(document)
+			const hasContent = isObj && 'content' in document && typeof document.content === 'string'
+			if (hasContent) {
+				const otherKeys = Object.keys(document).filter((k) => k !== '_' && k !== 'content')
+				const otherFieldsLength = otherKeys.reduce(
+					(acc, k) => acc + JSON.stringify(document[k] || '').length,
+					0
+				)
+				if (document.content.length > otherFieldsLength) {
+					return '.md'
+				}
+				return '.nan0'
+			}
+			return '.nan0'
+		}
+
+		return ''
+	}
+
+	/**
 	 * Saves a document to the given URI.
 	 * @throws {Error} If the document cannot be saved.
 	 * @param {string} uri The URI to save the document to.
@@ -203,18 +243,34 @@ export default class DBFSDoc extends DBFSPath {
 		const mount = this._findMount(uri)
 		if (mount) return mount.db.saveDocument(mount.subUri, document, context)
 		this.console.debug('Saving document', { uri, document })
-		await this.ensureAccess(uri, 'w')
-		await this._buildPath(uri)
-		const path = this.location(uri)
-		const ext = this.extname(uri)
+
+		let targetUri = uri
+		let ext = this.extname(targetUri)
+
+		if (!ext) {
+			ext = this.determineExtension(uri, document)
+			if (ext) {
+				targetUri = `${uri}${ext}`
+			}
+		}
+
+		await this.ensureAccess(targetUri, 'w')
+		await this._buildPath(targetUri)
+		const path = this.location(targetUri)
 		const saver = this.registry.resolveSaver(ext)
 		try {
 			const raw = saver(document, ext)
 			await this.FS.saveAsync(path, raw, '.txt')
-			const stat = await this.statDocument(uri)
-			this.meta.set(uri, stat)
-			this.data.set(uri, false)
-			this.emit('change', { uri, type: 'save', data: document })
+			const stat = await this.statDocument(targetUri)
+			this.meta.set(targetUri, stat)
+			if (targetUri !== uri) {
+				this.meta.set(uri, stat)
+			}
+			this.data.set(targetUri, false)
+			if (targetUri !== uri) {
+				this.data.set(uri, false)
+			}
+			this.emit('change', { uri: targetUri, type: 'save', data: document })
 			return true
 		} catch (e) {
 			return false

@@ -3,5 +3,5 @@
 	"entry": ["src/index.js", "play/main.js"],
 	"project": ["src/**/*.js", "play/**/*.js"],
 	"ignore": ["types/**", "src/README.md.js"],
-	"ignoreDependencies": ["husky", "@nan0web/log", "@nan0web/markdown", "yaml"]
+	"ignoreDependencies": ["husky", "@nan0web/log", "@nan0web/markdown", "yaml", "@nan0web/csv0"]
 }

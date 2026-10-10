@@ -11,13 +11,135 @@ import DBFSBase from './DBFSBase.js'
  */
 export default class DBFSPath extends DBFSBase {
 	/**
+	 * Computes a deterministic Base36 bucket and safe disk segment for a logical path segment.
+	 * If the segment contains a colon (like W3C DIDs 'did:nano:...'), it maps ':' -> '~'
+	 * and prefixes with a 2-character Base36 hash (giving 1,296 buckets).
+	 *
+	 * @param {string} segment Logical path segment
+	 * @returns {string} Physical path segment (e.g. '4f/did~nano~student1' or 'regular')
+	 */
+	static resolveShardedSegment(segment) {
+		if (typeof segment !== 'string' || !segment.includes(':')) {
+			return segment
+		}
+		const sanitized = segment.replaceAll(':', '~')
+		// Deterministic 32-bit FNV-1a hash
+		let hash = 0x811c9dc5
+		for (let i = 0; i < segment.length; i++) {
+			hash ^= segment.charCodeAt(i)
+			hash = Math.imul(hash, 0x01000193)
+		}
+		const bucketIndex = Math.abs(hash >>> 0) % 1296
+		const bucket = bucketIndex.toString(36).padStart(2, '0').toLowerCase()
+		return `${bucket}/${sanitized}`
+	}
+
+	/**
+	 * Resolves sharded segment via instance method.
+	 * @param {string} segment
+	 * @returns {string}
+	 */
+	resolveShardedSegment(segment) {
+		return (
+			/** @type {typeof DBFSPath} */ (this.constructor).resolveShardedSegment?.(segment) ||
+			DBFSPath.resolveShardedSegment(segment)
+		)
+	}
+
+	/**
+	 * Unshards a sanitized disk segment back to its logical name if it was sharded.
+	 * e.g. 'did~nano~student1' -> 'did:nano:student1'
+	 * @param {string} segment
+	 * @returns {string}
+	 */
+	static unshardSegment(segment) {
+		if (typeof segment !== 'string') return segment
+		if (segment.startsWith('did~')) {
+			return segment.replaceAll('~', ':')
+		}
+		return segment
+	}
+
+	/**
+	 * Checks if a directory entry is a 2-char Base36 shard bucket directory.
+	 * @param {string} name
+	 * @returns {boolean}
+	 */
+	static isShardBucket(name) {
+		return typeof name === 'string' && /^[a-z0-9]{2}$/.test(name)
+	}
+
+	/**
+	 * Converts a physical sharded path back into a logical URI.
+	 * Strips 2-char shard buckets and converts '~' back to ':' in segments.
+	 * e.g. 'students/4f/did~nano~student1/answers/test-1.nan0' -> 'students/did:nano:student1/answers/test-1.nan0'
+	 * @param {string} relPath
+	 * @returns {string}
+	 */
+	static unshardPath(relPath) {
+		if (typeof relPath !== 'string' || !relPath.includes('~')) return relPath
+		const normalized = relPath.replaceAll('\\', '/')
+		const isAbs = normalized.startsWith('/')
+		const parts = normalized.split('/').filter(Boolean)
+		const result = []
+
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i]
+			const next = parts[i + 1]
+			if (DBFSPath.isShardBucket(part) && next && next.includes('~')) {
+				result.push(DBFSPath.unshardSegment(next))
+				i++ // skip next
+			} else {
+				result.push(DBFSPath.unshardSegment(part))
+			}
+		}
+
+		const joined = result.join('/')
+		return isAbs ? '/' + joined : joined
+	}
+
+	/**
+	 * Instance helper for unshardPath.
+	 * @param {string} relPath
+	 * @returns {string}
+	 */
+	unshardPath(relPath) {
+		return (
+			/** @type {typeof DBFSPath} */ (this.constructor).unshardPath?.(relPath) ||
+			DBFSPath.unshardPath(relPath)
+		)
+	}
+
+	/**
+	 * Transforms a logical URI by applying Base36 sharding to any segments containing ':'.
+	 * @param {string} uri
+	 * @returns {string}
+	 */
+	shardUri(uri) {
+		if (typeof uri !== 'string' || !uri.includes(':')) return uri
+		const isAbs = uri.startsWith('/')
+		const parts = uri.split('/')
+		const shardedParts = parts.map((seg) => {
+			if (seg.includes(':')) {
+				return this.resolveShardedSegment(seg)
+			}
+			return seg
+		})
+		const joined = shardedParts.join('/')
+		return isAbs && !joined.startsWith('/') ? '/' + joined : joined
+	}
+
+	/**
 	 * Returns location for the provided uris.
 	 * @param  {...any} args
 	 * @returns {string} Absolute location on the drive.
 	 */
 	location(...args) {
-		const uri = this.resolveAlias(args[0])
+		let rawUri = this.resolveAlias(args[0])
 		const isWindows = this.FS.sep === '\\'
+
+		// Apply transparent Base36 sharding if URI has colon segments (and not Windows drive C:)
+		const uri = isWindows && /^[a-zA-Z]:/.test(rawUri) ? rawUri : this.shardUri(rawUri)
 
 		const isPhysical = (p) => {
 			if (typeof p !== 'string') return false

@@ -47,6 +47,18 @@ export default class FSDriver extends DBDriverProtocol {
 			(str) => new Markdown(str),
 			(doc) => {
 				if (doc instanceof Markdown) return String(doc)
+				if (typeof doc === 'string') return doc
+				if (doc && typeof doc === 'object') {
+					const { content = '', ...metadata } = doc
+					const keys = Object.keys(metadata).filter((k) => k !== '_')
+					if (keys.length > 0) {
+						const cleanMeta = {}
+						for (const k of keys) cleanMeta[k] = metadata[k]
+						const block = NaN0.stringify(cleanMeta).trimEnd()
+						return ['---', block, '---', '', content].join('\n')
+					}
+					return content
+				}
 				return String(new Markdown(doc))
 			}
 		)
@@ -57,7 +69,13 @@ export default class FSDriver extends DBDriverProtocol {
 		this.registry.register('.yml', yamlLoader, yamlSaver)
 
 		const nan0Loader = (str) => NaN0.parse(str)
-		const nan0Saver = (doc) => NaN0.stringify(doc)
+		const nan0Saver = (doc) => {
+			if (doc && typeof doc === 'object' && !Array.isArray(doc) && doc._) {
+				const { _, ...cleanDoc } = doc
+				return NaN0.stringify(cleanDoc)
+			}
+			return NaN0.stringify(doc)
+		}
 		this.registry.register('.nan0', nan0Loader, nan0Saver)
 		this.registry.register('.nan', nan0Loader, nan0Saver)
 		this.registry.register('.nano', nan0Loader, nan0Saver)

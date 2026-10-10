@@ -13,6 +13,7 @@ export {
 	DocumentStat,
 	FSDriver,
 }
+export { DBFSBase, DBFSPath, DBFSDoc, DBFSDir, DBFSStream } from './DBFS/index.js'
 
 export {
 	load,

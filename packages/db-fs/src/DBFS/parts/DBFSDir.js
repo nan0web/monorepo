@@ -69,32 +69,73 @@ export default class DBFSDir extends DBFSDoc {
 		}
 		this.console.debug('Listing directory', { uri, depth, skipStat })
 		const path = this.location(uri)
-		const entries = /** @type {import("node:fs").Dirent[]} */ (
+		const rawEntries = /** @type {import("node:fs").Dirent[]} */ (
 			/** @type {unknown} */ (await this.FS.readdir(path, { withFileTypes: true }))
 		)
-		const files = await Promise.all(
-			entries.map(async (entry) => {
-				let stat = new DocumentStat({
+
+		// Expand 2-character Base36 shard bucket directories transparently
+		/** @type {Array<{name: string, isDirectory: boolean, isFile: boolean, isSymbolicLink: boolean, fullPath: string}>} */
+		const entries = []
+		for (const entry of rawEntries) {
+			const entryPath = this.FS.resolve(path, entry.name)
+			let isShard = false
+			if (entry.isDirectory() && /^[a-z0-9]{2}$/.test(entry.name)) {
+				try {
+					const subEntries = await this.FS.readdir(entryPath, { withFileTypes: true })
+					if (subEntries.some((s) => s.name.includes('~'))) {
+						isShard = true
+						for (const sub of subEntries) {
+							entries.push({
+								name: sub.name,
+								isDirectory: sub.isDirectory(),
+								isFile: sub.isFile(),
+								isSymbolicLink: sub.isSymbolicLink(),
+								fullPath: this.FS.resolve(entryPath, sub.name),
+							})
+						}
+					}
+				} catch {
+					// In case of unreadable directory
+				}
+			}
+			if (!isShard) {
+				entries.push({
+					name: entry.name,
 					isDirectory: entry.isDirectory(),
 					isFile: entry.isFile(),
 					isSymbolicLink: entry.isSymbolicLink(),
+					fullPath: entryPath,
+				})
+			}
+		}
+
+		const files = await Promise.all(
+			entries.map(async (entry) => {
+				let stat = new DocumentStat({
+					isDirectory: entry.isDirectory,
+					isFile: entry.isFile,
+					isSymbolicLink: entry.isSymbolicLink,
 				})
 				if (!skipStat) {
 					try {
-						const entryPath = this.FS.resolve(path, entry.name)
 						const createStat =
 							/** @type {typeof DBFSDir} */ (this.constructor).createDocumentStatFrom ||
 							DBFSDir.createDocumentStatFrom
-						Object.assign(stat, createStat(await fs.promises.lstat(entryPath)))
+						Object.assign(stat, createStat(await fs.promises.lstat(entry.fullPath)))
 					} catch (err) {
 						stat.error = /** @type {Error} */ (err)
 					}
 				}
-				const file = this.FS.relative(this.location(''), this.FS.resolve(path, entry.name))
+				const rawRelFile = this.FS.relative(this.location(''), entry.fullPath)
+				const unsharedRel = this.unshardPath(rawRelFile)
+				const unsharedName = this.constructor.unshardSegment
+					? this.constructor.unshardSegment(entry.name)
+					: entry.name.replaceAll('~', ':')
+
 				return new DocumentEntry({
 					stat,
-					name: entry.name,
-					path: file,
+					name: unsharedName,
+					path: unsharedRel,
 					depth,
 				})
 			})
