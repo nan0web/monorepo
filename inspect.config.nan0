@@ -1,0 +1,13 @@
+# 🏛️ Глобальна Конфігурація Інспектора Монорепозиторію NaN0Web
+# Застосовується каскадно до всіх пакетів та додатків
+
+snapshots:
+  optional: true
+  allowEmpty: true
+  dir: snapshots/core
+
+modules:
+  snapshots:
+    optional: true
+    allowEmpty: true
+    dir: snapshots/core

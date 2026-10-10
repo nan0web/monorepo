@@ -81,6 +81,9 @@ models:
   - Додавання `inspect.config.nan0` у `apps/3rdparty/industrialbank` та `apps/3rdparty/industrialbank/cms`.
 - [x] **Крок 5: Перевірка зеленого прогону:**
   - Запуск `node --test releases/3/7/v3.7.0/task.spec.js` та перевірка `pnpm inspect cms` у банку.
+- [x] **Крок 6: Контроль стилю тестів (describe/it) та продуктивності (regex_in_loop):**
+  - Додано `inspectTestFiles` у `JsVerificationAuditor` (перевірка `test_style`).
+  - Додано перевірку неефективних RegExp у циклах рядків у `JsDomainAuditor` (`regex_in_loop`).
 
 ---
 
@@ -90,4 +93,6 @@ models:
 2. **Cascading Loading:** Метод `InspectConfig.load(db, dir)` коректно завантажує і зливає файли конфігурації.
 3. **Zero-Procedural Code:** Робота з конфігурацією відбувається виключно через `@nan0web/db`.
 4. **Конфігураційні файли наявні:** Створено декларативні `inspect.config.nan0` для Industrial Bank.
-5. **Тести зелені:** Всі контрактні тести в `releases/3/7/v3.7.0/task.spec.js` проходять з кодом 0.
+5. **Тести стилю та антипатернів:** `JsVerificationAuditor` виявляє відсутність `describe`/`it`, а `JsDomainAuditor` виявляє RegExp усередині `.map()`/циклів.
+6. **Тести зелені:** Всі 14 контрактних тестів в `releases/3/7/v3.7.0/task.spec.js` проходять з кодом 0.
+

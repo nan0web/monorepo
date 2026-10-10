@@ -56,13 +56,10 @@ export class JsDomainAuditor extends DomainAuditor {
 
 		for (const file of allFiles) {
 			const normalizedFile = file.replace(/\\/g, '/')
-			if (
+			const isDomain =
 				normalizedFile.includes('/src/domain/') ||
 				normalizedFile.startsWith('src/domain/') ||
 				normalizedFile.endsWith('/src/domain')
-			) {
-				continue
-			}
 
 			const val = await this._.db.loadDocument(file).catch(() => '')
 			const content = typeof val === 'string' ? val : val && val.toString ? val.toString() : ''
@@ -71,20 +68,30 @@ export class JsDomainAuditor extends DomainAuditor {
 			for (let i = 0; i < lines.length; i++) {
 				const line = lines[i]
 
-				if (/extends\s+Model\b/.test(line)) {
+				if (!isDomain && /extends\s+Model\b/.test(line)) {
 					const error = t(DomainAuditor.UI.violation_found, { file })
-					errors.push({ file, error })
+					errors.push({ file, error, check: 'model_location' })
 					yield show(error, 'error')
 					break
 				}
 
-				if (/^\t[a-zA-Z_$][a-zA-Z0-9_$]* = /.test(line)) {
+				if (!isDomain && /^\t[a-zA-Z_$][a-zA-Z0-9_$]* = /.test(line)) {
 					const context = lines.slice(Math.max(0, i - 20), i).join('\n')
 					if (/\bclass\b/.test(context) && !/\bconstructor\b/.test(context)) {
 						const error = t(DomainAuditor.UI.class_field_found, { file, line: i + 1 })
-						errors.push({ file, error })
+						errors.push({ file, error, check: 'class_field' })
 						yield show(error, 'warn')
 					}
+				}
+
+				// Performance smell: regex replace inside streaming loop / map
+				if (
+					/(\.map|\.forEach|\.filter)\s*\([^)]*=>[^)]*\.replace\s*\(\s*\/[^^]/i.test(line) ||
+					/(\.map|\.forEach|\.filter)\s*\([^)]*=>[^)]*\.replace\s*\(\s*\/\^/i.test(line)
+				) {
+					const error = `Performance smell: RegExp replace inside loop/map in ${file}:${i + 1}. Use startsWith/slice instead.`
+					errors.push({ file, error, check: 'regex_in_loop' })
+					yield show(error, 'warn')
 				}
 			}
 		}

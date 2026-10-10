@@ -263,7 +263,16 @@ export class InspectConfig extends Model {
 		} catch {}
 
 		// 2. Repo root configuration (<repo_root>/inspect.config.{nan0,yaml,js})
-		const rootDoc = await tryLoadFile('', 'inspect.config')
+		let rootDoc = await tryLoadFile('', 'inspect.config')
+		if (!rootDoc && typeof db.location === 'function') {
+			let cur = db.location('')
+			while (cur && cur !== '/' && !cur.endsWith(':\\')) {
+				const parent = cur.slice(0, cur.lastIndexOf('/')) || '/'
+				cur = parent
+				rootDoc = await tryLoadFile(parent, 'inspect.config')
+				if (rootDoc) break
+			}
+		}
 		if (rootDoc) {
 			mergedData = merge(mergedData, rootDoc)
 		}

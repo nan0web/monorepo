@@ -1,5 +1,7 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
+import { AuditorModel } from '../../../../src/domain/AuditorModel.js'
+import { ArchitectureAuditor } from '../../../../src/domain/app/ArchitectureAuditor.js'
 import { PhaseAuditor } from '../../../../src/domain/app/PhaseAuditor.js'
 import { JsHygieneAuditor } from '../../../../src/domain/app/js/JsHygieneAuditor.js'
 import { DomainAuditor } from '../../../../src/domain/app/DomainAuditor.js'
@@ -11,8 +13,9 @@ import { DB } from '@nan0web/db'
 
 /** @type {any} */
 const t = (/** @type {string} */ k, /** @type {any} */ vars) => {
+	if (!k) return ''
 	if (!vars) return k
-	let res = k
+	let res = String(k)
 	for (const [key, val] of Object.entries(vars)) {
 		res = res.replace(`{${key}}`, val)
 	}

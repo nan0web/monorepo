@@ -128,6 +128,9 @@ export class VerificationAuditor extends AuditorModel {
 				yield show(t(VerificationAuditor.UI.missing_tests) || 'No unit tests found', 'warn')
 			} else {
 				yield show(t(VerificationAuditor.UI.tests_ok) || 'Unit tests: OK', 'success')
+				if (typeof this.inspectTestFiles === 'function') {
+					yield* this.inspectTestFiles(testFilesCollected, errors)
+				}
 			}
 		}
 

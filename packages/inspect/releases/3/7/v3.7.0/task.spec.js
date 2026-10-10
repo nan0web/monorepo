@@ -291,4 +291,67 @@ snapshots:
 			assert.ok(!('exports' in data))
 		})
 	})
+
+	describe('§5 Test Style Audit & Performance Anti-Pattern Scanning', () => {
+		it('detects flat test() calls and enforces describe/it in JsVerificationAuditor', async () => {
+			const { JsVerificationAuditor } = await import('../../../../src/domain/app/js/JsVerificationAuditor.js')
+			const db = new DB({
+				predefined: [
+					['play/.gitkeep', ''],
+					['src/README.md.js', ''],
+					[
+						'src/bad.test.js',
+						`import test from 'node:test'
+test('flat test without describe', () => {})
+`,
+					],
+				],
+			})
+			await db.connect()
+
+			const auditor = new JsVerificationAuditor({ dir: '.' }, { db })
+			const gen = auditor.run()
+			let res = null
+			while (true) {
+				const step = await gen.next()
+				if (step.done) {
+					res = step.value
+					break
+				}
+			}
+
+			const errors = res?.data?.errors || []
+			const testStyleError = errors.find((e) => e.check === 'test_style')
+			assert.ok(testStyleError, 'Should report test_style error for flat test()')
+		})
+
+		it('flags RegExp replaces inside string transformations in JsDomainAuditor', async () => {
+			const { JsDomainAuditor } = await import('../../../../src/domain/app/js/JsDomainAuditor.js')
+			const db = new DB({
+				predefined: [
+					[
+						'src/domain/Transformer.js',
+						`export class Transformer {
+	parse(lines) {
+		return lines.map(l => l.replace(/^#\\s?/, ''))
+	}
+}
+`,
+					],
+				],
+			})
+			await db.connect()
+
+			const auditor = new JsDomainAuditor({ dir: '.' }, { db })
+			const errors = []
+			const gen = auditor.checkPlatformDomain(errors, (k) => k)
+			while (true) {
+				const step = await gen.next()
+				if (step.done) break
+			}
+
+			const regexSmell = errors.find((e) => e.check === 'regex_in_loop')
+			assert.ok(regexSmell, 'Should detect regex in loop anti-pattern')
+		})
+	})
 })
