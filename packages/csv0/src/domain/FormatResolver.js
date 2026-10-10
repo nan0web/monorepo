@@ -17,6 +17,41 @@ export class FormatResolver {
 	}
 
 	/**
+	 * Resolves a model class and returns its schema or column definition map.
+	 * @param {string | Function} modelRef
+	 * @returns {Record<string, any> | null}
+	 */
+	resolveModelSchema(modelRef) {
+		let ModelClass = null
+		if (typeof modelRef === 'function') {
+			ModelClass = modelRef
+		} else if (typeof modelRef === 'string') {
+			if (this.customFormats[modelRef]) {
+				ModelClass = this.customFormats[modelRef]
+			}
+		}
+
+		if (!ModelClass) return null
+
+		const schema = {}
+		// 1. If Model has explicit static schema
+		if (ModelClass.schema && typeof ModelClass.schema === 'object') {
+			return ModelClass.schema
+		}
+
+		// 2. Extract from static properties (Model-as-Schema pattern)
+		for (const key of Object.getOwnPropertyNames(ModelClass)) {
+			if (['length', 'name', 'prototype'].includes(key)) continue
+			const prop = ModelClass[key]
+			if (prop && typeof prop === 'object' && (prop.type || prop.help || prop.default !== undefined)) {
+				schema[key] = prop
+			}
+		}
+
+		return Object.keys(schema).length > 0 ? schema : null
+	}
+
+	/**
 	 * Resolves a format synchronously from builtins or custom registry.
 	 * @param {string | Function | object} type
 	 * @param {any} [options]

@@ -1,0 +1,22 @@
+# Tests
+src/**/*.test.js
+src/test/
+types/test/
+
+# ProvenDoc generator
+src/docs/
+
+# Dev files
+play/
+releases/
+docs/
+knip.json
+system.md
+next.md
+tsconfig.json
+.editorconfig
+CONTRIBUTING.md
+
+# Generated
+dist/
+.cache/

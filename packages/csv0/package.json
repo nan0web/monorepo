@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/csv0",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "CSV with FrontMatter (nan0/yaml) parser",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -18,6 +18,10 @@
     "./format/csv0": {
       "import": "./src/domain/formats/index.js",
       "types": "./types/domain/formats/index.d.ts"
+    },
+    "./domain": {
+      "import": "./src/domain/index.js",
+      "types": "./types/domain/index.d.ts"
     }
   },
   "scripts": {
@@ -25,16 +29,24 @@
     "build": "tsc",
     "clean": "rm -rf dist/ && rm -rf types/",
     "test": "node --test \"src/**/*.test.js\"",
+    "test:docs": "node --test 'src/docs/**/*.md.js'",
+    "test:coverage": "c8 node --test",
     "test:release": "node --test \"src/test/releases/**/*.test.js\"",
     "release:spec": "node --test \"releases/**/*.spec.js\"",
-    "test:all": "npm test && npm run test:release && npm run build && npm run knip",
+    "play": "node play/main.js",
+    "inspect": "nan0inspect audit .",
     "knip": "knip --production",
+    "test:all": "npm test && npm run test:docs && npm run test:release && npm run build && npm run knip",
     "release": "nan0release publish"
   },
   "author": "YaRaSLove (ЯRаСлав)",
   "license": "ISC",
   "devDependencies": {
+    "@nan0web/inspect": "workspace:*",
     "@nan0web/release": "workspace:*",
-    "@nan0web/types": "workspace:*"
+    "@nan0web/types": "workspace:*",
+    "c8": "^11.0.0",
+    "knip": "^5.88.1",
+    "typescript": "^5.0.0"
   }
 }

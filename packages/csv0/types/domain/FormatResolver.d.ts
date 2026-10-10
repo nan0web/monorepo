@@ -10,10 +10,16 @@ export class FormatResolver {
      */
     constructor(options?: {
         db?: any;
-        customFormats?: Record<string, any> | undefined;
+        customFormats?: Record<string, any>;
     });
     db: any;
     customFormats: Record<string, any>;
+    /**
+     * Resolves a model class and returns its schema or column definition map.
+     * @param {string | Function} modelRef
+     * @returns {Record<string, any> | null}
+     */
+    resolveModelSchema(modelRef: string | Function): Record<string, any> | null;
     /**
      * Resolves a format synchronously from builtins or custom registry.
      * @param {string | Function | object} type

@@ -1,6 +1,7 @@
 import { CSV0Format } from './domain/CSV0Format.js'
 import { resolveFormat, FormatResolver, defaultResolver } from './domain/formats/index.js'
 
+export * from './csv.js'
 export * from './domain/Format.js'
 export * from './domain/CSV0Format.js'
 export * from './domain/FormatResolver.js'
@@ -18,7 +19,10 @@ const defaultCSV0Format = new CSV0Format()
  * @param {string} source - The raw string content of a .csv0 file
  * @param {object} [options]
  * @param {boolean} [options.typed] - Whether to parse rows into typed JS objects
- * @returns {{ frontMatter: string, csvBody: string, meta?: any, columns?: Record<string, any>, rows?: Array<Record<string, any>> }}
+ * @param {Record<string, any> | boolean} [options.head] - Custom head definition or false to omit headers
+ * @param {Record<string, any>} [options.columns] - Columns schema alias
+ * @param {string | Function} [options.model] - Model-as-Schema class or identifier
+ * @returns {{ frontMatter: string, csvBody: string, meta?: any, head?: any, columns?: Record<string, any>, rows?: Array<Record<string, any>>, totals?: Record<string, any> }}
  */
 export function parseCSV0(source, options = {}) {
 	return defaultCSV0Format.parse(source, options)
@@ -28,9 +32,11 @@ export function parseCSV0(source, options = {}) {
  * Stringifies an array of objects to CSV0 format with FrontMatter columns.
  * @param {Array<Record<string, any>>} rows
  * @param {object} [options]
+ * @param {Record<string, any> | boolean} [options.head]
  * @param {Record<string, any>} [options.columns]
  * @param {string} [options.title]
  * @param {Record<string, any>} [options.meta]
+ * @param {boolean} [options.commented]
  * @returns {string}
  */
 export function stringifyCSV0(rows, options = {}) {
