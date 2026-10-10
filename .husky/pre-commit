@@ -1,5 +1,53 @@
 # Ensure PATH includes NVM/Node binaries if available
 export PATH="$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node 2>/dev/null | tail -n 1)/bin:$PATH"
 
-npm test
+# 1. Get list of files staged for commit
+staged_files=$(git diff --cached --name-only)
+
+if [ -z "$staged_files" ]; then
+  exit 0
+fi
+
+filters=""
+has_root_changes=0
+
+# 2. Extract unique workspace packages/apps affected by this commit
+for file in $staged_files; do
+  case "$file" in
+    packages/*)
+      pkg_dir=$(echo "$file" | cut -d'/' -f1,2)
+      if [ -f "$pkg_dir/package.json" ]; then
+        case "$filters" in
+          *"--filter ./$pkg_dir"*) ;;
+          *) filters="$filters --filter ./$pkg_dir" ;;
+        esac
+      fi
+      ;;
+    apps/*)
+      app_dir=$(echo "$file" | cut -d'/' -f1,2)
+      if [ -f "$app_dir/package.json" ]; then
+        case "$filters" in
+          *"--filter ./$app_dir"*) ;;
+          *) filters="$filters --filter ./$app_dir" ;;
+        esac
+      fi
+      ;;
+    src/*|types/*|bin/*|package.json)
+      has_root_changes=1
+      ;;
+  esac
+done
+
+# 3. Run tests only for modified packages/apps
+if [ -n "$filters" ]; then
+  echo "🔍 Pre-commit: testing modified packages ($filters)..."
+  pnpm $filters test || exit 1
+fi
+
+# 4. If root core files were modified, run root tests
+if [ "$has_root_changes" -eq 1 ]; then
+  echo "🔍 Pre-commit: testing monorepo root core..."
+  npm test || exit 1
+fi
+
 

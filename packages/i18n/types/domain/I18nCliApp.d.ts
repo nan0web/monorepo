@@ -11,6 +11,10 @@ export class I18nCliApp extends ModelAsApp {
         positional: boolean;
         options: string[];
     };
+    static help: {
+        help: string;
+        default: boolean;
+    };
     static json: {
         default: boolean;
     };

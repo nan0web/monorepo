@@ -21,6 +21,10 @@ export class App extends ModelAsApp {
         positional: boolean;
         options: (typeof AuditCommand)[];
     };
+    static help: {
+        help: string;
+        default: boolean;
+    };
     static data: {
         default: string;
     };
