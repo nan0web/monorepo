@@ -13,7 +13,6 @@ extending the base `@nan0web/db` functionality with HTTP-based document operatio
 Core class:
 
 - `DBBrowser` — extends DB with browser-specific features like remote fetching and saving
-
   via standard HTTP methods (GET, POST, PUT, DELETE).
 
 **v1.1.0** — UDA 2.0 Integration: fallback chain, change events, proactive `.json` extension.
@@ -25,19 +24,16 @@ fetching with support for inheritance, references, and directory indexing.
 Prerequsites: `npm install @nan0web/db-browser`
 
 How to install with npm?
-
 ```bash
 npm install @nan0web/db-browser
 ```
 
 How to install with pnpm?
-
 ```bash
 pnpm add @nan0web/db-browser
 ```
 
 How to install with yarn?
-
 ```bash
 yarn add @nan0web/db-browser
 ```
@@ -47,7 +43,6 @@ yarn add @nan0web/db-browser
 DBBrowser supports fetching documents from remote servers with full URI resolution.
 
 How to fetch a document?
-
 ```js
 import DBBrowser from "@nan0web/db-browser"
 const db = new DBBrowser({
@@ -67,7 +62,6 @@ Use POST requests to save new documents.
 The server side must provide such API.
 
 How to save a new document?
-
 ```js
 import DBBrowser from "@nan0web/db-browser"
 const db = new DBBrowser({
@@ -82,7 +76,6 @@ console.info('Save result:', result) // ← Save result: true
 Use PUT requests to update or overwrite existing documents.
 
 How to write (update) a document?
-
 ```js
 import DBBrowser from "@nan0web/db-browser"
 const db = new DBBrowser({
@@ -102,7 +95,6 @@ console.info('Write result:', result) // ← Write result: { written: true }
 Use DELETE requests to remove documents.
 
 How to drop a document?
-
 ```js
 import DBBrowser from "@nan0web/db-browser"
 const db = new DBBrowser({
@@ -117,7 +109,6 @@ console.info('Drop result:', result) // ← Drop result: true
 DBBrowser supports reading directories and resolving relative paths.
 
 How to read directory contents?
-
 ```js
 import DBBrowser from "@nan0web/db-browser"
 const db = new DBBrowser({
@@ -136,7 +127,6 @@ console.info('Directory entries:', entries)
 Supports glob-style searching within remote structures.
 
 How to search for documents?
-
 ```js
 import DBBrowser from "@nan0web/db-browser"
 const db = new DBBrowser({
@@ -155,7 +145,6 @@ console.info('Found JSON files:', entries)
 Create a new DBBrowser instance rooted at a specific subdirectory.
 
 How to extract a subset of the database?
-
 ```js
 import DBBrowser from "@nan0web/db-browser"
 const db = new DBBrowser({
@@ -174,7 +163,6 @@ Attach a secondary database as a fallback source.
 When a document is not found in the primary DB, the fallback is queried automatically.
 
 How to use fallback chain?
-
 ```js
 import DBBrowser from "@nan0web/db-browser"
 const primary = new DBBrowser({
@@ -195,7 +183,6 @@ console.info('Fetched via chain:', users)
 Listen for document changes on save and drop operations.
 
 How to listen for change events?
-
 ```js
 import DBBrowser from "@nan0web/db-browser"
 const db = new DBBrowser({
@@ -246,7 +233,6 @@ Uses `d.ts` files for autocompletion
 ## CLI Playground
 
 How to run DBBrowser demo?
-
 ```bash
 git clone https://github.com/nan0web/db-browser.git
 cd db-browser
@@ -261,5 +247,3 @@ How to contribute? - [check here](./CONTRIBUTING.md)
 ## License
 
 How to check license ISC? - [check here](./LICENSE)
-
-

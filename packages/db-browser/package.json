@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/db-browser",
-  "version": "3.4.0",
+  "version": "3.5.1",
   "description": "Browser Database client as extension of @nan0web/db",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -51,6 +51,7 @@
     "@nan0web/http": "workspace:*"
   },
   "dependencies": {
+    "@nan0web/csv0": "workspace:*",
     "@nan0web/log": "workspace:*"
   },
   "files": [

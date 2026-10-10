@@ -13,6 +13,21 @@ export default class DBBrowser extends DB {
     /** @type {Function} */
     static get FetchFn(): Function;
     /**
+     * Computes a deterministic Base36 bucket and safe disk segment for a logical path segment.
+     * If the segment contains a colon (like W3C DIDs 'did:nano:...'), it maps ':' -> '~'
+     * and prefixes with a 2-character Base36 hash (giving 1,296 buckets).
+     *
+     * @param {string} segment Logical path segment
+     * @returns {string} Physical path segment (e.g. '4f/did~nano~student1' or 'regular')
+     */
+    static resolveShardedSegment(segment: string): string;
+    /**
+     * Unshards a sanitized disk segment back to its logical name if it was sharded.
+     * @param {string} segment
+     * @returns {string}
+     */
+    static unshardSegment(segment: string): string;
+    /**
      * Static from helper.
      * @param {any} input
      * @returns {DBBrowser}
@@ -37,6 +52,18 @@ export default class DBBrowser extends DB {
         root?: string | undefined;
         console?: Console | NoConsole | undefined;
     });
+    /**
+     * Resolves sharded segment via instance method.
+     * @param {string} segment
+     * @returns {string}
+     */
+    resolveShardedSegment(segment: string): string;
+    /**
+     * Transforms a logical URI by applying Base36 sharding to any segments containing ':'.
+     * @param {string} uri
+     * @returns {string}
+     */
+    shardUri(uri: string): string;
     /** @type {string} */
     host: string;
     /** @type {number} */
@@ -78,6 +105,31 @@ export default class DBBrowser extends DB {
      * @returns {Promise<DocumentStat>}
      */
     statDocument(uri: string): Promise<DocumentStat>;
+    /**
+     * Determines file extension based on data type and structure.
+     *
+     * - URI with existing extension returns as is
+     * - Array with nested objects -> .jsonl
+     * - Array with flat primitive values -> .csv
+     * - Object -> .json
+     * - string -> .txt
+     * - fallback / empty Array -> .json
+     *
+     * @param {string} uri
+     * @param {any} document
+     * @returns {string}
+     */
+    determineExtension(uri: string, document: any): string;
+    /**
+     * Internal parser for raw text based on extension or content-type.
+     * @private
+     */
+    private _parseDocumentText;
+    /**
+     * Internal serializer for document based on extension.
+     * @private
+     */
+    private _serializeDocument;
     /**
      * Loads and parses document, returns `defaultValue` on fail.
      * @param {string} uri

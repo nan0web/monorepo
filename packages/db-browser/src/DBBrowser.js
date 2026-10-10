@@ -1,4 +1,5 @@
-import DB, { DocumentStat, DocumentEntry } from '@nan0web/db'
+import DB, { DocumentStat, DocumentEntry, parseJSONL, stringifyJSONL } from '@nan0web/db'
+import { parseCSVObjects, stringifyCSV, decodeValueWithBooleans } from '@nan0web/csv0'
 import { absolute, isRemote } from '@nan0web/db/path'
 import { HTTPError } from '@nan0web/http'
 import { NoConsole } from '@nan0web/log'
@@ -48,6 +49,74 @@ export default class DBBrowser extends DB {
 			}
 		}
 		return DBBrowser.#FetchFn
+	}
+
+	/**
+	 * Computes a deterministic Base36 bucket and safe disk segment for a logical path segment.
+	 * If the segment contains a colon (like W3C DIDs 'did:nano:...'), it maps ':' -> '~'
+	 * and prefixes with a 2-character Base36 hash (giving 1,296 buckets).
+	 *
+	 * @param {string} segment Logical path segment
+	 * @returns {string} Physical path segment (e.g. '4f/did~nano~student1' or 'regular')
+	 */
+	static resolveShardedSegment(segment) {
+		if (typeof segment !== 'string' || !segment.includes(':')) {
+			return segment
+		}
+		const sanitized = segment.replaceAll(':', '~')
+		// Deterministic 32-bit FNV-1a hash
+		let hash = 0x811c9dc5
+		for (let i = 0; i < segment.length; i++) {
+			hash ^= segment.charCodeAt(i)
+			hash = Math.imul(hash, 0x01000193)
+		}
+		const bucketIndex = Math.abs(hash >>> 0) % 1296
+		const bucket = bucketIndex.toString(36).padStart(2, '0').toLowerCase()
+		return `${bucket}/${sanitized}`
+	}
+
+	/**
+	 * Resolves sharded segment via instance method.
+	 * @param {string} segment
+	 * @returns {string}
+	 */
+	resolveShardedSegment(segment) {
+		return (
+			/** @type {typeof DBBrowser} */ (this.constructor).resolveShardedSegment?.(segment) ||
+			DBBrowser.resolveShardedSegment(segment)
+		)
+	}
+
+	/**
+	 * Unshards a sanitized disk segment back to its logical name if it was sharded.
+	 * @param {string} segment
+	 * @returns {string}
+	 */
+	static unshardSegment(segment) {
+		if (typeof segment !== 'string') return segment
+		if (segment.startsWith('did~')) {
+			return segment.replaceAll('~', ':')
+		}
+		return segment
+	}
+
+	/**
+	 * Transforms a logical URI by applying Base36 sharding to any segments containing ':'.
+	 * @param {string} uri
+	 * @returns {string}
+	 */
+	shardUri(uri) {
+		if (typeof uri !== 'string' || !uri.includes(':')) return uri
+		const isAbs = uri.startsWith('/')
+		const parts = uri.split('/')
+		const shardedParts = parts.map((seg) => {
+			if (seg.includes(':')) {
+				return this.resolveShardedSegment(seg)
+			}
+			return seg
+		})
+		const joined = shardedParts.join('/')
+		return isAbs && !joined.startsWith('/') ? '/' + joined : joined
 	}
 
 	/** @type {string} */
@@ -161,7 +230,8 @@ export default class DBBrowser extends DB {
 			// fallback to original URI if .json doesn't exist
 		}
 
-		const absUri = await this.resolve(uri)
+		const shardedUri = this.shardUri(uri)
+		const absUri = await this.resolve(shardedUri)
 		const isRemote = this.isRemote(absUri)
 		const baseHref = isRemote ? '' : this.cwd
 		const url = isRemote ? absUri.toString() : new URL(absUri, baseHref).href
@@ -256,6 +326,103 @@ export default class DBBrowser extends DB {
 	}
 
 	/**
+	 * Determines file extension based on data type and structure.
+	 *
+	 * - URI with existing extension returns as is
+	 * - Array with nested objects -> .jsonl
+	 * - Array with flat primitive values -> .csv
+	 * - Object -> .json
+	 * - string -> .txt
+	 * - fallback / empty Array -> .json
+	 *
+	 * @param {string} uri
+	 * @param {any} document
+	 * @returns {string}
+	 */
+	determineExtension(uri, document) {
+		const ext = this.extname(uri)
+		if (ext) return ext
+
+		if (typeof document === 'string') {
+			return '.txt'
+		}
+
+		if (Array.isArray(document)) {
+			if (document.length === 0) return '.json'
+			const firstItem = document[0]
+			if (!firstItem || typeof firstItem !== 'object' || Array.isArray(firstItem)) {
+				return '.json'
+			}
+			const firstKeys = Object.keys(firstItem)
+			const firstKeysSet = new Set(firstKeys)
+
+			// Перевіряємо, чи всі елементи є однорідними плоскими об'єктами з однаковими ключами
+			const isHomogeneousFlat = document.every((item) => {
+				if (!item || typeof item !== 'object' || Array.isArray(item)) return false
+				const keys = Object.keys(item)
+				if (keys.length !== firstKeys.length) return false
+				for (const k of keys) {
+					if (!firstKeysSet.has(k)) return false
+					const val = item[k]
+					if (val !== null && typeof val === 'object') return false
+				}
+				return true
+			})
+
+			return isHomogeneousFlat ? '.csv' : '.jsonl'
+		}
+
+		if (document && typeof document === 'object') {
+			return '.json'
+		}
+
+		return ''
+	}
+
+	/**
+	 * Internal parser for raw text based on extension or content-type.
+	 * @private
+	 */
+	_parseDocumentText(text, targetUri, contentType = '') {
+		const ext = this.extname(targetUri)
+		if (ext === '.jsonl' || contentType.includes('ndjson') || contentType.includes('x-ndjson')) {
+			return parseJSONL(text)
+		}
+		if (ext === '.csv' || contentType.includes('text/csv')) {
+			return parseCSVObjects(text, ',', '"', decodeValueWithBooleans)
+		}
+		try {
+			return JSON.parse(text)
+		} catch {
+			return text
+		}
+	}
+
+	/**
+	 * Internal serializer for document based on extension.
+	 * @private
+	 */
+	_serializeDocument(document, ext) {
+		if (ext === '.jsonl') {
+			return { body: stringifyJSONL(document), contentType: 'application/x-ndjson' }
+		}
+		if (ext === '.csv') {
+			const arr = Array.isArray(document) ? document : [document]
+			if (arr.length === 0) {
+				return { body: '', contentType: 'text/csv' }
+			}
+			return { body: stringifyCSV(arr), contentType: 'text/csv' }
+		}
+		if (ext === '.txt' && typeof document === 'string') {
+			return { body: document, contentType: 'text/plain' }
+		}
+		return {
+			body: JSON.stringify(document),
+			contentType: 'application/json',
+		}
+	}
+
+	/**
 	 * Loads and parses document, returns `defaultValue` on fail.
 	 * @param {string} uri
 	 * @param {any} [defaultValue]
@@ -272,12 +439,9 @@ export default class DBBrowser extends DB {
 				return defaultValue
 			}
 			const text = await response.text()
-			let data
-			try {
-				data = JSON.parse(text)
-			} catch {
-				data = text
-			}
+			const effectiveUri = response.url || uri
+			const contentType = response.headers?.get?.('content-type') || ''
+			const data = this._parseDocumentText(text, effectiveUri, contentType)
 			this.store.put(uri, data, { unsynced: false }).catch(() => {})
 			return data
 		} catch (/** @type {any} */ err) {
@@ -301,16 +465,27 @@ export default class DBBrowser extends DB {
 			return mount.db.saveDocument(sub, document, context)
 		}
 
-		await this.ensureAccess(uri, 'w')
-		const absUri = await this.resolve(uri)
+		let targetUri = uri
+		let ext = this.extname(targetUri)
+		if (!ext) {
+			ext = this.determineExtension(uri, document)
+			if (ext) {
+				targetUri = `${uri}${ext}`
+			}
+		}
+
+		await this.ensureAccess(targetUri, 'w')
+		const absUri = await this.resolve(targetUri)
+		const { body, contentType } = this._serializeDocument(document, ext)
+
 		try {
 			const response = await this.fetchRemote(absUri, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(document),
+				headers: { 'Content-Type': contentType },
+				body,
 			})
 			if (!response.ok) {
-				await this.throwError(response, `Failed to save document: ${uri}`)
+				await this.throwError(response, `Failed to save document: ${targetUri}`)
 			}
 			const text = await response.text()
 			let result
@@ -319,12 +494,12 @@ export default class DBBrowser extends DB {
 			} catch {
 				result = text
 			}
-			this.store.put(uri, document, { unsynced: false }).catch(() => {})
-			this.emit('change', { uri, type: 'save', data: document })
+			this.store.put(targetUri, document, { unsynced: false }).catch(() => {})
+			this.emit('change', { uri: targetUri, type: 'save', data: document })
 			return result
 		} catch (/** @type {any} */ err) {
 			if (err.status && ![408, 502, 503, 504].includes(err.status)) throw err
-			await this.store.put(uri, document, { unsynced: true, method: 'POST' })
+			await this.store.put(targetUri, document, { unsynced: true, method: 'POST' })
 			return document
 		}
 	}
@@ -342,16 +517,27 @@ export default class DBBrowser extends DB {
 			return mount.db.writeDocument(sub, document, context)
 		}
 
-		await this.ensureAccess(uri, 'w')
-		const absUri = await this.resolve(uri)
+		let targetUri = uri
+		let ext = this.extname(targetUri)
+		if (!ext) {
+			ext = this.determineExtension(uri, document)
+			if (ext) {
+				targetUri = `${uri}${ext}`
+			}
+		}
+
+		await this.ensureAccess(targetUri, 'w')
+		const absUri = await this.resolve(targetUri)
+		const { body, contentType } = this._serializeDocument(document, ext)
+
 		try {
 			const response = await this.fetchRemote(absUri, {
 				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(document),
+				headers: { 'Content-Type': contentType },
+				body,
 			})
 			if (!response.ok) {
-				await this.throwError(response, `Failed to write document: ${uri}`)
+				await this.throwError(response, `Failed to write document: ${targetUri}`)
 			}
 			const text = await response.text()
 			let result
@@ -360,11 +546,11 @@ export default class DBBrowser extends DB {
 			} catch {
 				result = text
 			}
-			this.store.put(uri, document, { unsynced: false }).catch(() => {})
+			this.store.put(targetUri, document, { unsynced: false }).catch(() => {})
 			return result
 		} catch (/** @type {any} */ err) {
 			if (err.status && ![408, 502, 503, 504].includes(err.status)) throw err
-			await this.store.put(uri, document, { unsynced: true, method: 'PUT' })
+			await this.store.put(targetUri, document, { unsynced: true, method: 'PUT' })
 			return true
 		}
 	}

@@ -23,5 +23,5 @@ export default class BrowserDirectory extends Directory {
 	 * Supported data file extensions for loading documents.
 	 * @type {string[]}
 	 */
-	static DATA_EXTNAMES = ['.json', '.jsonl', '.csv', '.yaml', '.yml', '.nano']
+	static DATA_EXTNAMES = ['.json', '.jsonl', '.csv', '.yaml', '.nano']
 }
