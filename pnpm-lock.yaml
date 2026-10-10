@@ -98,7 +98,6 @@ overrides:
   fflate@>=0.8.0 <0.8.3: '>=0.8.3'
   fast-uri@>=3.0.0 <3.1.3: '>=3.1.3'
   '@ai-sdk/provider-utils@>=4.0.0-beta.10 <4.0.33': '>=4.0.33'
-  '@ai-sdk/provider-utils@<3.0.28': '>=3.0.28'
   csv-parse@<7.0.2: '>=7.0.2'
   joi@>=18.0.0 <18.2.5: '>=18.2.5'
   next@>=16.0.0 <16.3.3: '>=16.3.3'
@@ -338,6 +337,31 @@ importers:
       '@nan0web/types':
         specifier: workspace:*
         version: link:../../packages/types
+      knip:
+        specifier: ^5.88.1
+        version: 5.88.1(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.3)(@types/node@26.2.0)(typescript@5.9.3)
+
+  apps/learn.app:
+    dependencies:
+      '@nan0web/co':
+        specifier: workspace:*
+        version: link:../../packages/co
+      '@nan0web/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@nan0web/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@nan0web/ui-cli':
+        specifier: workspace:*
+        version: link:../../packages/ui-cli
+    devDependencies:
+      '@nan0web/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nan0web/test':
+        specifier: workspace:*
+        version: link:../../packages/test
       knip:
         specifier: ^5.88.1
         version: 5.88.1(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.3)(@types/node@26.2.0)(typescript@5.9.3)
@@ -903,12 +927,24 @@ importers:
 
   packages/csv0:
     devDependencies:
+      '@nan0web/inspect':
+        specifier: workspace:*
+        version: link:../inspect
       '@nan0web/release':
         specifier: workspace:*
         version: link:../release
       '@nan0web/types':
         specifier: workspace:*
         version: link:../types
+      c8:
+        specifier: ^11.0.0
+        version: 11.0.0
+      knip:
+        specifier: ^5.88.1
+        version: 5.88.1(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.3)(@types/node@26.2.0)(typescript@5.9.3)
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
 
   packages/db:
     dependencies:
@@ -943,6 +979,9 @@ importers:
 
   packages/db-browser:
     dependencies:
+      '@nan0web/csv0':
+        specifier: workspace:*
+        version: link:../csv0
       '@nan0web/log':
         specifier: workspace:*
         version: link:../log
@@ -974,6 +1013,9 @@ importers:
 
   packages/db-fs:
     dependencies:
+      '@nan0web/csv0':
+        specifier: workspace:*
+        version: link:../csv0
       '@nan0web/log':
         specifier: workspace:*
         version: link:../log
@@ -2205,8 +2247,14 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider-utils@4.0.30':
-    resolution: {integrity: sha512-VO7I+vPffqI5sMnPoUq5DCSqKIgQIk/naJWRdQVpz2ma2zoprC/lqiJiUEl2s6DfvTD76TbhD3q39ROjlA6rGw==}
+  '@ai-sdk/provider-utils@2.2.8':
+    resolution: {integrity: sha512-fqhG+4sCVv8x7nFzYnFo19ryhAa3w096Kmc3hWxMQfW/TubPOmt3A6tYZhl4mUfQWWQMsuSkLrtjlWuXBVSGQA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.23.8
+
+  '@ai-sdk/provider-utils@3.0.23':
+    resolution: {integrity: sha512-60GYsRj5wIJQRcq5YwYJq4KhwLeStceXEJiZdecP1miiH+6FMmrnc7lZDOJoQ6m9lrudEb+uI4LEwddLz5+rPQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -7816,6 +7864,9 @@ packages:
   scheduler@0.27.0:
     resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
 
+  secure-json-parse@2.7.0:
+    resolution: {integrity: sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==}
+
   secure-json-parse@4.1.0:
     resolution: {integrity: sha512-l4KnYfEyqYJxDwlNVyRfO2E4NTHfMKAWdUuA8J0yve2Dz/E/PdBepY03RvyJpssIpRFwJoCD55wA+mEDs6ByWA==}
 
@@ -8787,13 +8838,13 @@ snapshots:
     dependencies:
       '@ai-sdk/openai-compatible': 1.0.35(zod@4.4.3)
       '@ai-sdk/provider': 2.0.1
-      '@ai-sdk/provider-utils': 5.0.40(zod@4.4.3)
+      '@ai-sdk/provider-utils': 3.0.23(zod@4.4.3)
       zod: 4.4.3
 
   '@ai-sdk/gateway@2.0.75(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 2.0.1
-      '@ai-sdk/provider-utils': 5.0.40(zod@4.4.3)
+      '@ai-sdk/provider-utils': 3.0.23(zod@4.4.3)
       '@vercel/oidc': 3.1.0
       zod: 4.4.3
 
@@ -8826,13 +8877,13 @@ snapshots:
   '@ai-sdk/mistral@1.2.8(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 4.0.30(zod@4.4.3)
+      '@ai-sdk/provider-utils': 2.2.8(zod@4.4.3)
       zod: 4.4.3
 
   '@ai-sdk/openai-compatible@1.0.35(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 2.0.1
-      '@ai-sdk/provider-utils': 5.0.40(zod@4.4.3)
+      '@ai-sdk/provider-utils': 3.0.23(zod@4.4.3)
       zod: 4.4.3
 
   '@ai-sdk/openai-compatible@2.0.41(zod@4.4.3)':
@@ -8844,7 +8895,7 @@ snapshots:
   '@ai-sdk/openai@2.0.102(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 2.0.1
-      '@ai-sdk/provider-utils': 5.0.40(zod@4.4.3)
+      '@ai-sdk/provider-utils': 3.0.23(zod@4.4.3)
       zod: 4.4.3
 
   '@ai-sdk/openai@3.0.52(zod@4.4.3)':
@@ -8853,9 +8904,16 @@ snapshots:
       '@ai-sdk/provider-utils': 5.0.40(zod@4.4.3)
       zod: 4.4.3
 
-  '@ai-sdk/provider-utils@4.0.30(zod@4.4.3)':
+  '@ai-sdk/provider-utils@2.2.8(zod@4.4.3)':
     dependencies:
-      '@ai-sdk/provider': 3.0.10
+      '@ai-sdk/provider': 1.1.3
+      nanoid: 6.0.1
+      secure-json-parse: 2.7.0
+      zod: 4.4.3
+
+  '@ai-sdk/provider-utils@3.0.23(zod@4.4.3)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.1
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.1.0
       zod: 4.4.3
@@ -11498,7 +11556,7 @@ snapshots:
     dependencies:
       '@ai-sdk/gateway': 2.0.75(zod@4.4.3)
       '@ai-sdk/provider': 2.0.1
-      '@ai-sdk/provider-utils': 5.0.40(zod@4.4.3)
+      '@ai-sdk/provider-utils': 3.0.23(zod@4.4.3)
       '@opentelemetry/api': 1.9.0
       zod: 4.4.3
 
@@ -15467,6 +15525,8 @@ snapshots:
   scheduler@0.25.0: {}
 
   scheduler@0.27.0: {}
+
+  secure-json-parse@2.7.0: {}
 
   secure-json-parse@4.1.0: {}
 

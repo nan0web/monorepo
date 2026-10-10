@@ -1,4 +1,8 @@
 export default class PrepareApp extends ModelAsApp {
+    static help: {
+        help: string;
+        default: boolean;
+    };
     static target: {
         help: string;
         default: string;

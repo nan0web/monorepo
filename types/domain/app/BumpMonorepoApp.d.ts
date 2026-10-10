@@ -1,4 +1,8 @@
 export default class BumpMonorepoApp extends ModelAsApp {
+    static help: {
+        help: string;
+        default: boolean;
+    };
     static version: {
         positional: boolean;
         help: string;

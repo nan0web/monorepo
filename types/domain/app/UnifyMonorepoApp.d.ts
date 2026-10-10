@@ -1,4 +1,8 @@
 export default class UnifyMonorepoApp extends ModelAsApp {
+    static help: {
+        help: string;
+        default: boolean;
+    };
     static dryRun: {
         alias: string;
         help: string;
