@@ -5,10 +5,9 @@
 Це дозволяє досягти повної ізоляції логіки (Total Logic Isolation) та крос-платформеності.
 
 ## Ключові правила
-1.- **Zero System Imports**: Заборонено використовувати `node:fs`, `node:path`, `node:os` у доменних моделях.
-- **Context via DB**: Усі операції зі шляхами виконуються через екземпляр `db`.
-- **Standard Aliases**:
-
+1. **Zero System Imports**: Заборонено використовувати `node:fs`, `node:path`, `node:os` у доменних моделях.
+2. **Context via DB**: Усі операції зі шляхами виконуються через екземпляр `db`.
+3. **Standard Aliases**:
    - `~` — точка входу в конфігурацію додатка (`$HOME/.nan0web/`).
    - `store` — аліас для глобального реєстру (`~/store/`).
 
@@ -17,7 +16,6 @@
 Замість `path.join` використовуйте `db.resolve()`.
 
 How to resolve paths without node:path?
-
 ```js
 import DB from '@nan0web/db'
 const db = new DB({ root: '/workspace' })
@@ -31,7 +29,6 @@ console.info(db.location(storePath)) // /home/user/.nan0web/store/registry.csv
 Використовуйте `db.relative()` для перетворення абсолютних шляхів у відносні щодо робочого простору.
 
 How to normalize absolute paths to workspace-relative?
-
 ```js
 import DB from '@nan0web/db'
 const workspaceRoot = '/Users/i/src/project'
@@ -44,7 +41,6 @@ console.info(relPath) // packages/core/src/index.js
 Використовуйте `db.loadDocumentAs()` для роботи з типізованими даними.
 
 How to load CSV from store via alias?
-
 ```js
 import DB from '@nan0web/db'
 const storeData = [{ name: 'ui', path: '/workspace/packages/ui' }]

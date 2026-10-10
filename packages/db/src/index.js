@@ -46,6 +46,7 @@ export {
 	FormatRegistry,
 }
 export * from './DB/path.js'
+export { parseJSONL, stringifyJSONL } from './jsonl.js'
 export default DB
 
 /** @typedef {import('./domain/index.js').DBProtocolName} DBProtocolName */

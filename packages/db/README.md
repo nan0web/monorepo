@@ -7,11 +7,9 @@ flexible, minimal and powerful — the tool that supports any data format and
 nested hierarchy with reference resolution, inheritance and global variables.
 
 Inspired by `zero-is-not-a-number` rule of nan0web:
-
 > Every data becomes a database.
 
 Based on real use-cases, supports:
-
 - **VFS Routing** — `mount()` composes multiple storage backends into one tree. Supports **Root Mount** (`prefix: ''`) for transparent catchment of all relative paths.
 - **Fallback Chain** — `attach()` provides failover with transparent notifications
 - **Model Hydration** — automatic transformation of plain objects into typed models
@@ -20,7 +18,6 @@ Based on real use-cases, supports:
 - deep merging with reference handling
 - async directory listing (for fs & fetch layers)
 - stream-based progress during traversal
-
 
 See how it works in [playground](#playground).
 
@@ -37,19 +34,16 @@ See how it works in [playground](#playground).
 ## Installation
 
 How to install with npm?
-
 ```bash
 npm install @nan0web/db
 ```
 
 How to install with pnpm?
-
 ```bash
 pnpm add @nan0web/db
 ```
 
 How to install with yarn?
-
 ```bash
 yarn add @nan0web/db
 ```
@@ -62,7 +56,6 @@ all relative paths that don't match more specific mount points. Extremely
 useful for isolated playground environments.
 
 How to mount a database as virtual root?
-
 ```js
 import DB from "@nan0web/db"
 const rootDB = new DB()
@@ -76,7 +69,6 @@ Since `v1.4.4`, `.nan0` is a first-class citizen alongside `.json`. It is
 automatically recognized as a data-containing file.
 
 How to use native .nan0 data extension?
-
 ```js
 import DB from "@nan0web/db"
 const db = new DB({ data: new Map([['vault.nan0', { secret: 42 }]]) })
@@ -86,7 +78,6 @@ console.info(result) // ← { secret: 42 }
 ## JSON & Data
 
 How to load Data document?
-
 ```js
 import DB from "@nan0web/db"
 const db = new DB()
@@ -99,7 +90,6 @@ console.info(doc) // ← { key: "value" }
 chunk fragmentation natively via the standard Driver Protocol.
 
 How to stream lines from data files?
-
 ```js
 // Example driver implementation
 class MockDriver extends DBDriverProtocol {
@@ -124,7 +114,6 @@ console.info(lines) // ← [ '{"uid":1}', '{"uid":2}', '{"uid":3}' ]
 ### Example: Using `get()` with default fallback
 
 How to get or return default?
-
 ```js
 import DB from "@nan0web/db"
 const db = new DB()
@@ -134,7 +123,6 @@ console.info(result) // ← {}
 ### Example: Loading known document
 
 How to get specific document?
-
 ```js
 import DB from "@nan0web/db"
 const db = new DB({ data: new Map([['file.txt', 'text']]) })
@@ -146,7 +134,6 @@ console.info(result) // ← "text"
 ### Resolving references and global vars
 
 How to use document reference system?
-
 ```js
 import DB from "@nan0web/db"
 const db = new DB({
@@ -166,7 +153,6 @@ references (`$ref`, `href`, `$href`) point to existing paths. It supports single
 validation and full database audits.
 
 How to validate all references in the database?
-
 ```js
 import DB from "@nan0web/db"
 import { ReferenceValidator } from "@nan0web/db/domain"
@@ -183,7 +169,6 @@ console.info(brokenRefs['doc.json'][0].ref) // ← "missing.json"
 ## Playground
 
 CLI sandbox for safe experiments:
-
 ```bash
 git clone https://github.com/nan0web/db.git
 cd db
@@ -206,7 +191,6 @@ Loads/returns document content from its URI.
   * *(any)* – Document content or default value.
 
 How to get document value?
-
 ```js
 import DB from "@nan0web/db"
 const db = new DB({ data: new Map([['x.file', 'hello']]) })
@@ -219,7 +203,6 @@ Like get, plus advanced features: refs, vars, inherit rules processing.
 Supports extension lookup, e.g. find `.json` even when omitted.
 
 How to load extended data?
-
 ```js
 import DB from "@nan0web/db"
 const db = new DB({ predefined: [['file.json', { value: 'loaded' }]] })
@@ -231,7 +214,6 @@ console.info(result) // ← { value: "loaded" }
 Sets document content and marks metadata updates.
 
 How to save new content?
-
 ```js
 import DB from "@nan0web/db"
 const db = new DB()
@@ -243,7 +225,6 @@ console.info(db.data.get('file.text')) // ← "save me!"
 Flattens nested object into paths as keys.
 
 How to flatten object?
-
 ```js
 import { Data } from "@nan0web/db"
 const flat = Data.flatten({ x: { a: [1, 2, { b: 3 }] } })
@@ -253,7 +234,6 @@ console.info(flat) // ← { 'x/a/[0]': 1, 'x/a/[1]': 2, 'x/a/[2]/b': 3 }
 Reconstructs nested structure from flat keys.
 
 How to unflatten data?
-
 ```js
 import { Data } from "@nan0web/db"
 const nested = Data.unflatten({
@@ -270,7 +250,6 @@ escaped during flattening and restored during unflattening. This ensures that
 i18n keys like `"Manage / Update"` are not incorrectly split into nested objects.
 
 How to preserve literal slashes in keys?
-
 ```js
 import { Data } from "@nan0web/db"
 const obj = { 'Manage / Update': 'Керування' }
@@ -284,7 +263,6 @@ console.info(unflat['Manage / Update']) // ← "Керування"
 Deep merges two objects, handling array conflicts by replacing.
 
 How to merge deeply?
-
 ```js
 import { Data } from "@nan0web/db"
 const a = { x: { one: 1 }, arr: [0] }
@@ -297,7 +275,6 @@ console.info(merged) // ← { x: { one: 1, two: 2 }, y: 'two', arr: [ 1 ] }
 Finds value by string path or array path. Use array path to access keys containing `/`.
 
 How to find value by path?
-
 ```js
 import { Data } from "@nan0web/db"
 const data = { 'I/O': 'value', nested: { item: 1 } }
@@ -312,7 +289,6 @@ Supports normalization, basename/dirname extraction, and absolute/relative resol
 ### Import Path Utilities
 
 How to import path utilities?
-
 ```js
 import { normalize, basename, dirname, absolute, resolveSync } from '@nan0web/db/path'
 console.info(normalize('a/b/../c')) // ← a/c
@@ -325,7 +301,6 @@ console.info(resolveSync('/base', '.', 'file.txt')) // ← file.txt
 Normalizes path segments, handling `../`, `./`, and duplicate slashes.
 
 How to normalize path segments?
-
 ```js
 import { normalize } from '@nan0web/db/path'
 console.info(normalize('a/b/../c')) // ← a/c
@@ -336,7 +311,6 @@ console.info(normalize('dir/sub/')) // ← dir/sub/
 Extracts basename, optionally removing suffix or extension.
 
 How to extract basename?
-
 ```js
 import { basename } from '@nan0web/db/path'
 console.info(basename('/dir/file.txt')) // ← file.txt
@@ -348,7 +322,6 @@ console.info(basename('/dir/')) // ← dir/
 Extracts parent directory path.
 
 How to extract dirname?
-
 ```js
 import { dirname } from '@nan0web/db/path'
 console.info(dirname('/a/b/file')) // ← /a/b/
@@ -361,7 +334,6 @@ Extracts file extension with dot (lowercase). Since `v1.5.3`, correctly ignores
 dots in directory names of absolute paths.
 
 How to extract extension?
-
 ```js
 import { extname } from '@nan0web/db/path'
 console.info(extname('file.TXT')) // ← .txt
@@ -373,7 +345,6 @@ console.info(extname('/dir/')) // ← ''
 Resolves segments relative to cwd/root (synchronous).
 
 How to resolve path synchronously?
-
 ```js
 import { resolveSync } from '@nan0web/db/path'
 console.info(resolveSync('/base', '.', 'a/b/../c')) // ← a/c
@@ -382,7 +353,6 @@ console.info(resolveSync('/base', '.', 'a/b/../c')) // ← a/c
 Computes relative path from `from` to `to`.
 
 How to compute relative path?
-
 ```js
 import { relative } from '@nan0web/db/path'
 console.info(relative('/a/b', '/a/c')) // ← c
@@ -392,7 +362,6 @@ console.info(relative('/root/dir', '/root/')) // ← dir
 Builds absolute path/URL from cwd, root, and segments.
 
 How to build absolute path?
-
 ```js
 import { absolute } from '@nan0web/db/path'
 console.info(absolute('/base', 'root', 'file')) // ← /base/root/file
@@ -402,7 +371,6 @@ console.info(absolute('https://ex.com', 'api', 'v1')) // ← https://ex.com/api/
 Checks if URI is remote or absolute.
 
 How to check URI type?
-
 ```js
 import { isRemote, isAbsolute } from '@nan0web/db/path'
 console.info(isRemote('https://ex.com')) // ← true
@@ -421,7 +389,6 @@ Drivers extend DB with storage backends. Extend `DBDriverProtocol` for custom lo
 ### Basic Driver Extension
 
 How to extend DBDriverProtocol?
-
 ```js
 import { DBDriverProtocol } from '@nan0web/db'
 class MyDriver extends DBDriverProtocol {
@@ -436,7 +403,6 @@ console.log(await driver.read('/path')) // ← { data: 'from custom storage' }
 ### Using Driver in DB
 
 How to attach driver to DB?
-
 ```js
 import { DB, DBDriverProtocol } from '@nan0web/db'
 class SimpleDriver extends DBDriverProtocol {
@@ -465,7 +431,6 @@ Use `AuthContext` for role-based access in DB operations.
 ### Basic AuthContext Usage
 
 How to create AuthContext?
-
 ```js
 import { AuthContext } from '@nan0web/db'
 const ctx = new AuthContext({ role: 'user', roles: ['user', 'guest'] })
@@ -475,7 +440,6 @@ console.info(ctx.role) // ← user
 ### AuthContext with DB Access
 
 How to use AuthContext in DB?
-
 ```js
 import { DB, AuthContext } from '@nan0web/db'
 const db = new DB()
@@ -486,7 +450,6 @@ console.info(await db.get('secure/file.txt', {}, ctx)) // ← secret
 ### Handling Access Failures
 
 How to handle auth failures?
-
 ```js
 import { AuthContext } from '@nan0web/db'
 const ctx = new AuthContext()
@@ -503,7 +466,6 @@ This prevents untrusted plugins from hijacking mount points at runtime.
 ### Sealing the mount registry
 
 How to seal mount registry?
-
 ```js
 import DB from '@nan0web/db'
 const db = new DB()
@@ -518,7 +480,6 @@ URIs starting with `~` or `@` are reserved for mount points.
 If accessed before mounting, DB throws a clear error with a hint:
 
 How does DB handle unmounted reserved prefixes?
-
 ```js
 import DB from '@nan0web/db'
 const db = new DB()
@@ -530,7 +491,6 @@ const db = new DB()
 ### `DBConfig`
 
 How to securely serialize connection arguments?
-
 ```js
 import { DBConfig } from '@nan0web/db'
 const config = new DBConfig('redis://yaro:pass123@redis.local:6379/cache')
@@ -540,7 +500,6 @@ console.info(config.safeDsn) // ← redis://yaro:***@redis.local:6379/cache
 ### `RevisionInfo`
 
 How to standardize document history?
-
 ```js
 import { RevisionInfo } from '@nan0web/db'
 const ts = new Date('2026-04-06T00:00:00Z').toISOString()
@@ -552,7 +511,6 @@ console.info(rev.shortSha) // ← 1234567
 Checks if a path represents a directory configuration file (`_.yaml`, `_.nan0`, `_.json`).
 
 How to detect directory configuration file?
-
 ```js
 import { Directory } from '@nan0web/db'
 console.info(Directory.isConfig('_.yaml')) // ← true
@@ -565,7 +523,6 @@ Generates a clean website/app route path for a data document.
 Returns `false` for internal files (`_`, `_/*`) or non-data files.
 
 How to generate public route from document URI?
-
 ```js
 import { DB } from '@nan0web/db'
 const db = new DB()
@@ -581,5 +538,3 @@ How to participate? – [see CONTRIBUTING.md]($pkgURL/blob/main/CONTRIBUTING.md)
 ## License
 
 ISC LICENSE – [see full text]($pkgURL/blob/main/LICENSE)
-
-

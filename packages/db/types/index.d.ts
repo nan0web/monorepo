@@ -17,3 +17,4 @@ import DBConfig from './domain/DBConfig.js';
 import RevisionInfo from './domain/RevisionInfo.js';
 import FormatRegistry from './FormatRegistry.js';
 export { Directory, DirectoryIndex, DocumentEntry, DocumentStat, StreamEntry, Data, HydratedModel, DB, DBDriverProtocol, GetOptions, FetchOptions, AuthContext, DBConfig, RevisionInfo, FormatRegistry };
+export { parseJSONL, stringifyJSONL } from "./jsonl.js";
