@@ -6,5 +6,5 @@
  * from any context. Custom node classes (Nan0ElementNode, etc.) require
  * `lexical` to be resolvable and are available via direct import paths.
  */
-export { default as fromNan0Html, inventoryNan0Html, FORMAT } from './fromNan0Html.js'
-export { default as toNan0Html } from './toNan0Html.js'
+export { fromNan0Html, inventoryNan0Html, FORMAT } from './fromNan0Html.js'
+export { toNan0Html } from './toNan0Html.js'

@@ -1,8 +1,8 @@
 /** @typedef {Object} Field */
 /**
- * PayloadCollectionTemplate - Model to generate Payload CMS CollectionConfig using CodeTemplate.
+ * PayloadCollectionTemplate - Generator for Payload CMS CollectionConfig using CodeTemplate.
  */
-export class PayloadCollectionTemplate extends Model {
+export class PayloadCollectionTemplate extends CodeTemplate {
     static alias: string;
     static collectionSlug: {
         help: string;
@@ -28,10 +28,6 @@ export class PayloadCollectionTemplate extends Model {
         help: string;
         default: any[];
     };
-    static template: {
-        help: string;
-        default: string;
-    };
     /**
      * @param {Partial<PayloadCollectionTemplate>} [data={}]
      * @param {Partial<import('@nan0web/types').ModelOptions>} [options={}]
@@ -55,4 +51,4 @@ export class PayloadCollectionTemplate extends Model {
     compileSync(): string;
 }
 export type Field = any;
-import { Model } from '@nan0web/types';
+import { CodeTemplate } from '@nan0web/ui';

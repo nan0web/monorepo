@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ui-payload",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "description": "NaN0Web Universal Payload CMS UI Components Package (ImageCell, MapCell, BooleanCell, richtext)",
   "type": "module",
   "main": "./src/index.js",
@@ -81,7 +81,6 @@
     "audit": "pnpm audit --prod || true",
     "test:all": "npm run test && npm run build && npm run test:release && npm run release:spec && npm run knip && npm run audit"
   },
-
   "dependencies": {
     "@payloadcms/richtext-lexical": "3.86.0",
     "lexical": "0.41.0",

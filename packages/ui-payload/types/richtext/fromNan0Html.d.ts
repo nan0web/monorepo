@@ -52,4 +52,3 @@ export const FORMAT: Readonly<{
     underline: number;
     strikethrough: number;
 }>;
-export default fromNan0Html;

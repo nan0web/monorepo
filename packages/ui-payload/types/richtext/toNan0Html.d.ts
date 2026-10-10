@@ -4,4 +4,3 @@
  * @returns {any} NaN0HTML AST structure (Array, Object, or String)
  */
 export function toNan0Html(lexicalState: any): any;
-export default toNan0Html;

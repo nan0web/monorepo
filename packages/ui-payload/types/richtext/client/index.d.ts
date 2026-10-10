@@ -5,7 +5,6 @@ export function Nan0HTMLFeatureClient(props?: {}): {
         sanitizedClientFeatureProps: {};
     };
 };
-export default Nan0HTMLFeatureClient;
 import { Nan0ElementNode } from '../Nan0ElementNode.js';
 import { Nan0RawNode } from '../Nan0RawNode.js';
 import { Nan0ComponentNode } from '../Nan0ComponentNode.js';
