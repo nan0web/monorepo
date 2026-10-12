@@ -1,7 +1,7 @@
 ---
 version: 3.7.0
 type: feature
-status: active
+status: closed
 locale: uk
 models:
   - packages/inspect/types/domain/config/InspectConfig.d.ts

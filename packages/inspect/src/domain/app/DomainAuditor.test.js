@@ -59,6 +59,24 @@ describe('DomainAuditor', () => {
 		assert.equal(result.data.errors.length, 0)
 	})
 
+	it('detects class field declarations outside constructor as error', async () => {
+		const db = new DB({
+			predefined: [
+				[
+					'src/domain/MyModel.js',
+					'export class MyModel {\n\tname = "test"\n\tconstructor() {}\n}\n',
+				],
+			],
+		})
+		await db.connect()
+
+		const auditor = new JsDomainAuditor({ dir: '.' }, { db, t: (key) => key })
+		const { result } = await drainGenerator(auditor.run())
+
+		assert.equal(result.data.success, false)
+		assert.ok(result.data.errors.some((e) => e.check === 'class_field'))
+	})
+
 	it('passes when no src/ directory exists', async () => {
 		const db = new DB({ predefined: [] })
 		await db.connect()

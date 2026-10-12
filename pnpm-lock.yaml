@@ -346,6 +346,9 @@ importers:
       '@nan0web/co':
         specifier: workspace:*
         version: link:../../packages/co
+      '@nan0web/markdown':
+        specifier: workspace:*
+        version: link:../../packages/markdown
       '@nan0web/types':
         specifier: workspace:*
         version: link:../../packages/types

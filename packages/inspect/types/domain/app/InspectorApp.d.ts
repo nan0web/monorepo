@@ -9,7 +9,7 @@ export class InspectorApp extends ModelAsApp {
     static command: {
         type: typeof ModelAsApp;
         help: string;
-        options: (typeof PhaseAuditor | typeof CircularDependencyAuditor | typeof ArchitectureAuditor | typeof SnapshotAuditor | typeof BuildWorkflowsApp | typeof OlmuiThemingAuditor)[];
+        options: (typeof PhaseAuditor | typeof CircularDependencyAuditor | typeof ArchitectureAuditor | typeof SnapshotAuditor | typeof BuildWorkflowsApp | typeof ListAuditorsApp | typeof OlmuiThemingAuditor)[];
         default: typeof ArchitectureAuditor;
         positional: boolean;
     };
@@ -29,7 +29,7 @@ export class InspectorApp extends ModelAsApp {
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
     constructor(data?: Partial<InspectorApp>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
-    /** @type {AuditorModel} Auditor model */ command: AuditorModel;
+    /** @type {AuditorModel | string} Auditor model or command alias */ command: AuditorModel | string;
     /** @type {string} Target directory */ dir: string;
     /** @type {boolean} Automatically apply fixes */ fix: boolean;
     /** @type {import('../index.js').LanguagePlatform} Language platform */ platform: import("../index.js").LanguagePlatform;
@@ -51,4 +51,5 @@ import { CircularDependencyAuditor } from './CircularDependencyAuditor.js';
 import { ArchitectureAuditor } from './ArchitectureAuditor.js';
 import { SnapshotAuditor } from '@nan0web/ui/inspect';
 import { BuildWorkflowsApp } from './BuildWorkflowsApp.js';
+import { ListAuditorsApp } from './ListAuditorsApp.js';
 import { OlmuiThemingAuditor } from '@nan0web/ui/inspect';

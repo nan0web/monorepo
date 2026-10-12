@@ -40,8 +40,8 @@ done
 
 # 3. Run tests only for modified packages/apps
 if [ -n "$filters" ]; then
-  echo "🔍 Pre-commit: testing modified packages ($filters)..."
-  pnpm $filters test || exit 1
+  echo "🔍 Pre-commit: running test:all for modified packages ($filters)..."
+  pnpm $filters run --if-present test:all || exit 1
 fi
 
 # 4. If root core files were modified, run root tests

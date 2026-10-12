@@ -65,22 +65,103 @@ export class JsDomainAuditor extends DomainAuditor {
 			const content = typeof val === 'string' ? val : val && val.toString ? val.toString() : ''
 			const lines = content.split('\n')
 
+			// Parse classes in file for Model-as-Schema validation
+			const classRegex = /class\s+([A-Za-z0-9_$]+)(?:\s+extends\s+([A-Za-z0-9_$.]+))?\s*\{/g
+			let classMatch
+			while ((classMatch = classRegex.exec(content)) !== null) {
+				const className = classMatch[1]
+				const extendsClause = classMatch[2] || ''
+				const classStartIndex = classMatch.index
+
+				// Find class matching closing brace or limit to class scope
+				let depth = 0
+				let classEndIndex = content.length
+				for (let idx = content.indexOf('{', classStartIndex); idx < content.length; idx++) {
+					if (content[idx] === '{') depth++
+					else if (content[idx] === '}') {
+						depth--
+						if (depth === 0) {
+							classEndIndex = idx
+							break
+						}
+					}
+				}
+
+				const classBody = content.slice(classStartIndex, classEndIndex)
+
+				// Only check classes that extend Model or are in domain
+				const isModelClass = extendsClause.includes('Model') || className.endsWith('Model')
+
+				if (isModelClass) {
+					// Extract constructor body
+					const ctorMatch = /constructor\s*\([^)]*\)\s*\{([\s\S]*?)(?:\n\t\})/.exec(classBody)
+					const ctorBody = ctorMatch ? ctorMatch[1] : ''
+
+					// Collect static field declarations
+					// e.g. static field = ...
+					const staticFieldRegex = /^\s*static\s+([a-zA-Z0-9_$]+)\s*=/gm
+					let sfMatch
+					while ((sfMatch = staticFieldRegex.exec(classBody)) !== null) {
+						const fieldName = sfMatch[1]
+
+						// Skip rules:
+						// 1. Starts with $ ($alias, $collection, etc.)
+						if (fieldName.startsWith('$')) continue
+						// 2. Starts with uppercase letter (UI, SCHEMA, PascalCase SubModel, etc.)
+						if (/^[A-Z]/.test(fieldName)) continue
+						// 3. System alias 'alias'
+						if (fieldName === 'alias') continue
+
+						if (!ctorMatch) {
+							const error = `Missing constructor in Model class '${className}' in ${file}`
+							errors.push({
+								file,
+								field: fieldName,
+								error,
+								check: 'missing_constructor',
+							})
+							yield show(error, 'error')
+							continue
+						}
+
+						// Check if declared in constructor with /** @type ... */ this.fieldName
+						// Must match `/** @type ... */ this.fieldName` within constructor
+						const hasCtorDecl = new RegExp(
+							`/\\*\\*\\s*@type[\\s\\S]*?\\*/\\s*this\\.${fieldName}\\b`
+						).test(ctorBody)
+
+						if (!hasCtorDecl) {
+							const error = `Missing constructor declaration or JSDoc @type for static schema field '${fieldName}' in ${file} (${className})`
+							errors.push({
+								file,
+								field: fieldName,
+								error,
+								check: 'missing_constructor_field',
+							})
+							yield show(error, 'error')
+						}
+					}
+				}
+			}
+
 			for (let i = 0; i < lines.length; i++) {
 				const line = lines[i]
 
-				if (!isDomain && /extends\s+Model\b/.test(line)) {
+				const isAppCommand =
+					normalizedFile.includes('/src/app/') || normalizedFile.startsWith('src/app/')
+				if (!isDomain && !isAppCommand && /extends\s+Model\b/.test(line)) {
 					const error = t(DomainAuditor.UI.violation_found, { file })
 					errors.push({ file, error, check: 'model_location' })
 					yield show(error, 'error')
 					break
 				}
 
-				if (!isDomain && /^\t[a-zA-Z_$][a-zA-Z0-9_$]* = /.test(line)) {
+				if (/^\t[a-zA-Z_$][a-zA-Z0-9_$]* = /.test(line)) {
 					const context = lines.slice(Math.max(0, i - 20), i).join('\n')
 					if (/\bclass\b/.test(context) && !/\bconstructor\b/.test(context)) {
 						const error = t(DomainAuditor.UI.class_field_found, { file, line: i + 1 })
 						errors.push({ file, error, check: 'class_field' })
-						yield show(error, 'warn')
+						yield show(error, 'error')
 					}
 				}
 

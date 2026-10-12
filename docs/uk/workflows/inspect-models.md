@@ -11,7 +11,12 @@ description: Zero-Hallucination Model-as-Schema v2 Auditor
 1.  **Наслідування**: Клас ПОВИНЕН наслідувати `Model` з `@nan0web/core` або `@nan0web/types`.
 2.  **Конструктор**: ПОВИНЕН мати підпис `constructor(data = {}, options = {})`.
 3.  **Super**: ПОВИНЕН першим ділом викликати `super(data, options)`.
-4.  **JSDoc Typization**: ПОВИНЕН мати `@type` анотації всередині конструктора для кожного статичного поля розширеної схеми.
+4.  **JSDoc Typization & Constructor Binding**: ПОВИНЕН мати `@type` анотації (`/** @type {...} */ this.field`) всередині конструктора для кожного статичного поля розширеної схеми (`static field = { ... }`).
+    - **Винятки (Skip List)**:
+      - Будь-які службові статичні поля з префіксом `$` (`$alias`, `$collection`, `$title`).
+      - Будь-які статичні константи чи словники, названі з великої літери (`UI`, `SCHEMA`, `PascalCase SubModel`).
+      - Системний аліас `alias`.
+    - Усі інші статичні поля схеми моделі (camelCase / snake_case) обов'язково повинні бути присутні у конструкторі.
 5.  **No Class Fields**: ЗАБОРОНЕНО використовувати ініціалізатори полів класу поза `static` (напр. `engine = 'fs'` у тілі класу зламає супер-ін'єкцію).
 6.  **Infrastructure Isolation**: ЗАБОРОНЕНО зберігати `this.db`, `this.projectDb`, `this.cwd` у публічних полях. Доступ ТІЛЬКИ через `this._.db`, `this._.cwd` тощо.
 7.  **No direct this.db**: Всі виклики методів БД мають бути через `this._.db` (а не `this.db`).

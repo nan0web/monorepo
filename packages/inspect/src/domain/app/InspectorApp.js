@@ -6,6 +6,7 @@ import { DomainAuditor } from './DomainAuditor.js'
 import { VerificationAuditor } from './VerificationAuditor.js'
 import { CircularDependencyAuditor } from './CircularDependencyAuditor.js'
 import { BuildWorkflowsApp } from './BuildWorkflowsApp.js'
+import { ListAuditorsApp } from './ListAuditorsApp.js'
 import { ModelAsApp, show, result } from '@nan0web/ui'
 import { SnapshotAuditor, OlmuiThemingAuditor } from '@nan0web/ui/inspect'
 import { AuditorModel } from '../AuditorModel.js'
@@ -22,7 +23,7 @@ export class InspectorApp extends ModelAsApp {
 
 	static command = {
 		type: ModelAsApp,
-		help: 'Command to run (e.g. phase, hygiene, all)',
+		help: 'Command to run (e.g. phase, hygiene, list, all)',
 		options: [
 			ArchitectureAuditor,
 			SnapshotAuditor,
@@ -34,6 +35,7 @@ export class InspectorApp extends ModelAsApp {
 			VerificationAuditor,
 			CircularDependencyAuditor,
 			BuildWorkflowsApp,
+			ListAuditorsApp,
 		],
 		default: ArchitectureAuditor,
 		positional: true,
@@ -58,7 +60,7 @@ export class InspectorApp extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {AuditorModel} Auditor model */ this.command
+		/** @type {AuditorModel | string} Auditor model or command alias */ this.command
 		/** @type {string} Target directory */ this.dir
 		/** @type {boolean} Automatically apply fixes */ this.fix
 		/** @type {import('../index.js').LanguagePlatform} Language platform */ this.platform
@@ -132,6 +134,8 @@ export class InspectorApp extends ModelAsApp {
 			let normalizedCmd = commandValue
 			if (commandValue === 'architecture') {
 				normalizedCmd = 'audit'
+			} else if (commandValue === 'ls') {
+				normalizedCmd = 'list'
 			}
 
 			const aliases = (InspectorApp.command.options || []).map((o) => o.alias).filter(Boolean)
