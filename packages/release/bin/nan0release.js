@@ -28,10 +28,10 @@ if (process.cwd() !== root && existsSync(resolve(root, 'releases.txt'))) {
 	process.chdir(root)
 }
 
-const db = new DBFS()
+const db = new DBFS({ root: '.' })
 await db.connect()
 
-bootstrapApp(ReleaseApp, { db }).catch((err) => {
+bootstrapApp(ReleaseApp, { db, root: '.' }).catch((err) => {
 	console.error(err)
 	process.exit(1)
 })

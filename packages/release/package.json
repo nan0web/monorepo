@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/release",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description": "Project Management as Code, Git-Native, GPG-Signed, Test-Driven",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -59,6 +59,7 @@
   "dependencies": {
     "@nan0web/changelog": "workspace:*",
     "@nan0web/co": "workspace:*",
+    "@nan0web/csv0": "workspace:*",
     "@nan0web/db": "workspace:*",
     "@nan0web/db-fs": "workspace:*",
     "@nan0web/inspect": "workspace:*",

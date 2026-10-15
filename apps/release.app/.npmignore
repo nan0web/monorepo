@@ -1,0 +1,16 @@
+# Tests
+src/**/*.test.js
+src/**/*.story.js
+src/test/
+src/releases/
+releases/
+test_data/
+.cache/
+
+# Dev files
+play/
+docs/
+next.md
+project.md
+migration-plan.md
+tsconfig.json

@@ -35,10 +35,10 @@ const startCwd = process.env.INIT_CWD || process.cwd()
 const root = findMonorepoRoot(startCwd)
 process.chdir(root)
 
-const db = new DBFS()
+const db = new DBFS({ root: '.' })
 await db.connect()
 
-bootstrapApp(ReleaseApp, { db }).catch((err) => {
+bootstrapApp(ReleaseApp, { db, root: '.' }).catch((err) => {
 	console.error(err)
 	process.exit(1)
 })

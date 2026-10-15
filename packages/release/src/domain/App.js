@@ -12,6 +12,7 @@ import PreviewCommand from './PreviewCommand.js'
 import ViewCommand from './ViewCommand.js'
 import ListCommand from './ListCommand.js'
 import ServeCommand from './ServeCommand.js'
+import ValidateCommand from './ValidateCommand.js'
 
 export class ReleaseApp extends ModelAsApp {
 	static alias = 'release'
@@ -25,6 +26,7 @@ export class ReleaseApp extends ModelAsApp {
 		options: [
 			InitCommand,
 			CheckCommand,
+			ValidateCommand,
 			CloseCommand,
 			DepsCommand,
 			PublishCommand,

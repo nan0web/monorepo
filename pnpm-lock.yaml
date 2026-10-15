@@ -1478,6 +1478,9 @@ importers:
       '@nan0web/co':
         specifier: workspace:*
         version: link:../co
+      '@nan0web/csv0':
+        specifier: workspace:*
+        version: link:../csv0
       '@nan0web/db':
         specifier: workspace:*
         version: link:../db

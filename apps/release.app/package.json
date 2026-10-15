@@ -1,10 +1,11 @@
 {
   "name": "@nan0web/release.app",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Global PM-as-Code Release Dashboard and Monitoring Hub",
   "main": "src/index.js",
   "type": "module",
   "bin": {
+    "dilo": "./bin/release-app.js",
     "release-app": "./bin/release-app.js",
     "nan0release": "./bin/release-app.js",
     "release": "./bin/release-app.js"
@@ -38,5 +39,14 @@
   "devDependencies": {
     "@nan0web/test": "workspace:*",
     "@types/node": "^25.6.0"
-  }
+  },
+  "files": [
+    "bin",
+    "src",
+    "!src/**/*.{test,story}.js",
+    "!src/releases/**",
+    "!src/test/**",
+    "LICENSE",
+    "README.md"
+  ]
 }

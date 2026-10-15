@@ -35,4 +35,13 @@ export { default as PreviewCommand } from './domain/PreviewCommand.js'
 export { RegistryModel } from './domain/Registry/RegistryModel.js'
 export { DashboardModel } from './domain/Dashboard/DashboardModel.js'
 export { ReleaseAuditor } from './domain/inspect/ReleaseAuditor.js'
+export {
+	ReleaseModel,
+	ReleaseMemberModel,
+	ReleaseTaskModel,
+	ReleaseParityModel,
+	ReleaseIssueModel,
+} from './domain/models/index.js'
+export { PMaCParser, resolveTrackerUrl } from './domain/PMaCParser.js'
+export { ValidateCommand } from './domain/ValidateCommand.js'
 

@@ -48,7 +48,7 @@ priority: P0
 
 	it('CLI Table & Inspector components render formatted output cleanly', async () => {
 		const { renderProjectTable, renderProjectInspector } = await import(
-			'../../../../src/ui/cli/index.js'
+			'../../../../ui/cli/index.js'
 		)
 		assert.equal(typeof renderProjectTable, 'function')
 		assert.equal(typeof renderProjectInspector, 'function')
@@ -86,7 +86,7 @@ priority: P0
 			ReleaseTaskList,
 			ReleaseFilterBar,
 			ReleaseDashboardLit,
-		} = await import('../../../../src/ui/lit/index.js')
+		} = await import('../../../../ui/lit/index.js')
 
 		assert.ok(ReleaseProjectCard)
 		assert.ok(ReleaseTaskList)

@@ -2,7 +2,7 @@ import { ModelAsApp } from '@nan0web/ui'
 import { StatusCommand } from '../StatusCommand.js'
 import { WebCommand } from '../WebCommand.js'
 import { PreviewCommand } from '../PreviewCommand.js'
-import { CheckCommand } from '@nan0web/release'
+import { CheckCommand, ValidateCommand } from '@nan0web/release'
 
 /**
  * ReleaseApp - Main Application Controller for Global Release Hub.
@@ -21,6 +21,7 @@ export class ReleaseApp extends ModelAsApp {
 			WebCommand,
 			PreviewCommand,
 			CheckCommand,
+			ValidateCommand,
 		],
 		positional: true,
 		default: StatusCommand,

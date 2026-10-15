@@ -2,7 +2,7 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import DB from '@nan0web/db'
 import { runGenerator } from '@nan0web/ui'
-import { StatusCommand } from '../../../../src/domain/StatusCommand.js'
+import { StatusCommand } from '../../../../domain/StatusCommand.js'
 
 describe('ReleaseApp v0.1.0 Extended CLI & Inspector Contracts', () => {
 	it('renders structured table with row numbers (#) and git branch columns', async () => {

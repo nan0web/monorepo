@@ -16,6 +16,11 @@
     "@nan0web/db-fs",
     "@nan0web/types",
     "@nan0web/co",
-    "@nan0web/changelog"
-  ]
+    "@nan0web/changelog",
+    "@nan0web/csv0",
+    "@nan0web/inspect"
+  ],
+  "rules": {
+    "duplicates": "off"
+  }
 }
