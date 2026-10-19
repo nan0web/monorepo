@@ -12,6 +12,7 @@ export { RegistryModel } from "./domain/Registry/RegistryModel.js";
 export { DashboardModel } from "./domain/Dashboard/DashboardModel.js";
 export { ReleaseAuditor } from "./domain/inspect/ReleaseAuditor.js";
 export { ValidateCommand } from "./domain/ValidateCommand.js";
+export { default as ExampleCommand } from "./domain/ExampleCommand.js";
 import Release from './Release.js';
 import ReleaseDocument from './Release/Document.js';
 import Person from './Release/Person.js';

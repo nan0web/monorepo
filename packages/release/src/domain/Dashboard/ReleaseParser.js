@@ -155,11 +155,11 @@ export function parseUserMetrics(input = '') {
 		if (!numMatch) continue
 		const val = parseFloat(numMatch[1])
 
-		if (hours === 0 && /(витрачений час|час розробки|time spent|development time|spent time|dev hours|hours|годин)/.test(beforeColon)) {
+		if (hours === 0 && /(витрачений час|час розробки|час роботи|time spent|development time|spent time|dev hours|hours|годин)/.test(beforeColon)) {
 			hours = val
-		} else if (iterations === 0 && /(кількість ітерацій|ітерацій|iteration count|test runs|refactor runs|iterations|runs)/.test(beforeColon)) {
+		} else if (iterations === 0 && /(кількість ітерацій|ітерацій|контрактні тести|тести релізу|тести|iteration count|test runs|refactor runs|iterations|runs)/.test(beforeColon)) {
 			iterations = Math.round(val)
-		} else if (rrs === 0 && /(rrs|release readiness score|фінальний бал|бал rrs|readiness score)/.test(beforeColon)) {
+		} else if (rrs === 0 && /(rrs|статус готовності|готовності|готовність|release readiness score|фінальний бал|бал rrs|readiness score)/.test(beforeColon)) {
 			rrs = Math.round(val)
 		}
 	}

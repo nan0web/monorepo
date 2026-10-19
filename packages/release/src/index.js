@@ -44,4 +44,6 @@ export {
 } from './domain/models/index.js'
 export { PMaCParser, resolveTrackerUrl } from './domain/PMaCParser.js'
 export { ValidateCommand } from './domain/ValidateCommand.js'
+export { default as ExampleCommand } from './domain/ExampleCommand.js'
+
 

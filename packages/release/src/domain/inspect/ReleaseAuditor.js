@@ -107,6 +107,18 @@ export class ReleaseAuditor extends AuditorModel {
 				message: 'Orphan file "{$file}" located directly in releases/ directory outside of version folders',
 				fix: 'Move "{$file}" into the appropriate version directory (e.g. releases/vX.Y.Z/) or backlog.md.',
 			},
+			DEPRECATED_TEST_LOCATION: {
+				level: 'warning',
+				code: 'DEPRECATED_TEST_LOCATION',
+				message: 'Closed regression test located in singular directory "{$file}". Canonical path is "src/tests/releases/".',
+				fix: 'Migrate regression test from "src/test/releases/" to "src/tests/releases/".',
+			},
+			DIRTY_SRC_RELEASES: {
+				level: 'error',
+				code: 'DIRTY_SRC_RELEASES',
+				message: 'Architectural violation: regression tests found in "{$file}". Polluting production src/ directory is forbidden.',
+				fix: 'Move tests from "src/releases/" to canonical regression directory "src/tests/releases/".',
+			},
 			PROCEDURAL_RELEASE_ARTIFACT: {
 				level: 'warning',
 				code: 'PROCEDURAL_RELEASE_ARTIFACT',
@@ -167,7 +179,16 @@ export class ReleaseAuditor extends AuditorModel {
 
 		// 1. Check package.json if auditing specific directory
 		if (projectRoot) {
-			const hasPkg = await this.fileExists('package.json')
+			let hasPkg = await this.fileExists('package.json')
+			if (!hasPkg) {
+				// Also check common subdirectories in monorepo/3rdparty apps like cms/package.json
+				for (const sub of ['cms/package.json', 'app/package.json', 'api/package.json', 'web/package.json']) {
+					if (await this.fileExists(sub)) {
+						hasPkg = true
+						break
+					}
+				}
+			}
 			if (!hasPkg) {
 				const diagDef = ReleaseAuditor.UI.Diagnostics.MISSING_PACKAGE_JSON
 				const err = {
@@ -267,17 +288,24 @@ export class ReleaseAuditor extends AuditorModel {
 				const userStr = typeof userDoc === 'object' ? JSON.stringify(userDoc) : String(userDoc)
 				const hasHours =
 					/витрачений час/i.test(userStr) ||
+					/час роботи/i.test(userStr) ||
+					/час розробки/i.test(userStr) ||
 					/hours/i.test(userStr) ||
-					userDoc.hours !== undefined ||
-					userDoc.time !== undefined
+					/годин/i.test(userStr) ||
+					/time/i.test(userStr) ||
+					(userDoc && typeof userDoc === 'object' && (userDoc.hours !== undefined || userDoc.time !== undefined))
 				const hasIters =
 					/кількість ітерацій/i.test(userStr) ||
+					/ітерацій/i.test(userStr) ||
 					/iterations/i.test(userStr) ||
-					userDoc.iterations !== undefined
+					/runs/i.test(userStr) ||
+					(userDoc && typeof userDoc === 'object' && userDoc.iterations !== undefined)
 				const hasRrs =
 					/rrs/i.test(userStr) ||
 					/score/i.test(userStr) ||
-					userDoc.rrs !== undefined
+					/готовності/i.test(userStr) ||
+					/бал/i.test(userStr) ||
+					(userDoc && typeof userDoc === 'object' && userDoc.rrs !== undefined)
 
 				if (!hasHours || !hasIters || !hasRrs) {
 					const diagDef = ReleaseAuditor.UI.Diagnostics.INCOMPLETE_USER_METRICS
@@ -296,32 +324,145 @@ export class ReleaseAuditor extends AuditorModel {
 				}
 			}
 
-			// C. Check contract tests (task.spec.js / task.test.js)
+			// C. Check contract tests (*.spec.js / *.test.js / *.story.js in releases/ or regression dirs)
 			let hasSpec = false
 			let hasTest = false
+			let specFile = ''
+			let testFile = ''
+
+			// Check within release directory
+			let relFiles = []
 			try {
-				const spec = await db.loadDocument(`${relPath}/task.spec.js`, null)
-				if (spec) hasSpec = true
+				if (typeof db.listDir === 'function') {
+					relFiles = await db.listDir(relPath, { depth: 0 })
+				}
 			} catch {}
 
-			try {
-				const test = await db.loadDocument(`${relPath}/task.test.js`, null)
-				if (test) hasTest = true
-			} catch {}
+			if (Array.isArray(relFiles) && relFiles.length > 0) {
+				for (const f of relFiles) {
+					const name = f.name || (f.path || '').split('/').pop() || ''
+					if (name.endsWith('.spec.js')) {
+						hasSpec = true
+						specFile = `${relPath}/${name}`
+					} else if (name.endsWith('.test.js') || name.endsWith('.story.js')) {
+						hasTest = true
+						testFile = `${relPath}/${name}`
+					}
+				}
+			} else {
+				// Fallback to explicit file probing
+				for (const candidate of ['task.spec.js']) {
+					try {
+						const doc = await db.loadDocument(`${relPath}/${candidate}`, null)
+						if (doc) {
+							hasSpec = true
+							specFile = `${relPath}/${candidate}`
+							break
+						}
+					} catch {}
+				}
+				for (const candidate of ['task.test.js', 'task.story.js']) {
+					try {
+						const doc = await db.loadDocument(`${relPath}/${candidate}`, null)
+						if (doc) {
+							hasTest = true
+							testFile = `${relPath}/${candidate}`
+							break
+						}
+					} catch {}
+				}
+			}
+
+			// Check regression directories outside releases/ if not found inside release
+			// Calculate relative subpath after releases/
+			const relSubpath = relPath.startsWith(`${projectRoot}releases/`)
+				? relPath.slice(`${projectRoot}releases/`.length)
+				: relPath.replace(/^releases\//, '')
+
+			// 1. Check canonical: src/tests/releases/ (🟢 OK / Sealed)
+			let canonicalTestFile = null
+			for (const ext of ['task.test.js', 'task.story.js', 'task.spec.js']) {
+				const p = `${projectRoot}src/tests/releases/${relSubpath}/${ext}`
+				try {
+					const d = await db.loadDocument(p, null)
+					if (d) {
+						canonicalTestFile = p
+						break
+					}
+				} catch {}
+			}
+			if (canonicalTestFile) {
+				hasTest = true
+				testFile = canonicalTestFile
+			}
+
+			// 2. Check singular: src/test/releases/ (⚠️ WARN: deprecated)
+			let singularTestFile = null
+			for (const ext of ['task.test.js', 'task.story.js', 'task.spec.js']) {
+				const p = `${projectRoot}src/test/releases/${relSubpath}/${ext}`
+				try {
+					const d = await db.loadDocument(p, null)
+					if (d) {
+						singularTestFile = p
+						break
+					}
+				} catch {}
+			}
+			if (singularTestFile) {
+				hasTest = true
+				if (!testFile) testFile = singularTestFile
+				const diagDef = ReleaseAuditor.UI.Diagnostics.DEPRECATED_TEST_LOCATION
+				const warn = {
+					level: /** @type {'warning'} */ ('warning'),
+					code: diagDef.code,
+					check: 'src/test/releases/',
+					file: singularTestFile,
+					error: t(diagDef.message, { file: singularTestFile }),
+					fix: t(diagDef.fix),
+				}
+				warnings.push(warn)
+				yield show(warn.error, 'warn')
+			}
+
+			// 3. Check dirty src/releases/ (❌ ERROR: architectural violation)
+			let dirtyTestFile = null
+			for (const ext of ['task.test.js', 'task.story.js', 'task.spec.js']) {
+				const p = `${projectRoot}src/releases/${relSubpath}/${ext}`
+				try {
+					const d = await db.loadDocument(p, null)
+					if (d) {
+						dirtyTestFile = p
+						break
+					}
+				} catch {}
+			}
+			if (dirtyTestFile) {
+				const diagDef = ReleaseAuditor.UI.Diagnostics.DIRTY_SRC_RELEASES
+				const err = {
+					level: /** @type {'error'} */ ('error'),
+					code: diagDef.code,
+					check: 'src/releases/',
+					file: dirtyTestFile,
+					error: t(diagDef.message, { file: dirtyTestFile }),
+					fix: t(diagDef.fix),
+				}
+				errors.push(err)
+				yield show(err.error, 'error')
+			}
 
 			if (hasSpec && hasTest) {
 				const diagDef = ReleaseAuditor.UI.Diagnostics.AMBIGUOUS_CONTRACTS
 				const err = {
 					level: /** @type {'error'} */ ('error'),
 					code: diagDef.code,
-					check: 'task.spec.js',
-					file: `${relPath}/task.spec.js`,
+					check: specFile || 'task.spec.js',
+					file: specFile || `${relPath}/task.spec.js`,
 					error: t(diagDef.message, { path: relPath }),
 					fix: t(diagDef.fix, { path: relPath }),
 				}
 				errors.push(err)
 				yield show(err.error, 'error')
-			} else if (!hasSpec && !hasTest) {
+			} else if (!hasSpec && !hasTest && !dirtyTestFile) {
 				const diagDef = ReleaseAuditor.UI.Diagnostics.MISSING_CONTRACT
 				const err = {
 					level: /** @type {'error'} */ ('error'),

@@ -98,6 +98,18 @@ export class ReleaseAuditor extends AuditorModel {
                 message: string;
                 fix: string;
             };
+            DEPRECATED_TEST_LOCATION: {
+                level: string;
+                code: string;
+                message: string;
+                fix: string;
+            };
+            DIRTY_SRC_RELEASES: {
+                level: string;
+                code: string;
+                message: string;
+                fix: string;
+            };
             PROCEDURAL_RELEASE_ARTIFACT: {
                 level: string;
                 code: string;

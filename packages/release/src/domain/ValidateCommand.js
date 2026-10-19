@@ -202,7 +202,10 @@ export class ValidateCommand extends ModelAsApp {
 
 		// Direct release directory?
 		if (targetParam && (targetParam.includes('releases/') || targetParam.endsWith('releases'))) {
-			return [{ path: targetParam, name: targetParam, version: '0.0.0', isDirectReleases: true }]
+			// Find nearest ancestor containing package.json or project directory
+			let projPath = targetParam.split(/\/releases(\/|$)/)[0] || '.'
+			if (!projPath) projPath = '.'
+			return [{ path: projPath, name: projPath, version: '0.0.0', releasesSubpath: targetParam, isDirectReleases: true }]
 		}
 
 		const registry = new RegistryModel({ filePath: this.registryFile || 'releases.txt' }, { db })

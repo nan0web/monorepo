@@ -339,7 +339,7 @@ export class CheckCommand extends ModelAsApp {
 					}
 				}
 
-				// 3. Check contract tests (task.spec.js / task.test.js)
+				// 3. Check contract tests (task.spec.js / task.test.js in releases/ or src/releases/)
 				let hasSpec = false
 				let hasTest = false
 				try {
@@ -348,6 +348,15 @@ export class CheckCommand extends ModelAsApp {
 				try {
 					hasTest = (await db.loadDocument(`${relPath}/task.test.js`, null)) !== null
 				} catch {}
+				if (!hasTest) {
+					try {
+						const srcRelPath = relPath.replace(
+							new RegExp(`^${projectRoot}releases/`),
+							`${projectRoot}src/releases/`
+						)
+						hasTest = (await db.loadDocument(`${srcRelPath}/task.test.js`, null)) !== null
+					} catch {}
+				}
 
 				if (hasSpec && hasTest) {
 					const diagDef = CheckCommand.UI.Diagnostics.AMBIGUOUS_CONTRACTS

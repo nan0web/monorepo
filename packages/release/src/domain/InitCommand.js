@@ -20,6 +20,8 @@ export default class InitCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
+		/** @type {string} */
+		this.version = String(data.version || (options && 'version' in options ? /** @type {any} */ (options).version : ''))
 	}
 
 	/**
@@ -38,21 +40,77 @@ export default class InitCommand extends ModelAsApp {
 		const parts = v.replace('v', '').split('.')
 		const major = parts[0] || '0'
 		const minor = parts[1] || '0'
+		const cleanVer = v.replace(/^v/, '')
 
-		const taskPath = `releases/${major}/${minor}/${v}/task.md`
-		await db.saveDocument(taskPath, `# Release ${v}\n\n- [ ] Task 1\n`)
+		const relDir = `releases/${major}/${minor}/${v}`
+		const taskPath = `${relDir}/task.md`
+		const taskContent = `---
+version: ${cleanVer}
+type: minor
+status: active
+locale: uk
+models: []
+---
 
-		const specPath = `releases/${major}/${minor}/${v}/task.spec.js`
-		await db.saveDocument(
-			specPath,
-			`import test from 'node:test'\nimport assert from 'node:assert'\n\ntest('Release ${v} Specification', () => {\n\tassert.ok(true)\n})\n`,
-		)
+# 🚀 Mission: Release ${v}
 
-		yield show(`✅ Initialized release ${v} in releases/${major}/${minor}/${v}`, 'success')
+## 🏁 Overview (Огляд)
+Опис завдань та мети релізу.
+
+## 👥 User Stories (Сценарії)
+- **Story 1:** Як розробник, я хочу...
+
+## 🎯 Target Files
+- \`src/index.js\`
+
+## 📋 Завдання (Tasks)
+- [ ] [task-1] Реалізувати первинну логіку
+- [ ] [task-2] Написати контрактні тести
+
+## ⚖️ Критерії Прийнятності (Acceptance Criteria)
+1. Усі задачі виконано.
+2. Тести task.spec.js проходять успішно.
+`
+		await db.saveDocument(taskPath, taskContent)
+
+		const userPath = `${relDir}/user.md`
+		const userContent = `---
+hours: 0.5
+iterations: 1
+rrs: 330
+status: active
+---
+
+# Журнал Розробника та Метрики: Реліз ${v}
+
+## Метрики Виконання
+- **Час роботи (Hours):** 0.5
+- **Ітерацій (Iterations):** 1
+- **RRS (Release Readiness Score):** 330
+
+## Лог Ітерацій та Відгуків (Append-Only)
+- **${new Date().toISOString().slice(0, 10)} [Ітерація 1]:** Створення релізу ${v}.
+`
+		await db.saveDocument(userPath, userContent)
+
+		const specPath = `${relDir}/task.spec.js`
+		const specContent = `import { describe, it } from 'node:test'
+import assert from 'node:assert/strict'
+
+describe('Release ${v} Specification', () => {
+	it('should validate contract', () => {
+		assert.ok(true)
+	})
+})
+`
+		await db.saveDocument(specPath, specContent)
+
+		yield show(`✅ Initialized release ${v} in ${relDir}`, 'success')
 
 		return result({
 			version: v,
 			taskPath,
+			userPath,
 			specPath,
 		})
 	}

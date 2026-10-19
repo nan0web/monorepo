@@ -24,6 +24,27 @@ export default class CloseCommand extends ModelAsApp {
 	}
 
 	/**
+	 * Compute destination path for closed contract test.
+	 * Migrates *.spec.js from releases/ to src/tests/releases/*.test.js
+	 * @param {string} path - Source path
+	 * @returns {string}
+	 */
+	getDestinationPath(path) {
+		const monorepoRoot = process.cwd()
+		const relFromRoot = path.startsWith(monorepoRoot + '/')
+			? path.slice(monorepoRoot.length + 1)
+			: path
+
+		if (relFromRoot.includes('releases/')) {
+			const idx = relFromRoot.indexOf('releases/')
+			const prefix = relFromRoot.slice(0, idx)
+			const relPath = relFromRoot.slice(idx)
+			return `${prefix}${relPath.replace(/^releases\//, 'src/tests/releases/').replace('.spec.js', '.test.js')}`
+		}
+		return relFromRoot.replace('.spec.js', '.test.js')
+	}
+
+	/**
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
 	 */
 	async *run() {
@@ -31,7 +52,8 @@ export default class CloseCommand extends ModelAsApp {
 		const v = this.version || ''
 		yield show(`🛜 nan0release close ${v || 'all'}`)
 
-		const scanner = new Scanner(process.cwd())
+		const targetRoot = process.env.RELEASE_CWD || process.cwd()
+		const scanner = new Scanner(targetRoot)
 		const specs = scanner.findSpecs(v)
 
 		if (specs.length === 0) {
@@ -44,29 +66,34 @@ export default class CloseCommand extends ModelAsApp {
 		const files = specs.map((s) => s.path)
 		const spawnResult = await runSpawn('node', ['--test', ...files])
 		if (spawnResult.code !== 0) {
-			throw new Error('Cannot close: Specs failed')
+			yield show(`Specs stdout:\n${spawnResult.text || ''}`, 'warn')
+			yield show(`Specs stderr:\n${spawnResult.error || ''}`, 'error')
+			throw new Error(`Cannot close: Specs failed (code ${spawnResult.code})`)
 		}
 
 		yield show(`✅ Specs passed. Closing...`, 'success')
 
 		let movedCount = 0
+		const monorepoRoot = process.cwd()
 		for (const spec of specs) {
-			const relativePath = spec.path.replace(/^.*?releases\//, 'releases/')
-			const destRelative = relativePath
-				.replace(/^releases\//, 'src/releases/')
-				.replace('.spec.js', '.test.js')
+			const absPath = spec.path
+			const relFromRoot = absPath.startsWith(monorepoRoot + '/')
+				? absPath.slice(monorepoRoot.length + 1)
+				: absPath
+
+			const destFromRoot = this.getDestinationPath(relFromRoot)
 
 			if (db) {
-				const content = await db.loadDocument(relativePath, null)
+				const content = await db.loadDocument(relFromRoot, null)
 				if (content !== null) {
-					await db.saveDocument(destRelative, content)
-					await db.dropDocument(relativePath)
+					await db.saveDocument(destFromRoot, content)
+					await db.dropDocument(relFromRoot)
 				}
 			}
 			movedCount++
 		}
 
-		yield show(`✅ Successfully closed ${movedCount} specs and moved to src/releases/`, 'success')
+		yield show(`✅ Successfully closed ${movedCount} specs and moved to src/tests/releases/`, 'success')
 		return result({ movedCount })
 	}
 }
