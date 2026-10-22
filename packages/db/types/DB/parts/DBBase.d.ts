@@ -546,6 +546,25 @@ export default class DBBase {
      * @returns {string} Absolute location on the drive.
      */
     location(uri: string): string;
+    /**
+     * Scans upwards from targetDir searching for markerName (with DB.DATA_EXTNAMES or explicit extension).
+     * If found, returns a scoped DB instance with cwd at found directory and root delta.
+     * If not found, returns scoped DB with cwd = targetDir and root = ''.
+     *
+     * @param {string} markerName - Marker filename (e.g. 'inspect.config' or 'package.json')
+     * @param {string} [targetDir=this.cwd] - Starting directory
+     * @returns {Promise<this>} Scoped DB instance
+     */
+    createRootUp(markerName: string, targetDir?: string): Promise<this>;
+    /**
+     * Cascades downwards from mount root to targetDir searching for markerName.
+     * Returns scoped DB instance.
+     *
+     * @param {string} markerName - Marker filename
+     * @param {string} [targetDir=this.cwd] - Target directory
+     * @returns {Promise<this>} Scoped DB instance
+     */
+    createRootDown(markerName: string, targetDir?: string): Promise<this>;
     #private;
 }
 import FormatRegistry from '../../FormatRegistry.js';

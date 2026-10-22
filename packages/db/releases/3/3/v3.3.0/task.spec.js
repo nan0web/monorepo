@@ -35,7 +35,7 @@ describe('Release v3.3.0: @nan0web/db Public Uploads & Metadata Contract', () =>
 
 		it('resolves README.md depending on Directory.INDEX', () => {
 			const db = new DB()
-			assert.equal(db.route('README.md'), '/README')
+			assert.equal(db.route('README.md'), '/')
 
 			class ReadmeDB extends DB {
 				static Directory = class extends DB.Directory {

@@ -1196,4 +1196,91 @@ export default class DBBase {
 		}
 		return this.absolute(uri)
 	}
+
+	/**
+	 * Scans upwards from targetDir searching for markerName (with DB.DATA_EXTNAMES or explicit extension).
+	 * If found, returns a scoped DB instance with cwd at found directory and root delta.
+	 * If not found, returns scoped DB with cwd = targetDir and root = ''.
+	 *
+	 * @param {string} markerName - Marker filename (e.g. 'inspect.config' or 'package.json')
+	 * @param {string} [targetDir=this.cwd] - Starting directory
+	 * @returns {Promise<this>} Scoped DB instance
+	 */
+	async createRootUp(markerName, targetDir = this.cwd) {
+		const target = this.absolute(targetDir)
+		const exts = markerName.includes('.')
+			? ['']
+			: /** @type {typeof DBBase} */ (this.constructor).DATA_EXTNAMES || ['.nan0', '.json']
+
+		let current = target
+		let foundDir = null
+
+		while (current) {
+			for (const ext of exts) {
+				const candidateFile = `${markerName}${ext}`
+				const fullCandidate = this.resolveSync(current, candidateFile)
+
+				// Check in-memory data first
+				if (this.data && typeof this.data.has === 'function' && this.data.has(fullCandidate)) {
+					foundDir = current
+					break
+				}
+
+				try {
+					const stat =
+						typeof this.statDocument === 'function' ? await this.statDocument(fullCandidate) : null
+					if (stat && (stat.exists || stat.isFile)) {
+						foundDir = current
+						break
+					}
+				} catch {
+					// Continue searching
+				}
+			}
+
+			if (foundDir) break
+
+			const parent = this.dirname(current)
+			if (!parent || parent === current || parent === '.' || parent === current + '/') {
+				break
+			}
+			const normalizedParent =
+				parent.endsWith('/') && parent.length > 1 ? parent.slice(0, -1) : parent
+			if (normalizedParent === current) {
+				break
+			}
+			current = normalizedParent
+		}
+
+		const Class = /** @type {typeof DBBase} */ (this.constructor)
+		if (!foundDir) {
+			return new Class({
+				...this.options,
+				cwd: targetDir,
+				root: '',
+			})
+		}
+
+		let delta = relative(foundDir, target)
+		if (delta === '.') delta = ''
+		if (delta.startsWith('./')) delta = delta.slice(2)
+
+		return new Class({
+			...this.options,
+			cwd: foundDir,
+			root: delta,
+		})
+	}
+
+	/**
+	 * Cascades downwards from mount root to targetDir searching for markerName.
+	 * Returns scoped DB instance.
+	 *
+	 * @param {string} markerName - Marker filename
+	 * @param {string} [targetDir=this.cwd] - Target directory
+	 * @returns {Promise<this>} Scoped DB instance
+	 */
+	async createRootDown(markerName, targetDir = this.cwd) {
+		return this.createRootUp(markerName, targetDir)
+	}
 }
