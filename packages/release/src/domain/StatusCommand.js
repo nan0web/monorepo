@@ -39,6 +39,13 @@ export default class StatusCommand extends ModelAsApp {
 		alias: 's',
 	}
 
+	static write = {
+		help: 'Write and synchronize release status markdown table into releases/README.md',
+		default: false,
+		type: 'boolean',
+		alias: 'w',
+	}
+
 	/**
 	 * @param {Partial<StatusCommand>} [data]
 	 * @param {import('@nan0web/types').ModelOptions} [options]
@@ -48,6 +55,7 @@ export default class StatusCommand extends ModelAsApp {
 		/** @type {string} */ this.registryFile
 		/** @type {string} */ this.target
 		/** @type {string} */ this.sort
+		/** @type {boolean} */ this.write = Boolean(data.write || (options && 'write' in options ? options.write : false))
 	}
 
 	/**
@@ -249,6 +257,13 @@ export default class StatusCommand extends ModelAsApp {
 				)
 			}
 
+			if (this.write && db) {
+				const startCwd = process.env.RELEASE_CWD || process.cwd()
+				const localScanner = new Scanner(startCwd)
+				const localStatuses = localScanner.status()
+				await this.syncReadmeStatus(db, localStatuses, startCwd)
+			}
+
 			return result({
 				status: 'ok',
 				summary,
@@ -257,7 +272,8 @@ export default class StatusCommand extends ModelAsApp {
 		}
 
 		// Local package fallback
-		const scanner = new Scanner(process.cwd())
+		const startCwd = process.env.RELEASE_CWD || process.cwd()
+		const scanner = new Scanner(startCwd)
 		const statuses = scanner.status()
 
 		yield show(`🛜 nan0release status`)
@@ -266,6 +282,112 @@ export default class StatusCommand extends ModelAsApp {
 				`${st.version.padEnd(10)} | ${st.state.padEnd(6)} | Specs: ${st.specs.length}, Tests: ${st.tests.length}`,
 			)
 		}
+
+		// Inject status table into releases/README.md if write flag is active
+		if (this.write && db) {
+			await this.syncReadmeStatus(db, statuses, startCwd)
+		}
+
 		return result({ statuses })
+	}
+
+	/**
+	 * Synchronize markdown status table between releases:status:start and releases:status:end
+	 * @param {any} db
+	 * @param {Array<any>} statuses
+	 * @param {string} [baseDir]
+	 */
+	async syncReadmeStatus(db, statuses = [], baseDir = '') {
+		const prefix = baseDir && baseDir !== '.' ? `${baseDir.replace(/\/+$/, '')}/` : ''
+		const readmePath = `${prefix}releases/README.md`.replace(/^\/+/, '')
+		let readmeContent = ''
+		try {
+			const doc = await db.loadDocument(readmePath, null)
+			if (doc) readmeContent = String(doc)
+		} catch {}
+
+		if (!readmeContent) return
+
+		const startMarker = '<!-- releases:status:start -->'
+		const endMarker = '<!-- releases:status:end -->'
+
+		if (!readmeContent.includes(startMarker) || !readmeContent.includes(endMarker)) {
+			return
+		}
+
+		// Generate Markdown Table with relative links from releases/ to versions and docs
+		const rows = [
+			'| Версія | Статус | Контракт | Регресія | Документи |',
+			'| :--- | :--- | :--- | :--- | :--- |',
+		]
+		for (const s of statuses) {
+			const badge = s.state === 'wip' ? '🟡 Active (WIP)' : s.state === 'closed' ? '🟢 Closed' : '⚪ Planned'
+			const cleanVer = String(s.version || '').replace(/^v+/, '')
+
+			// Compute relative path from releases/ to version dir
+			let relVersionPath = ''
+			if (s.dir) {
+				const releasesIndex = s.dir.indexOf('/releases/')
+				if (releasesIndex !== -1) {
+					relVersionPath = s.dir.slice(releasesIndex + '/releases/'.length)
+				} else {
+					const cleanMajor = cleanVer.split('.')[0] || '0'
+					const cleanMinor = cleanVer.split('.')[1] || '0'
+					relVersionPath = `${cleanMajor}/${cleanMinor}/v${cleanVer}`
+				}
+			} else {
+				const cleanMajor = cleanVer.split('.')[0] || '0'
+				const cleanMinor = cleanVer.split('.')[1] || '0'
+				relVersionPath = `${cleanMajor}/${cleanMinor}/v${cleanVer}`
+			}
+
+			// Version link
+			const versionCell = `[**v${cleanVer}**](${relVersionPath}/)`
+
+			// Contract specs link
+			let specsCell = '—'
+			if (s.specs && s.specs.length > 0) {
+				specsCell = s.specs
+					.map((p) => {
+						const name = p.split('/').pop() || 'task.spec.js'
+						return `[\`${name}\`](${relVersionPath}/${name})`
+					})
+					.join(', ')
+			}
+
+			// Regression tests link
+			let testsCell = '—'
+			if (s.tests && s.tests.length > 0) {
+				testsCell = s.tests
+					.map((p) => {
+						const name = p.split('/').pop() || 'task.test.js'
+						if (p.includes('/src/tests/releases/')) {
+							const sub = p.slice(p.indexOf('/src/tests/releases/') + 1)
+							return `[\`${name}\`](../${sub})`
+						}
+						return `[\`${name}\`](${relVersionPath}/${name})`
+					})
+					.join(', ')
+			}
+
+			// Docs links (task.md, release.md, user.md, etc.)
+			let docsCell = '—'
+			if (s.docs && s.docs.length > 0) {
+				docsCell = s.docs
+					.map((docName) => `[${docName}](${relVersionPath}/${docName})`)
+					.join(', ')
+			}
+
+			rows.push(`| ${versionCell} | ${badge} | ${specsCell} | ${testsCell} | ${docsCell} |`)
+		}
+
+		const tableContent = rows.join('\n')
+		const regex = new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`, 'm')
+		const updatedReadme = readmeContent.replace(
+			regex,
+			`${startMarker}\n\n${tableContent}\n\n${endMarker}`
+		)
+
+		await db.saveDocument(readmePath, updatedReadme)
 	}
 }

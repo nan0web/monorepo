@@ -37,60 +37,130 @@ export default class Scanner {
 	/**
 	 * Find all .spec.js files (WIP contracts)
 	 * @param {string} [version] - Optional version filter
+	 * @param {string} [releasesDir='releases'] - Directory containing releases
 	 * @returns {ContractEntry[]}
 	 */
-	findSpecs(version) {
-		return this.#scan(join(this.root, 'releases'), '.spec.js', version)
+	findSpecs(version, releasesDir = 'releases') {
+		return this.#scan(join(this.root, releasesDir), '.spec.js', version)
 	}
 
 	/**
 	 * Find all .test.js files (Closed contracts)
 	 * @param {string} [version] - Optional version filter
+	 * @param {string} [releasesDir='releases'] - Directory containing releases
 	 * @returns {ContractEntry[]}
 	 */
-	findTests(version) {
-		const oldTests = this.#scan(join(this.root, 'releases'), '.test.js', version)
-		const newTests = this.#scan(join(this.root, 'src', 'releases'), '.test.js', version)
-		return [...oldTests, ...newTests]
+	findTests(version, releasesDir = 'releases') {
+		const oldTests = this.#scan(join(this.root, releasesDir), '.test.js', version)
+		const newTests = this.#scan(join(this.root, 'src', 'tests', 'releases'), '.test.js', version)
+		const legacyTests = this.#scan(join(this.root, 'src', 'releases'), '.test.js', version)
+		return [...oldTests, ...newTests, ...legacyTests]
+	}
+
+	/**
+	 * Discover all release version directories under releasesDir
+	 * @param {string} [releasesDir='releases']
+	 * @returns {Array<{ version: string, dir: string }>}
+	 */
+	discoverVersions(releasesDir = 'releases') {
+		const targetDir = join(this.root, releasesDir)
+		if (!existsSync(targetDir)) return []
+
+		/** @type {Array<{ version: string, dir: string }>} */
+		const results = []
+		const queue = [targetDir]
+
+		while (queue.length > 0) {
+			const current = queue.shift()
+			if (!current) continue
+
+			let entries
+			try {
+				entries = readdirSync(current, { withFileTypes: true })
+			} catch {
+				continue
+			}
+
+			const dirName = current.split('/').pop() || ''
+			if (/^v\d+\.\d+\.\d+/.test(dirName)) {
+				results.push({ version: dirName, dir: current })
+				continue
+			}
+
+			for (const entry of entries) {
+				if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules' && entry.name !== '_') {
+					queue.push(join(current, entry.name))
+				}
+			}
+		}
+
+		return results
 	}
 
 	/**
 	 * Get status of all versions
+	 * @param {string} [releasesDir='releases']
 	 * @returns {VersionStatus[]}
 	 */
-	status() {
-		const specs = this.findSpecs()
-		const tests = this.findTests()
+	status(releasesDir = 'releases') {
+		const specs = this.findSpecs(undefined, releasesDir)
+		const tests = this.findTests(undefined, releasesDir)
+		const allDirs = this.discoverVersions(releasesDir)
 
 		/** @type {Map<string, VersionStatus>} */
 		const map = new Map()
 
+		// 1. Seed with all discovered release directories
+		for (const d of allDirs) {
+			map.set(d.version, {
+				version: d.version,
+				dir: d.dir,
+				state: 'planning',
+				specs: [],
+				tests: [],
+				docs: [],
+			})
+		}
+
+		// 2. Populate contract specs & tests
 		for (const entry of [...specs, ...tests]) {
-			let status = map.get(entry.version)
-			if (!status) {
-				status = {
+			let s = map.get(entry.version)
+			if (!s) {
+				s = {
 					version: entry.version,
+					dir: entry.dir,
 					state: 'wip',
 					specs: [],
 					tests: [],
+					docs: [],
 				}
-				map.set(entry.version, status)
+				map.set(entry.version, s)
 			}
-			if (entry.type === 'spec') status.specs.push(entry.path)
-			else status.tests.push(entry.path)
+			if (entry.type === 'spec') s.specs.push(entry.path)
+			else s.tests.push(entry.path)
 		}
 
-		for (const status of map.values()) {
-			if (status.specs.length > 0 && status.tests.length > 0) {
-				status.state = 'mixed'
-			} else if (status.specs.length === 0 && status.tests.length > 0) {
-				status.state = 'closed'
+		for (const s of map.values()) {
+			if (s.specs.length > 0 && s.tests.length > 0) {
+				s.state = 'mixed'
+			} else if (s.specs.length === 0 && s.tests.length > 0) {
+				s.state = 'closed'
+			} else if (s.specs.length > 0) {
+				s.state = 'wip'
 			} else {
-				status.state = 'wip'
+				s.state = 'planning'
+			}
+
+			// Scan docs (task.md, release.md, user.md, README.md, retro.md) inside version dir
+			if (s.dir && existsSync(s.dir)) {
+				try {
+					const files = readdirSync(s.dir)
+					s.docs = files.filter((f) => f.endsWith('.md'))
+				} catch {}
 			}
 		}
 
-		return [...map.values()].sort((a, b) => a.version.localeCompare(b.version))
+		return [...map.values()].sort((a, b) => b.version.localeCompare(a.version, undefined, { numeric: true }))
 	}
 
 	/**

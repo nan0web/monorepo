@@ -116,6 +116,12 @@ export class ReleaseAuditor extends AuditorModel {
                 message: string;
                 fix: string;
             };
+            MISPLACED_BACKLOG: {
+                level: string;
+                code: string;
+                message: string;
+                fix: string;
+            };
         };
     };
     /**
@@ -131,6 +137,7 @@ export class ReleaseAuditor extends AuditorModel {
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}
      */
     run(): AsyncGenerator<import("@nan0web/ui").Intent, any, any>;
+    config: ReleaseConfig | undefined;
     #private;
 }
 export default ReleaseAuditor;
@@ -144,3 +151,4 @@ export type ReleaseDiagnostic = {
     fix?: string | undefined;
 };
 import { AuditorModel } from '@nan0web/inspect/domain/AuditorModel';
+import { ReleaseConfig } from '../config/ReleaseConfig.js';

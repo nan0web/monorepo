@@ -1,0 +1,11 @@
+title: Релізи Платформи
+$access:
+  roles:
+    - public
+    - user
+    - architect
+    - admin
+    - system
+$content:
+  - ReleaseStatusView: true
+

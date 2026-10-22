@@ -30,6 +30,12 @@ export default class StatusCommand extends ModelAsApp {
         type: string;
         alias: string;
     };
+    static write: {
+        help: string;
+        default: boolean;
+        type: string;
+        alias: string;
+    };
     /**
      * @param {Partial<StatusCommand>} [data]
      * @param {import('@nan0web/types').ModelOptions} [options]
@@ -38,9 +44,17 @@ export default class StatusCommand extends ModelAsApp {
     /** @type {string} */ registryFile: string;
     /** @type {string} */ target: string;
     /** @type {string} */ sort: string;
+    /** @type {boolean} */ write: boolean;
     /**
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}
      */
     run(): AsyncGenerator<import("@nan0web/ui").Intent, any, any>;
+    /**
+     * Synchronize markdown status table between releases:status:start and releases:status:end
+     * @param {any} db
+     * @param {Array<any>} statuses
+     * @param {string} [baseDir]
+     */
+    syncReadmeStatus(db: any, statuses?: Array<any>, baseDir?: string): Promise<void>;
 }
 import { ModelAsApp } from '@nan0web/ui';

@@ -1,7 +1,7 @@
 ---
 version: 3.8.0
 type: feature
-status: active
+status: done
 locale: uk
 models:
   - packages/inspect/types/domain/app/js/JsDomainAuditor.d.ts

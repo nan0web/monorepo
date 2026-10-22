@@ -27,20 +27,32 @@ export default class Scanner {
     /**
      * Find all .spec.js files (WIP contracts)
      * @param {string} [version] - Optional version filter
+     * @param {string} [releasesDir='releases'] - Directory containing releases
      * @returns {ContractEntry[]}
      */
-    findSpecs(version?: string): ContractEntry[];
+    findSpecs(version?: string, releasesDir?: string): ContractEntry[];
     /**
      * Find all .test.js files (Closed contracts)
      * @param {string} [version] - Optional version filter
+     * @param {string} [releasesDir='releases'] - Directory containing releases
      * @returns {ContractEntry[]}
      */
-    findTests(version?: string): ContractEntry[];
+    findTests(version?: string, releasesDir?: string): ContractEntry[];
+    /**
+     * Discover all release version directories under releasesDir
+     * @param {string} [releasesDir='releases']
+     * @returns {Array<{ version: string, dir: string }>}
+     */
+    discoverVersions(releasesDir?: string): Array<{
+        version: string;
+        dir: string;
+    }>;
     /**
      * Get status of all versions
+     * @param {string} [releasesDir='releases']
      * @returns {VersionStatus[]}
      */
-    status(): VersionStatus[];
+    status(releasesDir?: string): VersionStatus[];
     /**
      * Close a release: rename all .spec.js → .test.js
      * @param {string} [version] - Version to close. If omitted, closes all WIP.

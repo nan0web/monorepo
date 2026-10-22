@@ -1,6 +1,7 @@
 import { ModelAsApp, show, result, progress } from '@nan0web/ui'
 import { RegistryModel } from './Registry/RegistryModel.js'
 import { DashboardModel } from './Dashboard/DashboardModel.js'
+import { ReleaseConfig } from './config/ReleaseConfig.js'
 
 /**
  * @typedef {Object} DiagnosticItem
@@ -40,6 +41,8 @@ export class CheckCommand extends ModelAsApp {
 		activeContractWip: '      ✅ Active contract: task.spec.js [WIP]',
 		sealedRegressionClosed: '      ✅ Sealed regression: task.test.js [CLOSED]',
 		orphanFile: '    ⚠️ Orphan file in releases/: {$file}',
+		rulesCatalogHeader: '\n📋 PM-as-Code Quality & Diagnostic Rules Catalog:',
+		ruleCatalogItem: '• [{$key}] {$badge}\n    Message: {$message}\n    Fix: {$fix}\n',
 		recommendationsHeader: '\n📋 Actionable Recommendations & Agent Instructions ({$count}):',
 		recommendationItem:
 			'\n[{$idx}] {$badge} [{$code}] {$message}\n    File: {$file}\n    👉 Fix Instruction (Human / AI Agent):\n       {$fix}',
@@ -96,6 +99,13 @@ export class CheckCommand extends ModelAsApp {
 					'Orphan file "{$file}" located directly in releases/ directory outside of version folders',
 				fix: 'Move "{$file}" into the appropriate version directory (e.g. releases/vX.Y.Z/) or remove it.',
 			},
+			MISPLACED_BACKLOG: {
+				level: 'warning',
+				code: 'MISPLACED_BACKLOG',
+				message:
+					'backlog.md found inside release directory {$path}. Backlog must be global at {$releasesDir}/backlog.md',
+				fix: 'Move or merge tasks into {$releasesDir}/backlog.md or rename to release.md/task.md.',
+			},
 		},
 	}
 
@@ -120,6 +130,19 @@ export class CheckCommand extends ModelAsApp {
 		alias: 'a',
 	}
 
+	static releasesDir = {
+		help: 'Custom releases directory name or path (default: "releases")',
+		default: '',
+		type: 'string',
+		alias: 'd',
+	}
+
+	static rules = {
+		help: 'Display all available diagnostic rules with descriptions and fixes',
+		default: false,
+		type: 'boolean',
+	}
+
 	/**
 	 * @param {Partial<CheckCommand>} [data]
 	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
@@ -129,6 +152,8 @@ export class CheckCommand extends ModelAsApp {
 		/** @type {string} */ this.target
 		/** @type {string} */ this.registryFile
 		/** @type {boolean} */ this.all
+		/** @type {string} */ this.releasesDir
+		/** @type {boolean} */ this.rules
 	}
 
 	/**
@@ -149,6 +174,26 @@ export class CheckCommand extends ModelAsApp {
 		}
 		if (!db) {
 			throw new Error(t(CheckCommand.UI.errorDbRequired))
+		}
+
+		// If --rules flag is passed, render diagnostic rules catalog and exit
+		if (this.rules) {
+			yield show(t(CheckCommand.UI.rulesCatalogHeader))
+			for (const [key, rule] of Object.entries(CheckCommand.UI.Diagnostics)) {
+				const badge = rule.level === 'error' ? '❌ ERROR' : '⚠️ WARN'
+				yield show(
+					t(CheckCommand.UI.ruleCatalogItem, {
+						key,
+						badge,
+						message: t(rule.message),
+						fix: t(rule.fix),
+					})
+				)
+			}
+			return result({
+				success: true,
+				rules: CheckCommand.UI.Diagnostics,
+			})
 		}
 
 		yield show(t(CheckCommand.UI.header))
@@ -228,8 +273,14 @@ export class CheckCommand extends ModelAsApp {
 				)
 			}
 
-			// B. Discover release directories via db
-			const releaseDirs = await this.#discoverReleases(db, projectRoot)
+			// B. Discover release directories via db using ReleaseConfig
+			const projConfig = await ReleaseConfig.load(db, proj.path, {
+				releasesDir: this.releasesDir || undefined,
+			})
+			const releasesDirName = projConfig.releasesDir || 'releases'
+			const misplacedBacklogRule = projConfig.rules?.misplaced_backlog || 'warning'
+
+			const releaseDirs = await this.#discoverReleases(db, projectRoot, releasesDirName)
 
 			if (releaseDirs.length === 0) {
 				const diagDef = CheckCommand.UI.Diagnostics.MISSING_RELEASES_DIR
@@ -237,12 +288,12 @@ export class CheckCommand extends ModelAsApp {
 					level: diagDef.level,
 					code: diagDef.code,
 					project: proj.name,
-					file: `${projectRoot}releases/`,
-					message: t(diagDef.message, { path: `${projectRoot}releases/` }),
+					file: `${projectRoot}${releasesDirName}/`,
+					message: t(diagDef.message, { path: `${projectRoot}${releasesDirName}/` }),
 					fix: t(diagDef.fix, { version: pkg?.version || '0.1.0' }),
 				})
 				yield show(
-					t(CheckCommand.UI.noReleasesDir, { path: `${projectRoot}releases/` }),
+					t(CheckCommand.UI.noReleasesDir, { path: `${projectRoot}${releasesDirName}/` }),
 					'error'
 				)
 				checkedProjects.push({ name: proj.name, path: proj.path, valid: false })
@@ -258,6 +309,42 @@ export class CheckCommand extends ModelAsApp {
 			for (const rel of releaseDirs) {
 				const relPath = rel.path
 				yield show(t(CheckCommand.UI.releaseHeader, { version: rel.version, path: relPath }))
+
+				// 0. Check for misplaced backlog.md or backlog/ inside version directory
+				if (misplacedBacklogRule !== 'off') {
+					let hasLocalBacklog = false
+					let localBacklogPath = `${relPath}/backlog.md`
+					try {
+						hasLocalBacklog = (await db.loadDocument(`${relPath}/backlog.md`, null)) !== null
+					} catch {}
+
+					if (!hasLocalBacklog) {
+						try {
+							const stat = typeof db.statDocument === 'function' ? await db.statDocument(`${relPath}/backlog`) : null
+							if (stat && (stat.exists || stat.isDirectory)) {
+								hasLocalBacklog = true
+								localBacklogPath = `${relPath}/backlog/`
+							}
+						} catch {}
+					}
+
+					if (hasLocalBacklog) {
+						const diagDef = CheckCommand.UI.Diagnostics.MISPLACED_BACKLOG
+						const isError = misplacedBacklogRule === 'error'
+						diagnostics.push({
+							level: isError ? 'error' : 'warning',
+							code: diagDef.code,
+							project: proj.name,
+							file: localBacklogPath,
+							message: t(diagDef.message, { path: relPath, releasesDir: `${projectRoot}${releasesDirName}` }),
+							fix: t(diagDef.fix, { path: relPath, releasesDir: `${projectRoot}${releasesDirName}` }),
+						})
+						yield show(
+							t(diagDef.message, { path: relPath, releasesDir: `${projectRoot}${releasesDirName}` }),
+							isError ? 'error' : 'warn'
+						)
+					}
+				}
 
 				// 1. Check release.md / task.md
 				let releaseContent = null
@@ -388,7 +475,7 @@ export class CheckCommand extends ModelAsApp {
 			}
 
 			// D. Check for orphan files inside releases/ via db
-			const orphanFiles = await this.#findOrphanReleaseFiles(db, projectRoot)
+			const orphanFiles = await this.#findOrphanReleaseFiles(db, projectRoot, releasesDirName)
 			if (orphanFiles.length > 0) {
 				const diagDef = CheckCommand.UI.Diagnostics.ORPHAN_RELEASE_FILE
 				for (const orphan of orphanFiles) {
@@ -396,7 +483,7 @@ export class CheckCommand extends ModelAsApp {
 						level: diagDef.level,
 						code: diagDef.code,
 						project: proj.name,
-						file: `${projectRoot}releases/${orphan}`,
+						file: `${projectRoot}${releasesDirName}/${orphan}`,
 						message: t(diagDef.message, { file: orphan }),
 						fix: t(diagDef.fix, { file: orphan }),
 					})
@@ -476,11 +563,12 @@ export class CheckCommand extends ModelAsApp {
 	 * Discover release version directories using database
 	 * @param {any} db
 	 * @param {string} projectRoot
+	 * @param {string} [releasesDir='releases']
 	 * @returns {Promise<Array<{ version: string, path: string }>>}
 	 */
-	async #discoverReleases(db, projectRoot) {
+	async #discoverReleases(db, projectRoot, releasesDir = 'releases') {
 		const results = []
-		const releasesUri = `${projectRoot}releases`.replace(/^\/+/, '') || 'releases'
+		const releasesUri = `${projectRoot}${releasesDir}`.replace(/^\/+/, '') || releasesDir
 
 		try {
 			if (typeof db.listDir === 'function') {
@@ -530,11 +618,12 @@ export class CheckCommand extends ModelAsApp {
 	 * Find orphan files inside releases/ directory using db
 	 * @param {any} db
 	 * @param {string} projectRoot
+	 * @param {string} [releasesDir='releases']
 	 * @returns {Promise<string[]>}
 	 */
-	async #findOrphanReleaseFiles(db, projectRoot) {
+	async #findOrphanReleaseFiles(db, projectRoot, releasesDir = 'releases') {
 		const orphans = []
-		const releasesUri = `${projectRoot}releases`.replace(/^\/+/, '') || 'releases'
+		const releasesUri = `${projectRoot}${releasesDir}`.replace(/^\/+/, '') || releasesDir
 
 		try {
 			if (typeof db.listDir === 'function') {

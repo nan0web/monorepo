@@ -1,5 +1,6 @@
 import { AuditorModel } from '@nan0web/inspect/domain/AuditorModel'
 import { show, progress, result } from '@nan0web/ui'
+import { ReleaseConfig } from '../config/ReleaseConfig.js'
 
 /**
  * @typedef {Object} ReleaseDiagnostic
@@ -125,6 +126,12 @@ export class ReleaseAuditor extends AuditorModel {
 				message: 'Procedural artifact "{$file}" found in release {$path}. Releases must be pure Data-Driven.',
 				fix: 'Remove "{$file}". Use data-driven *.nan0 documents and multimodal runners (serve releases/) instead of ad-hoc HTML/JS.',
 			},
+			MISPLACED_BACKLOG: {
+				level: 'warning',
+				code: 'MISPLACED_BACKLOG',
+				message: 'backlog.md found inside release directory {$path}. Backlog must be global at {$releasesDir}/backlog.md',
+				fix: 'Move or merge tasks into {$releasesDir}/backlog.md or rename to release.md/task.md.',
+			},
 		},
 	}
 
@@ -169,6 +176,13 @@ export class ReleaseAuditor extends AuditorModel {
 
 		yield progress(t(ReleaseAuditor.UI.header, { dir: this.dir }))
 
+		// 0. Load ReleaseConfig if not already injected
+		if (!this.config && db) {
+			this.config = await ReleaseConfig.load(db, this.dir || '.')
+		}
+		const releasesDirName = this.config?.releasesDir || 'releases'
+		const misplacedBacklogRule = this.config?.rules?.misplaced_backlog || 'warning'
+
 		/** @type {ReleaseDiagnostic[]} */
 		const errors = []
 		/** @type {ReleaseDiagnostic[]} */
@@ -205,15 +219,15 @@ export class ReleaseAuditor extends AuditorModel {
 		}
 
 		// 2. Discover release directories
-		const releaseDirs = await this.#discoverReleases(db, projectRoot)
+		const releaseDirs = await this.#discoverReleases(db, projectRoot, releasesDirName)
 
 		if (releaseDirs.length === 0) {
 			const diagDef = ReleaseAuditor.UI.Diagnostics.MISSING_RELEASES_DIR
 			const err = {
 				level: /** @type {'error'} */ ('error'),
 				code: diagDef.code,
-				check: 'releases/',
-				file: `${projectRoot}releases/`,
+				check: `${releasesDirName}/`,
+				file: `${projectRoot}${releasesDirName}/`,
 				error: t(diagDef.message, { dir: this.dir }),
 				fix: t(diagDef.fix, { dir: this.dir }),
 			}
@@ -227,6 +241,45 @@ export class ReleaseAuditor extends AuditorModel {
 		for (const rel of releaseDirs) {
 			const relPath = rel.path
 			yield show(t(ReleaseAuditor.UI.releaseHeader, { version: rel.version, path: relPath }))
+
+			// 0. Check for misplaced backlog.md or backlog/ inside version directory
+			if (misplacedBacklogRule !== 'off') {
+				let hasLocalBacklog = false
+				let localBacklogPath = `${relPath}/backlog.md`
+				try {
+					hasLocalBacklog = (await db.loadDocument(`${relPath}/backlog.md`, null)) !== null
+				} catch {}
+
+				if (!hasLocalBacklog) {
+					try {
+						const stat = typeof db.statDocument === 'function' ? await db.statDocument(`${relPath}/backlog`) : null
+						if (stat && (stat.exists || stat.isDirectory)) {
+							hasLocalBacklog = true
+							localBacklogPath = `${relPath}/backlog/`
+						}
+					} catch {}
+				}
+
+				if (hasLocalBacklog) {
+					const diagDef = ReleaseAuditor.UI.Diagnostics.MISPLACED_BACKLOG
+					const isError = misplacedBacklogRule === 'error'
+					const diag = {
+						level: /** @type {'error' | 'warning'} */ (isError ? 'error' : 'warning'),
+						code: diagDef.code,
+						check: 'backlog.md',
+						file: localBacklogPath,
+						error: t(diagDef.message, { path: relPath, releasesDir: `${projectRoot}${releasesDirName}` }),
+						fix: t(diagDef.fix, { path: relPath, releasesDir: `${projectRoot}${releasesDirName}` }),
+					}
+					if (isError) {
+						errors.push(diag)
+						yield show(diag.error, 'error')
+					} else {
+						warnings.push(diag)
+						yield show(diag.error, 'warn')
+					}
+				}
+			}
 
 			// A. Check release.md / task.md / plan.md
 			let releaseContent = null
@@ -508,14 +561,14 @@ export class ReleaseAuditor extends AuditorModel {
 		}
 
 		// 4. Check for orphan files in releases/ root
-		const orphanFiles = await this.#findOrphanReleaseFiles(db, projectRoot)
+		const orphanFiles = await this.#findOrphanReleaseFiles(db, projectRoot, releasesDirName)
 		for (const orphan of orphanFiles) {
 			const diagDef = ReleaseAuditor.UI.Diagnostics.ORPHAN_RELEASE_FILE
 			const warn = {
 				level: /** @type {'warning'} */ ('warning'),
 				code: diagDef.code,
 				check: orphan,
-				file: `${projectRoot}releases/${orphan}`,
+				file: `${projectRoot}${releasesDirName}/${orphan}`,
 				error: t(diagDef.message, { file: orphan }),
 				fix: t(diagDef.fix, { file: orphan }),
 			}
@@ -565,11 +618,12 @@ export class ReleaseAuditor extends AuditorModel {
 	 * Discover release version directories using database
 	 * @param {any} db
 	 * @param {string} projectRoot
+	 * @param {string} [releasesDir='releases']
 	 * @returns {Promise<Array<{ version: string, path: string }>>}
 	 */
-	async #discoverReleases(db, projectRoot) {
+	async #discoverReleases(db, projectRoot, releasesDir = 'releases') {
 		const results = []
-		const releasesUri = `${projectRoot}releases`.replace(/^\/+/, '') || 'releases'
+		const releasesUri = `${projectRoot}${releasesDir}`.replace(/^\/+/, '') || releasesDir
 
 		try {
 			if (typeof db.listDir === 'function') {
@@ -619,11 +673,12 @@ export class ReleaseAuditor extends AuditorModel {
 	 * Find orphan files inside releases/ directory using db
 	 * @param {any} db
 	 * @param {string} projectRoot
+	 * @param {string} [releasesDir='releases']
 	 * @returns {Promise<string[]>}
 	 */
-	async #findOrphanReleaseFiles(db, projectRoot) {
+	async #findOrphanReleaseFiles(db, projectRoot, releasesDir = 'releases') {
 		const orphans = []
-		const releasesUri = `${projectRoot}releases`.replace(/^\/+/, '') || 'releases'
+		const releasesUri = `${projectRoot}${releasesDir}`.replace(/^\/+/, '') || releasesDir
 
 		try {
 			if (typeof db.listDir === 'function') {

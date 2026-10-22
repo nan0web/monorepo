@@ -33,6 +33,8 @@ export class CheckCommand extends ModelAsApp {
         activeContractWip: string;
         sealedRegressionClosed: string;
         orphanFile: string;
+        rulesCatalogHeader: string;
+        ruleCatalogItem: string;
         recommendationsHeader: string;
         recommendationItem: string;
         summary: string;
@@ -85,6 +87,12 @@ export class CheckCommand extends ModelAsApp {
                 message: string;
                 fix: string;
             };
+            MISPLACED_BACKLOG: {
+                level: string;
+                code: string;
+                message: string;
+                fix: string;
+            };
         };
     };
     static target: {
@@ -105,6 +113,17 @@ export class CheckCommand extends ModelAsApp {
         type: string;
         alias: string;
     };
+    static releasesDir: {
+        help: string;
+        default: string;
+        type: string;
+        alias: string;
+    };
+    static rules: {
+        help: string;
+        default: boolean;
+        type: string;
+    };
     /**
      * @param {Partial<CheckCommand>} [data]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
@@ -113,6 +132,8 @@ export class CheckCommand extends ModelAsApp {
     /** @type {string} */ target: string;
     /** @type {string} */ registryFile: string;
     /** @type {boolean} */ all: boolean;
+    /** @type {string} */ releasesDir: string;
+    /** @type {boolean} */ rules: boolean;
     /**
      * Execute release structure check
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, { success: boolean, diagnostics: DiagnosticItem[], checkedProjects: any[] }, any>}

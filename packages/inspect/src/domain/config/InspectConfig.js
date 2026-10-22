@@ -263,7 +263,16 @@ export class InspectConfig extends Model {
 		} catch {}
 
 		// 2. Repo root configuration (<repo_root>/inspect.config.{nan0,yaml,js})
-		let rootDoc = await tryLoadFile('', 'inspect.config')
+		let rootDoc = null
+		if (typeof db.createRootUp === 'function') {
+			const rootDb = await db.createRootUp('inspect.config', targetDir || '.')
+			if (rootDb.cwd && rootDb.cwd !== (targetDir || '.')) {
+				rootDoc = await tryLoadFile(rootDb.cwd === '.' ? '' : rootDb.cwd, 'inspect.config')
+			}
+		}
+		if (!rootDoc) {
+			rootDoc = await tryLoadFile('', 'inspect.config')
+		}
 		if (!rootDoc && typeof db.location === 'function') {
 			let cur = db.location('')
 			while (cur && cur !== '/' && !cur.endsWith(':\\')) {

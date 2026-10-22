@@ -1,0 +1,10 @@
+title: Конфігурація Релізів
+$access:
+  role: admin
+  forbidden:
+    redirect: /releases
+$content:
+  - Config:
+      model: ReleaseConfig
+      role: admin
+
