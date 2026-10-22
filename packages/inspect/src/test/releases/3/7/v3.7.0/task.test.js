@@ -18,7 +18,11 @@ describe('Release v3.7.0: Typed InspectConfig Model & Cascading Configuration Re
 			const config = new InspectConfig()
 			assert.deepEqual(config.skip, [])
 			assert.deepEqual(config.theming, { ignorePatterns: [], ignoreDirs: [] })
-			assert.deepEqual(config.snapshots, { optional: false, allowEmpty: false, dir: 'snapshots/core' })
+			assert.deepEqual(config.snapshots, {
+				optional: false,
+				allowEmpty: false,
+				dir: 'snapshots/core',
+			})
 			assert.deepEqual(config.rules, {})
 		})
 
@@ -294,7 +298,8 @@ snapshots:
 
 	describe('§5 Test Style Audit & Performance Anti-Pattern Scanning', () => {
 		it('detects flat test() calls and enforces describe/it in JsVerificationAuditor', async () => {
-			const { JsVerificationAuditor } = await import('../../../../../domain/app/js/JsVerificationAuditor.js')
+			const { JsVerificationAuditor } =
+				await import('../../../../../domain/app/js/JsVerificationAuditor.js')
 			const db = new DB({
 				predefined: [
 					['play/.gitkeep', ''],
