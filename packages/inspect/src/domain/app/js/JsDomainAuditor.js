@@ -94,7 +94,7 @@ export class JsDomainAuditor extends DomainAuditor {
 
 				if (isModelClass) {
 					// Extract constructor body
-					const ctorMatch = /constructor\s*\([^)]*\)\s*\{([\s\S]*?)(?:\n\t\})/.exec(classBody)
+					const ctorMatch = /constructor\s*\([^)]*\)\s*\{([\s\S]*?)(?:\n[\t ]*\})/.exec(classBody)
 					const ctorBody = ctorMatch ? ctorMatch[1] : ''
 
 					// Collect static field declarations
@@ -140,6 +140,26 @@ export class JsDomainAuditor extends DomainAuditor {
 							})
 							yield show(error, 'error')
 						}
+
+						// Anti-pattern check: manual assignment of schema field in constructor
+						// (e.g. `this.field = data.field || ...`), which breaks/duplicates super(data, options) resolution
+						const manualAssignmentRegex = new RegExp(
+							`this\\.${fieldName}\\s*=\\s*(?:data\\.${fieldName}|Boolean\\(data\\.${fieldName}|String\\(data\\.${fieldName})`
+						)
+						if (manualAssignmentRegex.test(ctorBody)) {
+							// Extract help from static field definition if available
+							const staticDeclRegex = new RegExp(`static\\s+${fieldName}\\s*=\\s*(\\{[\\s\\S]*?\\n\\s*\\}|[^;\\n]+)`)
+							const declMatch = staticDeclRegex.exec(classBody)
+							let helpDesc = ''
+							if (declMatch) {
+								const helpMatch = /help\s*:\s*['"`]([^'"`]+)['"`]/.exec(declMatch[1])
+								if (helpMatch && helpMatch[1]) {
+									helpDesc = ` ${helpMatch[1]}`
+								}
+							}
+							const warning = `Notice (Smell): redundant manual assignment 'this.${fieldName} = data.${fieldName}' in ${file} (${className}). Field is automatically initialized by super(data, options). Consider using '/** @type {...}${helpDesc} */ this.${fieldName}' unless specific preprocessing is required.`
+							yield show(warning, 'warn')
+						}
 					}
 				}
 			}
@@ -154,6 +174,36 @@ export class JsDomainAuditor extends DomainAuditor {
 					errors.push({ file, error, check: 'model_location' })
 					yield show(error, 'error')
 					break
+				}
+
+				if (isDomain) {
+					if (/import\s+.*from\s+['"](node:fs|fs|node:fs\/promises)['"]/.test(line)) {
+						const error = t(DomainAuditor.UI.raw_fs_found, { file, line: i + 1 })
+						errors.push({ file, line: i + 1, error, check: 'raw_fs' })
+						yield show(error, 'error')
+					}
+					if (/import\s+.*from\s+['"](node:path|path|node:path\/posix|node:path\/win32)['"]/.test(line)) {
+						const error = t(DomainAuditor.UI.raw_path_found, { file, line: i + 1 })
+						errors.push({ file, line: i + 1, error, check: 'raw_path' })
+						yield show(error, 'error')
+					}
+
+					// Architectural smell: passing explicit file extensions to saveDocument / loadDocument
+					const dbCallMatch = /(?:this\.\$db|\bdb)\.(saveDocument|loadDocument)\s*\(\s*([^,\)]+)/.exec(line)
+					if (dbCallMatch) {
+						const method = dbCallMatch[1]
+						const targetArg = dbCallMatch[2].trim()
+						if (/\.(nan0|yaml|yml|json)['"]\s*$/.test(targetArg) || /['"][^'"]+\.(nan0|yaml|yml|json)['"]/.test(targetArg)) {
+							const error = t(DomainAuditor.UI.explicit_extension_found, {
+								method,
+								path: targetArg,
+								file,
+								line: i + 1,
+							})
+							errors.push({ file, line: i + 1, error, check: 'explicit_db_extension' })
+							yield show(error, 'warn')
+						}
+					}
 				}
 
 				if (/^\t[a-zA-Z_$][a-zA-Z0-9_$]* = /.test(line)) {

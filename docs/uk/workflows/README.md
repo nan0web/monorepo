@@ -40,6 +40,7 @@
 | **[indexator.md](./indexator.md)** | Швидка генерація індексів (packages/index.md та apps/index.md) без LLM на базі project.md |
 | **[init-project.md](./init-project.md)** | Ініціалізація або адаптація пакета/додатка під архітектуру 0HCnAI (Zero-Hallucination) |
 | **[inspect-anti-pattern.md](./inspect-anti-pattern.md)** | Сканер архітектурних антипатернів (Model-as-Schema) |
+| **[interactive-test.md](./interactive-test.md)** | Протокол Інтерактивного Тестування та Діагностики Свідомості через AI-Агента (UI Mode) |
 | **[inspect-bank.md](./inspect-bank.md)** | Zero-Hallucination Bank Architecture Validator |
 | **[inspect-i18n.md](./inspect-i18n.md)** | Zero-Hallucination i18n Translation & Keys Validator Subagent |
 | **[inspect-jsdoc.md](./inspect-jsdoc.md)** | JSDoc Validator Subagent |

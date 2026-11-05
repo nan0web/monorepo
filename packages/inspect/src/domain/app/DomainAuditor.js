@@ -19,6 +19,9 @@ export class DomainAuditor extends AuditorModel {
 		scanning: 'Scanning for Model-as-Schema violations...',
 		violation_found: 'Model class outside src/domain/ in {file}',
 		class_field_found: 'Class field outside constructor in {file} (line {line})',
+		raw_fs_found: 'Direct fs import detected in domain file {file} (line {line}). Use injected db instead.',
+		raw_path_found: 'Direct path import detected in domain file {file} (line {line}). Use db methods instead.',
+		explicit_extension_found: 'Redundant explicit file extension in {method}("{path}") in {file} (line {line}). NaN0Web DB resolves formats polymorphically. Omit extension.',
 		domain_ok: 'Domain/UI separation: OK',
 	}
 

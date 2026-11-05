@@ -99,14 +99,15 @@ export class InspectorApp extends ModelAsApp {
 			this.config = await InspectConfig.load(this._.db, this.dir || '.')
 		}
 		try {
-			const hasPkg = (await this._.db.statDocument('package.json')).exists
-			if (hasPkg) {
+			const targetDir = this.dir || '.'
+			const hasPkg = await this._.db.statDocument(this._.db.resolveSync(targetDir, 'package.json')).catch(() => null)
+			if (hasPkg && (hasPkg.exists || hasPkg.isFile || hasPkg.size !== undefined)) {
 				this.platform = 'js'
 				return
 			}
 			const hasPy =
-				(await this._.db.statDocument('requirements.txt')).exists ||
-				(await this._.db.statDocument('pyproject.toml')).exists
+				(await this._.db.statDocument(this._.db.resolveSync(targetDir, 'requirements.txt')).catch(() => null))?.exists ||
+				(await this._.db.statDocument(this._.db.resolveSync(targetDir, 'pyproject.toml')).catch(() => null))?.exists
 			if (hasPy) {
 				this.platform = 'python'
 				return

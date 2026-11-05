@@ -77,6 +77,93 @@ describe('DomainAuditor', () => {
 		assert.ok(result.data.errors.some((e) => e.check === 'class_field'))
 	})
 
+	it('detects direct fs import in domain as error', async () => {
+		const db = new DB({
+			predefined: [
+				[
+					'src/domain/MyService.js',
+					'import fs from "node:fs"\nexport class MyService {}\n',
+				],
+			],
+		})
+		await db.connect()
+
+		const auditor = new JsDomainAuditor({ dir: '.' }, { db, t: (key) => key })
+		const { result } = await drainGenerator(auditor.run())
+
+		assert.equal(result.data.success, false)
+		assert.ok(result.data.errors.some((e) => e.check === 'raw_fs'))
+	})
+
+	it('detects direct path import in domain as error', async () => {
+		const db = new DB({
+			predefined: [
+				[
+					'src/domain/MyService.js',
+					'import path from "node:path"\nexport class MyService {}\n',
+				],
+			],
+		})
+		await db.connect()
+
+		const auditor = new JsDomainAuditor({ dir: '.' }, { db, t: (key) => key })
+		const { result } = await drainGenerator(auditor.run())
+
+		assert.equal(result.data.success, false)
+		assert.ok(result.data.errors.some((e) => e.check === 'raw_path'))
+	})
+
+	it('detects explicit file extension in saveDocument / loadDocument in domain files', async () => {
+		const db = new DB({
+			predefined: [
+				[
+					'src/domain/MyService.js',
+					'export class MyService {\n\tasync save(db) {\n\t\tawait db.saveDocument("users/1.nan0", { name: "test" })\n\t}\n}\n',
+				],
+			],
+		})
+		await db.connect()
+
+		const auditor = new JsDomainAuditor({ dir: '.' }, { db, t: (key) => key })
+		const { result } = await drainGenerator(auditor.run())
+
+		assert.ok(result.data.errors.some((e) => e.check === 'explicit_db_extension'))
+	})
+
+	it('warns about redundant manual assignment and suggests JSDoc with field help', async () => {
+		const db = new DB({
+			predefined: [
+				[
+					'src/domain/MyModel.js',
+					`import { Model } from "@nan0web/types"
+export class MyModel extends Model {
+	static dryRun = {
+		help: 'Do not modify files',
+		default: false,
+	}
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		/** @type {boolean} */ this.dryRun
+		this.dryRun = Boolean(data.dryRun)
+	}
+}
+`,
+				],
+			],
+		})
+		await db.connect()
+
+		const auditor = new JsDomainAuditor({ dir: '.' }, { db, t: (key) => key })
+		const { intents, result } = await drainGenerator(auditor.run())
+
+		assert.equal(result.data.success, true)
+		const warnIntent = intents.find((intent) => {
+			const str = JSON.stringify(intent)
+			return str.includes("Consider using '/** @type {...} Do not modify files */ this.dryRun'")
+		})
+		assert.ok(warnIntent, `Warning with field help description in JSDoc should be emitted. Got: ${JSON.stringify(intents)}`)
+	})
+
 	it('passes when no src/ directory exists', async () => {
 		const db = new DB({ predefined: [] })
 		await db.connect()
@@ -87,3 +174,4 @@ describe('DomainAuditor', () => {
 		assert.equal(result.data.success, true)
 	})
 })
+
