@@ -9,12 +9,13 @@ import OutputMessage from './OutputMessage.js'
 
 import Language from './domain/Language.js'
 
-// Verse Fundamentals & Domain Models
+// Verse Fundamentals & Fractal 7i Domain Models
 import Identity from './domain/Identity.js'
 import Connection from './domain/Connection.js'
 import Post from './domain/Post.js'
 import Media from './domain/Media.js'
 import Interaction from './domain/Interaction.js'
+import Good from './domain/Good.js'
 import Service from './domain/Service.js'
 import Event from './domain/Event.js'
 
@@ -24,7 +25,7 @@ import Event from './domain/Event.js'
 
 export { 
 	App, Chat, Contact, Language, Message, InputMessage, OutputMessage, I18nMessage,
-	Identity, Connection, Post, Media, Interaction, Service, Event
+	Identity, Connection, Post, Media, Interaction, Good, Service, Event
 }
 
 export default Message

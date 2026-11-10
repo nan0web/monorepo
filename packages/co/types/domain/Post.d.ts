@@ -1,10 +1,9 @@
 /**
  * Post
  *
- * A rich piece of content. Extends Chat to optionally support threading/chains.
- * Supports hybrid media formatting:
- * - Format A (Anchor shortcodes in Markdown): ::media[id] or ![[id]] referencing Media.id
- * - Format B (Placement directive): positioned by Media.placement (e.g. after_paragraph: 2)
+ * A rich piece of content (Page, Post, News, Doc, Case).
+ * Extends Chat to natively support message chains, comment trees, and authoring.
+ * Supports both string[] media references (Fractal 7i) and Media[] objects (backward compatibility).
  *
  * @class Post
  * @extends Chat
@@ -14,8 +13,40 @@ export default class Post extends Chat {
         type: string;
         help: string;
     };
+    static type: {
+        type: string;
+        help: string;
+        default: string;
+        validate: (val: any) => true | "Type must be page, post, news, doc, or case";
+    };
     static title: {
         type: string;
+        help: string;
+        default: string;
+    };
+    static excerpt: {
+        type: string;
+        help: string;
+        default: string;
+    };
+    static body: {
+        type: string;
+        help: string;
+        default: string;
+    };
+    static time: {
+        type: string;
+        help: string;
+    };
+    static status: {
+        type: string;
+        help: string;
+        default: string;
+        validate: (val: any) => true | "Invalid status";
+    };
+    static authors: {
+        type: string;
+        default: never[];
         help: string;
     };
     static tags: {
@@ -28,15 +59,27 @@ export default class Post extends Chat {
         default: never[];
         help: string;
     };
-    constructor(input?: {});
+    /**
+     * @param {Record<string, any>} [input]
+     */
+    constructor(input?: Record<string, any>);
     /** @type {string} */
     id: string;
+    /** @type {'page' | 'post' | 'news' | 'doc' | 'case'} */
+    type: "page" | "post" | "news" | "doc" | "case";
     /** @type {string} */
     title: string;
+    /** @type {string} */
+    excerpt: string;
+    /** @type {'draft' | 'plan' | 'live' | 'archived' | 'deleted'} */
+    status: "draft" | "plan" | "live" | "archived" | "deleted";
     /** @type {string[]} */
     tags: string[];
-    /** @type {Media[]} */
-    media: Media[];
+    /** @type {Array<Media|string>} */
+    media: Array<Media | string>;
+    /** @type {Contact[]} */
+    authors: Contact[];
 }
 import Chat from './Chat.js';
 import Media from './Media.js';
+import Contact from './Contact.js';

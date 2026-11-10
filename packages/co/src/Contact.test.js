@@ -110,4 +110,89 @@ describe('Contact', () => {
 		assert.equal(result.type, props.type)
 		assert.equal(result.value, props.value)
 	})
+
+	describe('toText() international phone formatting', () => {
+		it('formats Ukrainian numbers (+380)', () => {
+			const c = new Contact({ type: Contact.TELEPHONE, value: '+380991234567' })
+			assert.equal(c.toText(), '+380 (99) 123-4567')
+		})
+
+		it('formats Finnish standard mobile numbers (+358)', () => {
+			const c = new Contact({ type: Contact.TELEPHONE, value: '+358401234567' })
+			assert.equal(c.toText(), '+358 (40) 123-4567')
+		})
+
+		it('preserves Finnish short & premium rate service numbers without distortion', () => {
+			// Emergency number
+			const emergency = new Contact({ type: Contact.TELEPHONE, value: '112' })
+			assert.equal(emergency.toText(), '112')
+
+			// Short service code (e.g. 10041)
+			const shortCode = new Contact({ type: Contact.TELEPHONE, value: '10041' })
+			assert.equal(shortCode.toText(), '10041')
+
+			// Finnish premium rate national format (0600, 0700 series)
+			const premium = new Contact({ type: Contact.TELEPHONE, value: '060012345' })
+			assert.equal(premium.toText(), '060012345')
+		})
+
+		it('formats UK numbers (+44)', () => {
+			const c = new Contact({ type: Contact.TELEPHONE, value: '+447911123456' })
+			assert.equal(c.toText(), '+44 (791) 112-3456')
+		})
+
+		it('formats US/Canada numbers (+1)', () => {
+			const c = new Contact({ type: Contact.TELEPHONE, value: '+12345678901' })
+			assert.equal(c.toText(), '+1 (234) 567-8901')
+		})
+
+		it('formats Post-Soviet +7 numbers (Kazakhstan/Russia)', () => {
+			const c = new Contact({ type: Contact.TELEPHONE, value: '+79991234567' })
+			assert.equal(c.toText(), '+7 (999) 123-45-67')
+			assert.equal(c.toString(), 'tel:+79991234567')
+			const json = JSON.parse(JSON.stringify(c))
+			assert.equal(json.type, Contact.TELEPHONE)
+			assert.equal(json.value, '+79991234567')
+		})
+
+		it('formats Middle East / UAE numbers (+971)', () => {
+			const c = new Contact({ type: Contact.TELEPHONE, value: '+971501234567' })
+			assert.equal(c.toText(), '+971 (50) 123-4567')
+			assert.equal(c.toString(), 'tel:+971501234567')
+			const json = JSON.parse(JSON.stringify(c))
+			assert.equal(json.type, Contact.TELEPHONE)
+			assert.equal(json.value, '+971501234567')
+		})
+
+		it('formats African numbers (Egypt +20, South Africa +27)', () => {
+			const egypt = new Contact({ type: Contact.TELEPHONE, value: '+201012345678' })
+			assert.equal(egypt.toText(), '+20 (101) 234-5678')
+			assert.equal(egypt.toString(), 'tel:+201012345678')
+
+			const sa = new Contact({ type: Contact.TELEPHONE, value: '+27821234567' })
+			assert.equal(sa.toText(), '+27 (821) 234-567')
+			assert.equal(sa.toString(), 'tel:+27821234567')
+		})
+
+		it('formats Caucasus and Central Asia (+995 Georgia, +998 Uzbekistan)', () => {
+			const georgia = new Contact({ type: Contact.TELEPHONE, value: '+995591234567' })
+			assert.equal(georgia.toText(), '+995 (59) 123-4567')
+			assert.equal(georgia.toString(), 'tel:+995591234567')
+
+			const uzbek = new Contact({ type: Contact.TELEPHONE, value: '+998901234567' })
+			assert.equal(uzbek.toText(), '+998 (90) 123-4567')
+		})
+
+		it('preserves clean stringify / serialization contract across all phone formats', () => {
+			const numbers = ['+380991234567', '+358401234567', '+79991234567', '+971501234567']
+			for (const num of numbers) {
+				const contact = Contact.parse(num)
+				assert.equal(contact.type, Contact.TELEPHONE)
+				assert.equal(contact.value, num)
+				assert.equal(contact.toString(), `tel:${num}`)
+				const parsed = JSON.parse(JSON.stringify(contact))
+				assert.equal(parsed.value, num)
+			}
+		})
+	})
 })

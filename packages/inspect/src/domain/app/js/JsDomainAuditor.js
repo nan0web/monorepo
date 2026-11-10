@@ -148,7 +148,9 @@ export class JsDomainAuditor extends DomainAuditor {
 						)
 						if (manualAssignmentRegex.test(ctorBody)) {
 							// Extract help from static field definition if available
-							const staticDeclRegex = new RegExp(`static\\s+${fieldName}\\s*=\\s*(\\{[\\s\\S]*?\\n\\s*\\}|[^;\\n]+)`)
+							const staticDeclRegex = new RegExp(
+								`static\\s+${fieldName}\\s*=\\s*(\\{[\\s\\S]*?\\n\\s*\\}|[^;\\n]+)`
+							)
 							const declMatch = staticDeclRegex.exec(classBody)
 							let helpDesc = ''
 							if (declMatch) {
@@ -182,18 +184,26 @@ export class JsDomainAuditor extends DomainAuditor {
 						errors.push({ file, line: i + 1, error, check: 'raw_fs' })
 						yield show(error, 'error')
 					}
-					if (/import\s+.*from\s+['"](node:path|path|node:path\/posix|node:path\/win32)['"]/.test(line)) {
+					if (
+						/import\s+.*from\s+['"](node:path|path|node:path\/posix|node:path\/win32)['"]/.test(
+							line
+						)
+					) {
 						const error = t(DomainAuditor.UI.raw_path_found, { file, line: i + 1 })
 						errors.push({ file, line: i + 1, error, check: 'raw_path' })
 						yield show(error, 'error')
 					}
 
 					// Architectural smell: passing explicit file extensions to saveDocument / loadDocument
-					const dbCallMatch = /(?:this\.\$db|\bdb)\.(saveDocument|loadDocument)\s*\(\s*([^,\)]+)/.exec(line)
+					const dbCallMatch =
+						/(?:this\.\$db|\bdb)\.(saveDocument|loadDocument)\s*\(\s*([^,\)]+)/.exec(line)
 					if (dbCallMatch) {
 						const method = dbCallMatch[1]
 						const targetArg = dbCallMatch[2].trim()
-						if (/\.(nan0|yaml|yml|json)['"]\s*$/.test(targetArg) || /['"][^'"]+\.(nan0|yaml|yml|json)['"]/.test(targetArg)) {
+						if (
+							/\.(nan0|yaml|yml|json)['"]\s*$/.test(targetArg) ||
+							/['"][^'"]+\.(nan0|yaml|yml|json)['"]/.test(targetArg)
+						) {
 							const error = t(DomainAuditor.UI.explicit_extension_found, {
 								method,
 								path: targetArg,

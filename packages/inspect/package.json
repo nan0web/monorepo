@@ -37,6 +37,10 @@
     "./domain/config/InspectConfig": {
       "import": "./src/domain/config/InspectConfig.js",
       "types": "./types/domain/config/InspectConfig.d.ts"
+    },
+    "./domain/ast/FastApiDiscovery": {
+      "import": "./src/domain/ast/FastApiDiscovery.js",
+      "types": "./types/domain/ast/FastApiDiscovery.d.ts"
     }
   },
   "scripts": {

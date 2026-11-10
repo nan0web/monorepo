@@ -72,5 +72,12 @@ export default class Contact extends Model {
     type: string;
     /** @type {string} Contact value */
     value: string;
+    /**
+     * Format contact for human-readable text presentation.
+     * Removes scheme prefixes and formats numbers.
+     *
+     * @returns {string}
+     */
+    toText(): string;
 }
 import { Model } from '@nan0web/types';

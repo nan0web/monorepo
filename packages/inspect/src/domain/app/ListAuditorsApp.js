@@ -36,11 +36,18 @@ export class ListAuditorsApp extends ModelAsApp {
 			}
 		})
 
-		yield show(ListAuditorsApp.UI.title, 'info')
+		const tableData = auditors.map((a) => ({
+			Alias: a.alias || '-',
+			Auditor: a.name,
+			Description: a.description || a.title,
+		}))
 
-		for (const a of auditors) {
-			yield show(`• [${a.alias || '-'}] ${a.name} — ${a.description || a.title}`, 'info')
-		}
+		yield render('Table', {
+			UI: ListAuditorsApp.UI.title,
+			columns: ['Alias', 'Auditor', 'Description'],
+			data: tableData,
+			interactive: false,
+		})
 
 		return result({
 			ok: true,

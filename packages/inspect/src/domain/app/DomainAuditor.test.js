@@ -80,10 +80,7 @@ describe('DomainAuditor', () => {
 	it('detects direct fs import in domain as error', async () => {
 		const db = new DB({
 			predefined: [
-				[
-					'src/domain/MyService.js',
-					'import fs from "node:fs"\nexport class MyService {}\n',
-				],
+				['src/domain/MyService.js', 'import fs from "node:fs"\nexport class MyService {}\n'],
 			],
 		})
 		await db.connect()
@@ -98,10 +95,7 @@ describe('DomainAuditor', () => {
 	it('detects direct path import in domain as error', async () => {
 		const db = new DB({
 			predefined: [
-				[
-					'src/domain/MyService.js',
-					'import path from "node:path"\nexport class MyService {}\n',
-				],
+				['src/domain/MyService.js', 'import path from "node:path"\nexport class MyService {}\n'],
 			],
 		})
 		await db.connect()
@@ -161,7 +155,10 @@ export class MyModel extends Model {
 			const str = JSON.stringify(intent)
 			return str.includes("Consider using '/** @type {...} Do not modify files */ this.dryRun'")
 		})
-		assert.ok(warnIntent, `Warning with field help description in JSDoc should be emitted. Got: ${JSON.stringify(intents)}`)
+		assert.ok(
+			warnIntent,
+			`Warning with field help description in JSDoc should be emitted. Got: ${JSON.stringify(intents)}`
+		)
 	})
 
 	it('passes when no src/ directory exists', async () => {
@@ -174,4 +171,3 @@ export class MyModel extends Model {
 		assert.equal(result.data.success, true)
 	})
 })
-

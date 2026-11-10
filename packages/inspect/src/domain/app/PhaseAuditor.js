@@ -18,6 +18,9 @@ export class PhaseAuditor extends AuditorModel {
 
 	/** @type {Object<string, string>} UI messages for audit steps */
 	static UI = {
+		title: 'Phase Auditor',
+		description:
+			'Verifies project lifecycle stage (Seed, Design, Stable, Production) and required fundamental files.',
 		starting: 'Starting Phase Audit in {dir}...',
 		checking_files: 'Checking fundamental files...',
 		checking_releases: 'Analyzing releases...',

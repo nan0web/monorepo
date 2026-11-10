@@ -24,7 +24,6 @@ Core classes:
 - `InputMessage` / `OutputMessage` — UI‑oriented message adapters.
 - `App` — minimal event‑driven application core.
 
-
 Use `@nan0web/ui-cli` for CLI‑specific commands (e.g. parsing `process.argv` to Messages).
 
 These classes are perfect for building parsers,
@@ -34,19 +33,16 @@ and contact or language data management.
 ## Installation
 
 How to install with npm?
-
 ```bash
 npm install @nan0web/co
 ```
 
 How to install with pnpm?
-
 ```bash
 pnpm add @nan0web/co
 ```
 
 How to install with yarn?
-
 ```bash
 yarn add @nan0web/co
 ```
@@ -58,7 +54,6 @@ yarn add @nan0web/co
 Messages contain body and time when they were created.
 
 How to create a Message instance from string?
-
 ```js
 import { Message } from '@nan0web/co'
 const msg = Message.from('Hello world')
@@ -67,7 +62,6 @@ console.info(String(msg)) // 2023-04-01T10:00:00 Hello world
 Messages can be restored from old timestamp.
 
 How to create a Message instance from object?
-
 ```js
 import { Message } from '@nan0web/co'
 const msg = Message.from({ body: 'Hello 2000', time: new Date('2000-01-01') })
@@ -78,7 +72,6 @@ console.info(String(msg)) // 2000-01-01T00:00:00.000Z Hello 2000
 Chat creates a message chain with authors.
 
 How to create a message chain with authors in a chat?
-
 ```js
 const alice = Contact.from('alice@example.com')
 const bob = Contact.from('+1234567890')
@@ -102,7 +95,6 @@ console.info(String(chat))
 Contact handles different URIs and string inputs properly.
 
 How to create contact with different URIs and string inputs properly?
-
 ```js
 // Create direct instances
 const email = new Contact({ type: Contact.EMAIL, value: 'test@example.com' })
@@ -121,7 +113,6 @@ console.info(website) // "https://example.com"
 Language handles ISO codes and string conversion.
 
 How to create a Language instance?
-
 ```js
 const lang = new Language({
 	name: 'English',
@@ -134,7 +125,6 @@ console.info(String(lang)) // ← English 🇬🇧
 ### InputMessage & OutputMessage usage
 
 How to use InputMessage and OutputMessage?
-
 ```js
 import { InputMessage, OutputMessage } from "@nan0web/co"
 const inMsg = new InputMessage({ value: 'user input', options: ['yes', 'no'] })
@@ -148,7 +138,6 @@ console.info(outMsg.content) // ← ["Result:", "Success"]
 ### App core example
 
 How to use the App core class?
-
 ```js
 import { App } from "@nan0web/co"
 const app = new App()
@@ -169,7 +158,6 @@ that mirrors the test suite’s `ParseBody` definition.
 The test ensures the parsing behaves exactly as described.
 
 How to parse a message body using Message.parseBody()?
-
 ```js
 import { Message } from "@nan0web/co"
 const Body = {
@@ -196,7 +184,6 @@ console.info(parsed)
 - **Enumerated options** – restrict values to a set.
 - **Custom validation functions** – arbitrary checks returning `true` or an error string.
 
-
 Validation is performed by `msg.validate()` returning a `Map<string, string>` of errors,
 while `msg.getErrors()` provides the legacy `Record<string, string[]>` format.
 
@@ -204,7 +191,6 @@ This enables powerful, declarative validation directly on message instances and
 increasing quality of IDE autocomplete feature.
 
 How to validate a message using a custom schema?
-
 ```js
 class MyBody {
 	/** @type {string} */
@@ -321,12 +307,23 @@ Extends `Message`.
   * `toString()` – combines `name` and `icon`.
   * `static from(input)` – creates or returns a Language instance.
 
+### Fractal 7i Web Ontology
+
+The package provides 7 universal domain models adhering to `Model-as-Schema`:
+
+- **Identity** — decentralized actor/author (`person`, `org`, `site`) with DID derivation and typed endpoints.
+- **Connection** — taxonomy, relations, and hierarchical navigation trees.
+- **Post** — content atom (`page`, `post`, `news`, `doc`) with multiple authors, tags, and media attachments.
+- **Media** — pure asset model with MIME-derived media types, dimensions, and filesize.
+- **Interaction** — journal of incoming events/orders with lifecycle status tracking.
+- **Good** — value proposition (`product`, `service`, `tariff`, `program`) with currency and features.
+- **Event** — temporal and spatial coordinates (`event`, `location`, `branch`, `milestone`).
+
 All exported classes should pass basic test to ensure API examples work
 
 ## Playground
 
 How to run playground script?
-
 ```bash
 # Clone the repository and run the CLI playground
 git clone https://github.com/nan0web/co.git
@@ -342,5 +339,3 @@ How to contribute? - [check here]($pkgURL/blob/main/CONTRIBUTING.md)
 ## License
 
 How to license? - [ISC LICENSE]($pkgURL/blob/main/LICENSE) file.
-
-

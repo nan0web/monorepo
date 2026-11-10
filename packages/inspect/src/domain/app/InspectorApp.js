@@ -7,6 +7,9 @@ import { VerificationAuditor } from './VerificationAuditor.js'
 import { CircularDependencyAuditor } from './CircularDependencyAuditor.js'
 import { BuildWorkflowsApp } from './BuildWorkflowsApp.js'
 import { ListAuditorsApp } from './ListAuditorsApp.js'
+import { FastApiApp } from './FastApiApp.js'
+import { InstallApp } from './InstallApp.js'
+import { DoctorApp } from './DoctorApp.js'
 import { ModelAsApp, show, result } from '@nan0web/ui'
 import { SnapshotAuditor, OlmuiThemingAuditor } from '@nan0web/ui/inspect'
 import { AuditorModel } from '../AuditorModel.js'
@@ -36,6 +39,9 @@ export class InspectorApp extends ModelAsApp {
 			CircularDependencyAuditor,
 			BuildWorkflowsApp,
 			ListAuditorsApp,
+			FastApiApp,
+			InstallApp,
+			DoctorApp,
 		],
 		default: ArchitectureAuditor,
 		positional: true,
@@ -76,7 +82,8 @@ export class InspectorApp extends ModelAsApp {
 			const { default: DBFS } = await import('@nan0web/db-fs')
 			const targetAbs = path.resolve(process.cwd(), this.dir || '.')
 
-			if (this._.db && typeof this._.db.mount === 'function') {
+			const isMemoryDb = this._.db && this._.db.predefined && this._.db.predefined.size > 0
+			if (!isMemoryDb && this._.db && typeof this._.db.mount === 'function') {
 				this._.db.mount('/', new DBFS({ cwd: process.cwd(), root: '', console: this._.db.console }))
 				this._.db.mount('@app', new DBFS({ cwd: targetAbs, root: '', console: this._.db.console }))
 				this._.db.mount(
@@ -100,14 +107,24 @@ export class InspectorApp extends ModelAsApp {
 		}
 		try {
 			const targetDir = this.dir || '.'
-			const hasPkg = await this._.db.statDocument(this._.db.resolveSync(targetDir, 'package.json')).catch(() => null)
+			const hasPkg = await this._.db
+				.statDocument(this._.db.resolveSync(targetDir, 'package.json'))
+				.catch(() => null)
 			if (hasPkg && (hasPkg.exists || hasPkg.isFile || hasPkg.size !== undefined)) {
 				this.platform = 'js'
 				return
 			}
 			const hasPy =
-				(await this._.db.statDocument(this._.db.resolveSync(targetDir, 'requirements.txt')).catch(() => null))?.exists ||
-				(await this._.db.statDocument(this._.db.resolveSync(targetDir, 'pyproject.toml')).catch(() => null))?.exists
+				(
+					await this._.db
+						.statDocument(this._.db.resolveSync(targetDir, 'requirements.txt'))
+						.catch(() => null)
+				)?.exists ||
+				(
+					await this._.db
+						.statDocument(this._.db.resolveSync(targetDir, 'pyproject.toml'))
+						.catch(() => null)
+				)?.exists
 			if (hasPy) {
 				this.platform = 'python'
 				return
@@ -137,6 +154,8 @@ export class InspectorApp extends ModelAsApp {
 				normalizedCmd = 'audit'
 			} else if (commandValue === 'ls') {
 				normalizedCmd = 'list'
+			} else if (commandValue === 'outline') {
+				normalizedCmd = 'api'
 			}
 
 			const aliases = (InspectorApp.command.options || []).map((o) => o.alias).filter(Boolean)
@@ -155,7 +174,10 @@ export class InspectorApp extends ModelAsApp {
 		await this.init()
 
 		if (explicitSubcommandClass) {
-			this.command = new explicitSubcommandClass({ dir: this.dir, config: this.config }, this._)
+			this.command = new explicitSubcommandClass(
+				{ dir: this.dir, path: this.dir, config: this.config },
+				this._
+			)
 		} else if (typeof commandValue === 'string' && !explicitSubcommandClass) {
 			this.command = new ArchitectureAuditor({ dir: this.dir, config: this.config }, this._)
 		} else if (

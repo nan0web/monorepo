@@ -82,6 +82,65 @@ export default class Contact extends Model {
 	}
 
 	/**
+	 * Format contact for human-readable text presentation.
+	 * Removes scheme prefixes and formats numbers.
+	 *
+	 * @returns {string}
+	 */
+	toText() {
+		if (this.type === Contact.EMAIL) {
+			return this.value
+		}
+		if (this.type === Contact.TELEPHONE) {
+			// International formatting: handles 1, 2, 3 digit country codes & short/premium numbers
+			const clean = this.value.replace(/[^\d+]/g, '')
+			
+			// 1. Short / Emergency / Premium national numbers (e.g. Finland 112, 0600..., 0700..., 10041...)
+			// If number has <= 6 digits, keep as-is
+			const digitsOnly = clean.replace(/^\+/, '')
+			if (digitsOnly.length <= 6) {
+				return this.value.trim()
+			}
+
+			// 2. North America (NANP: +1) - exactly 11 digits
+			const m1 = clean.match(/^\+?1(\d{3})(\d{3})(\d{4})$/)
+			if (m1) return `+1 (${m1[1]}) ${m1[2]}-${m1[3]}`
+
+			// 3. Post-Soviet single-digit code +7 (Kazakhstan, Russia) -> +7 (XXX) XXX-XX-XX
+			const m7 = clean.match(/^\+?7(\d{3})(\d{3})(\d{2})(\d{2})$/)
+			if (m7) return `+7 (${m7[1]}) ${m7[2]}-${m7[3]}-${m7[4]}`
+
+			// 4. Known 2-digit CCs:
+			// Europe: +44 UK, +49 DE, +33 FR, +34 ES, +39 IT, +48 PL, +31 NL, +32 BE, +41 CH, +43 AT, +46 SE, +47 NO
+			// Africa: +20 Egypt, +27 South Africa, +25x East Africa
+			// Middle East / Asia: +90 Turkey, +81 Japan, +82 Korea, +86 China
+			const m2 = clean.match(/^\+?(44|49|33|34|39|48|31|32|41|43|46|47|20|27|90|81|82|86)(\d{2,3})(\d{3})(\d{3,4})$/)
+			if (m2) return `+${m2[1]} (${m2[2]}) ${m2[3]}-${m2[4]}`
+
+			// 5. Middle East 3-digit CCs starting with 9:
+			// +971 UAE (+971 50 123-4567), +972 Israel, +966 Saudi Arabia, +965 Kuwait, +974 Qatar
+			const m9 = clean.match(/^\+?(971|972|966|965|974|968|973)(\d{2})(\d{3})(\d{4})$/)
+			if (m9) return `+${m9[1]} (${m9[2]}) ${m9[3]}-${m9[4]}`
+
+			// 6. Post-Soviet 3-digit CCs:
+			// +380 Ukraine, +375 Belarus, +370 Lithuania, +371 Latvia, +372 Estonia, +373 Moldova, +374 Armenia, +994 Azerbaijan, +995 Georgia, +996 Kyrgyzstan, +992 Tajikistan, +998 Uzbekistan
+			const mPostSoviet = clean.match(/^\+?(380|375|370|371|372|373|374|994|995|996|992|998|358)(\d{2})(\d{3})(\d{4})$/)
+			if (mPostSoviet) return `+${mPostSoviet[1]} (${mPostSoviet[2]}) ${mPostSoviet[3]}-${mPostSoviet[4]}`
+
+			// 7. General 3-digit fallback
+			const m3Gen = clean.match(/^\+?(\d{3})(\d{2})(\d{3})(\d{4})$/)
+			if (m3Gen) return `+${m3Gen[1]} (${m3Gen[2]}) ${m3Gen[3]}-${m3Gen[4]}`
+
+			// Fallback: return raw input
+			return this.value.trim()
+		}
+		if (this.type === Contact.ADDRESS) {
+			return this.value
+		}
+		return this.value || this.toString()
+	}
+
+	/**
 	 * Parse a raw string into a {@link Contact} instance.
 	 *
 	 * @param {string} input - Raw contact string (may include a known prefix or be a plain email/phone/url).

@@ -15,13 +15,20 @@ export class DomainAuditor extends AuditorModel {
 
 	/** @type {Object<string, string>} UI messages for domain steps */
 	static UI = {
+		title: 'Domain Auditor',
+		description:
+			'Enforces Model-as-Schema strictness, constructor field types, and strict domain/UI isolation.',
 		starting: 'Starting Domain Audit in {dir}...',
 		scanning: 'Scanning for Model-as-Schema violations...',
 		violation_found: 'Model class outside src/domain/ in {file}',
 		class_field_found: 'Class field outside constructor in {file} (line {line})',
-		raw_fs_found: 'Direct fs import detected in domain file {file} (line {line}). Use injected db instead.',
-		raw_path_found: 'Direct path import detected in domain file {file} (line {line}). Use db methods instead.',
-		explicit_extension_found: 'Redundant explicit file extension in {method}("{path}") in {file} (line {line}). NaN0Web DB resolves formats polymorphically. Omit extension.',
+		raw_fs_found:
+			'Direct fs import detected in domain file {file} (line {line}). Use injected db instead.',
+		raw_path_found:
+			'Direct path import detected in domain file {file} (line {line}). Use db methods instead.',
+		explicit_extension_found:
+			'Redundant explicit file extension in {method}("{path}") in {file} (line {line}). NaN0Web DB resolves formats polymorphically. Omit extension.',
+		platform_not_detected: 'Platform not detected. Skipping domain checks.',
 		domain_ok: 'Domain/UI separation: OK',
 	}
 
@@ -30,8 +37,7 @@ export class DomainAuditor extends AuditorModel {
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}
 	 */
 	async *run() {
-		/** @type {import('@nan0web/i18n').TFunction} */
-		const t = this._.t
+		const { t } = this._
 
 		yield progress(
 			t(DomainAuditor.UI.starting, { dir: this.dir }) || `Starting Domain Audit in ${this.dir}...`
@@ -62,7 +68,7 @@ export class DomainAuditor extends AuditorModel {
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}
 	 */
 	async *checkPlatformDomain(errors, t) {
-		yield show('Platform not detected. Skipping domain checks.', 'warn')
+		yield show(t(DomainAuditor.UI.platform_not_detected), 'warn')
 		return {}
 	}
 }

@@ -15,6 +15,9 @@ export class ExportAuditor extends AuditorModel {
 
 	/** @type {Object<string, string>} UI messages for export steps */
 	static UI = {
+		title: 'Export Auditor',
+		description:
+			'Verifies named exports, main src/index.js gateway, domain facade, and UI adapter exports.',
 		starting: 'Starting Export Audit in {dir}...',
 		checking_gateway: 'Checking main src/index.js gateway...',
 		checking_domain: 'Checking domain facade...',
@@ -22,6 +25,7 @@ export class ExportAuditor extends AuditorModel {
 		missing_index: 'Missing src/index.js (main package gateway)',
 		missing_domain_index: 'src/domain/ exists but src/domain/index.js is missing',
 		missing_ui_export: 'UI adapter dir {dir}/ exists but not declared in package.json exports',
+		platform_not_detected: 'Platform not detected. Skipping export checks.',
 		gateway_ok: 'Main gateway: OK',
 		domain_ok: 'Domain facade: OK (or no domain dir)',
 		ui_ok: 'UI exports: OK',
@@ -88,7 +92,7 @@ export class ExportAuditor extends AuditorModel {
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, any, any>}
 	 */
 	async *checkPlatformExports(errors, t, fileExists, dirExists, readText) {
-		yield show('Platform not detected. Skipping export checks.', 'warn')
+		yield show(t(ExportAuditor.UI.platform_not_detected), 'warn')
 		return {}
 	}
 }

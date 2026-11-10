@@ -7,6 +7,7 @@ import { ArchitectureAuditor } from '../domain/app/ArchitectureAuditor.js'
 import { DomainAuditor } from '../domain/app/DomainAuditor.js'
 import { HygieneAuditor } from '../domain/app/HygieneAuditor.js'
 import { PhaseAuditor } from '../domain/app/PhaseAuditor.js'
+import { FastApiDiscovery } from '../domain/ast/FastApiDiscovery.js'
 
 const server = new Server(
 	{
@@ -48,6 +49,24 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 				name: 'inspect_phase',
 				description: 'Run Phase Auditor (Check step completeness)',
 				inputSchema: { type: 'object', properties: { dir: { type: 'string' } }, required: ['dir'] },
+			},
+			{
+				name: 'inspect_api_contract',
+				description: 'Fast AST API contract discovery and extraction without function bodies',
+				inputSchema: {
+					type: 'object',
+					properties: {
+						path: { type: 'string', description: 'Path to declaration or source file' },
+						level: {
+							type: 'string',
+							description: 'Inspection depth: classes | methods | fields | all',
+							default: 'all',
+						},
+						only: { type: 'string', description: 'Filter: static | async | methods | fields' },
+						style: { type: 'string', description: 'Style: short | full', default: 'short' },
+					},
+					required: ['path'],
+				},
 			},
 		],
 	}
@@ -110,6 +129,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 				return await runAuditor(HygieneAuditor, dir)
 			case 'inspect_phase':
 				return await runAuditor(PhaseAuditor, dir)
+			case 'inspect_api_contract': {
+				const filePath = args.path
+				const absPath = path.resolve(process.cwd(), filePath)
+				const db = new DBFS({ root: '', cwd: process.cwd() })
+				const discovery = new FastApiDiscovery({}, { db })
+				const extracted = await discovery.extractFromFile(absPath, {
+					level: args.level || 'all',
+					only: args.only,
+				})
+				const text = discovery.toNanoYaml(extracted, {
+					style: args.style || 'short',
+					level: args.level || 'all',
+				})
+				return {
+					content: [{ type: 'text', text }],
+					isError: false,
+				}
+			}
 			default:
 				throw new Error(`Unknown tool: ${name}`)
 		}

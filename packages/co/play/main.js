@@ -10,6 +10,7 @@ import { runContactFormatsDemo } from './contact-formats.js'
 import { runLanguageDemo } from './language-demo.js'
 import { runSimpleDemos } from './simple-demos.js'
 import { runInteractiveChat } from './interactive-chat.js'
+import { runFractal7iDemo } from './fractal-7i-demo.js'
 
 const console = new Logger({ level: 'info' })
 
@@ -19,6 +20,7 @@ console.info(Logger.style(Logger.LOGO, { color: 'magenta' }))
 
 async function chooseDemo() {
 	const demos = [
+		{ name: '🌟 Fractal 7i Demo (Ontology Sandbox)', value: 'fractal7i' },
 		{ name: 'Simple Demos', value: 'simple' },
 		{ name: 'Interactive Chat', value: 'interactive' },
 		{ name: 'Command Example', value: 'command' },
@@ -50,6 +52,9 @@ async function main() {
 			const demoType = await chooseDemo()
 
 			switch (demoType) {
+				case 'fractal7i':
+					await runFractal7iDemo(console)
+					break
 				case 'simple':
 					await runSimpleDemos(console)
 					break

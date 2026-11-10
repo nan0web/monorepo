@@ -15,6 +15,9 @@ export class VerificationAuditor extends AuditorModel {
 
 	/** @type {Object<string, string>} UI messages for verification steps */
 	static UI = {
+		title: 'Verification Auditor',
+		description:
+			'Verifies mandatory existence of play/ playground, unit tests, ProvenDoc, and UI snapshots.',
 		starting: 'Starting Verification Audit in {dir}...',
 		checking_play: 'Checking playground (play/)...',
 		checking_tests: 'Checking unit test coverage...',

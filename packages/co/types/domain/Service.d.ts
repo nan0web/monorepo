@@ -15,8 +15,7 @@ export default class Service extends Interaction {
         type: string;
         default: string;
     };
-    /** @type {string} */
-    type: string;
+    constructor(input?: {});
     /** @type {string} */
     currency: string;
 }

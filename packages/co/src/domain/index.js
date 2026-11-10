@@ -2,6 +2,7 @@ import Chat from './Chat.js'
 import Connection from './Connection.js'
 import Contact from './Contact.js'
 import Event from './Event.js'
+import Good from './Good.js'
 import Identity from './Identity.js'
 import Interaction from './Interaction.js'
 import Language from './Language.js'
@@ -15,6 +16,7 @@ export {
 	Connection,
 	Contact,
 	Event,
+	Good,
 	Identity,
 	Interaction,
 	Language,
@@ -29,6 +31,7 @@ export default {
 	Connection,
 	Contact,
 	Event,
+	Good,
 	Identity,
 	Interaction,
 	Language,

@@ -15,6 +15,9 @@ export class HygieneAuditor extends AuditorModel {
 
 	/** @type {Object<string, string>} UI messages for hygiene steps */
 	static UI = {
+		title: 'Hygiene Auditor',
+		description:
+			'Audits required package scripts, prebuild cleanup, test:all chain, and configuration files.',
 		starting: 'Starting Hygiene Audit in {dir}...',
 		checking_scripts: 'Checking package scripts...',
 		checking_configs: 'Checking config files...',
