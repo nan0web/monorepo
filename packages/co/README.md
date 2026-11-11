@@ -307,18 +307,6 @@ Extends `Message`.
   * `toString()` – combines `name` and `icon`.
   * `static from(input)` – creates or returns a Language instance.
 
-### Fractal 7i Web Ontology
-
-The package provides 7 universal domain models adhering to `Model-as-Schema`:
-
-- **Identity** — decentralized actor/author (`person`, `org`, `site`) with DID derivation and typed endpoints.
-- **Connection** — taxonomy, relations, and hierarchical navigation trees.
-- **Post** — content atom (`page`, `post`, `news`, `doc`) with multiple authors, tags, and media attachments.
-- **Media** — pure asset model with MIME-derived media types, dimensions, and filesize.
-- **Interaction** — journal of incoming events/orders with lifecycle status tracking.
-- **Good** — value proposition (`product`, `service`, `tariff`, `program`) with currency and features.
-- **Event** — temporal and spatial coordinates (`event`, `location`, `branch`, `milestone`).
-
 All exported classes should pass basic test to ensure API examples work
 
 ## Playground
