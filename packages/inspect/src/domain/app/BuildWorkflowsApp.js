@@ -1,8 +1,5 @@
 import { show, progress, result } from '@nan0web/ui'
 import { AuditorModel } from '../AuditorModel.js'
-import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
-import { existsSync } from 'node:fs'
-import path from 'node:path'
 
 /**
  * Parses YAML FrontMatter from Markdown content.
@@ -188,17 +185,28 @@ export class BuildWorkflowsApp extends AuditorModel {
 	 * @returns {Promise<string[]>}
 	 */
 	async findNan0Configs(dir) {
+		const db = this._.db
 		const results = []
 		const scan = async (currentDir) => {
-			const entries = await readdir(currentDir, { withFileTypes: true }).catch(() => [])
+			let entries = []
+			try {
+				if (typeof db.listDir === 'function') {
+					entries = await db.listDir(currentDir)
+				} else if (typeof db.readDir === 'function') {
+					for await (const entry of db.readDir(currentDir, { depth: 0, includeDirs: true })) {
+						entries.push(entry)
+					}
+				}
+			} catch {}
+
 			for (const entry of entries) {
-				const fullPath = path.join(currentDir, entry.name)
-				if (entry.isDirectory()) {
+				const fullPath = db.resolveSync(currentDir, entry.name)
+				if (entry.isDirectory) {
 					if (['node_modules', '.git', '.gemini', 'dist', 'types', 'play'].includes(entry.name)) {
 						continue
 					}
 					await scan(fullPath)
-				} else if (entry.isFile() && entry.name === 'nan0web.nan0') {
+				} else if (entry.isFile && entry.name === 'nan0web.nan0') {
 					results.push(fullPath)
 				}
 			}
@@ -209,7 +217,13 @@ export class BuildWorkflowsApp extends AuditorModel {
 
 	async *run() {
 		const t = this._.t || ((k) => k)
-		const resolvedRoot = path.resolve(this.dir)
+		let db = this._.db
+		if (!db) {
+			const { DBFS } = await import('@nan0web/db-fs')
+			db = new DBFS({ cwd: process.cwd(), root: '' })
+			this._.db = db
+		}
+		const resolvedRoot = db.resolveSync(this.dir)
 		yield progress(t(BuildWorkflowsApp.UI.starting, { dir: resolvedRoot }))
 
 		const configs = await this.findNan0Configs(resolvedRoot)
@@ -217,27 +231,57 @@ export class BuildWorkflowsApp extends AuditorModel {
 		const enManifest = []
 
 		for (const configPath of configs) {
-			const pkgDir = path.dirname(configPath)
-			const relativePkgDir = path.relative(resolvedRoot, pkgDir)
-			const yamlText = await readFile(configPath, 'utf8')
-			const config = parseNan0Config(yamlText)
+			const pkgDir = configPath.includes('/')
+				? configPath.slice(0, configPath.lastIndexOf('/'))
+				: '.'
+			let relativePkgDir = pkgDir.startsWith(resolvedRoot)
+				? pkgDir.slice(resolvedRoot.length)
+				: pkgDir
+			if (relativePkgDir.startsWith('/')) relativePkgDir = relativePkgDir.slice(1)
 
-			const isWorkspaceRoot = pkgDir === resolvedRoot
+			const doc = await db.loadDocument(configPath).catch(() => '')
+			const config =
+				doc && typeof doc === 'object' && doc.agents
+					? doc
+					: parseNan0Config(
+							typeof doc === 'string' ? doc : doc && doc.content ? doc.content : String(doc)
+						)
+
+			const isWorkspaceRoot = pkgDir === resolvedRoot || relativePkgDir === ''
 
 			for (const agent of config.agents) {
 				for (const relativeWfPath of agent.workflows) {
-					const fullWfPath = path.join(pkgDir, relativeWfPath)
-					if (!existsSync(fullWfPath)) continue
+					const fullWfPath = db.resolveSync(pkgDir, relativeWfPath)
+					const stat = await db.statDocument(fullWfPath).catch(() => null)
+					if (!stat || (!stat.exists && stat.isFile === false)) continue
 
-					const mdContent = await readFile(fullWfPath, 'utf8')
-					const metadata = parseFrontMatter(mdContent) || {}
+					const mdDoc = await db.loadDocument(fullWfPath).catch(() => '')
+					const metadata =
+						mdDoc && typeof mdDoc === 'object' && mdDoc.vars
+							? mdDoc.vars
+							: parseFrontMatter(
+									typeof mdDoc === 'string'
+										? mdDoc
+										: mdDoc && mdDoc.document
+											? mdDoc.document
+											: mdDoc && mdDoc.content
+												? mdDoc.content
+												: String(mdDoc)
+								) || {}
 
 					const wfLang = metadata.lang || (relativeWfPath.includes('/uk/') ? 'uk' : 'en')
-					const workspaceWfPath = path.relative(resolvedRoot, fullWfPath)
+					let workspaceWfPath = fullWfPath.startsWith(resolvedRoot)
+						? fullWfPath.slice(resolvedRoot.length)
+						: fullWfPath
+					if (workspaceWfPath.startsWith('/')) workspaceWfPath = workspaceWfPath.slice(1)
 
 					// Convert package-relative anchors to workspace-relative
 					const resolvedAnchors = (metadata.anchors || []).map((anchor) => {
-						return isWorkspaceRoot ? anchor : path.join(relativePkgDir, anchor)
+						return isWorkspaceRoot
+							? anchor
+							: relativePkgDir
+								? `${relativePkgDir}/${anchor}`
+								: anchor
 					})
 
 					const manifestEntry = {
@@ -260,17 +304,11 @@ export class BuildWorkflowsApp extends AuditorModel {
 			}
 		}
 
-		// Ensure directory .llimo exists
-		const llimoDir = path.join(resolvedRoot, '.llimo')
-		if (!existsSync(llimoDir)) {
-			await mkdir(llimoDir, { recursive: true })
-		}
+		const ukFile = db.resolveSync(resolvedRoot, '.llimo/workflows_manifest.uk.json')
+		const enFile = db.resolveSync(resolvedRoot, '.llimo/workflows_manifest.en.json')
 
-		const ukFile = path.join(llimoDir, 'workflows_manifest.uk.json')
-		const enFile = path.join(llimoDir, 'workflows_manifest.en.json')
-
-		await writeFile(ukFile, JSON.stringify(ukManifest, null, 2), 'utf8')
-		await writeFile(enFile, JSON.stringify(enManifest, null, 2), 'utf8')
+		await db.saveDocument(ukFile, ukManifest)
+		await db.saveDocument(enFile, enManifest)
 
 		yield show(
 			t(BuildWorkflowsApp.UI.saved, { file: '.llimo/workflows_manifest.uk.json' }),

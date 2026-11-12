@@ -45,6 +45,7 @@ export class AuditorModel extends ModelAsApp {
     constructor(data?: Partial<AuditorModel> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
     /** @type {string} Target directory to audit */ dir: string;
     /** @type {LanguagePlatform} Language platform to audit */ platform: LanguagePlatform;
+    /** @type {number} Execution timeout in seconds */ timeout: number;
     /** @type {boolean} Automatically apply fixes where possible */ fix: boolean;
     /**
      * Initializes the auditor by detecting a platform if were not specified at construction.

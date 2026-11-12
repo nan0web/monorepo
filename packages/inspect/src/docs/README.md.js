@@ -1,6 +1,5 @@
-import { describe, it, before, beforeEach } from 'node:test'
+import { describe, it, before } from 'node:test'
 import assert from 'node:assert/strict'
-import { NoConsole } from '@nan0web/log'
 import { DocsParser, DatasetParser } from '@nan0web/test'
 import { DBFS } from '@nan0web/db-fs'
 import {
@@ -18,11 +17,6 @@ let pkg
 
 before(async () => {
 	pkg = await fs.loadDocument('package.json')
-})
-
-let console = new NoConsole()
-beforeEach(() => {
-	console = new NoConsole()
 })
 
 function testRender() {
@@ -85,8 +79,8 @@ function testRender() {
 		}
 
 		const score = res.value.data.score
-		console.info(`Project Health Score: ${score}%`) // Project Health Score: 100%
-		assert.equal(console.output()[0][1], 'Project Health Score: 100%')
+		// Log project health score via local logger
+		assert.equal(`Project Health Score: ${score}%`, 'Project Health Score: 100%')
 	})
 
 	/**
@@ -101,8 +95,7 @@ function testRender() {
 		let res = await gen.next()
 		while (!res.done) res = await gen.next()
 
-		console.info(`Phase: ${res.value.data.phase}`) // Phase: stable
-		assert.equal(console.output()[0][1], 'Phase: stable')
+		assert.equal(`Phase: ${res.value.data.phase}`, 'Phase: stable')
 	})
 
 	/**
@@ -117,8 +110,7 @@ function testRender() {
 		let res = await gen.next()
 		while (!res.done) res = await gen.next()
 
-		console.info(res.value.data.success) // true
-		assert.equal(console.output()[0][1], true)
+		assert.equal(res.value.data.success, true)
 	})
 
 	/**

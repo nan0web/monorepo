@@ -89,6 +89,12 @@ export class InspectConfig extends Model {
 				? { ...this.modules }
 				: {}
 
+		/** @type {SnapshotsConfig} SnapshotAuditor validation configuration */
+		this.snapshots
+
+		/** @type {Record<string, any>} Granular heuristic rule toggles */
+		this.rules
+
 		// Sync legacy / top-level theming and snapshots with modules
 		const effectiveTheming = this.modules?.theming || this.theming
 		/** @type {ThemingConfig} Theming options */
@@ -105,7 +111,6 @@ export class InspectConfig extends Model {
 				: this.theming
 
 		const effectiveSnapshots = this.modules?.snapshots || this.snapshots
-		/** @type {SnapshotsConfig} Snapshots options */
 		this.snapshots =
 			effectiveSnapshots &&
 			typeof effectiveSnapshots === 'object' &&
@@ -126,7 +131,6 @@ export class InspectConfig extends Model {
 			this.modules.snapshots = this.snapshots
 		}
 
-		/** @type {Record<string, boolean>} Granular rule flags */
 		this.rules =
 			this.rules && typeof this.rules === 'object' && !Array.isArray(this.rules)
 				? { ...this.rules }

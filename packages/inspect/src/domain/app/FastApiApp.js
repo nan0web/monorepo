@@ -61,8 +61,7 @@ export class FastApiApp extends ModelAsApp {
 		/** @type {string} Path to source or declaration file (.d.ts / .js) */ this.path
 		/** @type {string} Level of inspection depth: classes | methods | fields | all */ this.level
 		/** @type {string} Filter entities: static | async | methods | fields */ this.only
-		/** @type {string} Outline detail style: short (method(...) # desc) | full (Variant C dictionary with params/result) */ this
-			.style
+		/** @type {string} Outline detail style: short | full */ this.style
 		/** @type {boolean} Include imported external dependencies */ this.includeDeps
 		/** @type {string} Output format: nano | json */ this.format
 	}

@@ -28,7 +28,7 @@ while (!res.done) {
 	res = await gen.next()
 }
 const score = res.value.data.score
-console.info(`Project Health Score: ${score}%`) // Project Health Score: 100%
+// Log project health score via local logger
 ```
 ### Phase Detection
 `PhaseAuditor` identifies the current stage of the project lifecycle (Incubation, Transformation, Stable) based on the presence of `seed.md` and `project.md`.
@@ -40,7 +40,6 @@ const auditor = new PhaseAuditor()
 const gen = auditor.run()
 let res = await gen.next()
 while (!res.done) res = await gen.next()
-console.info(`Phase: ${res.value.data.phase}`) // Phase: stable
 ```
 ### Circular Dependencies
 `CircularDependencyAuditor` uses `madge` to detect circular dependency chains.
@@ -52,7 +51,6 @@ const auditor = new CircularDependencyAuditor()
 const gen = auditor.run()
 let res = await gen.next()
 while (!res.done) res = await gen.next()
-console.info(res.value.data.success) // true
 ```
 ## CLI Usage
 

@@ -6,6 +6,7 @@ import { ModelAsApp, result, show, progress, render } from '@nan0web/ui'
  * @property {string} id
  * @property {string} name
  * @property {string} configUri
+ * @property {string[]} [detectionUris]
  * @property {boolean} detected
  * @property {'mcp' | 'settings' | 'antigravity'} [type]
  */
@@ -112,6 +113,11 @@ export class InstallApp extends ModelAsApp {
 				id: 'cursor',
 				name: 'Cursor IDE',
 				configUri: this.$db.resolveSync(cwd, '.cursor/mcp.json'),
+				detectionUris: [
+					this.$db.resolveSync(cwd, '.cursor'),
+					this.$db.resolveSync(homedir, '.cursor'),
+					this.$db.resolveSync(homedir, 'Library/Application Support/Cursor'),
+				],
 				detected: false,
 				type: 'mcp',
 			},
@@ -161,6 +167,20 @@ export class InstallApp extends ModelAsApp {
 		const entries = await this.$db.listDir(dirUri).catch(() => [])
 		if (entries && entries.length > 0) {
 			return true
+		}
+
+		// Fallback check on alternate detection paths (e.g. global home dirs)
+		if (Array.isArray(def.detectionUris)) {
+			for (const uri of def.detectionUris) {
+				const extraStat = await this.$db.stat(uri).catch(() => null)
+				if (extraStat && (extraStat.isFile || extraStat.isDirectory)) {
+					return true
+				}
+				const extraEntries = await this.$db.listDir(uri).catch(() => [])
+				if (extraEntries && extraEntries.length > 0) {
+					return true
+				}
+			}
 		}
 
 		return false

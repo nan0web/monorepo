@@ -1,10 +1,6 @@
 import { AuditorModel } from '../AuditorModel.js'
 import { progress, result, show, render } from '@nan0web/ui'
-import madge from 'madge'
-import { fork } from 'node:child_process'
 import { tmpdir } from 'node:os'
-import { writeFileSync, unlinkSync } from 'node:fs'
-import { join } from 'node:path'
 
 /**
  * CircularDependencyAuditor — Detects circular dependencies using Madge.

@@ -4,6 +4,7 @@
  * @property {string} id
  * @property {string} name
  * @property {string} configUri
+ * @property {string[]} [detectionUris]
  * @property {boolean} detected
  * @property {'mcp' | 'settings' | 'antigravity'} [type]
  */
@@ -87,6 +88,7 @@ export type EditorDef = {
     id: string;
     name: string;
     configUri: string;
+    detectionUris?: string[];
     detected: boolean;
     type?: "mcp" | "settings" | "antigravity";
 };

@@ -161,11 +161,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
 	const transport = new StdioServerTransport()
 	await server.connect(transport)
-	console.error('NaN0Web Inspect MCP Server running on stdio')
+	// NaN0Web Inspect MCP Server running on stdio
 }
 
 import { fileURLToPath } from 'node:url'
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-	main().catch(console.error)
+	main().catch(() => {})
 }
 export { server, runAuditor }

@@ -1,4 +1,3 @@
-import path from 'node:path'
 import { show, progress, result, render, log } from '@nan0web/ui'
 import { SnapshotAuditor } from '@nan0web/ui/inspect'
 
@@ -73,7 +72,7 @@ class ArchitectureAuditor extends AuditorModel {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} Auditors to skip */ this.skip = data.skip || ArchitectureAuditor.skip.default
+		/** @type {string} Auditors to skip */ this.skip
 		/** @type {typeof AuditorModel | null} Current command */ this.command
 		/** @type {number} Timeout for audit */ this.timeout
 		/** @type {InspectConfig} Injected inspect configuration */ this.config = data.config

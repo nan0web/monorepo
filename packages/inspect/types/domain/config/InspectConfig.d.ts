@@ -95,12 +95,12 @@ export class InspectConfig extends Model {
     skip: string[];
     /** @type {Record<string, any>} Module-specific configurations */
     modules: Record<string, any>;
+    /** @type {SnapshotsConfig} SnapshotAuditor validation configuration */
+    snapshots: SnapshotsConfig;
+    /** @type {Record<string, any>} Granular heuristic rule toggles */
+    rules: Record<string, any>;
     /** @type {ThemingConfig} Theming options */
     theming: ThemingConfig;
-    /** @type {SnapshotsConfig} Snapshots options */
-    snapshots: SnapshotsConfig;
-    /** @type {Record<string, boolean>} Granular rule flags */
-    rules: Record<string, boolean>;
 }
 export type ThemingConfig = {
     /**

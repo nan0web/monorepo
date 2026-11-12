@@ -61,6 +61,7 @@ export class AuditorModel extends ModelAsApp {
 		/** @type {string} Target directory to audit */ this.dir
 		/** @type {boolean} Show help */ this.help
 		/** @type {LanguagePlatform} Language platform to audit */ this.platform
+		/** @type {number} Execution timeout in seconds */ this.timeout
 		/** @type {boolean} Automatically apply fixes where possible */ this.fix = Boolean(
 			data.fix || (options && 'fix' in options ? /** @type {any} */ (options).fix : false)
 		)

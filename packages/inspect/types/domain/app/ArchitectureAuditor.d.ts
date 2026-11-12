@@ -48,7 +48,6 @@ export class ArchitectureAuditor extends AuditorModel {
     constructor(data?: Partial<ArchitectureAuditor>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
     /** @type {string} Auditors to skip */ skip: string;
     /** @type {typeof AuditorModel | null} Current command */ command: typeof AuditorModel | null;
-    /** @type {number} Timeout for audit */ timeout: number;
     /** @type {InspectConfig} Injected inspect configuration */ config: InspectConfig;
     /**
      * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}

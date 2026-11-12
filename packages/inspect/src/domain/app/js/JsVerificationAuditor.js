@@ -34,8 +34,18 @@ export class JsVerificationAuditor extends VerificationAuditor {
 				typeof content === 'string' ? content : content.toString ? content.toString() : ''
 			const lines = text.split('\n')
 
+			let inTemplateString = false
 			for (let i = 0; i < lines.length; i++) {
 				const line = lines[i].trim()
+
+				// Track multiline template literals ``` or ```
+				const backtickCount = (line.match(/`/g) || []).length
+				if (backtickCount % 2 === 1) {
+					inTemplateString = !inTemplateString
+					continue
+				}
+				if (inTemplateString) continue
+
 				// Flag top-level flat test('...') or test.skip('...') without describe
 				if (/^test(\.skip|\.only)?\s*\(/.test(line)) {
 					errors.push({
