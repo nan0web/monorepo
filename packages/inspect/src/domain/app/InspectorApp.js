@@ -10,6 +10,7 @@ import { ListAuditorsApp } from './ListAuditorsApp.js'
 import { FastApiApp } from './FastApiApp.js'
 import { InstallApp } from './InstallApp.js'
 import { DoctorApp } from './DoctorApp.js'
+import { ReleaseAuditor } from './ReleaseAuditor.js'
 import { ModelAsApp, show, result } from '@nan0web/ui'
 import { SnapshotAuditor, OlmuiThemingAuditor } from '@nan0web/ui/inspect'
 import { AuditorModel } from '../AuditorModel.js'
@@ -42,6 +43,7 @@ export class InspectorApp extends ModelAsApp {
 			FastApiApp,
 			InstallApp,
 			DoctorApp,
+			ReleaseAuditor,
 		],
 		default: ArchitectureAuditor,
 		positional: true,

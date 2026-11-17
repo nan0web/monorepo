@@ -105,7 +105,7 @@ export class InstallApp extends ModelAsApp {
 			{
 				id: 'antigravity',
 				name: 'Google Antigravity',
-				configUri: this.$db.resolveSync(homedir, '.gemini/antigravity/mcp/config'),
+				configUri: this.$db.resolveSync(homedir, '.gemini/config/mcp_config.json'),
 				detected: false,
 				type: 'antigravity',
 			},
@@ -191,9 +191,10 @@ export class InstallApp extends ModelAsApp {
 	 * @returns {object}
 	 */
 	getMcpServerConfig() {
+		const mcpPath = this.$db.location('@app/src/ui/mcp.js')
 		return {
 			command: 'node',
-			args: [this.$db.resolveSync(this.dir || '.', 'packages/inspect/src/ui/mcp.js')],
+			args: [mcpPath],
 		}
 	}
 

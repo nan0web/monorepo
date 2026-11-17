@@ -1,4 +1,5 @@
 import { show, progress, result } from '@nan0web/ui'
+import { NaN0WebConfig } from '@nan0web/core'
 import { AuditorModel } from '../AuditorModel.js'
 
 /**
@@ -240,12 +241,7 @@ export class BuildWorkflowsApp extends AuditorModel {
 			if (relativePkgDir.startsWith('/')) relativePkgDir = relativePkgDir.slice(1)
 
 			const doc = await db.loadDocument(configPath).catch(() => '')
-			const config =
-				doc && typeof doc === 'object' && doc.agents
-					? doc
-					: parseNan0Config(
-							typeof doc === 'string' ? doc : doc && doc.content ? doc.content : String(doc)
-						)
+			const config = new NaN0WebConfig(doc && typeof doc === 'object' ? doc : {})
 
 			const isWorkspaceRoot = pkgDir === resolvedRoot || relativePkgDir === ''
 
