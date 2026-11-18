@@ -5,3 +5,6 @@ export { Nan0HTMLFeature } from './richtext/Nan0HTMLFeature.js'
 // access control helpers
 export { accessFor, publicAccess } from './access.js'
 
+// domain builders
+export { CollectionBuilder, buildCollectionsFromModels } from './domain/CollectionBuilder.js'
+

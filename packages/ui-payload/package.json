@@ -82,6 +82,7 @@
     "test:all": "npm run test && npm run build && npm run test:release && npm run release:spec && npm run knip && npm run audit"
   },
   "dependencies": {
+    "@nan0web/types": "workspace:*",
     "@payloadcms/richtext-lexical": "3.86.0",
     "lexical": "0.41.0",
     "react": "^19.0.0"
