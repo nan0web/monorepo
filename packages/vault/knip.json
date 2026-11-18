@@ -1,0 +1,6 @@
+{
+	"$schema": "https://unpkg.com/knip@5/overview/config.schema.json",
+	"entry": ["src/index.js", "releases/**/*.spec.js"],
+	"project": ["src/**/*.js"],
+	"ignore": ["types/**"]
+}

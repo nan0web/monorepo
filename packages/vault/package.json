@@ -1,0 +1,59 @@
+{
+  "name": "@nan0web/vault",
+  "version": "0.2.0",
+  "description": "Autonomous Steganographic Password & Secret Vault on NaN0Web Model-as-App architecture",
+  "main": "./src/index.js",
+  "types": "./types/index.d.ts",
+  "type": "module",
+  "bin": {
+    "nan0vault": "./bin/vault.js",
+    "skarb": "./bin/vault.js",
+    "vault": "./bin/vault.js"
+  },
+  "files": [
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/**/*.story.js",
+    "bin/**/*.js",
+    "types/**/*.d.ts"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf types",
+    "build": "tsc",
+    "test": "node --test --test-timeout=9999 \"src/**/*.test.js\"",
+    "test:story": "node --test \"src/**/*.story.js\"",
+    "test:releases": "node --test \"src/test/releases/**/*.test.js\"",
+    "test:release": "node --test \"releases/**/*.test.js\"",
+    "release:spec": "node --test \"releases/**/*.spec.js\"",
+    "inspect": "nan0inspect domain",
+    "test:all": "pnpm run test && pnpm run test:story && pnpm run release:spec && pnpm run build && pnpm run lint && pnpm run inspect && pnpm run knip",
+    "lint": "prettier --check \"src/**/*.js\" \"releases/**/*.js\"",
+    "lint:fix": "prettier --write \"src/**/*.js\" \"releases/**/*.js\"",
+    "knip": "knip --production || true"
+  },
+  "keywords": [
+    "vault",
+    "secrets",
+    "password-manager",
+    "steganography",
+    "argon2id",
+    "chacha20-poly1305",
+    "nan0web"
+  ],
+  "author": "YaRaSLove (ЯRаСлав) <support@yaro.page>",
+  "license": "ISC",
+  "dependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*"
+  },
+  "devDependencies": {
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/release": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@types/node": "^26.2.0",
+    "knip": "^5.88.1",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2"
+  }
+}
