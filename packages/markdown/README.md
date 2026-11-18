@@ -17,23 +17,19 @@ Markdown into structured elements and render them as HTML or back to Markdown.
 - Converts Markdown to HTML
 - Written in pure JavaScript with JSDoc typing
 
-
 ## Installation
 
 How to install with npm?
-
 ```bash
 npm install @nan0web/markdown
 ```
 
 How to install with pnpm?
-
 ```bash
 pnpm add @nan0web/markdown
 ```
 
 How to install with yarn?
-
 ```bash
 yarn add @nan0web/markdown
 ```
@@ -45,7 +41,6 @@ yarn add @nan0web/markdown
 Parses Markdown text into an array of `MDElement` objects. You can either pass the text directly into the constructor for immediate parsing, or use the `.parse()` method.
 
 How to parse Markdown text into elements?
-
 ```js
 import { Markdown } from "@nan0web/markdown"
 // 1. Direct parsing via constructor
@@ -57,7 +52,6 @@ console.info(mdFast.document.children.length) // ← 1 (heading)
 Converts parsed elements to HTML string.
 
 How to convert parsed Markdown to HTML?
-
 ```js
 import { Markdown } from "@nan0web/markdown"
 const md = new Markdown()
@@ -70,7 +64,6 @@ console.info(html) // ← <h1>Title</h1>...
 Optionally accepts an interceptor function to customize rendering per element.
 
 How to use an interceptor for custom HTML rendering?
-
 ```js
 import { Markdown } from "@nan0web/markdown"
 const md = new Markdown()
@@ -86,7 +79,6 @@ console.info(html) // ← <h1 class="custom">Title</h1>
 ### Handling Inline Code
 
 How to parse and stringify inline code in paragraphs?
-
 ```js
 import { Markdown } from "@nan0web/markdown"
 const input = '`DB.path.test.js` is a test suite from the base `DB` class.'
@@ -97,7 +89,6 @@ console.info(output) // ← "`DB.path.test.js` is a test suite from the base `DB
 ### Working with Lists
 
 How to handle unordered lists?
-
 ```js
 import { Markdown } from "@nan0web/markdown"
 const md = new Markdown()
@@ -111,7 +102,6 @@ console.info(list[0].content) // ← item 1
 ### Code Blocks
 
 How to parse fenced code blocks?
-
 ```js
 import { Markdown } from "@nan0web/markdown"
 const md = new Markdown()
@@ -126,7 +116,6 @@ console.info(code instanceof MDCodeBlock) // ← true
 ### Tables
 
 How to parse tables?
-
 ```js
 import { Markdown } from "@nan0web/markdown"
 const mdText =
@@ -144,7 +133,6 @@ console.info(table instanceof MDTableRow) // ← true
 ### Task Lists
 
 How to parse task lists?
-
 ```js
 import { Markdown } from "@nan0web/markdown"
 const input = '- [x] Write the press release\n- [ ] Update the website\n- [ ] Contact the media'
@@ -183,7 +171,6 @@ Base class for all Markdown elements.
 - `MDBlockquote`, `MDHorizontalRule`
 - `MDTable`, `MDTaskList`
 
-
 How to access core classes?
 
 ## Java•Script
@@ -193,7 +180,6 @@ Uses `d.ts` files for autocompletion
 ## CLI Playground
 
 How to run playground script?
-
 ```bash
 # Clone the repository and run the CLI playground
 git clone https://github.com/nan0web/markdown.git
@@ -209,5 +195,3 @@ How to contribute? - [check here](./CONTRIBUTING.md)
 ## License
 
 How to license ISC? - [check here](./LICENSE)
-
-

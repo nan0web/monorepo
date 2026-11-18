@@ -6,10 +6,10 @@ import MDListItem from './MDListItem.js'
  */
 export default class MDTaskList extends MDList {
 	static get defaultMdTag() {
-		return '[ ] '
+		return ''
 	}
 	static get defaultMdEnd() {
-		return ' '
+		return '\n'
 	}
 	static get defaultEnd() {
 		return ''
@@ -19,8 +19,8 @@ export default class MDTaskList extends MDList {
 		super(props)
 		this.end = ''
 		this.tag = '<ul>'
-		this.mdTag = '[ ] '
-		this.mdEnd = ' '
+		this.mdTag = ''
+		this.mdEnd = '\n'
 	}
 
 	/**
@@ -31,7 +31,7 @@ export default class MDTaskList extends MDList {
 	 */
 	static parse(text, context = {}) {
 		const { i = 0, rows = [] } = context
-		const match = text.match(/^- \[([ xX])\] (.*)$/)
+		const match = text.match(/^- \[([ xX>\-])\] (.*)$/)
 		if (!match) {
 			return false
 		}
@@ -39,9 +39,12 @@ export default class MDTaskList extends MDList {
 		let j = i
 		while (j < rows.length) {
 			const row = rows[j]
-			const itemMatch = row.match(/^- \[([ xX])\] (.*)$/)
+			const itemMatch = row.match(/^- \[([ xX>\-])\] (.*)$/)
 			if (!itemMatch) break
-			children.push(new MDListItem({ content: row.slice(6) }))
+			const parsedItem = MDListItem.parse(row)
+			if (parsedItem) {
+				children.push(parsedItem)
+			}
 			j++
 		}
 		context.i = j
@@ -55,12 +58,8 @@ export default class MDTaskList extends MDList {
 		if ('.html' === format) {
 			return this.toHTML({ indent })
 		}
-		// Fix string representation to return proper task list format
-		return (
-			' '.repeat(indent) +
-			this.mdTag +
-			this.children.map((child) => child.toString({ indent: 0, format })).join('') +
-			this.mdEnd
-		)
+		const childrenLines = this.children.map((child) => child.toString({ indent, format }))
+		return childrenLines.filter((s) => '' !== s).join('')
 	}
 }
+
