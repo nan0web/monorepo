@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { SpecRunner } from '@nan0web/ui/testing'
 import { IndexWorkspaceApp } from '../../../../../domain/IndexWorkspaceApp.js'
 import { MarkdownIndexer } from '../../../../../domain/MarkdownIndexer.js'
+import { Embedder } from '../../../../../domain/Embedder.js'
 
 describe('IndexWorkspaceApp Story (SpecRunner)', () => {
 	const workspaceRoot = '/mock/root'
@@ -19,6 +20,7 @@ describe('IndexWorkspaceApp Story (SpecRunner)', () => {
 	}
 
 	it('Scenario: Full indexing with multiple scopes', async () => {
+		mock.method(Embedder.prototype, 'checkAvailability', async () => {})
 		mock.method(MarkdownIndexer.prototype, 'indexAll', async function* () {
 			yield { type: 'scanProgress', project: 'ui-core', files: 1, current: 1, total: 1 }
 			yield { type: 'projectIndexed', name: 'ui-core', files: 1 }

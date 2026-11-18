@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/ai",
-  "version": "3.4.0",
+  "version": "3.6.0",
   "description": "Unified AI Kernel for NaN0Web ecosystem - LLM provider abstraction",
   "type": "module",
   "bin": {
@@ -52,7 +52,8 @@
     "index": "node bin/index-workspace.js",
     "query": "node bin/search-workspace.js",
     "search": "node bin/search-workspace.js",
-    "mcp:install": "node bin/mcp-install.js",
+    "mcp:install": "nan0ai install",
+    "inspect": "nan0inspect",
     "nan0ai": "node bin/nan0ai.js",
     "docs:dev": "nan0web dev",
     "docs:build": "nan0web build",
@@ -85,7 +86,7 @@
     "@nan0web/ui": "workspace:*",
     "@nan0web/ui-cli": "workspace:*",
     "@openrouter/ai-sdk-provider": "^1.5.4",
-    "ai": "^6.0.209",
+    "ai": "^5.0.150",
     "hnswlib-node": "^3.0.0"
   },
   "nan0web": {

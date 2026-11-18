@@ -9,7 +9,7 @@ export class AiAppModel extends ModelAsApp {
     };
     static command: {
         help: string;
-        options: (typeof GetSourceIntent | typeof SearchSourcesIntent | typeof IndexWorkspaceApp | typeof SyncWorkspaceApp | typeof StoreApp | typeof ListIndexIntent | typeof PipelineApp | typeof CheckIntent | typeof TaskIntent)[];
+        options: (typeof GetSourceIntent | typeof SearchSourcesIntent | typeof IndexWorkspaceApp | typeof SyncWorkspaceApp | typeof StoreApp | typeof ListIndexIntent | typeof PipelineApp | typeof CheckIntent | typeof TaskIntent | typeof InstallApp)[];
         positional: boolean;
     };
     /**
@@ -43,3 +43,4 @@ import { TaskIntent } from './TaskIntent.js';
 import { ListIndexIntent } from './ListIndexIntent.js';
 import { PipelineApp } from './PipelineApp.js';
 import { CheckIntent } from './CheckIntent.js';
+import { InstallApp } from './InstallApp.js';

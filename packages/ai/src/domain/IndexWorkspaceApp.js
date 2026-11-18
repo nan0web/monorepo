@@ -363,6 +363,9 @@ export class IndexWorkspaceApp extends ModelAsApp {
 			'http://localhost:1234/v1'
 		const EmbedderClass = deps.Embedder || (await import('./Embedder.js')).Embedder
 		const embedder = new EmbedderClass({ baseURL: embedderUrl })
+		if (typeof embedder.checkAvailability === 'function') {
+			await embedder.checkAvailability()
+		}
 
 		const activeProjects = projects.filter((proj) =>
 			matchProject(proj.dir, this.project || undefined, nameToDir)

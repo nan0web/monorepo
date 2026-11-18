@@ -13,6 +13,7 @@ import { ListIndexIntent } from './ListIndexIntent.js'
 import { PipelineApp } from './PipelineApp.js'
 import { CheckIntent } from './CheckIntent.js'
 import { TaskIntent } from './TaskIntent.js'
+import { InstallApp } from './InstallApp.js'
 
 /**
  * AiAppModel — domain model for AI toolkit management (RAG, Indexing, MCP).
@@ -37,6 +38,7 @@ export class AiAppModel extends ModelAsApp {
 			PipelineApp,
 			CheckIntent,
 			TaskIntent,
+			InstallApp,
 		],
 		positional: true,
 	}

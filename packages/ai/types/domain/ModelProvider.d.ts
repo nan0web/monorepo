@@ -5,6 +5,7 @@ export class ModelProvider {
     static ui: {
         errorApiKeyReq: string;
         errorCerebrasNotice: string;
+        errorHetznerNotice: string;
         errorUnsupportedProvider: string;
         errorFetchFailed: string;
     };
@@ -96,7 +97,7 @@ export class ModelProvider {
     flatten(raw: any[], name: AvailableProvider): ModelInfo[];
     #private;
 }
-export type AvailableProvider = "cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral";
+export type AvailableProvider = "cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral" | "hetzner";
 export type HuggingFaceProviderInfo = {
     provider: string;
     status: string;
@@ -109,7 +110,7 @@ export type HuggingFaceProviderInfo = {
     supports_structured_output: boolean;
     is_model_author: boolean;
 };
-/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral"} AvailableProvider */
+/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral" | "hetzner"} AvailableProvider */
 /**
  * @typedef {Object} HuggingFaceProviderInfo
  * @property {string} provider

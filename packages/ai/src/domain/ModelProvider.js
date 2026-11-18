@@ -23,6 +23,7 @@ import llamacppInfo from '../providers/llamacpp.info.js'
 import GoogleInfo from '../providers/google.info.js'
 import GroqInfo from '../providers/groq.info.js'
 import MistralInfo from '../providers/mistral.info.js'
+import HetznerInfo from '../providers/hetzner.info.js'
 
 const transformers = {
 	cerebras: CerebrasInfo.makeFlat,
@@ -32,9 +33,10 @@ const transformers = {
 	google: GoogleInfo.makeFlat,
 	groq: GroqInfo.makeFlat,
 	mistral: MistralInfo.makeFlat,
+	hetzner: HetznerInfo.makeFlat,
 }
 
-/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral"} AvailableProvider */
+/** @typedef {"cerebras" | "openrouter" | "huggingface" | "llamacpp" | "google" | "groq" | "mistral" | "hetzner"} AvailableProvider */
 /**
  * @typedef {Object} HuggingFaceProviderInfo
  * @property {string} provider
@@ -87,6 +89,7 @@ export class ModelProvider {
 		'google',
 		'groq',
 		'mistral',
+		'hetzner',
 	]
 	/** @type {any} */
 	#fs
@@ -96,6 +99,7 @@ export class ModelProvider {
 	static ui = {
 		errorApiKeyReq: '{provider} API key is missing. Set the {envVar} environment variable.',
 		errorCerebrasNotice: `Cerebras API key is missing. Set the {envVar} environment variable.\n\nTo get an API key:\n1. Visit https://inference-docs.cerebras.ai/\n2. Sign up and get your API key\n3. Export it: export {envVar}=your_key_here`,
+		errorHetznerNotice: `Hetzner API token is missing. Set the {envVar} environment variable.\n\nTo get a token:\n1. Visit https://experiments.hetzner.com/\n2. Go to Inference section and generate API token\n3. Export it: export {envVar}=your_key_here`,
 		errorUnsupportedProvider: 'Unsupported provider "{provider}"',
 		errorFetchFailed: 'Failed to fetch {url}: {status} {statusText}',
 	}
@@ -125,6 +129,8 @@ export class ModelProvider {
 				return !!process.env.GROQ_API_KEY
 			case 'mistral':
 				return !!process.env.MISTRAL_API_KEY
+			case 'hetzner':
+				return !!(process.env.HETZNER_API_TOKEN || process.env.HETZNER_API_KEY)
 			case 'llamacpp':
 				return true
 			default:
@@ -145,6 +151,12 @@ export class ModelProvider {
 					api: ModelProvider.ui.errorCerebrasNotice,
 					$provider: 'Cerebras',
 					$envVar: 'CEREBRAS_API_KEY',
+				})
+			case 'hetzner':
+				throw new ModelError({
+					api: ModelProvider.ui.errorHetznerNotice,
+					$provider: 'Hetzner',
+					$envVar: 'HETZNER_API_TOKEN',
 				})
 			case 'openai':
 				throw new ModelError({
@@ -289,6 +301,16 @@ export class ModelProvider {
 				return await this.#jsonFetch(`https://api.mistral.ai/v1/models`, {
 					Authorization: `Bearer ${process.env.MISTRAL_API_KEY}`,
 				})
+			case 'hetzner':
+				try {
+					const token = process.env.HETZNER_API_TOKEN || process.env.HETZNER_API_KEY
+					return await this.#jsonFetch(`https://inference.hetzner.com/api/v1/models`, {
+						Authorization: `Bearer ${token}`,
+					})
+				} catch (/** @type {any} */ err) {
+					console.debug(`Hetzner fetch failed, using static: ${err.message}`)
+					return []
+				}
 			default:
 				return []
 		}

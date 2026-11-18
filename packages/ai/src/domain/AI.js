@@ -446,6 +446,13 @@ export class AI {
 				const { createMistral } = await import('@ai-sdk/mistral')
 				return createMistral({ apiKey: process.env.MISTRAL_API_KEY })
 			}
+			case 'hetzner': {
+				const { createOpenAI } = await import('@ai-sdk/openai')
+				return createOpenAI({
+					apiKey: process.env.HETZNER_API_TOKEN || process.env.HETZNER_API_KEY,
+					baseURL: 'https://inference.hetzner.com/api/v1',
+				})
+			}
 			default:
 				throw new ModelError({
 					provider: ModelProvider.ui.errorUnsupportedProvider,

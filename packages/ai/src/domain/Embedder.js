@@ -7,6 +7,10 @@ import { Model, ModelError } from '@nan0web/types'
 export class Embedder extends Model {
 	static UI = {
 		errorFetchFailed: 'Embedder fetch failed: {status} {statusText}',
+		errorServiceUnavailable:
+			'Embedding service is unavailable at {baseURL} ({reason}).\n' +
+			'Start a local OpenAI-compatible server (e.g. LM Studio on http://localhost:1234/v1 or Ollama on http://localhost:11434/v1) ' +
+			'or pass { baseURL, model } to new Embedder({ baseURL: "http://localhost:1234/v1", model: "{model}" }).',
 	}
 
 	static baseURL = {
@@ -58,6 +62,31 @@ export class Embedder extends Model {
 	}
 
 	/**
+	 * Verifies that the embedding service endpoint is reachable before sending payloads.
+	 * @returns {Promise<void>}
+	 */
+	async checkAvailability() {
+		let response
+		try {
+			const signal =
+				typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
+					? AbortSignal.timeout(3000)
+					: undefined
+			response = await this._fetch(`${this.baseURL}/models`, {
+				method: 'GET',
+				...(signal ? { signal } : {}),
+			})
+		} catch (/** @type {any} */ err) {
+			throw new ModelError({ api: this.#formatUnavailable(err?.message || 'connection failed') })
+		}
+		if (!response.ok) {
+			throw new ModelError({
+				api: this.#formatUnavailable(`${response.status} ${response.statusText}`.trim()),
+			})
+		}
+	}
+
+	/**
 	 * Computes embeddings for single or multiple inputs.
 	 * @param {string|string[]} input
 	 * @param {{ type?: 'query' | 'passage' }} [opts]
@@ -78,14 +107,19 @@ export class Embedder extends Model {
 	async embedBatch(texts, opts) {
 		if (texts.length === 0) return []
 		const prefixed = this.prefixInput(texts, opts)
-		const response = await this._fetch(`${this.baseURL}/embeddings`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				model: this.model,
-				input: prefixed,
-			}),
-		})
+		let response
+		try {
+			response = await this._fetch(`${this.baseURL}/embeddings`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					model: this.model,
+					input: prefixed,
+				}),
+			})
+		} catch (/** @type {any} */ err) {
+			throw new ModelError({ api: this.#formatUnavailable(err?.message || 'connection failed') })
+		}
 		if (!response.ok) {
 			const errText = await response.text().catch(() => '')
 			throw new ModelError({
@@ -99,5 +133,16 @@ export class Embedder extends Model {
 		// OpenAI compatible format expects { data: [ { index, embedding } ] }
 		const sorted = data.data.sort((a, b) => a.index - b.index)
 		return sorted.map((item) => item.embedding)
+	}
+
+	/**
+	 * @param {string} reason
+	 * @returns {string}
+	 */
+	#formatUnavailable(reason) {
+		return Embedder.UI.errorServiceUnavailable
+			.replaceAll('{baseURL}', this.baseURL)
+			.replaceAll('{model}', this.model)
+			.replaceAll('{reason}', reason)
 	}
 }

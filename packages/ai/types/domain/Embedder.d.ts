@@ -5,6 +5,7 @@
 export class Embedder extends Model {
     static UI: {
         errorFetchFailed: string;
+        errorServiceUnavailable: string;
     };
     static baseURL: {
         help: string;
@@ -41,6 +42,11 @@ export class Embedder extends Model {
         type?: "query" | "passage";
     }): string[];
     /**
+     * Verifies that the embedding service endpoint is reachable before sending payloads.
+     * @returns {Promise<void>}
+     */
+    checkAvailability(): Promise<void>;
+    /**
      * Computes embeddings for single or multiple inputs.
      * @param {string|string[]} input
      * @param {{ type?: 'query' | 'passage' }} [opts]
@@ -57,5 +63,6 @@ export class Embedder extends Model {
     embedBatch(texts: string[], opts?: {
         type?: "query" | "passage";
     }): Promise<number[][]>;
+    #private;
 }
 import { Model } from '@nan0web/types';

@@ -6,57 +6,33 @@
  */
 import { AiAppModel } from '../src/domain/AiAppModel.js'
 import { bootstrapApp } from '@nan0web/ui-cli'
+import DBFS from '@nan0web/db-fs'
 import os from 'node:os'
-import fs from 'node:fs'
 import path from 'node:path'
 
-const HOME = os.homedir()
-const GLOBAL_CONFIG_DIR = path.join(HOME, '.nan0ai')
-const CONTEXT_PATH = path.join(GLOBAL_CONFIG_DIR, 'context.nan0')
+const home = os.homedir()
+const cwd = process.cwd()
 
-let root = process.cwd()
-let found = false
-
-// 1. Try to find local workspace marker (monorepo root)
-while (root && root !== '/') {
-	if (
-		fs.existsSync(path.join(root, 'pnpm-workspace.yaml')) ||
-		fs.existsSync(path.join(root, 'lerna.json'))
-	) {
-		found = true
-		break
-	}
-	const parent = path.dirname(root)
-	if (parent === root) break
-	root = parent
-}
-if (found) console.log(`nan0ai: Found workspace root at ${root}`)
-else console.log(`nan0ai: Workspace root not found, using ${root}`)
-
-// 2. Fallback to global context if not found locally
-if (!found && fs.existsSync(CONTEXT_PATH)) {
-	try {
-		const contextRaw = fs.readFileSync(CONTEXT_PATH, 'utf8')
-		const match = contextRaw.match(/lastWorkspace:\s*(.+)/)
-		if (match && match[1] && fs.existsSync(match[1].trim())) {
-			root = match[1].trim()
-			found = true
-		}
-	} catch (e) {}
+let claudeDir
+if (process.platform === 'win32') {
+	const appData = process.env.APPDATA || path.join(home, 'AppData', 'Roaming')
+	claudeDir = path.join(appData, 'Claude')
+} else if (process.platform === 'linux') {
+	claudeDir = path.join(home, '.config', 'Claude')
+} else {
+	claudeDir = path.join(home, 'Library', 'Application Support', 'Claude')
 }
 
-if (!found) {
-	console.error('❌ Error: No NaN•Web workspace found (pnpm-workspace.yaml missing).')
-	console.error('Please run "nan0ai" inside your monorepo first to register it.')
-	process.exit(1)
-}
-
-// 3. Persist successful root as last active context
-if (!fs.existsSync(GLOBAL_CONFIG_DIR)) fs.mkdirSync(GLOBAL_CONFIG_DIR, { recursive: true })
-fs.writeFileSync(CONTEXT_PATH, `lastWorkspace: ${root}\n`)
+const db = new DBFS({ root: cwd })
+db.mount('@gemini', new DBFS({ root: path.join(home, '.gemini') }))
+db.mount('@gemini-local', new DBFS({ root: path.join(cwd, '.gemini') }))
+db.mount('@cursor', new DBFS({ root: path.join(home, '.cursor') }))
+db.mount('@cursor-local', new DBFS({ root: path.join(cwd, '.cursor') }))
+db.mount('@vscode', new DBFS({ root: path.join(home, '.vscode') }))
+db.mount('@vscode-local', new DBFS({ root: path.join(cwd, '.vscode') }))
+db.mount('@claude', new DBFS({ root: claudeDir }))
 
 bootstrapApp(AiAppModel, {
-	root,
-	workspaceRoot: root,
-	appName: 'nan0ai'
+	db,
+	appName: 'nan0ai',
 })
