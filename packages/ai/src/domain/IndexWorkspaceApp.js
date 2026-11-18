@@ -226,7 +226,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
 		help: 'List of directories to ignore.',
 		type: 'string[]',
 		alias: 'i',
-		default: [],
+		default: ['3rdparty', 'third_party'],
 	}
 
 	static sources = {
@@ -707,6 +707,8 @@ export class IndexWorkspaceApp extends ModelAsApp {
 					if (dir.startsWith(workspaceRoot)) {
 						dir = dir.slice(workspaceRoot.length).replace(/^[\\/]+/, '')
 					}
+					const segments = dir.split(/[\\/]+/)
+					if (this.ignore.some((ignored) => segments.includes(ignored))) continue
 					projects.push({ name: row.name, dir })
 				}
 			}
@@ -727,7 +729,8 @@ export class IndexWorkspaceApp extends ModelAsApp {
 							entry.name.startsWith('.') ||
 							entry.name.startsWith('_') ||
 							entry.name === 'node_modules' ||
-							entry.name === 'dist'
+							entry.name === 'dist' ||
+							this.ignore.includes(entry.name)
 						)
 							continue
 						projects.push({ name: entry.name, dir: `${target}/${entry.name}` })

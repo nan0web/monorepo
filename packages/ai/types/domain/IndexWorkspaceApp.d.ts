@@ -59,7 +59,7 @@ export class IndexWorkspaceApp extends ModelAsApp {
         help: string;
         type: string;
         alias: string;
-        default: any[];
+        default: string[];
     };
     static sources: {
         help: string;

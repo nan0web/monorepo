@@ -11,7 +11,7 @@ import { Embedder } from './Embedder.js'
 /** @typedef {'data' | 'docs' | 'source'} IndexerScope */
 
 export class MarkdownIndexer extends Model {
-	static maxChars = { default: 3000 }
+	static maxChars = { default: 1200 }
 	static overlap = { default: 200 }
 	static scope = { default: 'docs' }
 	static targetProject = { default: '' }
@@ -129,7 +129,7 @@ export class MarkdownIndexer extends Model {
 	 * @returns {Array<{content: string, hash: string} & Object>}
 	 */
 	chunkify(content, metadata = {}) {
-		const maxChars = metadata.maxChars || this.maxChars || 3000
+		const maxChars = metadata.maxChars || this.maxChars || 1200
 		const overlap = metadata.overlap || this.overlap || 200
 		const sections = content.split(/\n(?=(?:#{2,3} |\/\*\*| @docs))/)
 		const chunks = []

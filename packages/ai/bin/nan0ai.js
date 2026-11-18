@@ -24,6 +24,8 @@ if (process.platform === 'win32') {
 }
 
 const db = new DBFS({ root: cwd })
+db.mount('@ws', new DBFS({ root: cwd }))
+db.mount('@app', new DBFS({ root: path.resolve(import.meta.dirname, '..') }))
 db.mount('@gemini', new DBFS({ root: path.join(home, '.gemini') }))
 db.mount('@gemini-local', new DBFS({ root: path.join(cwd, '.gemini') }))
 db.mount('@cursor', new DBFS({ root: path.join(home, '.cursor') }))
