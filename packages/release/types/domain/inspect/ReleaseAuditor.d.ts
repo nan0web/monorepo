@@ -122,6 +122,18 @@ export class ReleaseAuditor extends AuditorModel {
                 message: string;
                 fix: string;
             };
+            FRACTAL_LIMIT_EXCEEDED: {
+                level: string;
+                code: string;
+                message: string;
+                fix: string;
+            };
+            UNCLOSED_PREVIOUS_RELEASE: {
+                level: string;
+                code: string;
+                message: string;
+                fix: string;
+            };
         };
     };
     /**

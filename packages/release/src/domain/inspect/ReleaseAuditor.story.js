@@ -133,4 +133,56 @@ describe('contract', () => {
 		const res = step.value?.data || step.value
 		assert.ok(res.skipped)
 	})
+
+	it('detects unclosed previous releases when task.spec.js is not moved to tests', async () => {
+		const db = new DB({
+			predefined: [
+				['packages/unclosed/package.json', { name: '@nan0web/unclosed', version: '2.0.0' }],
+				['packages/unclosed/releases/1/0/v1.0.0/release.md', '# Release\n- [x] Done'],
+				['packages/unclosed/releases/1/0/v1.0.0/user.md', 'Hours: 1.0h\nIterations: 2\nRRS: 324'],
+				['packages/unclosed/releases/1/0/v1.0.0/task.spec.js', '// still in releases/'],
+			],
+		})
+		await db.connect()
+
+		const auditor = new ReleaseAuditor({ dir: 'packages/unclosed' }, { db })
+		await auditor.init()
+
+		const gen = auditor.run()
+		let step = await gen.next()
+		while (!step.done) {
+			step = await gen.next()
+		}
+
+		const res = step.value?.data || step.value
+		assert.equal(res.success, false)
+		const codes = res.errors.map((e) => e.code || e.check)
+		assert.ok(codes.includes('UNCLOSED_PREVIOUS_RELEASE'))
+	})
+
+	it('warns when release tasks exceed fractal limit K <= 7', async () => {
+		const tasks = Array.from({ length: 8 }, (_, i) => `- [ ] Task ${i + 1}`).join('\n')
+		const db = new DB({
+			predefined: [
+				['packages/fractal/package.json', { name: '@nan0web/fractal', version: '1.0.0' }],
+				['packages/fractal/releases/1/0/v1.0.0/release.md', `# Release\n${tasks}`],
+				['packages/fractal/releases/1/0/v1.0.0/user.md', 'Hours: 1.0h\nIterations: 1\nRRS: 300'],
+				['packages/fractal/releases/1/0/v1.0.0/task.spec.js', '// spec'],
+			],
+		})
+		await db.connect()
+
+		const auditor = new ReleaseAuditor({ dir: 'packages/fractal' }, { db })
+		await auditor.init()
+
+		const gen = auditor.run()
+		let step = await gen.next()
+		while (!step.done) {
+			step = await gen.next()
+		}
+
+		const res = step.value?.data || step.value
+		const warnCodes = res.warnings.map((w) => w.code || w.check)
+		assert.ok(warnCodes.includes('FRACTAL_LIMIT_EXCEEDED'))
+	})
 })

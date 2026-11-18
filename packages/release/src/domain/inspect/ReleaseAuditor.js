@@ -1,6 +1,7 @@
 import { AuditorModel } from '@nan0web/inspect/domain/AuditorModel'
 import { show, progress, result } from '@nan0web/ui'
 import { ReleaseConfig } from '../config/ReleaseConfig.js'
+import { compareSemverDesc } from '../Dashboard/ReleaseDiscovery.js'
 
 /**
  * @typedef {Object} ReleaseDiagnostic
@@ -132,6 +133,18 @@ export class ReleaseAuditor extends AuditorModel {
 				message: 'backlog.md found inside release directory {$path}. Backlog must be global at {$releasesDir}/backlog.md',
 				fix: 'Move or merge tasks into {$releasesDir}/backlog.md or rename to release.md/task.md.',
 			},
+			FRACTAL_LIMIT_EXCEEDED: {
+				level: 'warning',
+				code: 'FRACTAL_LIMIT_EXCEEDED',
+				message: 'Fractal horizon exceeded in {$file}: {$total} tasks found (limit K <= 7)',
+				fix: 'Decompose tasks into <= 7 items per release or move excess items to backlog.',
+			},
+			UNCLOSED_PREVIOUS_RELEASE: {
+				level: 'error',
+				code: 'UNCLOSED_PREVIOUS_RELEASE',
+				message: 'Previous release v{$version} still has unclosed contract {$file} (current package version is v{$pkgVersion}).',
+				fix: 'Move {$file} to canonical regression directory "src/tests/releases/{$subpath}/task.test.js".',
+			},
 		},
 	}
 
@@ -190,6 +203,7 @@ export class ReleaseAuditor extends AuditorModel {
 		const checkedReleases = []
 
 		const projectRoot = this.dir === '.' || !this.dir ? '' : `${this.dir.replace(/\/+$/, '')}/`
+		const pkgVersion = await this.#loadPackageVersion(db, projectRoot)
 
 		// 1. Check package.json if auditing specific directory
 		if (projectRoot) {
@@ -317,6 +331,19 @@ export class ReleaseAuditor extends AuditorModel {
 					}),
 					'success'
 				)
+				if (total > 7) {
+					const diagDef = ReleaseAuditor.UI.Diagnostics.FRACTAL_LIMIT_EXCEEDED
+					const warn = {
+						level: /** @type {'warning'} */ ('warning'),
+						code: diagDef.code,
+						check: 'fractal',
+						file: releaseDocFile,
+						error: t(diagDef.message, { file: releaseDocFile, total }),
+						fix: t(diagDef.fix, { file: releaseDocFile, total }),
+					}
+					warnings.push(warn)
+					yield show(warn.error, 'warn')
+				}
 			}
 
 			// B. Check user.md metrics
@@ -528,7 +555,22 @@ export class ReleaseAuditor extends AuditorModel {
 				errors.push(err)
 				yield show(err.error, 'error')
 			} else if (hasSpec) {
-				yield show(t(ReleaseAuditor.UI.activeContractWip), 'success')
+				if (pkgVersion && compareSemverDesc(rel.version, pkgVersion) > 0) {
+					const diagDef = ReleaseAuditor.UI.Diagnostics.UNCLOSED_PREVIOUS_RELEASE
+					const file = specFile || `${relPath}/task.spec.js`
+					const err = {
+						level: /** @type {'error'} */ ('error'),
+						code: diagDef.code,
+						check: file,
+						file,
+						error: t(diagDef.message, { version: rel.version, file, pkgVersion }),
+						fix: t(diagDef.fix, { file, subpath: relSubpath }),
+					}
+					errors.push(err)
+					yield show(err.error, 'error')
+				} else {
+					yield show(t(ReleaseAuditor.UI.activeContractWip), 'success')
+				}
 			} else if (hasTest) {
 				yield show(t(ReleaseAuditor.UI.sealedRegressionClosed), 'success')
 			}
@@ -594,6 +636,23 @@ export class ReleaseAuditor extends AuditorModel {
 			checkedReleases,
 			diagnostics: [...errors, ...warnings],
 		})
+	}
+
+	/**
+	 * Load current package version from package.json
+	 * @param {any} db
+	 * @param {string} projectRoot
+	 * @returns {Promise<string>}
+	 */
+	async #loadPackageVersion(db, projectRoot) {
+		if (!db) return ''
+		for (const sub of ['package.json', 'cms/package.json', 'app/package.json', 'api/package.json', 'web/package.json']) {
+			try {
+				const pkg = await db.loadDocument(`${projectRoot}${sub}`, null)
+				if (pkg && typeof pkg === 'object' && pkg.version) return String(pkg.version)
+			} catch {}
+		}
+		return ''
 	}
 
 	/**

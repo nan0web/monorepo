@@ -2,8 +2,8 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import DB from '@nan0web/db'
 import { runGenerator } from '@nan0web/ui'
-import { TodoCommand, TaskModel, MarkdownRoundTripAuditor } from '../../../../src/domain/TodoCommand.js'
-import { ReleaseApp } from '../../../../src/domain/App.js'
+import { TodoCommand, TaskModel, MarkdownRoundTripAuditor } from '../../../../../domain/TodoCommand.js'
+import { ReleaseApp } from '../../../../../domain/App.js'
 
 describe('Release v3.8.0 Contract: Task AST Engine & TodoCommand', () => {
 	it('ReleaseApp registers TodoCommand in its command options', () => {
