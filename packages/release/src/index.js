@@ -45,5 +45,9 @@ export {
 export { PMaCParser, resolveTrackerUrl } from './domain/PMaCParser.js'
 export { ValidateCommand } from './domain/ValidateCommand.js'
 export { default as ExampleCommand } from './domain/ExampleCommand.js'
+export { TodoCommand } from './domain/TodoCommand.js'
+export { TaskModel } from './domain/Task/TaskModel.js'
+export { MarkdownRoundTripAuditor } from './domain/Task/MarkdownRoundTripAuditor.js'
+
 
 

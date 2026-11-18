@@ -152,4 +152,51 @@ version: 1.0.0
 		assert.equal(metrics.iterations, 42)
 		assert.equal(metrics.rrs, 350)
 	})
+
+	it('intelligently selects release with tasks and falls back to backlog for projects without versions', async () => {
+		const rawReleasesTxt = `apps/multi-rel\napps/backlog-only\n`
+		const multiRelDoc = `---
+version: 2.1.0
+status: active
+---
+# Tasks
+- [x] Task 1
+- [ ] Task 2
+`
+		const backlogDoc = `# Backlog Start
+- [ ] Action item 1
+- [ ] Action item 2
+`
+		const db = new DB({
+			predefined: [
+				['releases.txt', rawReleasesTxt],
+				['apps/multi-rel/package.json', { name: '@nan0web/multi-rel', version: '3.0.0' }],
+				// v3.0.0 is an empty placeholder
+				['apps/multi-rel/releases/3/0/v3.0.0/release.md', '# v3.0.0\n'],
+				// v2.1.0 has actual tasks
+				['apps/multi-rel/releases/2/1/v2.1.0/task.md', multiRelDoc],
+				['apps/multi-rel/releases/2/1/v2.1.0/task.spec.js', '/* spec */'],
+
+				// apps/backlog-only has no versioned directory, only backlog
+				['apps/backlog-only/package.json', { name: '@nan0web/backlog-only', version: '0.0.0' }],
+				['apps/backlog-only/releases/backlog/start.md', backlogDoc],
+			],
+		})
+		await db.connect()
+
+		const dashboard = new DashboardModel({ registryFile: 'releases.txt' }, { db })
+		const data = await dashboard.aggregate()
+
+		assert.equal(data.projects.length, 2)
+		const p1 = data.projects.find((p) => p.name === '@nan0web/multi-rel')
+		assert.ok(p1)
+		assert.equal(p1.version, '2.1.0')
+		assert.equal(p1.tasks.length, 2)
+		assert.equal(p1.status, 'wip')
+
+		const p2 = data.projects.find((p) => p.name === '@nan0web/backlog-only')
+		assert.ok(p2)
+		assert.equal(p2.tasks.length, 2)
+		assert.equal(p2.status, 'wip')
+	})
 })

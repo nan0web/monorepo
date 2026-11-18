@@ -64,7 +64,7 @@ export async function documentExists(db, path) {
 export async function loadReleaseDoc(db, releaseDir) {
 	let releaseContent = ''
 	let sourceDoc = `${releaseDir}/release.md`
-	for (const docFile of ['release.md', 'task.md', 'plan.md']) {
+	for (const docFile of ['release.md', 'task.md', 'task-breakdown.md', 'plan.md', 'transformation.md', 'feedback.md', 'backlog.md']) {
 		try {
 			const content = await db.loadDocument(`${releaseDir}/${docFile}`, '')
 			if (content) {

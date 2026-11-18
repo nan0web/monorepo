@@ -217,7 +217,11 @@ export class PMaCParser {
 		const items = []
 		if (el instanceof MDTaskList || el instanceof MDList) {
 			for (const child of el.children) {
-				items.push(child.content?.trim() || '')
+				const status = child.status !== null && child.status !== undefined
+					? (child.status === 'done' ? '[x]' : '[ ]')
+					: ''
+				const prefix = status ? `${status} ` : ''
+				items.push(`${prefix}${child.content?.trim() || ''}`)
 			}
 		} else if (el.content && el.content.includes('- [')) {
 			const lines = el.content.split('\n')
@@ -228,6 +232,7 @@ export class PMaCParser {
 				}
 			}
 		}
+
 
 		for (const rawItem of items) {
 			// e.g. "[x] [#101-1] Винести базову модель ReleaseModel у пакет @nan0web/release"

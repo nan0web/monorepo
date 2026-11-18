@@ -5,7 +5,7 @@ export class ReleaseApp extends ModelAsApp {
     };
     static command: {
         help: string;
-        options: (typeof CheckCommand | typeof DepsCommand | typeof PublishCommand | typeof SpecCommand | typeof StatusCommand | typeof WebCommand | typeof ViewCommand | typeof ListCommand | typeof ServeCommand | typeof ValidateCommand | typeof ExampleCommand)[];
+        options: (typeof CheckCommand | typeof DepsCommand | typeof PublishCommand | typeof SpecCommand | typeof StatusCommand | typeof WebCommand | typeof ViewCommand | typeof ListCommand | typeof ServeCommand | typeof ValidateCommand | typeof ExampleCommand | typeof TodoCommand)[];
         positional: boolean;
         default: typeof ViewCommand;
     };
@@ -23,3 +23,4 @@ import ListCommand from './ListCommand.js';
 import ServeCommand from './ServeCommand.js';
 import ValidateCommand from './ValidateCommand.js';
 import ExampleCommand from './ExampleCommand.js';
+import TodoCommand from './TodoCommand.js';

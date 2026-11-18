@@ -141,21 +141,80 @@ export class DashboardModel extends ModelAsApp {
 
 			if (discovered.length === 0) {
 				const gitInfo = gitTelem?.getGitInfo ? gitTelem.getGitInfo(proj.path) : { branch: 'main', gitStatus: 'clean' }
-				projectEntries.push(this.#createEmptyEntry(proj, gitInfo))
+				const backlogDoc = await this.#findBacklogDoc(db, projectRoot)
+				if (backlogDoc) {
+					const { releaseContent, sourceDoc, tasks } = backlogDoc
+					const fm = parseFrontmatter(releaseContent)
+					const version = fm.version || proj.version || '0.1.0'
+					const status = determineReleaseStatus({ fmStatus: fm.status || 'planning', tasks })
+					if (status === 'wip') wipCount++
+					else if (status === 'closed') closedCount++
+					projectEntries.push({
+						path: proj.path,
+						name: proj.name,
+						version,
+						hours: 0,
+						iterations: 0,
+						totalHours: 0,
+						totalIterations: 0,
+						releasesCount: 1,
+						allReleases: [{
+							version,
+							path: sourceDoc.slice(0, sourceDoc.lastIndexOf('/')),
+							hours: 0,
+							iterations: 0,
+							rrs: 0,
+							status,
+							tasks,
+							sourceDoc,
+						}],
+						rrs: 0,
+						status,
+						tasks,
+						branch: gitInfo.branch,
+						gitStatus: gitInfo.gitStatus,
+						userContent: '',
+						releaseContent: String(releaseContent || ''),
+						sourceDoc,
+						sourceUserDoc: '',
+						deadline: fm.deadline || null,
+						daysRemaining: calculateDaysRemaining(fm.deadline),
+						priority: resolvePriority(fm),
+					})
+				} else {
+					projectEntries.push(this.#createEmptyEntry(proj, gitInfo))
+				}
 				continue
 			}
 
-			const primaryRel = discovered[0]
+			// Pre-scan all releases with their docs to choose the most informative primary release
+			const releasesWithDocs = await Promise.all(
+				discovered.map(async (rel) => {
+					const doc = await loadReleaseDoc(db, rel.path)
+					let userContent = ''
+					try {
+						userContent = (await db.loadDocument(`${rel.path}/user.md`, '')) || ''
+					} catch {}
+					const metrics = parseUserMetrics(String(userContent || ''))
+					const hasSpec = await documentExists(db, `${rel.path}/task.spec.js`)
+					const hasTest = await documentExists(db, `${rel.path}/task.test.js`)
+					return { ...rel, doc, userContent, metrics, hasSpec, hasTest }
+				})
+			)
+
+			// Pick primary: latest release that has tasks, spec, test or hours; fallback to discovered[0]
+			const primaryCandidate = releasesWithDocs.find(
+				(r) => r.doc.tasks.length > 0 || r.hasSpec || r.hasTest || r.metrics.hours > 0
+			) || releasesWithDocs[0]
+
+			const primaryRel = primaryCandidate
 			const effectiveVersion = primaryRel.version
 			const matchedReleaseDir = primaryRel.path
 
-			let userContent = ''
+			let userContent = primaryRel.userContent
 			const matchedUserDoc = `${matchedReleaseDir}/user.md`
-			try {
-				userContent = (await db.loadDocument(matchedUserDoc, '')) || ''
-			} catch {}
 
-			const metrics = parseUserMetrics(String(userContent || ''))
+			const metrics = primaryRel.metrics
 			if (metrics.hours === 0 && metrics.iterations === 0 && gitTelem?.getGitCommitTelemetry) {
 				const telem = gitTelem.getGitCommitTelemetry(proj.path, matchedReleaseDir)
 				if (telem?.hours > 0) {
@@ -164,14 +223,14 @@ export class DashboardModel extends ModelAsApp {
 				}
 			}
 
-			const { releaseContent, sourceDoc, tasks } = await loadReleaseDoc(db, matchedReleaseDir)
+			const { releaseContent, sourceDoc, tasks } = primaryRel.doc
 			const fm = parseFrontmatter(releaseContent || userContent)
 			const deadline = fm.deadline || null
 			const daysRemaining = calculateDaysRemaining(deadline)
 			const priority = resolvePriority(fm, daysRemaining)
 
-			const hasSpec = await documentExists(db, `${matchedReleaseDir}/task.spec.js`)
-			const hasTest = await documentExists(db, `${matchedReleaseDir}/task.test.js`)
+			const hasSpec = primaryRel.hasSpec
+			const hasTest = primaryRel.hasTest
 			const status = determineReleaseStatus({
 				fmStatus: fm.status,
 				hasSpec,
@@ -227,6 +286,30 @@ export class DashboardModel extends ModelAsApp {
 		}
 		this.projects = projectEntries
 		return { summary: this.summary, projects: projectEntries }
+	}
+
+	async #findBacklogDoc(db, projectRoot) {
+		const candidates = [
+			'releases/backlog.md',
+			'releases/backlog/start.md',
+			'releases/backlog/index.md',
+			'backlog.md',
+		]
+		for (const relFile of candidates) {
+			const fullPath = `${projectRoot}${relFile}`.replace(/\/+/g, '/')
+			try {
+				const content = await db.loadDocument(fullPath, '')
+				if (content) {
+					const { extractTasks } = await import('./ReleaseParser.js')
+					return {
+						releaseContent: String(content),
+						sourceDoc: fullPath,
+						tasks: extractTasks(content),
+					}
+				}
+			} catch {}
+		}
+		return null
 	}
 
 	#createEmptyEntry(proj, gitInfo) {

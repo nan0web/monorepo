@@ -121,6 +121,37 @@ export class DashboardModel extends ModelAsApp {
         } | {
             path: string;
             name: string;
+            version: any;
+            hours: number;
+            iterations: number;
+            totalHours: number;
+            totalIterations: number;
+            releasesCount: number;
+            allReleases: {
+                version: any;
+                path: string;
+                hours: number;
+                iterations: number;
+                rrs: number;
+                status: "wip" | "closed" | "unknown";
+                tasks: import("./ReleaseParser.js").TaskItem[];
+                sourceDoc: string;
+            }[];
+            rrs: number;
+            status: "wip" | "closed" | "unknown";
+            tasks: import("./ReleaseParser.js").TaskItem[];
+            branch: any;
+            gitStatus: any;
+            userContent: string;
+            releaseContent: string;
+            sourceDoc: string;
+            sourceUserDoc: string;
+            deadline: any;
+            daysRemaining: number | null;
+            priority: "0" | "1" | "2" | "3";
+        } | {
+            path: string;
+            name: string;
             version: string;
             hours: number;
             iterations: number;

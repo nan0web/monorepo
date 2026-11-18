@@ -14,6 +14,7 @@ import ListCommand from './ListCommand.js'
 import ServeCommand from './ServeCommand.js'
 import ValidateCommand from './ValidateCommand.js'
 import ExampleCommand from './ExampleCommand.js'
+import TodoCommand from './TodoCommand.js'
 
 export class ReleaseApp extends ModelAsApp {
 	static alias = 'release'
@@ -28,6 +29,7 @@ export class ReleaseApp extends ModelAsApp {
 			InitCommand,
 			CheckCommand,
 			ValidateCommand,
+			TodoCommand,
 			CloseCommand,
 			DepsCommand,
 			PublishCommand,
