@@ -18,6 +18,11 @@ const EXCLUDE_DIRS = [
 	'types',
 	'examples',
 	'scripts',
+	'releases',
+	'data',
+	'docs',
+	'coverage',
+	'tmp',
 ]
 
 /**
