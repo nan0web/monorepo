@@ -4,6 +4,33 @@ import { DomainAuditor } from '../DomainAuditor.js'
 
 export class JsDomainAuditor extends DomainAuditor {
 	/**
+	 * Checks constructor JSDoc for Partial<ModelOptions> or ModelAsAppOptions.
+	 * @param {string} classBody
+	 * @param {RegExpExecArray | null} ctorMatch
+	 * @param {string} className
+	 * @param {string} file
+	 * @param {import('@nan0web/i18n').TFunction} t
+	 * @returns {{ level: 'error' | 'warn', message: string } | null}
+	 */
+	_checkModelOptionsJsDoc(classBody, ctorMatch, className, file, t) {
+		if (!ctorMatch) return null
+		const ruleLevel =
+			/** @type {any} */ (this._).config?.rules?.missing_model_options_jsdoc ?? 'warn'
+		if (ruleLevel === 'off' || ruleLevel === false) return null
+
+		const beforeCtor = classBody.slice(0, ctorMatch.index)
+		const jsdocMatch = /\/\*\*([\s\S]*?)\*\/\s*$/.exec(beforeCtor)
+		const jsdoc = jsdocMatch ? jsdocMatch[1] : ''
+		const hasValidOptions = /Model(?:AsApp)?Options\b/.test(jsdoc)
+		if (hasValidOptions) return null
+
+		const message =
+			t(DomainAuditor.UI.missing_model_options_jsdoc, { file, className }) ||
+			`Missing or invalid constructor options JSDoc in ${file} (${className}).`
+		return { level: ruleLevel === 'error' ? 'error' : 'warn', message }
+	}
+
+	/**
 	 * @param {string} dir
 	 * @param {string[]} [collected]
 	 * @returns {Promise<string[]>}
@@ -96,6 +123,14 @@ export class JsDomainAuditor extends DomainAuditor {
 					// Extract constructor body
 					const ctorMatch = /constructor\s*\([^)]*\)\s*\{([\s\S]*?)(?:\n[\t ]*\})/.exec(classBody)
 					const ctorBody = ctorMatch ? ctorMatch[1] : ''
+
+					const jsdocCheck = this._checkModelOptionsJsDoc(classBody, ctorMatch, className, file, t)
+					if (jsdocCheck) {
+						if (jsdocCheck.level === 'error') {
+							errors.push({ file, error: jsdocCheck.message, check: 'missing_model_options_jsdoc' })
+						}
+						yield show(jsdocCheck.message, jsdocCheck.level)
+					}
 
 					// Collect static field declarations
 					// e.g. static field = ...

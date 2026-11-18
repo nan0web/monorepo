@@ -28,6 +28,8 @@ export class DomainAuditor extends AuditorModel {
 			'Direct path import detected in domain file {file} (line {line}). Use db methods instead.',
 		explicit_extension_found:
 			'Redundant explicit file extension in {method}("{path}") in {file} (line {line}). NaN0Web DB resolves formats polymorphically. Omit extension.',
+		missing_model_options_jsdoc:
+			'Missing or invalid constructor options JSDoc (expected Partial<ModelOptions> or ModelAsAppOptions) in {file} ({className}).',
 		platform_not_detected: 'Platform not detected. Skipping domain checks.',
 		domain_ok: 'Domain/UI separation: OK',
 	}

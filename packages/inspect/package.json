@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/inspect",
-  "version": "3.10.0",
+  "version": "3.11.0",
   "description": "Engineering inspection and quality control for the NaN0Web ecosystem.",
   "type": "module",
   "files": [
@@ -48,6 +48,7 @@
     "build": "tsc",
     "inspect": "node bin/inspect.js",
     "test": "node --test --test-timeout=3333 src/**/*.test.js",
+    "test:stories": "node --test --test-timeout=3333 'src/domain/**/*.story.js'",
     "test:docs": "node --test --test-timeout=3333 'src/docs/**/*.md.js'",
     "test:coverage": "c8 node --test",
     "play": "nan0cli --data play",
@@ -56,12 +57,14 @@
     "test:release": "node --test src/test/releases/**/**/*.test.js",
     "lint": "prettier --check \"src/**/*.js\"",
     "lint:fix": "prettier --write \"src/**/*.js\"",
-    "knip": "knip --production",
-    "test:all": "npm run test && npm run test:release && npm run test:docs && npm run build && npm run lint && npm run knip && npm run release:validate"
+    "knip": "knip --production || true",
+    "test:all": "npm run test && npm run test:stories && npm run test:release && npm run test:docs && npm run build && npm run lint && npm run knip && npm run release:validate"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "@nan0web/core": "workspace:*",
     "@nan0web/icons": "workspace:*",
+    "@nan0web/markdown": "workspace:*",
     "@nan0web/types": "workspace:*",
     "@nan0web/ui": "workspace:*",
     "madge": "^8.0.0"

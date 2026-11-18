@@ -55,7 +55,9 @@ export class ReleaseAuditor extends AuditorModel {
 		const db = this._.db
 		const baseDir = this.dir || '.'
 
-		yield progress(t(ReleaseAuditor.UI.starting, { dir: baseDir }) || `Starting Release Audit in ${baseDir}...`)
+		yield progress(
+			t(ReleaseAuditor.UI.starting, { dir: baseDir }) || `Starting Release Audit in ${baseDir}...`
+		)
 
 		const errors = []
 		const checked = []
@@ -82,7 +84,10 @@ export class ReleaseAuditor extends AuditorModel {
 						const entryPath = entry?.path || db.resolveSync(dir, name)
 						if (entry?.isDirectory || entry?.stat?.isDirectory) {
 							await collectTaskFiles(entryPath)
-						} else if (entryPath.includes('releases/') && (entryPath.endsWith('/task.md') || name === 'task.md')) {
+						} else if (
+							entryPath.includes('releases/') &&
+							(entryPath.endsWith('/task.md') || name === 'task.md')
+						) {
 							taskFiles.push(entryPath)
 						}
 					}
@@ -160,7 +165,9 @@ export class ReleaseAuditor extends AuditorModel {
 			if (!status) {
 				const hasDoneCheckboxes = /- \[x\]/i.test(content)
 				const hasOpenCheckboxes = /- \[ \]/.test(content)
-				const isReleasedByPkg = Boolean(releaseVer && pkgVersion && isLteSemver(releaseVer, pkgVersion))
+				const isReleasedByPkg = Boolean(
+					releaseVer && pkgVersion && isLteSemver(releaseVer, pkgVersion)
+				)
 				if (hasRetro || hasTest || isReleasedByPkg || (hasDoneCheckboxes && !hasOpenCheckboxes)) {
 					status = 'done'
 				} else if (hasSpec) {
@@ -249,7 +256,9 @@ export class ReleaseAuditor extends AuditorModel {
 		}
 
 		if (outPath) {
-			yield show(`Report saved to ${outPath} (checked: ${taskFiles.length}, errors: ${errors.length})`)
+			yield show(
+				`Report saved to ${outPath} (checked: ${taskFiles.length}, errors: ${errors.length})`
+			)
 			return { ok: errors.length === 0, errors }
 		}
 

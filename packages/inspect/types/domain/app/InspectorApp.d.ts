@@ -9,7 +9,7 @@ export class InspectorApp extends ModelAsApp {
     static command: {
         type: typeof ModelAsApp;
         help: string;
-        options: (typeof PhaseAuditor | typeof CircularDependencyAuditor | typeof ArchitectureAuditor | typeof SnapshotAuditor | typeof BuildWorkflowsApp | typeof ListAuditorsApp | typeof FastApiApp | typeof InstallApp | typeof DoctorApp | typeof OlmuiThemingAuditor)[];
+        options: (typeof PhaseAuditor | typeof CircularDependencyAuditor | typeof ArchitectureAuditor | typeof SnapshotAuditor | typeof BuildWorkflowsApp | typeof ListAuditorsApp | typeof FastApiApp | typeof InstallApp | typeof DoctorApp | typeof ReleaseAuditor | typeof OlmuiThemingAuditor)[];
         default: typeof ArchitectureAuditor;
         positional: boolean;
     };
@@ -55,4 +55,5 @@ import { ListAuditorsApp } from './ListAuditorsApp.js';
 import { FastApiApp } from './FastApiApp.js';
 import { InstallApp } from './InstallApp.js';
 import { DoctorApp } from './DoctorApp.js';
+import { ReleaseAuditor } from './ReleaseAuditor.js';
 import { OlmuiThemingAuditor } from '@nan0web/ui/inspect';
