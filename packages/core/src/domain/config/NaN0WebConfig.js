@@ -93,9 +93,9 @@ export default class NaN0WebConfig extends Model {
 	constructor(data = {}, options = {}) {
 		super(data, options)
 		/** @type {string} Package or workspace name */
-		this.title
+		this.title = this.title || /** @type {any} */ (data).name || this.appName || ''
 		/** @type {string} Project name */
-		this.appName
+		this.appName = this.appName || /** @type {any} */ (data).name || this.title || ''
 		/** @type {string} Data Source Name (folder or connection string) */
 		this.dsn
 		/** @type {string} Default locale */
