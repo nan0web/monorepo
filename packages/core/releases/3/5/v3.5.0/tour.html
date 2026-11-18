@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@nan0web/core v3.5.0 — Релізний тур NaN0WebConfig</title>
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, sans-serif;
+      --bg: #ffffff; --fg: #1f2328; --sub: #59636e; --card: #f6f8fa;
+      --border: #d0d7de; --input: #ffffff; --accent: #0969da; --pill: #eaeef2;
+      background: var(--bg); color: var(--fg);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1117; --fg: #e6edf3; --sub: #8b949e; --card: #161b22;
+        --border: #30363d; --input: #0d1117; --accent: #58a6ff; --pill: #21262d;
+      }
+    }
+    body { margin: 0; padding: 24px; max-width: 1080px; margin-inline: auto; }
+    h1 { margin: 0 0 8px; font-size: 1.5rem; }
+    .sub { color: var(--sub); margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .card h2 { margin: 0 0 12px; font-size: 1.05rem; color: var(--accent); }
+    label { display: flex; align-items: center; justify-content: space-between; margin: 10px 0; gap: 12px; font-size: 0.92rem; }
+    input[type="number"], select, input[type="text"] {
+      background: var(--input); color: var(--fg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; width: 150px;
+    }
+    .layers { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; background: var(--pill); padding: 6px 10px; border-radius: 999px; cursor: pointer; font-size: 0.85rem; }
+    pre { background: var(--input); border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow: auto; font-size: 0.84rem; margin: 0; }
+    .status { padding: 10px 12px; border-radius: 8px; margin-top: 12px; font-size: 0.9rem; }
+    .ok { background: rgba(46, 160, 67, 0.15); border: 1px solid #2ea043; color: #1a7f37; }
+    .err { background: rgba(248, 81, 73, 0.15); border: 1px solid #f85149; color: #cf222e; }
+    .hint { color: var(--sub); font-size: 0.82rem; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <h1>@nan0web/core v3.5.0 — Релізний тур NaN0WebConfig</h1>
+  <div class="sub">Інтерактивна демонстрація каскадного злиття шарів (@system → @root → @app) та валідації кроків CoCoDev.</div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>1. Шари конфігурації та опції</h2>
+      <div class="layers">
+        <label class="pill"><input type="checkbox" id="layerSystem" checked /> @system/nan0web</label>
+        <label class="pill"><input type="checkbox" id="layerRoot" checked /> @root/nan0web</label>
+        <label class="pill"><input type="checkbox" id="layerApp" checked /> @app/nan0web</label>
+      </div>
+
+      <label>appName (@app)
+        <input type="text" id="appName" value="my-nan0-app" />
+      </label>
+      <label>port (@app)
+        <input type="number" id="port" value="8080" />
+      </label>
+      <label>locale (@root)
+        <select id="locale">
+          <option value="uk" selected>uk</option>
+          <option value="en">en</option>
+        </select>
+      </label>
+      <label>theme (@root)
+        <select id="theme">
+          <option value="dark" selected>dark</option>
+          <option value="light">light</option>
+          <option value="auto">auto</option>
+        </select>
+      </label>
+      <label>steps.intent.maxCriteria (1..7)
+        <input type="number" id="maxCriteria" value="3" />
+      </label>
+      <div class="hint">Спробуй ввести 0 або 10, щоб побачити спрацювання валідації IntentStep.</div>
+
+      <div id="validationBox" class="status ok">Валідація: OK</div>
+    </div>
+
+    <div class="card">
+      <h2>2. Злитий NaN0WebConfig</h2>
+      <pre id="output"></pre>
+    </div>
+  </div>
+
+  <script>
+    const els = ['layerSystem', 'layerRoot', 'layerApp', 'appName', 'port', 'locale', 'theme', 'maxCriteria']
+      .reduce((acc, id) => (acc[id] = document.getElementById(id), acc), {});
+
+    function render() {
+      let merged = {};
+      if (els.layerSystem.checked) {
+        merged = {
+          ...merged,
+          port: 3000,
+          locale: 'en',
+          theme: 'auto',
+          steps: { intent: { maxCriteria: 5 }, build: { types: true }, inspect: { strict: false } }
+        };
+      }
+      if (els.layerRoot.checked) {
+        merged = {
+          ...merged,
+          locale: els.locale.value,
+          theme: els.theme.value,
+          steps: { ...(merged.steps || {}), inspect: { strict: true } }
+        };
+      }
+      if (els.layerApp.checked) {
+        const mc = Number(els.maxCriteria.value);
+        merged = {
+          ...merged,
+          appName: els.appName.value,
+          port: Number(els.port.value),
+          steps: {
+            ...(merged.steps || {}),
+            intent: { maxCriteria: mc }
+          }
+        };
+      }
+
+      const mcVal = merged.steps?.intent?.maxCriteria;
+      const box = document.getElementById('validationBox');
+      if (mcVal !== undefined && (mcVal < 1 || mcVal > 7 || Number.isNaN(mcVal))) {
+        box.className = 'status err';
+        box.textContent = 'RangeError: IntentStep.maxCriteria must be between 1 and 7 (отримано: ' + mcVal + ')';
+      } else {
+        box.className = 'status ok';
+        box.textContent = 'Валідація: OK — конфігурація готова для додатку';
+      }
+
+      document.getElementById('output').textContent = JSON.stringify(merged, null, 2);
+    }
+
+    Object.values(els).forEach((el) => el.addEventListener('input', render));
+    render();
+  </script>
+</body>
+</html>

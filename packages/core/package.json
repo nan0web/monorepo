@@ -8,6 +8,7 @@
   "files": [
     "src/**/*.js",
     "!src/**/*.test.js",
+    "!src/**/*.story.js",
     "!src/README.md.js",
     "types/**/*.d.ts"
   ],
@@ -27,7 +28,8 @@
     "test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" --test \"src/**/*.test.js\"",
     "test:coverage:collect": "nan0test coverage",
     "test:status": "nan0test status --hide-name",
-    "test:all": "npm run test && npm run test:docs && npm run build && npm run knip"
+    "test:all": "npm run test && npm run test:docs && npm run build && npm run knip",
+    "inspect": "nan0inspect domain ."
   },
   "keywords": [
     "nan0",
@@ -59,5 +61,10 @@
     "@nan0web/db": "workspace:*",
     "@nan0web/i18n": "workspace:*",
     "@nan0web/types": "workspace:*"
+  },
+  "knip": {
+    "ignore": [
+      "**/*.story.js"
+    ]
   }
 }
