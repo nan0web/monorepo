@@ -128,7 +128,7 @@ export class SetupModel extends Model {
 
 	/**
 	 * @param {Partial<SetupModel>} [data]
-	 * @param {import('@nan0web/types').ModelOptions} [options]
+	 * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)

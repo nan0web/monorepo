@@ -65,6 +65,7 @@ description: Протокол NaN•Web Universal
 
 ### 🤖 AI та Управління
 
+- [`/cocodev`](cocodev.md) — Continuous Collaborative Development (Фрактальний цикл $K \le 7$)
 - [`/cnai-context`](cnai-context.md) — Оптимізація контексту AI-асистента
 - [`/task-pool`](task-pool.md) — Протокол Пулу Завдань (next.md)
 - [`/architechnomag`](architechnomag.md) — Persona та трекінг контексту

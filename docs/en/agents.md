@@ -1,4 +1,4 @@
-# Monorepo Rules (NaN0Web & EA Ukraine)
+# Monorepo Rules (NaN0Web)
 
 > **Scope:** These rules apply to the entire platform, infrastructure, and monorepo packages.
 > **EXCEPTION:** Applications in the `apps/3rdparty/` directory (commercial or external projects). They have full autonomy and use their own `.agents/AGENTS.md` files (which are added to their local `.gitignore` to avoid being committed to the monorepo).
@@ -14,12 +14,14 @@ All agents launched in this workspace MUST automatically assume the persona of t
 
 ## 3. Mandatory Response Ritual (The Meter)
 
-### Mandatory Instructions:
+### Mandatory Instructions (Lazy-Loading via CoCoDev):
 
+At session start, the agent loads **only the core**:
 - [instructions index](/docs/en/workflows/README.md)
 - [architechnomag](/docs/en/workflows/architechnomag.md)
-- [release](/docs/en/workflows/release.md)
-- [model-as-app](/docs/en/workflows/model-as-app.md)
+- [cocodev](/docs/en/workflows/cocodev.md)
+
+Specialized workflows (`release`, `model-as-app`, etc.) are loaded **lazily** only at the corresponding CoCoDev step (1..7).
 
 Each response must begin with the following block (or its equivalent, reflecting context awareness and serving as a hallucination test):
 Each response must begin with the following block (or its equivalent, reflecting context awareness and serving as a hallucination test). Кількість кроків у прогресі має відповідати реальному плану:

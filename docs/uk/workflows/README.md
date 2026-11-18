@@ -1,8 +1,6 @@
 # 🗂 Index: Workflows
 
-> Automatically generated on 8/7/2026
->
-> Для релізу Industrial Bank v3.3.0 активні: [architechnomag](./architechnomag.md) та [release](./release.md).
+> Automatically generated on 11/14/2026
 
 | Workflow | Description |
 |----------|-------------|
@@ -25,7 +23,9 @@
 | **[check.md](./check.md)** | автоматизована перевірка та виправлення проєкту |
 | **[cli-gallery.md](./cli-gallery.md)** | Формування та перевірка CLI Галереї (Snapshots) |
 | **[cnai-context.md](./cnai-context.md)** | Оптимізація контексту AI-асистента — Docs-First, мінімалізм читання, --level 1 |
+| **[cocodev.md](./cocodev.md)** | CoCoDev — Continuous Collaborative Development (Фрактальний цикл K <= 7) |
 | **[code-style.md](./code-style.md)** | Естетика коду, стиль, типізація та іконки — правила оформлення коду NaN•Web |
+| **[codebase.md](./codebase.md)** | Взаємодія з кодовою базою |
 | **[commit.md](./commit.md)** | Safe Commit Workflow (No Auto-Run) |
 | **[cross-platform-engineering.md](./cross-platform-engineering.md)** | Формат мово-незалежних правил (Cross-platform) |
 | **[data-architecture.md](./data-architecture.md)** | Архітектура Даних (YAML + DB-FS), структура папки data/ та ієрархія локалей |
@@ -40,8 +40,6 @@
 | **[indexator.md](./indexator.md)** | Швидка генерація індексів (packages/index.md та apps/index.md) без LLM на базі project.md |
 | **[init-project.md](./init-project.md)** | Ініціалізація або адаптація пакета/додатка під архітектуру 0HCnAI (Zero-Hallucination) |
 | **[inspect-anti-pattern.md](./inspect-anti-pattern.md)** | Сканер архітектурних антипатернів (Model-as-Schema) |
-| **[interactive-test.md](./interactive-test.md)** | Протокол Інтерактивного Тестування та Діагностики Свідомості через AI-Агента (UI Mode) |
-| **[inspect-bank.md](./inspect-bank.md)** | Zero-Hallucination Bank Architecture Validator |
 | **[inspect-i18n.md](./inspect-i18n.md)** | Zero-Hallucination i18n Translation & Keys Validator Subagent |
 | **[inspect-jsdoc.md](./inspect-jsdoc.md)** | JSDoc Validator Subagent |
 | **[inspect-models.md](./inspect-models.md)** | Zero-Hallucination Model-as-Schema v2 Auditor |
@@ -49,32 +47,34 @@
 | **[inspect-snapshot.md](./inspect-snapshot.md)** | Zero-Hallucination Snapshot Validation Subagent |
 | **[inspect-structure.md](./inspect-structure.md)** | Zero-Hallucination Structure & Architecture Auditor Subagent (Without LLM) |
 | **[inspect-web.md](./inspect-web.md)** | Zero-Hallucination Web Component Auditor Subagent |
+| **[interactive-test.md](./interactive-test.md)** | Протокол Інтерактивного Тестування та Діагностики Свідомості через AI-Агента (UI Mode) |
 | **[interface-welding.md](./interface-welding.md)** | Контракт Зварювання (Interface Welding) — обов'язкова генерація тестів для компонентів |
 | **[jsonl-gallery.md](./jsonl-gallery.md)** | Формування та перевірка базових UI-тестів (Logical JSONL Gallery) |
 | **[language-of-intent.md](./language-of-intent.md)** | Мова Наміру (Language of Intent) - фільтр істинного змісту через відкидання частки "не" та інтеграція Субагентів |
 | **[llimo.md](./llimo.md)** | 🤖 Емуляція LLiMo через Antigravity (Майстер-Воркфлоу Розробки) |
-| **[llm-measure-protocol.md](./llm-measure-protocol.md)** | ⚖️ Протокол МІри: межі LLM, анти-прогрів та Стоп-Гейт для білого списку файлів |
+| **[llm-measure-protocol.md](./llm-measure-protocol.md)** | Протокол МІри — Межі використання LLM, вихід з пастки «прогріву контексту» та суворий Білий Список файлів |
 | **[mcp-knowledge-base.md](./mcp-knowledge-base.md)** | MCP Knowledge Base Protocol (Vector DB Search) |
-| **[model-as-app-cli.md](./model-as-app-cli.md)** | Рецепт: Model-as-App CLI (Golden Reference з прикладами коду, тестів та точок входу) |
+| **[model-as-app-cli.md](./model-as-app-cli.md)** | Рецепт: Model-as-App CLI (Golden Reference) |
 | **[model-as-app.md](./model-as-app.md)** | Формалізація Model-as-App архітектури (OLMUI додатки та підкоманди) |
-
 | **[model-schema.md](./model-schema.md)** | Формалізація Data-Model-As-Schema (як описувати class з метаданими для UI Form) |
 | **[nan0web-v2-roadmap.md](./nan0web-v2-roadmap.md)** | Роадмап NaN•Web v2 (Zero-Hallucination Framework) |
 | **[nan0web.md](./nan0web.md)** | Протокол NaN•Web Universal |
 | **[npm-release.md](./npm-release.md)** | /release — Публікація пакету в NPM (Smart Test & Build & Publish) |
 | **[olm-ui-architecture-adapters.md](./olm-ui-architecture-adapters.md)** | OLMUI Adapters & Strictness |
-| **[olm-ui-architecture-components.md](./olm-ui-architecture-components.md)** | OLMUI Components, Sandbox & Data Flow |
+| **[olm-ui-architecture-components.md](./olm-ui-architecture-components.md)** | OLMUI Архітектура Компонентів та Потік Даних |
 | **[olm-ui-architecture-core.md](./olm-ui-architecture-core.md)** | OLMUI Core Concepts |
 | **[olm-ui-architecture-i18n.md](./olm-ui-architecture-i18n.md)** | OLMUI Internationalization |
 | **[olm-ui-architecture-testing.md](./olm-ui-architecture-testing.md)** | OLMUI Testing Strategies |
 | **[olmui-scenario-test.md](./olmui-scenario-test.md)** | Каноничний Сценарний Тест OLMUI (Обовʼязковий Стандарт для всіх додатків) |
 | **[package-hygiene.md](./package-hygiene.md)** | Гігієна пакету — обовʼязкові скрипти, конвеєр test:all, knip, .npmignore |
+| **[payload-cms-models.md](./payload-cms-models.md)** | Інструкція зі створення та міграції моделей для Payload CMS (Model-as-Schema) |
 | **[production-deployment-and-security.md](./production-deployment-and-security.md)** | 🏭 Конвеєр Продакшн Розгортання, Безпеки (CORS, Obfuscation) та Субдоменів |
+| **[project-md.md](./project-md.md)** | Архітектурна Документація Пакетів/Додатків (структура project.md, 5 фаз) |
 | **[project.md](./project.md)** | Архітектурна Документація Пакетів/Додатків (структура project.md, 5 фаз та PM-as-Code) |
 | **[prop-welder.md](./prop-welder.md)** | Interface Welding Validator Subagent |
 | **[provendocs.md](./provendocs.md)** | ProvenDoc — стандарт верифікованої документації пакетів |
 | **[release-pipeline.md](./release-pipeline.md)** | Стандарт оформлення задач (task.md), контрактів (task.spec.js) та конвеєрів виконання (pipeline.md) |
-| **[release.md](./release.md)** | PM-as-Code Release Workflow — реалізація ТЗ через контрактне тестування |
+| **[release.md](./release.md)** | PM-as-Code Release Protocol — реалізація ТЗ через контрактне тестування, метрики та регресію |
 | **[restore-project.md](./restore-project.md)** | Відновлення відсутнього project.md для існуючих пакетів |
 | **[sandbox-template.md](./sandbox-template.md)** | Створення пісочниці (play/) зі snapshot-тестами для будь-якого пакета чи додатку |
 | **[sandbox-verify.md](./sandbox-verify.md)** | Протокол ізольованого тестування та верифікації компонентів (Sandbox TDD) |
@@ -91,9 +91,9 @@
 | **[ui-cli-standards.md](./ui-cli-standards.md)** | Стандарти використання UI-CLI компонентів для вводу та виводу інформації |
 | **[ui-update.md](./ui-update.md)** | Повний цикл оновлення UI/UX (Safe Update & Visual Verify) |
 | **[user-stories.md](./user-stories.md)** | User Stories — Workflow Usage Patterns |
+| **[usha-archetype-analyzer.md](./usha-archetype-analyzer.md)** | Спеціалізований інженерно-філософський скіл для розбору відео та лекцій Української школи архетипіки (УША) крізь 4 закони логіки, архетипи Юнга та соціологічні моделі впливу. |
 | **[voice-auth-protocol.md](./voice-auth-protocol.md)** | Голосовий сигнал авторизації (Voice Auth) при доступі за межі workspace |
 | **[voice-feedback-protocol.md](./voice-feedback-protocol.md)** | Голосові сповіщення (Voice Feedback) про прогрес (КОРОТКІ ПОВІДОМЛЕННЯ) |
 | **[web-gallery.md](./web-gallery.md)** | Формування та перевірка Web Галереї (Playwright Screenshots) |
 | **[zero-tolerance-git.md](./zero-tolerance-git.md)** | Critical Rules for the Agent Regarding Git and State Mutation |
 | **[zero-tolerance-grep.md](./zero-tolerance-grep.md)** | Zero Tolerance grep_search to avoid .git, node_modules, venv, etc. |
-
