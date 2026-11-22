@@ -10,6 +10,55 @@ import DBFSPath from './DBFSPath.js'
  */
 export default class DBFSDoc extends DBFSPath {
 	/**
+	 * Binary file extensions that must be read as raw Buffer instead of UTF-8 text.
+	 * @type {string[]}
+	 */
+	static BINARY_EXTNAMES = [
+		'.png',
+		'.jpg',
+		'.jpeg',
+		'.webp',
+		'.gif',
+		'.bmp',
+		'.ico',
+		'.avif',
+		'.tiff',
+		'.tif',
+		'.pdf',
+		'.xlsx',
+		'.xls',
+		'.docx',
+		'.doc',
+		'.pptx',
+		'.ppt',
+		'.odt',
+		'.ods',
+		'.zip',
+		'.gz',
+		'.tar',
+		'.7z',
+		'.rar',
+		'.mp3',
+		'.wav',
+		'.ogg',
+		'.mp4',
+		'.webm',
+		'.mov',
+		'.avi',
+		'.woff',
+		'.woff2',
+		'.ttf',
+		'.otf',
+		'.eot',
+		'.wasm',
+		'.bin',
+		'.exe',
+		'.dll',
+		'.so',
+		'.dylib',
+	]
+
+	/**
 	 * Ensures the current operation has proper access rights.
 	 * @param {string} uri The URI to check access for.
 	 * @param {"r"|"w"|"d"} [level="r"] The access level: read, write, or delete.
@@ -106,10 +155,49 @@ export default class DBFSDoc extends DBFSPath {
 			return this.data.has(file) ? this.data.get(file) : defaultValue
 		}
 
+		const normalizedExt = (ext || this.extname(uri) || '').toLowerCase()
+		if (DBFSDoc.BINARY_EXTNAMES.includes(normalizedExt)) {
+			try {
+				return this.FS.readFileSync(path)
+			} catch (error) {
+				return defaultValue
+			}
+		}
+
 		const loader = this.registry.resolveLoader(ext)
 		try {
 			const raw = this.FS.loadTXT(path, '', true)
 			return loader(/** @type {string} */ (raw), /** @type {string} */ (ext))
+		} catch (error) {
+			return defaultValue
+		}
+	}
+
+	/**
+	 * Loads a binary file as a Buffer from the given URI.
+	 * @param {string} uri The URI to load the binary file from.
+	 * @param {any} [defaultValue=undefined] The default value to return if the file does not exist.
+	 * @param {any} [context=this.context]
+	 * @returns {Promise<Buffer|any>} The loaded Buffer or defaultValue.
+	 */
+	async loadBinary(uri, defaultValue = undefined, context = this.context) {
+		const mount = this._findMount(uri)
+		if (mount) {
+			const anyDb = /** @type {any} */ (mount.db)
+			if (typeof anyDb.loadBinary === 'function') {
+				return anyDb.loadBinary(mount.subUri, defaultValue, context)
+			}
+			return anyDb.loadDocument(mount.subUri, defaultValue, context)
+		}
+		this.console.debug('Loading binary', { uri, defaultValue })
+		await this.ensureAccess(uri, 'r')
+		const file = this.resolveSync(this.resolveAlias(uri))
+		const path = this.location(uri)
+		if (!(await this.FS.exists(path))) {
+			return this.data.has(file) ? this.data.get(file) : defaultValue
+		}
+		try {
+			return await this.FS.readFile(path)
 		} catch (error) {
 			return defaultValue
 		}
@@ -180,7 +268,11 @@ export default class DBFSDoc extends DBFSPath {
 		await this._buildPath(uri)
 		const path = this.location(uri)
 		try {
-			await this.FS.saveAsync(path, content, '.txt')
+			if (Buffer.isBuffer(content) || content instanceof Uint8Array) {
+				await this.FS.writeFile(path, content)
+			} else {
+				await this.FS.saveAsync(path, content, '.txt')
+			}
 			const stat = await this.statDocument(uri)
 			this.meta.set(uri, stat)
 			this.data.set(uri, false)
@@ -240,6 +332,9 @@ export default class DBFSDoc extends DBFSPath {
 	 * @returns {Promise<boolean>} True if saved successfully, false otherwise.
 	 */
 	async saveDocument(uri, document, context = this.context) {
+		if (Buffer.isBuffer(document) || document instanceof Uint8Array) {
+			return this.saveFile(uri, document, context)
+		}
 		const mount = this._findMount(uri)
 		if (mount) return mount.db.saveDocument(mount.subUri, document, context)
 		this.console.debug('Saving document', { uri, document })

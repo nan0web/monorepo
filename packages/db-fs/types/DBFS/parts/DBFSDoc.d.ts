@@ -7,6 +7,11 @@
  */
 export default class DBFSDoc extends DBFSPath {
     /**
+     * Binary file extensions that must be read as raw Buffer instead of UTF-8 text.
+     * @type {string[]}
+     */
+    static BINARY_EXTNAMES: string[];
+    /**
      * Ensures the current operation has proper access rights.
      * @param {string} uri The URI to check access for.
      * @param {"r"|"w"|"d"} [level="r"] The access level: read, write, or delete.
@@ -38,6 +43,14 @@ export default class DBFSDoc extends DBFSPath {
      * @returns {Promise<any>} The loaded document or the default value.
      */
     loadDocumentAs(ext: string, uri: string, defaultValue?: any, context?: any): Promise<any>;
+    /**
+     * Loads a binary file as a Buffer from the given URI.
+     * @param {string} uri The URI to load the binary file from.
+     * @param {any} [defaultValue=undefined] The default value to return if the file does not exist.
+     * @param {any} [context=this.context]
+     * @returns {Promise<Buffer|any>} The loaded Buffer or defaultValue.
+     */
+    loadBinary(uri: string, defaultValue?: any, context?: any): Promise<Buffer | any>;
     /**
      * Saves a document to the given URI, forcing a specific extension / format wrapper.
      * @throws {Error} If the document cannot be saved.
