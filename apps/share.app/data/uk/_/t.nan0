@@ -30,6 +30,10 @@
 '📡 Step 4/4: Publishing to {platform}...': '📡 Крок 4/4: Публікація на {platform}...'
 '⚠️ Integrity inspector found {count} empty files!': '⚠️ Інспектор цілісності виявив {count} порожніх файлів!'
 '🔍 Quality inspector: All artifacts valid ({videos} videos, {subtitles} subtitles, {articles} articles, {social} social kits)': '🔍 Інспектор якості: Усі артефакти валідні ({videos} відео, {subtitles} субтитрів, {articles} статей, {social} соц-пакетів)'
+'🎬 Director Cut: Found {count} scenes via voice markers (Camera <Scene>): {scenes}': '🎬 Режисерський монтаж: Знайдено {count} сцен за голосовими маркерами (Camera <Scene>): {scenes}'
+'🎞️ Stitching {count} scenes with "{transition}" transition ({duration}s)...': '🎞️ Зшивання {count} сцен із переходом "{transition}" ({duration} с)...'
+'✅ Successfully stitched scenes into {path} ({duration}s)': '✅ Успішно зшито сцени у {path} ({duration} с)'
+'📸 Saved 9:16 preview frame snapshot -> {path}': '📸 Збережено 9:16 превʼю кадр -> {path}'
 '🎉 Complete video processing pipeline finished successfully!': '🎉 Весь конвеєр відео обробки успішно завершено!'
 
 # MediaDownloadModel

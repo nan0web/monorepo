@@ -10,6 +10,13 @@ import { VideoPipelineCommand } from './domain/commands/VideoPipelineCommand.js'
 import { DriveIndexCommand } from './domain/commands/DriveIndexCommand.js'
 import { DeduplicateCommand } from './domain/commands/DeduplicateCommand.js'
 import { DriveBatchTranscribeCommand } from './domain/commands/DriveBatchTranscribeCommand.js'
+import { TranscribeCommand } from './domain/commands/TranscribeCommand.js'
+import { WhisperModelsCommand } from './domain/commands/WhisperModelsCommand.js'
+import { ExportCommand } from './domain/commands/ExportCommand.js'
+import { MusicPrepareCommand } from './domain/commands/MusicPrepareCommand.js'
+import { MarkdownAstExtractor } from './domain/services/MarkdownAstExtractor.js'
+import { TagLinter } from './domain/services/TagLinter.js'
+import { SemanticStreamRouter } from './domain/services/SemanticStreamRouter.js'
 import { MediaDownloadModel } from './domain/MediaDownloadModel.js'
 import { DummyAdapter } from './domain/DummyAdapter.js'
 import { SocialAdapter } from './domain/SocialAdapter.js'
@@ -26,6 +33,13 @@ export {
 	DriveIndexCommand,
 	DeduplicateCommand,
 	DriveBatchTranscribeCommand,
+	TranscribeCommand,
+	WhisperModelsCommand,
+	ExportCommand,
+	MusicPrepareCommand,
+	MarkdownAstExtractor,
+	TagLinter,
+	SemanticStreamRouter,
 }
 export * from './domain/Models.js'
 export * from './domain/models/DriveModel.js'
@@ -47,6 +61,10 @@ export class ShareAppCLI extends ModelAsApp {
 			DriveIndexCommand,
 			DeduplicateCommand,
 			DriveBatchTranscribeCommand,
+			TranscribeCommand,
+			WhisperModelsCommand,
+			ExportCommand,
+			MusicPrepareCommand,
 		],
 		positional: true,
 	}

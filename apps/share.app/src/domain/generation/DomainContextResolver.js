@@ -1,6 +1,3 @@
-import fs from 'node:fs'
-import path from 'node:path'
-
 /**
  * DomainContextResolver - scans local repositories and packages to build Ground Truth context
  * to prevent Whisper speech-to-text hallucinations in LLM article generation.
@@ -22,10 +19,11 @@ export class DomainContextResolver {
 	 * Scans given source directory paths (comma-separated or array) and extracts package names,
 	 * descriptions, and key README information.
 	 * @param {string|string[]} sourcePaths
-	 * @returns {object} { summary: string, packages: Array<{name: string, path: string, description: string}> }
+	 * @param {import('@nan0web/db').DB} [db]
+	 * @returns {Promise<{ summary: string, packages: Array<{name: string, path: string, description: string}> }>}
 	 */
-	static scanSources(sourcePaths) {
-		if (!sourcePaths) return { summary: '', packages: [] }
+	static async scanSources(sourcePaths, db) {
+		if (!sourcePaths || !db) return { summary: '', packages: [] }
 
 		const paths = Array.isArray(sourcePaths)
 			? sourcePaths
@@ -36,65 +34,44 @@ export class DomainContextResolver {
 
 		for (const rawPath of paths) {
 			const resolvedPath = rawPath.startsWith('~/')
-				? path.join(process.env.HOME || '', rawPath.slice(2))
-				: path.resolve(rawPath)
+				? `${process.env.HOME || ''}/${rawPath.slice(2)}`
+				: db.resolveSync ? db.resolveSync(rawPath) : rawPath
 
-			if (!fs.existsSync(resolvedPath)) continue
-
-			const stat = fs.statSync(resolvedPath)
-			if (!stat.isDirectory()) continue
+			const stat = await db.statDocument(resolvedPath).catch(() => null)
+			if (!stat || !stat.exists || !stat.isDirectory) continue
 
 			// 1. Check if it's a monorepo with packages/
-			const packagesDir = path.join(resolvedPath, 'packages')
-			if (fs.existsSync(packagesDir) && fs.statSync(packagesDir).isDirectory()) {
-				const entries = fs.readdirSync(packagesDir)
-				for (const entry of entries) {
-					const pkgDir = path.join(packagesDir, entry)
-					const pkgJsonPath = path.join(pkgDir, 'package.json')
-					if (fs.existsSync(pkgJsonPath)) {
-						try {
-							const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'))
+			const packagesDir = db.resolveSync ? db.resolveSync(resolvedPath, 'packages') : `${resolvedPath}/packages`
+			const pkgDirStat = await db.statDocument(packagesDir).catch(() => null)
+			if (pkgDirStat && pkgDirStat.exists && pkgDirStat.isDirectory) {
+				try {
+					for await (const entry of db.readDir(packagesDir, { depth: 0, includeDirs: true })) {
+						if (!entry.isDirectory) continue
+						const pkgDir = entry.path || (db.resolveSync ? db.resolveSync(packagesDir, entry.name) : `${packagesDir}/${entry.name}`)
+						const pkgJsonPath = db.resolveSync ? db.resolveSync(pkgDir, 'package.json') : `${pkgDir}/package.json`
+						const pkgDoc = await db.loadDocument(pkgJsonPath).catch(() => null)
+						if (pkgDoc) {
+							const pkg = typeof pkgDoc === 'object' && pkgDoc ? pkgDoc.value || pkgDoc.content || pkgDoc : JSON.parse(String(pkgDoc))
 							packages.push({
-								name: pkg.name || entry,
+								name: pkg.name || entry.name,
 								version: pkg.version || '0.1.0',
 								description: pkg.description || '',
 								path: pkgDir,
 							})
 							summaries.push(`- \`${pkg.name}\` (${pkgDir}): ${pkg.description || 'Module'}`)
-						} catch {}
-					}
-				}
-			}
-
-			// 2. Check if it has sub-patches or sub-projects (e.g. vibe-cli-patches)
-			const subEntries = fs.readdirSync(resolvedPath)
-			for (const entry of subEntries) {
-				const subDir = path.join(resolvedPath, entry)
-				if (fs.existsSync(subDir) && fs.statSync(subDir).isDirectory() && entry !== 'packages' && !entry.startsWith('.')) {
-					const readmePath = path.join(subDir, 'README.md')
-					const pyprojectPath = path.join(subDir, 'pyproject.toml')
-					if (fs.existsSync(readmePath) || fs.existsSync(pyprojectPath)) {
-						let desc = `Patch / sub-package in ${entry}`
-						if (fs.existsSync(readmePath)) {
-							const readmeHead = fs.readFileSync(readmePath, 'utf8').slice(0, 300).replace(/\n+/g, ' ')
-							desc = readmeHead
 						}
-						packages.push({
-							name: entry,
-							path: subDir,
-							description: desc,
-						})
-						summaries.push(`- \`${entry}\` (${subDir}): ${desc.slice(0, 100)}...`)
 					}
-				}
+				} catch {}
 			}
 
-			// 3. Read root README if available
-			const rootReadme = path.join(resolvedPath, 'README.md')
-			if (fs.existsSync(rootReadme)) {
-				const content = fs.readFileSync(rootReadme, 'utf8')
+			// 2. Read root README if available
+			const rootReadme = db.resolveSync ? db.resolveSync(resolvedPath, 'README.md') : `${resolvedPath}/README.md`
+			const readmeDoc = await db.loadDocument(rootReadme).catch(() => null)
+			if (readmeDoc) {
+				const content = typeof readmeDoc === 'object' && readmeDoc ? readmeDoc.content || readmeDoc.value || '' : String(readmeDoc)
 				const firstLines = content.split('\n').slice(0, 15).join('\n')
-				summaries.push(`\n**Overview from ${path.basename(resolvedPath)}/README.md:**\n${firstLines}\n`)
+				const base = db.basename ? db.basename(resolvedPath) : resolvedPath.split('/').pop()
+				summaries.push(`\n**Overview from ${base}/README.md:**\n${firstLines}\n`)
 			}
 		}
 

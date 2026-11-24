@@ -201,13 +201,12 @@ npm run test:all         # full pipeline: test → docs → integration → knip
 
 ## Contributing
 
-1.- Fork the repository
-- Create a feature branch (`git checkout -b feature/my-adapter`)
-- Write tests first (TDD) — see `src/test/` for patterns
-- Implement your adapter extending `SocialAdapter`
-- Ensure `npm run test:all` passes (all tests + knip)
-- Submit a Pull Request
-
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/my-adapter`)
+3. Write tests first (TDD) — see `src/test/` for patterns
+4. Implement your adapter extending `SocialAdapter`
+5. Ensure `npm run test:all` passes (all tests + knip)
+6. Submit a Pull Request
 
 ---
 
@@ -218,5 +217,3 @@ ISC © [nan•web](https://github.com/nan0web)
 ---
 
 *Part of the [nan•web](https://github.com/nan0web) Sovereign Digital State ecosystem.*
-
-

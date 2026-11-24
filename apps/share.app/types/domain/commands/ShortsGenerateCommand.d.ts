@@ -108,6 +108,33 @@ export class ShortsGenerateCommand extends ModelAsApp {
         start: number;
         end: number;
     }>;
+    /**
+     * Builds FFmpeg command for vertical shorts slicing with ASS subtitles.
+     * @param {object} params
+     * @param {string} params.absVideo
+     * @param {number} params.start
+     * @param {number} params.dur
+     * @param {string} [params.align]
+     * @param {string} [params.crop]
+     * @param {boolean} params.hasSubs
+     * @param {string} params.outSub
+     * @param {string} params.videoCodec
+     * @param {string} params.encOpts
+     * @param {string} params.outVideo
+     * @returns {string}
+     */
+    _buildSplitCommand({ absVideo, start, dur, align, offsetX, crop, hasSubs, outSub, videoCodec, encOpts, outVideo }: {
+        absVideo: string;
+        start: number;
+        dur: number;
+        align?: string;
+        crop?: string;
+        hasSubs: boolean;
+        outSub: string;
+        videoCodec: string;
+        encOpts: string;
+        outVideo: string;
+    }): string;
 }
 export type ShortsGenerateCommandOptions = {
     /**

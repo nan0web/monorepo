@@ -29,6 +29,17 @@ export class VideoSlicerPort {
         stderr: string;
     }>;
     /**
+     * Parse string of scene specs with alignments and offsets.
+     * Examples: "code=left+100,chat=right-50,present=center+30" or "code=960x1080+0+0"
+     * @param {string} specStr
+     * @returns {Record<string, { align?: string, offsetX?: number, box?: string }>}
+     */
+    static parseSceneSpecs(specStr: string): Record<string, {
+        align?: string;
+        offsetX?: number;
+        box?: string;
+    }>;
+    /**
      * @param {object} [options]
      * @param {Function} [options.runner] - Optional custom execution runner (for mocking/testing).
      */
@@ -36,6 +47,98 @@ export class VideoSlicerPort {
         runner?: Function;
     });
     runner: Function;
+    /**
+     * Builds FFmpeg video filter for vertical 9:16 crop with alignment and pixel offset.
+     * @param {object} options
+     * @param {string} [options.align='center'] - 'left' | 'right' | 'center'
+     * @param {number} [options.offsetX=0] - Pixel offset X
+     * @param {string} [options.crop] - Explicit crop expression override
+     * @param {number} [options.targetWidth=1080]
+     * @param {number} [options.targetHeight=1920]
+     * @returns {string}
+     */
+    buildCropFilter(options?: {
+        align?: string;
+        offsetX?: number;
+        crop?: string;
+        targetWidth?: number;
+        targetHeight?: number;
+    }): string;
+    /**
+     * Extracts a single frame snapshot with 9:16 crop filter applied for instant preview.
+     * @param {object} options
+     * @param {string} options.source - Path to video file
+     * @param {number} options.time - Timestamp in seconds
+     * @param {string} options.outputPath - Destination path for preview .jpg/.png
+     * @param {string} [options.align='center']
+     * @param {number} [options.offsetX=0]
+     * @param {string} [options.crop]
+     * @returns {Promise<{ outputPath: string, time: number }>}
+     */
+    captureFramePreview(options: {
+        source: string;
+        time: number;
+        outputPath: string;
+        align?: string;
+        offsetX?: number;
+        crop?: string;
+    }): Promise<{
+        outputPath: string;
+        time: number;
+    }>;
+    /**
+     * Builds FFmpeg command to stitch an array of clips with xfade and acrossfade transitions.
+     * @param {Array<{ path: string, duration: number }>} clips
+     * @param {object} options
+     * @param {string} options.outputPath
+     * @param {string} [options.transition='fade']
+     * @param {number} [options.transitionDuration=0.5]
+     * @param {boolean} [options.acrossfade=true]
+     * @param {number} [options.audioTransitionDuration]
+     * @param {string} [options.videoCodec='libx264']
+     * @param {string} [options.audioCodec='aac']
+     * @returns {string}
+     */
+    buildStitchCommand(clips: Array<{
+        path: string;
+        duration: number;
+    }>, options?: {
+        outputPath: string;
+        transition?: string;
+        transitionDuration?: number;
+        acrossfade?: boolean;
+        audioTransitionDuration?: number;
+        videoCodec?: string;
+        audioCodec?: string;
+    }): string;
+    /**
+     * Stitches an array of clips into one file using xfade and acrossfade.
+     * @param {Array<{ path: string, duration: number }>} clips
+     * @param {object} options
+     * @param {string} options.outputPath
+     * @param {string} [options.transition='fade']
+     * @param {number} [options.transitionDuration=0.5]
+     * @param {boolean} [options.acrossfade=true]
+     * @param {number} [options.audioTransitionDuration]
+     * @param {string} [options.videoCodec='libx264']
+     * @param {string} [options.audioCodec='aac']
+     * @returns {Promise<{ outputPath: string, duration: number }>}
+     */
+    stitch(clips: Array<{
+        path: string;
+        duration: number;
+    }>, options?: {
+        outputPath: string;
+        transition?: string;
+        transitionDuration?: number;
+        acrossfade?: boolean;
+        audioTransitionDuration?: number;
+        videoCodec?: string;
+        audioCodec?: string;
+    }): Promise<{
+        outputPath: string;
+        duration: number;
+    }>;
     /**
      * Builds command string list for all segments defined in a cut-map.
      * @param {CutMap} cutMap

@@ -1,4 +1,73 @@
 /**
+ * Format byte count into a human-readable approximate size label.
+ * @param {number} bytes
+ * @returns {string}
+ */
+export function formatModelSize(bytes: number): string;
+/**
+ * Parse a single stdout/stderr line from mlx_whisper.
+ * @param {string} line
+ * @returns {{ language?: string, percent?: number, currentTime?: number, text?: string } | null}
+ */
+export function parseMlxProgressLine(line: string): {
+    language?: string;
+    percent?: number;
+    currentTime?: number;
+    text?: string;
+} | null;
+/**
+ * Fetch available mlx-community Whisper models from Hugging Face Hub API with built-in fallback.
+ * @param {object} [options]
+ * @param {Function} [options.fetchFn]
+ * @param {boolean} [options.offline=false]
+ * @returns {Promise<Array<{ alias: string|null, id: string, sizeBytes: number, sizeLabel: string, isDefault: boolean }>>}
+ */
+export function fetchMlxWhisperModels(options?: {
+    fetchFn?: Function;
+    offline?: boolean;
+}): Promise<Array<{
+    alias: string | null;
+    id: string;
+    sizeBytes: number;
+    sizeLabel: string;
+    isDefault: boolean;
+}>>;
+/**
+ * Normalize Whisper language name or code to ISO-639-1 code (returns undefined for 'auto').
+ * @param {string} [lang]
+ * @returns {string|undefined}
+ */
+export function normalizeWhisperLanguage(lang?: string): string | undefined;
+/**
+ * Build CLI arguments for mlx_whisper.
+ * @param {string} audioPath
+ * @param {object} [options]
+ * @returns {string[]}
+ */
+export function buildMlxArgs(audioPath: string, options?: object): string[];
+/**
+ * @typedef {Object} WhisperBackend
+ * @property {string} name - Backend name (mlx, whisper, cpp)
+ * @property {'mlx'|'whisper'|'cpp'} type
+ * @property {Function} run - Execute transcription
+ */
+/**
+ * @typedef {Object} WhisperResult
+ * @property {string} outputDir - Absolute path to output directory
+ * @property {string} baseName - Base filename (without extension)
+ * @property {string} format - Output format
+ * @property {string[]} filePaths - Expected output file paths
+ */
+/** @type {Record<string, string>} */
+export const MLX_MODEL_MAP: Record<string, string>;
+/** @type {Record<string, { id: string, sizeBytes: number, sizeLabel: string, speedLabel: string }>} */
+export const MLX_MODEL_META: Record<string, {
+    id: string;
+    sizeBytes: number;
+    sizeLabel: string;
+    speedLabel: string;
+}>;
+/**
  * WhisperEngine — multi-backend transcription engine.
  *
  * Supports three backends in priority order:

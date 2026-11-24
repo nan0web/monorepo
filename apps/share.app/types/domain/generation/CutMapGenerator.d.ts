@@ -32,6 +32,12 @@ export class CutMapGenerator extends PipelineNode<any, any> {
      * @returns {string}
      */
     static toYaml(cutMap: CutMap): string;
+    /**
+     * Serialize cut-map to .nan0 format using canonical NaN0.stringify.
+     * @param {CutMap} cutMap
+     * @returns {string}
+     */
+    static toNaN0(cutMap: CutMap): string;
     constructor();
     /**
      * Generate a cut-map object from pauses and word-level timestamps.

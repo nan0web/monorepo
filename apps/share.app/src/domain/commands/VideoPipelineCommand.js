@@ -9,13 +9,12 @@ import { YouTubeDownloaderPort } from '../../ports/YouTubeDownloaderPort.js'
 import { MediaDownloadModel } from '../MediaDownloadModel.js'
 import { ShortsGenerateCommand } from './ShortsGenerateCommand.js'
 import { chunkTranscript, blocksToSrt, blocksToVtt } from '../generation/SubtitleChunker.js'
-import { ArticleGenerator } from '../generation/ArticleGenerator.js'
-import { DomainContextResolver } from '../generation/DomainContextResolver.js'
-import { LLMClient } from '../generation/LLMClient.js'
+import { ArticlePipelineService } from '../generation/ArticlePipelineService.js'
+import { PipelineAuditService } from '../analysis/PipelineAuditService.js'
+import { WhisperTranscriptionService } from '../analysis/WhisperTranscriptionService.js'
+import { DirectorCutAnalyzer } from '../analysis/DirectorCutAnalyzer.js'
+import { MediaInspectorService } from '../analysis/MediaInspectorService.js'
 import { progress, show, result, log } from '@nan0web/ui'
-
-import fs from 'node:fs'
-import path from 'node:path'
 
 /**
  * @typedef {object} VideoPipelineOptions
@@ -46,6 +45,7 @@ export class VideoPipelineCommand extends ModelAsApp {
 		transcriptionSaved: '✅ Transcription completed and saved to {path}',
 		stepSegmentation: '🔍 Step 2/4: Pause analysis & logical chapter segmentation...',
 		pausesFound: 'Found {count} pauses: {breakdown}',
+		directorScenesFound: '🎬 Director Cut: Found {count} scenes via voice markers (Camera <Scene>): {scenes}',
 		episodesGenerated: '📋 Generated {count} logical episodes -> {path}',
 		stepSlicing: '🎬 Step 3/4: Slicing {count} video episodes (16:9) and generating subtitles...',
 		slicingComplete: '🎬 Successfully sliced {count} logical episodes in {outputDir}',
@@ -59,6 +59,9 @@ export class VideoPipelineCommand extends ModelAsApp {
 		socialPackagesDone: '📱 Generated distribution packages for channel and {count} individual episodes -> {dir}/',
 		llmMetrics: '📊 LLM Usage: {tokens} tokens (Prompt: {prompt}, Completion: {completion}) | Cost: {cost} [{model}]',
 		shortsProgress: '📱 Generating vertical 9:16 Shorts...',
+		stitchProgress: '🎞️ Stitching {count} scenes with "{transition}" transition ({duration}s)...',
+		stitchComplete: '✅ Successfully stitched scenes into {path} ({duration}s)',
+		previewFrameDone: '📸 Saved 9:16 preview frame snapshot -> {path}',
 		stepPublishing: '📡 Step 4/4: Publishing to {platform}...',
 		auditEmptyWarning: '⚠️ Integrity inspector found {count} empty files!',
 		auditSuccess: '🔍 Quality inspector: All artifacts valid ({videos} videos, {subtitles} subtitles, {articles} articles, {social} social kits)',
@@ -102,6 +105,89 @@ export class VideoPipelineCommand extends ModelAsApp {
 		required: false,
 		default: 180,
 		help: 'Minimum duration for logical chapters/episodes in seconds (default: 180s = 3 min)',
+	}
+
+	static directorCut = {
+		type: 'boolean',
+		required: false,
+		default: false,
+		help: 'Enable Director Cut voice trigger detection (Camera <Scene> | Start, Camera Stop)',
+	}
+
+	static cutSilence = {
+		type: 'boolean',
+		required: false,
+		default: false,
+		help: 'Whether to cut silence gaps and trim scenes to speech boundaries (default: false)',
+	}
+
+	static minSilenceDuration = {
+		type: 'number',
+		required: false,
+		default: 2.0,
+		help: 'Minimum silence duration in seconds before considering a gap for trimming (default: 2.0s)',
+	}
+
+	static paddingBefore = {
+		type: 'number',
+		required: false,
+		default: 0.5,
+		help: 'Seconds of padding before speech in Director Cut (default: 0.5)',
+	}
+
+	static paddingAfter = {
+		type: 'number',
+		required: false,
+		default: 1.0,
+		help: 'Seconds of padding after speech in Director Cut (default: 1.0)',
+	}
+
+	static scenes = {
+		type: 'string',
+		required: false,
+		default: '',
+		help: 'Custom scene coordinates / alignment config (e.g. "code=left+100,chat=right-50" or JSON/YAML file path)',
+	}
+
+	static stitch = {
+		type: 'boolean',
+		required: false,
+		default: false,
+		help: 'Stitch director scenes into a single final video with xfade/acrossfade transitions (default: false)',
+	}
+
+	static transition = {
+		type: 'string',
+		required: false,
+		default: 'fade',
+		help: 'Transition effect for stitching scenes: fade | wipeleft | slideleft | dissolve (default: fade)',
+	}
+
+	static transitionDuration = {
+		type: 'number',
+		required: false,
+		default: 0.5,
+		help: 'Transition duration in seconds for scene stitching (default: 0.5)',
+	}
+
+	static acrossfade = {
+		type: 'boolean',
+		required: false,
+		default: true,
+		help: 'Apply audio acrossfade between stitched scenes for smooth audio transition (default: true)',
+	}
+
+	static audioTransitionDuration = {
+		type: 'number',
+		required: false,
+		default: 0.5,
+		help: 'Audio transition duration in seconds for acrossfade (default: 0.5)',
+	}
+
+	static previewFrame = {
+		type: 'number',
+		required: false,
+		help: 'Instant snapshot of 1 frame with 9:16 crop applied at given timestamp (seconds) for calibration without full render',
 	}
 
 	static shorts = {
@@ -195,14 +281,12 @@ export class VideoPipelineCommand extends ModelAsApp {
 		// Normalize path if starts with ~
 		const url =
 			rawUrl && rawUrl.startsWith('~/')
-				? path.join(process.env.HOME || '', rawUrl.slice(2))
+				? this.$db.resolveSync(process.env.HOME || '', rawUrl.slice(2))
 				: rawUrl
 
-		if (!fs.existsSync(outputDir)) {
-			try {
-				fs.mkdirSync(outputDir, { recursive: true })
-			} catch {}
-		}
+		try {
+			await this.$db.mkdir(outputDir)
+		} catch {}
 
 		if (dryRun) {
 			yield show('[DryRun] Step 1: Media Ingestion & Preparation', 'info')
@@ -215,116 +299,13 @@ export class VideoPipelineCommand extends ModelAsApp {
 		}
 
 		// --- Step 1: Transcription (Whisper JSON) ---
-		yield show(
-			t(VideoPipelineCommand.UI.stepTranscription, { name: path.basename(url) }),
-			'info'
-		)
-		const transcriptPath = path.join(outputDir, 'transcript.json')
-		let whisperJson = null
-
-		if (fs.existsSync(transcriptPath)) {
-			yield show(
-				t(VideoPipelineCommand.UI.cachedTranscriptFound, { path: transcriptPath }),
-				'success'
-			)
-			try {
-				whisperJson = JSON.parse(fs.readFileSync(transcriptPath, 'utf8'))
-			} catch {}
-		}
-
-		if (!whisperJson) {
-			const downloadModel = new MediaDownloadModel(
-				{
-					url,
-					quality: 'medium',
-					format: 'json',
-					language: this.language || 'auto',
-				},
-				this._
-			)
-
-			let transcriptResult = null
-			let lastDownloadPercent = -1
-			let lastSegmentPercent = -1
-			let lastTranscribeChunk = 0
-
-			for await (const update of downloadModel.run()) {
-				switch (update.status) {
-					case 'downloading':
-						if (update.percent !== undefined && update.percent !== lastDownloadPercent) {
-							lastDownloadPercent = update.percent
-							yield progress(
-								t(VideoPipelineCommand.UI.audioDownloadProgress, { percent: update.percent }),
-								update.percent,
-								{ id: 'whisper', total: 100 }
-							)
-						}
-						break
-					case 'segmenting':
-						if (update.percent !== undefined && update.percent !== lastSegmentPercent) {
-							lastSegmentPercent = update.percent
-							yield progress(
-								t(VideoPipelineCommand.UI.audioSegmentProgress, { percent: update.percent }),
-								update.percent,
-								{ id: 'whisper', total: 100 }
-							)
-						}
-						break
-					case 'transcribing':
-						if (update.chunk !== lastTranscribeChunk) {
-							lastTranscribeChunk = update.chunk
-							yield progress(
-								t(VideoPipelineCommand.UI.whisperChunkProgress, { chunk: update.chunk, total: update.total }),
-								update.chunk,
-								{ id: 'whisper', total: update.total }
-							)
-						}
-						break
-					case 'partial_progress':
-						if (update.percent !== undefined) {
-							yield progress(
-								t(VideoPipelineCommand.UI.whisperChunkDetail, {
-									chunk: update.chunk,
-									total: update.total,
-									percent: update.percent,
-								}),
-								update.chunk - 1 + update.percent / 100,
-								{ id: 'whisper', total: update.total }
-							)
-						}
-						break
-					case 'partial':
-						yield progress(
-							t(VideoPipelineCommand.UI.whisperChunkDone, { chunk: update.chunk, total: update.total }),
-							update.chunk,
-							{ id: 'whisper', total: update.total }
-						)
-						break
-					case 'done':
-						transcriptResult = update.transcript || update.text || model.transcript
-						break
-				}
-			}
-
-			if (transcriptResult) {
-				fs.writeFileSync(transcriptPath, transcriptResult, 'utf8')
-				try {
-					whisperJson = JSON.parse(transcriptResult)
-				} catch {
-					whisperJson = { text: transcriptResult }
-				}
-				yield show(t(VideoPipelineCommand.UI.transcriptionSaved, { path: transcriptPath }), 'success')
-			} else if (downloadModel.transcript) {
-				transcriptResult = downloadModel.transcript
-				fs.writeFileSync(transcriptPath, transcriptResult, 'utf8')
-				try {
-					whisperJson = JSON.parse(transcriptResult)
-				} catch {
-					whisperJson = { text: transcriptResult }
-				}
-				yield show(t(VideoPipelineCommand.UI.transcriptionSaved, { path: transcriptPath }), 'success')
-			}
-		}
+		const { whisperJson, transcriptPath } = yield* WhisperTranscriptionService.transcribe({
+			url,
+			outputDir,
+			language: this.language || 'auto',
+			t,
+			context: this._,
+		})
 
 		// --- Step 2: Pause Analysis & Chapter Segmentation ---
 		yield progress(t(VideoPipelineCommand.UI.stepSegmentation), 50, {
@@ -348,36 +329,113 @@ export class VideoPipelineCommand extends ModelAsApp {
 			'info'
 		)
 
-		// Segment into logical chapters/episodes (e.g. 5-10 min each, or minChapterDuration)
-		const segmenter = new ChapterSegmenter()
-		const minDur = Number(this.minChapterDuration) || 180
-		const rawChapters = segmenter.segment({ transcript: whisperJson, pauses })
-
-		// Consolidate into chapters of sensible minimum length
-		const chapters = []
-		let currentCh = null
-
-		for (const ch of rawChapters) {
-			if (!currentCh) {
-				currentCh = { ...ch }
-			} else if (currentCh.endTime - currentCh.startTime < minDur) {
-				currentCh.endTime = ch.endTime
-				currentCh.text += ' ' + ch.text
-			} else {
-				chapters.push(currentCh)
-				currentCh = { ...ch }
+		// 1. Director Cut Check: Camera <Scene> / Camera Stop
+		let directorScenes = []
+		if (this.directorCut && whisperJson) {
+			let parsedScenes = {}
+			if (this.scenes) {
+				if (typeof this.scenes === 'object') {
+					parsedScenes = this.scenes
+				} else if (typeof this.scenes === 'string') {
+					const trimmed = this.scenes.trim()
+					if (trimmed.startsWith('{')) {
+						try { parsedScenes = JSON.parse(trimmed) } catch {}
+					} else {
+						try {
+							const exists = await this.$db.stat(trimmed)
+							if (exists) {
+								const fileContent = await this.$db.loadDocument(trimmed)
+								parsedScenes = trimmed.endsWith('.json') ? JSON.parse(fileContent) : (typeof fileContent === 'object' ? fileContent : JSON.parse(fileContent))
+							} else {
+								parsedScenes = VideoSlicerPort.parseSceneSpecs(trimmed)
+							}
+						} catch {
+							// format: "code=left+100,chat=right-50" or "code:960x1080+0+0"
+							parsedScenes = VideoSlicerPort.parseSceneSpecs(trimmed)
+						}
+					}
+				}
 			}
-		}
-		if (currentCh) chapters.push(currentCh)
 
-		// Create clean CutMap with meaningful episodes
-		const segments = (chapters.length > 0 ? chapters : rawChapters).map((ch, idx) => ({
-			label: `episode_${idx + 1}`,
-			start: Math.round(ch.startTime * 100) / 100,
-			end: Math.round(ch.endTime * 100) / 100,
-			type: 'episode',
-			title: ch.title || `Episode ${idx + 1}`,
-		}))
+			let totalDuration
+			if (url) {
+				try {
+					const isLocal = await this.$db.stat(url)
+					if (isLocal) {
+						const inspector = new MediaInspectorService()
+						const rawProbe = inspector.probe(url)
+						if (rawProbe?.format?.duration) {
+							totalDuration = Number(rawProbe.format.duration)
+						}
+					}
+				} catch {}
+			}
+
+			const director = new DirectorCutAnalyzer({
+				scenes: parsedScenes,
+				cutSilence: Boolean(this.cutSilence),
+				minSilenceDuration: Number(this.minSilenceDuration) || 2.0,
+				paddingBefore: Number(this.paddingBefore) || 0.5,
+				paddingAfter: Number(this.paddingAfter) || 1.0,
+				totalDuration,
+			})
+			directorScenes = director.parseScenes(whisperJson)
+		}
+
+		let segments = []
+		if (directorScenes.length > 0) {
+			yield show(
+				t(VideoPipelineCommand.UI.directorScenesFound, {
+					count: directorScenes.length,
+					scenes: directorScenes.map(s => s.sceneName).join(', ')
+				}),
+				'success'
+			)
+			segments = directorScenes.map((s, idx) => {
+				const seg = {
+					label: `scene_${s.sceneName.toLowerCase()}_${idx + 1}`,
+					start: s.start,
+					end: s.end,
+					type: 'scene',
+					title: `${s.sceneName} Scene`,
+					text: s.text,
+					align: s.align || 'center',
+				}
+				if (s.offsetX !== undefined) seg.offsetX = s.offsetX
+				if (s.box) seg.crop = s.box
+				return seg
+			})
+		} else {
+			// Segment into logical chapters/episodes (e.g. 5-10 min each, or minChapterDuration)
+			const segmenter = new ChapterSegmenter()
+			const minDur = Number(this.minChapterDuration) || 180
+			const rawChapters = segmenter.segment({ transcript: whisperJson, pauses })
+
+			// Consolidate into chapters of sensible minimum length
+			const chapters = []
+			let currentCh = null
+
+			for (const ch of rawChapters) {
+				if (!currentCh) {
+					currentCh = { ...ch }
+				} else if (currentCh.endTime - currentCh.startTime < minDur) {
+					currentCh.endTime = ch.endTime
+					currentCh.text += ' ' + ch.text
+				} else {
+					chapters.push(currentCh)
+					currentCh = { ...ch }
+				}
+			}
+			if (currentCh) chapters.push(currentCh)
+
+			segments = (chapters.length > 0 ? chapters : rawChapters).map((ch, idx) => ({
+				label: `episode_${idx + 1}`,
+				start: Math.round(ch.startTime * 100) / 100,
+				end: Math.round(ch.endTime * 100) / 100,
+				type: 'episode',
+				title: ch.title || `Episode ${idx + 1}`,
+			}))
+		}
 
 		const cutMap = {
 			version: 1,
@@ -386,15 +444,38 @@ export class VideoPipelineCommand extends ModelAsApp {
 			segments,
 		}
 
-		const cutMapPath = path.join(outputDir, 'cut-map.yaml')
-		fs.writeFileSync(cutMapPath, CutMapGenerator.toYaml(cutMap), 'utf8')
+		const cutMapDocPath = this.$db.resolveSync(outputDir, 'cut-map')
+		await this.$db.saveDocument(cutMapDocPath, cutMap)
 		yield show(
 			t(VideoPipelineCommand.UI.episodesGenerated, {
 				count: segments.length,
-				path: cutMapPath,
+				path: cutMapDocPath,
 			}),
 			'success'
 		)
+
+		// --- Instant Preview Frame Mode ---
+		if (this.previewFrame !== undefined && this.previewFrame !== null) {
+			const previewTime = Number(this.previewFrame) || 0
+			const previewImgPath = this.$db.resolveSync(outputDir, `preview_${previewTime}s.jpg`)
+			const activeScene = segments.find(s => previewTime >= s.start && previewTime <= s.end) || segments[0] || {}
+			const slicer = new VideoSlicerPort()
+			await slicer.captureFramePreview({
+				source: url,
+				time: previewTime,
+				outputPath: previewImgPath,
+				align: activeScene.align || 'center',
+				offsetX: activeScene.offsetX,
+				crop: activeScene.crop,
+			})
+			yield show(t(VideoPipelineCommand.UI.previewFrameDone, { path: previewImgPath }), 'success')
+			return result({
+				success: true,
+				previewPath: previewImgPath,
+				time: previewTime,
+				scene: activeScene.label || 'scene',
+			})
+		}
 
 		// --- Step 3: FFmpeg Slicing, Per-Episode Subtitles & Optional Shorts ---
 		yield progress(
@@ -417,6 +498,50 @@ export class VideoPipelineCommand extends ModelAsApp {
 			yield show(`Direct slicing: ${err.message}`, 'warn')
 		}
 
+		// Optional Stitch: concat director scenes into a single final video with xfade/acrossfade
+		let stitchedResult = null
+		if (this.stitch && slicedResults.length > 0) {
+			const transition = this.transition || 'fade'
+			const transitionDuration = Number(this.transitionDuration) || 0.5
+			const acrossfade = this.acrossfade !== false
+			const audioTransitionDuration = Number(this.audioTransitionDuration) || transitionDuration
+			const stitchOutputPath = this.$db.resolveSync(outputDir, 'stitched.mp4')
+
+			yield progress(
+				t(VideoPipelineCommand.UI.stitchProgress, {
+					count: slicedResults.length,
+					transition,
+					duration: transitionDuration,
+				}),
+				78,
+				{ id: 'pipeline', total: 100 }
+			)
+
+			const clipsToStitch = segments.map((seg, idx) => ({
+				path: slicedResults[idx]?.outputPath || this.$db.resolveSync(outputDir, `${seg.label}.mp4`),
+				duration: seg.end - seg.start,
+			}))
+
+			try {
+				stitchedResult = await slicer.stitch(clipsToStitch, {
+					outputPath: stitchOutputPath,
+					transition,
+					transitionDuration,
+					acrossfade,
+					audioTransitionDuration,
+				})
+				yield show(
+					t(VideoPipelineCommand.UI.stitchComplete, {
+						path: stitchOutputPath,
+						duration: stitchedResult.duration,
+					}),
+					'success'
+				)
+			} catch (err) {
+				yield show(`Stitching scenes: ${err.message}`, 'warn')
+			}
+		}
+
 		// Generate .srt and .vtt per episode with offset timestamps
 		if (this.subtitles !== false && whisperJson) {
 			const allWords = whisperJson?.segments?.flatMap((s) => s.words || []) || []
@@ -430,11 +555,11 @@ export class VideoPipelineCommand extends ModelAsApp {
 					const srtContent = blocksToSrt(blocks, { offset: seg.start })
 					const vttContent = blocksToVtt(blocks, { offset: seg.start })
 
-					const srtPath = path.join(outputDir, `${seg.label}.srt`)
-					const vttPath = path.join(outputDir, `${seg.label}.vtt`)
+					const srtPath = this.$db.resolveSync(outputDir, `${seg.label}.srt`)
+					const vttPath = this.$db.resolveSync(outputDir, `${seg.label}.vtt`)
 
-					fs.writeFileSync(srtPath, srtContent, 'utf8')
-					fs.writeFileSync(vttPath, vttContent, 'utf8')
+					await this.$db.saveDocument(srtPath, srtContent)
+					await this.$db.saveDocument(vttPath, vttContent)
 				}
 			}
 			yield show(
@@ -443,223 +568,34 @@ export class VideoPipelineCommand extends ModelAsApp {
 			)
 		}
 
-		// Generate Overview and YouTube Chapters
-		if (this.overview !== false && whisperJson) {
-			let overviewMd = `# 📑 ${path.basename(url || 'Video')}\n\n`
-			overviewMd += `## ⏱️ YouTube Chapters\n\n`
-			for (const seg of segments) {
-				const minutes = Math.floor(seg.start / 60)
-				const seconds = Math.floor(seg.start % 60)
-				const timestamp = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-				overviewMd += `${timestamp} ${seg.title}\n`
-			}
-
-			overviewMd += `\n## 📋 Episodes Index\n\n`
-			for (const seg of segments) {
-				const dur = Math.round(seg.end - seg.start)
-				overviewMd += `### ${seg.title} (\`${seg.label}.mp4\` - ${Math.floor(dur / 60)}m ${dur % 60}s)\n`
-				overviewMd += `- **Timestamp:** \`${seg.start}s - ${seg.end}s\`\n`
-				overviewMd += `- **Subtitles:** [\`${seg.label}.srt\`](./${seg.label}.srt) | [\`${seg.label}.vtt\`](./${seg.label}.vtt)\n\n`
-			}
-
-			const overviewPath = path.join(outputDir, 'overview.md')
-			fs.writeFileSync(overviewPath, overviewMd, 'utf8')
-			yield show(t(VideoPipelineCommand.UI.overviewCreated, { path: overviewPath }), 'success')
-		}
-
-		// Generate Article from transcript using ArticleGenerator
-		if (this.article !== false && whisperJson) {
-			const domainContext = DomainContextResolver.scanSources(this.sources)
-			if (domainContext.packages.length > 0) {
-				yield show(
-					t(VideoPipelineCommand.UI.groundTruthLoaded, {
-						count: domainContext.packages.length,
-						sources: domainContext.packages.map((p) => p.name).join(', '),
-					}),
-					'info'
-				)
-			}
-
-			const episodeData = segments.map((seg) => {
-				const segText =
-					whisperJson.segments
-						?.filter(
-							(s) =>
-								(s.start >= seg.start && s.end <= seg.end) ||
-								(s.start <= seg.end && s.end >= seg.start)
-						)
-						?.map((s) => s.text?.trim())
-						?.filter(Boolean)
-						?.join(' ') || ''
-				return {
-					...seg,
-					startTime: seg.start,
-					endTime: seg.end,
-					text: segText,
-				}
-			})
-
-			const episodeDocs = []
-
-			const articlesDir = path.join(outputDir, 'articles')
-			if (!fs.existsSync(articlesDir)) {
-				try {
-					fs.mkdirSync(articlesDir, { recursive: true })
-				} catch {}
-			}
-
-			LLMClient.resetMetrics()
-
-			for (let idx = 0; idx < episodeData.length; idx++) {
-				const ep = episodeData[idx]
-				yield progress(
-					t(VideoPipelineCommand.UI.articleGenStart, {
-						current: idx + 1,
-						total: episodeData.length,
-						title: ep.title,
-					}),
-					idx,
-					{
-						id: 'article_generation',
-						total: episodeData.length,
-					}
-				)
-
-				const gen = ArticleGenerator.generateEpisodeArticle(ep, idx, {
-					template: this.template || 'tech',
-					model: this.model,
-					language: this.language,
-					domainContext,
-					totalEpisodes: episodeData.length,
-				})
-
-				let epDoc = ''
-				while (true) {
-					const { done, value } = await gen.next()
-					if (done) {
-						epDoc = value || ''
-						break
-					}
-					yield value
-				}
-
-				const epPath = path.join(articlesDir, `${ep.label}.md`)
-				fs.writeFileSync(epPath, epDoc, 'utf8')
-				episodeDocs.push(epDoc)
-
-				yield progress(
-					t(VideoPipelineCommand.UI.articleSaved, {
-						current: idx + 1,
-						total: episodeData.length,
-						file: `${ep.label}.md`,
-					}),
-					idx + 1,
-					{
-						id: 'article_generation',
-						total: episodeData.length,
-					}
-				)
-			}
-			yield show(
-				t(VideoPipelineCommand.UI.articlesAllDone, {
-					count: episodeData.length,
-					template: this.template || 'tech',
-					dir: articlesDir,
-				}),
-				'success'
-			)
-
-			// 2. Master Long-read Article (assembled instantly from episode docs, 0 extra LLM calls)
-			const masterMd = ArticleGenerator.generateMasterFromDocs(episodeData, episodeDocs, {
-				title: path.basename(url || 'Video'),
-				template: this.template || 'tech',
-				language: this.language,
-			})
-			const articlePath = path.join(outputDir, 'article.md')
-			fs.writeFileSync(articlePath, masterMd, 'utf8')
-			yield show(
-				t(VideoPipelineCommand.UI.masterLongreadDone, {
-					template: this.template || 'tech',
-					path: articlePath,
-				}),
-				'success'
-			)
-
-			// 3. Social Omni-Publishing Package (Threads, Telegram, YouTube Meta)
-			const socialDir = path.join(outputDir, 'social')
-			const epSocialDir = path.join(socialDir, 'episodes')
-			if (!fs.existsSync(epSocialDir)) {
-				try {
-					fs.mkdirSync(epSocialDir, { recursive: true })
-				} catch {}
-			}
-
-			const socialPkg = await ArticleGenerator.generateSocialDistributionPackage(episodeData, {
-				title: path.basename(url || 'Video'),
-				language: this.language,
-			})
-
-			fs.writeFileSync(path.join(socialDir, 'threads.md'), socialPkg.threads, 'utf8')
-			fs.writeFileSync(path.join(socialDir, 'telegram.md'), socialPkg.telegram, 'utf8')
-			fs.writeFileSync(
-				path.join(socialDir, 'youtube-meta.json'),
-				JSON.stringify(socialPkg.youtube, null, 2),
-				'utf8'
-			)
-
-			// Save individual per-episode social kits
-			if (Array.isArray(socialPkg.episodeSocials)) {
-				for (const item of socialPkg.episodeSocials) {
-					fs.writeFileSync(path.join(epSocialDir, `${item.label}.threads.md`), item.threads, 'utf8')
-					fs.writeFileSync(
-						path.join(epSocialDir, `${item.label}.telegram.md`),
-						item.telegram,
-						'utf8'
-					)
-					fs.writeFileSync(
-						path.join(epSocialDir, `${item.label}.youtube.json`),
-						JSON.stringify(item.youtube, null, 2),
-						'utf8'
-					)
-				}
-			}
-			yield show(
-				t(VideoPipelineCommand.UI.socialPackagesDone, {
-					count: episodeData.length,
-					dir: socialDir,
-				}),
-				'success'
-			)
-
-			// 4. Token & Cost Summary
-			const m = LLMClient.metrics
-			if (m.calls > 0) {
-				const costStr =
-					m.totalCost < 0.01 ? `$${m.totalCost.toFixed(5)}` : `$${m.totalCost.toFixed(4)}`
-				yield show(
-					t(VideoPipelineCommand.UI.llmMetrics, {
-						tokens: m.totalTokens.toLocaleString(),
-						prompt: m.promptTokens.toLocaleString(),
-						completion: m.completionTokens.toLocaleString(),
-						cost: costStr,
-						model: this.model,
-					}),
-					'info'
-				)
-			}
-		}
+		// Generate Overview, Articles & Social Kits via ArticlePipelineService
+		yield* ArticlePipelineService.process({
+			url,
+			outputDir,
+			segments,
+			whisperJson,
+			template: this.template || 'tech',
+			language: this.language || 'auto',
+			model: this.model,
+			sources: this.sources,
+			overview: this.overview !== false,
+			article: this.article !== false,
+			db: this.$db,
+			t,
+		})
 
 		// Generate dynamic Shorts only if explicitly requested
 		if (this.shorts) {
 			yield progress(t(VideoPipelineCommand.UI.shortsProgress), 85, { id: 'pipeline', total: 100 })
 			const shortsCmd = new ShortsGenerateCommand(
 				{
-					auto: true,
+					shortsYaml: cutMapPath,
+					auto: !this.directorCut && !this.cutMap,
 					transcriptPath,
 					videoPath: url,
 					autoDuration: Number(this.shortsDuration) || 45,
 					useHardwareAcceleration: true,
-					outputDir: path.join(outputDir, 'shorts'),
+					outputDir: this.$db.resolveSync(outputDir, 'shorts'),
 				},
 				this._
 			)
@@ -682,35 +618,7 @@ export class VideoPipelineCommand extends ModelAsApp {
 		}
 
 		// --- Verification & Integrity Inspector ---
-		const auditReport = {
-			videoSlices: 0,
-			subtitles: 0,
-			articles: 0,
-			socialKits: 0,
-			emptyFiles: [],
-		}
-
-		const checkFile = (filePath, category) => {
-			if (fs.existsSync(filePath)) {
-				const size = fs.statSync(filePath).size
-				if (size > 0) {
-					auditReport[category] = (auditReport[category] || 0) + 1
-				} else {
-					auditReport.emptyFiles.push(filePath)
-				}
-			}
-		}
-
-		// Audit episodes
-		for (const seg of segments) {
-			checkFile(path.join(outputDir, `${seg.label}.mp4`), 'videoSlices')
-			checkFile(path.join(outputDir, `${seg.label}.srt`), 'subtitles')
-			checkFile(path.join(outputDir, 'articles', `${seg.label}.md`), 'articles')
-			checkFile(
-				path.join(outputDir, 'social', 'episodes', `${seg.label}.youtube.json`),
-				'socialKits'
-			)
-		}
+		const auditReport = PipelineAuditService.audit(outputDir, segments)
 
 		if (auditReport.emptyFiles.length > 0) {
 			yield show(
@@ -741,6 +649,7 @@ export class VideoPipelineCommand extends ModelAsApp {
 			cutMapPath,
 			transcriptPath,
 			segments: slicedResults.length,
+			stitchedPath: stitchedResult?.outputPath || null,
 			audit: auditReport,
 		})
 	}

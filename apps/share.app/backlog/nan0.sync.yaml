@@ -1,0 +1,36 @@
+# Приклад конфігурації багаторівневої синхронізації (nan0.sync.yaml)
+# Розміщується в корені (напр. /Users/i/nan0.sync.yaml) або в конкретній піддиректорії
+
+version: 1
+repo_name: "diary" # або автоматично з імені директорії
+
+# Куди синхронізувати, коли ціль доступна
+targets:
+  # 1. Зовнішній USB-диск / флешка (офлайн-бандл)
+  - id: usb-backup
+    type: bundle
+    path: "/Volumes/SOVEREIGN_USB/backups/git-bundles"
+    encrypt: true
+    gpg_recipient: "your-key-id@proton.me" # або симетричне шифрування
+    condition: "dir_exists('/Volumes/SOVEREIGN_USB')"
+
+  # 2. Віддалений Git-сервер (GitHub / GitLab / власний VPS)
+  - id: remote-origin
+    type: git-push
+    remote: "origin"
+    branches: ["main"]
+    condition: "has_internet()"
+
+  # 3. Приватний NAS / інший локальний диск
+  - id: local-nas
+    type: bundle
+    path: "/Volumes/NAS/archive"
+    encrypt: true
+    condition: "dir_exists('/Volumes/NAS')"
+
+  # 4. IPFS (для публічних або зашифрованих зліпків)
+  - id: ipfs-pin
+    type: ipfs
+    encrypt: true # обов'язково true для приватних даних!
+    pin: true
+    condition: "cmd_exists('ipfs') && has_internet()"

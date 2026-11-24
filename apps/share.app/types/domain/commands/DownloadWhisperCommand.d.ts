@@ -20,6 +20,7 @@ export class DownloadWhisperCommand extends ModelAsApp {
     static quality: {
         type: string;
         required: boolean;
+        alias: string;
         help: string;
     };
     static format: {
@@ -42,6 +43,31 @@ export class DownloadWhisperCommand extends ModelAsApp {
         required: boolean;
         help: string;
     };
+    static saveVideo: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        alias: string;
+        help: string;
+    };
+    static tail: {
+        type: string;
+        required: boolean;
+        default: number;
+        help: string;
+    };
+    static initialPrompt: {
+        type: string;
+        required: boolean;
+        help: string;
+    };
+    static noConditionOnPreviousText: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        alias: string;
+        help: string;
+    };
     /**
      * Detect output format from file extension.
      * @param {string} filePath
@@ -55,8 +81,10 @@ export class DownloadWhisperCommand extends ModelAsApp {
     constructor(data?: DownloadWhisperCommandOptions, options?: Partial<import("@nan0web/ui").ModelAsAppOptions & {
         toolChecker?: typeof ToolCheckerPort;
     }>);
+    quality: any;
     /** @type {typeof ToolCheckerPort} Port to check availability of external CLI tools */
     toolChecker: typeof ToolCheckerPort;
+    saveVideo: boolean;
     run(): AsyncGenerator<import("@nan0web/ui/src/core/Intent.js").ShowIntent | import("@nan0web/ui/src/core/Intent.js").ProgressIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
 }
 export type DownloadWhisperCommandOptions = {

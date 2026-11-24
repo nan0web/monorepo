@@ -28,5 +28,6 @@ export * from "./domain/WorkspaceInspectorModel.js";
 export * from "./domain/process/logic.js";
 export * from "./domain/EditorDetector.js";
 export * from "./domain/InstallApp.js";
+export * from "./domain/WhisperEngine.js";
 export const UI: typeof ui;
 import * as ui from '@nan0web/ui';

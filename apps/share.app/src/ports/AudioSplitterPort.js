@@ -121,6 +121,7 @@ export class AudioSplitterPort extends AudioSplitter {
 	}
 
 	static async _extractSegment(inputPath, startSeconds, durationSeconds, outputPath) {
+		fs.mkdirSync(path.dirname(outputPath), { recursive: true })
 		await new Promise((resolve, reject) => {
 			const proc = spawn('ffmpeg', [
 				'-y',

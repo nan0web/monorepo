@@ -81,4 +81,25 @@ describe('DownloadWhisperCommand', () => {
 		assert.ok(errorShow, 'should yield an error show for missing tools')
 		assert.ok(errorShow.message.includes('ffmpeg'))
 	})
+
+	it('static saveVideo field exists with default false', async () => {
+		const { DownloadWhisperCommand } = await import('../domain/commands/DownloadWhisperCommand.js')
+		assert.ok(DownloadWhisperCommand.saveVideo, 'saveVideo static field should exist')
+		assert.equal(DownloadWhisperCommand.saveVideo.type, 'boolean')
+		assert.equal(DownloadWhisperCommand.saveVideo.default, false)
+	})
+
+	it('YouTubeDownloader exposes downloadVideo method', async () => {
+		const { YouTubeDownloader } = await import('../domain/YouTubeDownloader.js')
+		assert.equal(typeof YouTubeDownloader.downloadVideo, 'function')
+	})
+
+	it('modelFromArgv parses --save-video and --keep-video kebab-case flags', async () => {
+		const { modelFromArgv } = await import('@nan0web/ui-cli')
+		const { DownloadWhisperCommand } = await import('../domain/commands/DownloadWhisperCommand.js')
+		const cmd1 = modelFromArgv(DownloadWhisperCommand, ['--url', 'https://example.com', '--save-video'])
+		assert.equal(cmd1.saveVideo, true, '--save-video must set cmd.saveVideo = true')
+		const cmd2 = modelFromArgv(DownloadWhisperCommand, ['--url', 'https://example.com', '--keep-video'])
+		assert.equal(cmd2.saveVideo, true, '--keep-video must set cmd.saveVideo = true')
+	})
 })

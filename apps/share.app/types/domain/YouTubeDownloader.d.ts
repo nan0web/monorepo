@@ -37,6 +37,23 @@ export class YouTubeDownloader extends ModelAsApp {
         filePath: string;
         title: string;
     }>;
+    /**
+     * Resolves port and downloads video.
+     * @param {string} url - Video URL.
+     * @param {string} [outputDir='/tmp'] - Target directory.
+     * @param {function} [onProgress] - Progress callback.
+     * @param {Object} [options] - Options context containing injected port and optional filename.
+     * @returns {Promise<{ filePath: string, title: string }>}
+     */
+    static downloadVideo(url: string, outputDir?: string, onProgress?: Function, options?: any): Promise<{
+        filePath: string;
+        title: string;
+    }>;
+    /**
+     * @param {Object} [options]
+     * @returns {Promise<any>}
+     */
+    static _resolvePort(options?: any): Promise<any>;
     constructor(data?: {}, options?: {});
     /** @type {string} */ url: string;
     /** @type {string} */ outputDir: string;

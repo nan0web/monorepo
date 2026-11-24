@@ -24,3 +24,12 @@ tsconfig.json
 .DS_Store
 node_modules/
 pnpm-lock.yaml
+Users/
+out-shorts/
+coverage/
+@app/
+chat/
+/next.md
+/ARCHITECTURE.md
+/data
+/tmp

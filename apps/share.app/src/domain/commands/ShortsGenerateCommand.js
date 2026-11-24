@@ -152,17 +152,19 @@ export class ShortsGenerateCommand extends ModelAsApp {
 			}
 
 			const inBase = this.videoPath.split('/').pop()?.replace(/\.[^.]+$/, '') || 'video'
-			const outVideoRel = `${outputDir}/${inBase}_${label}.mp4`
-			const outSubRel = `${outputDir}/${inBase}_${label}.ass`
-			const outVideo = db.location(`@app/${outVideoRel}`)
-			const outSub = db.location(`@app/${outSubRel}`)
+			const filenameVideo = `${inBase}_${label}.mp4`
+			const filenameSub = `${inBase}_${label}.ass`
+			const isAbsOutput = outputDir.startsWith('/') || /^[a-zA-Z]:\\/.test(outputDir)
+			const outVideo = isAbsOutput ? `${outputDir}/${filenameVideo}` : db.location(`@app/${outputDir}/${filenameVideo}`)
+			const outSub = isAbsOutput ? `${outputDir}/${filenameSub}` : db.location(`@app/${outputDir}/${filenameSub}`)
+			const outSubSavePath = isAbsOutput ? outSub : `@app/${outputDir}/${filenameSub}`
 
 			// Generate ASS for this segment
 			let hasSubs = false
 			if (transcriptBlocks) {
 				const segBlocks = blocksForRange(start, end)
 				if (segBlocks && segBlocks.length > 0) {
-					await db.saveFile(`@app/${outSubRel}`, blocksToAss(segBlocks))
+					await db.saveFile(outSubSavePath, blocksToAss(segBlocks))
 					hasSubs = true
 					totalSubs += segBlocks.length
 				}
@@ -170,9 +172,19 @@ export class ShortsGenerateCommand extends ModelAsApp {
 
 			// FFmpeg split
 			const absVideo = this.videoPath.startsWith('@') ? db.location(this.videoPath) : this.videoPath
-			let cmd = `ffmpeg -y -ss ${start} -i "${absVideo}" -t ${dur}`
-			if (hasSubs) cmd += ` -vf "ass=${outSub}"`
-			cmd += ` -c:v ${videoCodec} ${encOpts} -c:a aac -b:a 128k "${outVideo}"`
+			const cmd = this._buildSplitCommand({
+				absVideo,
+				start,
+				dur,
+				align: seg.align,
+				offsetX: seg.offsetX,
+				crop: seg.crop,
+				hasSubs,
+				outSub,
+				videoCodec,
+				encOpts,
+				outVideo,
+			})
 
 			yield { type: 'log', level: 'info', message: `Splitting "${label}" (${start}s-${end}s)...` }
 
@@ -247,5 +259,49 @@ export class ShortsGenerateCommand extends ModelAsApp {
 			segments.push({ label, start: s, end: Math.min(e, Math.ceil(totalDuration)) })
 		}
 		return segments
+	}
+
+	/**
+	 * Builds FFmpeg command for vertical shorts slicing with ASS subtitles.
+	 * @param {object} params
+	 * @param {string} params.absVideo
+	 * @param {number} params.start
+	 * @param {number} params.dur
+	 * @param {string} [params.align]
+	 * @param {string} [params.crop]
+	 * @param {boolean} params.hasSubs
+	 * @param {string} params.outSub
+	 * @param {string} params.videoCodec
+	 * @param {string} params.encOpts
+	 * @param {string} params.outVideo
+	 * @returns {string}
+	 */
+	_buildSplitCommand({ absVideo, start, dur, align, offsetX, crop, hasSubs, outSub, videoCodec, encOpts, outVideo }) {
+		let filter = crop
+		if (!filter) {
+			const offset = Number(offsetX) || 0
+			if (!align && offset === 0) {
+				filter = 'scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920'
+			} else {
+				let cropX
+				if (align === 'left' || align === 'start') {
+					cropX = offset !== 0 ? `min(max(0\\,${offset})\\,in_w-out_w)` : '0'
+				} else if (align === 'right' || align === 'end') {
+					cropX = offset !== 0
+						? (offset < 0 ? `in_w-out_w${offset}` : `in_w-out_w+${offset}`)
+						: 'in_w-out_w'
+				} else {
+					cropX = offset !== 0
+						? (offset > 0 ? `(in_w-out_w)/2+${offset}` : `(in_w-out_w)/2${offset}`)
+						: '(in_w-out_w)/2'
+				}
+				filter = `scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920:${cropX}`
+			}
+		}
+		if (hasSubs && outSub) {
+			const escapedSub = outSub.replace(/\\/g, '\\\\').replace(/:/g, '\\:').replace(/'/g, "\\'")
+			filter += `,ass='${escapedSub}'`
+		}
+		return `ffmpeg -y -ss ${start} -i "${absVideo}" -t ${dur} -vf "${filter}" -c:v ${videoCodec} ${encOpts} -c:a aac -b:a 128k "${outVideo}"`
 	}
 }

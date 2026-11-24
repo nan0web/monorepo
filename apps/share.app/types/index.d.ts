@@ -5,7 +5,7 @@ export class ShareAppCLI extends ModelAsApp {
     static alias: string;
     static command: {
         help: string;
-        options: (typeof DownloadWhisperCommand | typeof VideoCompileCommand | typeof ShortsGenerateCommand | typeof SubtitleGenerateCommand | typeof ScriptGenerateCommand | typeof PublishCommand | typeof VideoPipelineCommand | typeof DriveIndexCommand | typeof DeduplicateCommand | typeof DriveBatchTranscribeCommand)[];
+        options: (typeof WhisperModelsCommand | typeof TranscribeCommand | typeof DownloadWhisperCommand | typeof VideoCompileCommand | typeof ShortsGenerateCommand | typeof SubtitleGenerateCommand | typeof ScriptGenerateCommand | typeof PublishCommand | typeof VideoPipelineCommand | typeof DriveIndexCommand | typeof DeduplicateCommand | typeof DriveBatchTranscribeCommand | typeof ExportCommand | typeof MusicPrepareCommand)[];
         positional: boolean;
     };
     /**
@@ -30,6 +30,13 @@ import { matchesConditions } from './domain/RulesEngine.js';
 import { DriveIndexCommand } from './domain/commands/DriveIndexCommand.js';
 import { DeduplicateCommand } from './domain/commands/DeduplicateCommand.js';
 import { DriveBatchTranscribeCommand } from './domain/commands/DriveBatchTranscribeCommand.js';
+import { TranscribeCommand } from './domain/commands/TranscribeCommand.js';
+import { WhisperModelsCommand } from './domain/commands/WhisperModelsCommand.js';
+import { ExportCommand } from './domain/commands/ExportCommand.js';
+import { MusicPrepareCommand } from './domain/commands/MusicPrepareCommand.js';
+import { MarkdownAstExtractor } from './domain/services/MarkdownAstExtractor.js';
+import { TagLinter } from './domain/services/TagLinter.js';
+import { SemanticStreamRouter } from './domain/services/SemanticStreamRouter.js';
 import { ModelAsApp } from '@nan0web/ui-cli';
 import { DownloadWhisperCommand } from './domain/commands/DownloadWhisperCommand.js';
 import { VideoCompileCommand } from './domain/commands/VideoCompileCommand.js';
@@ -38,4 +45,4 @@ import { SubtitleGenerateCommand } from './domain/commands/SubtitleGenerateComma
 import { ScriptGenerateCommand } from './domain/commands/ScriptGenerateCommand.js';
 import { PublishCommand } from './domain/commands/PublishCommand.js';
 import { VideoPipelineCommand } from './domain/commands/VideoPipelineCommand.js';
-export { MediaDownloadModel, DummyAdapter, SocialAdapter, evaluateRules, executeTasks, parseDelay, matchesConditions, DriveIndexCommand, DeduplicateCommand, DriveBatchTranscribeCommand };
+export { MediaDownloadModel, DummyAdapter, SocialAdapter, evaluateRules, executeTasks, parseDelay, matchesConditions, DriveIndexCommand, DeduplicateCommand, DriveBatchTranscribeCommand, TranscribeCommand, WhisperModelsCommand, ExportCommand, MusicPrepareCommand, MarkdownAstExtractor, TagLinter, SemanticStreamRouter };

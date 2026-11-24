@@ -1,6 +1,8 @@
 import { ModelAsApp } from '@nan0web/ui-cli'
 import { MediaDownloadModel } from '../MediaDownloadModel.js'
 import { ToolCheckerPort } from '../../ports/ToolCheckerPort.js'
+import { WhisperModelCatalog } from '../analysis/WhisperModelCatalog.js'
+import { TranscribeCommand } from './TranscribeCommand.js'
 import { progress, show, result, log } from '@nan0web/ui'
 
 /**
@@ -29,6 +31,7 @@ export class DownloadWhisperCommand extends ModelAsApp {
 	static quality = {
 		type: 'string',
 		required: false,
+		alias: 'model',
 		help: 'Whisper model: tiny|base|small|medium|large|turbo (default: medium)',
 	}
 
@@ -56,14 +59,52 @@ export class DownloadWhisperCommand extends ModelAsApp {
 		help: 'Browser name (e.g. chrome, safari, firefox), path to local cookies file (e.g. ./cookies.txt), or COOKIES env var',
 	}
 
+	static saveVideo = {
+		type: 'boolean',
+		required: false,
+		default: false,
+		alias: 'keep-video',
+		help: 'Save downloaded video file alongside the transcript',
+	}
+
+	static tail = {
+		type: 'number',
+		required: false,
+		default: 1,
+		help: 'Show last N decoded lines under progress bar (0 to disable)',
+	}
+
+	static initialPrompt = {
+		type: 'string',
+		required: false,
+		help: 'Initial prompt / vocabulary terms for Whisper',
+	}
+
+	static noConditionOnPreviousText = {
+		type: 'boolean',
+		required: false,
+		default: false,
+		alias: 'no-condition-on-previous-text',
+		help: 'Disable conditioning Whisper decoder on previous text within a chunk',
+	}
+
 	/**
 	 * @param {DownloadWhisperCommandOptions} data
 	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions & { toolChecker?: typeof ToolCheckerPort }>} [options]
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
+		if (data?.model && !data?.quality) this.quality = data.model
 		/** @type {typeof ToolCheckerPort} Port to check availability of external CLI tools */
 		this.toolChecker = options?.toolChecker || ToolCheckerPort
+		this.saveVideo = Boolean(
+			data.saveVideo ||
+			data['save-video'] ||
+			data.keepVideo ||
+			data['keep-video'] ||
+			data._argv?.includes('--save-video') ||
+			data._argv?.includes('--keep-video')
+		)
 	}
 
 	/**
@@ -115,6 +156,10 @@ export class DownloadWhisperCommand extends ModelAsApp {
 			language: this.language || 'auto',
 			llmModel: this.llmModel,
 			cookies: this.cookies,
+			saveVideo: Boolean(this.saveVideo),
+			output: this.output,
+			initialPrompt: this.initialPrompt,
+			conditionOnPreviousText: !this.noConditionOnPreviousText,
 		}, this._)
 
 		yield progress(`[MediaProcessor] Starting for: ${this.url}`, 0, { id: 'downloading', total: 100 })
@@ -125,14 +170,19 @@ export class DownloadWhisperCommand extends ModelAsApp {
 			let lastDownloadPercent = -1
 			let lastSegmentPercent = -1
 			let lastTranscribeChunk = 0
+			let lastLanguage = null
+			const tailLimit = Number.isFinite(Number(this.tail)) ? Math.max(0, Number(this.tail)) : 1
+			const tailLines = []
+			const termCols = process.stdout?.columns || 80
 
 			for await (const update of iterator) {
 				switch (update.status) {
 					case 'downloading':
 						if (update.percent !== undefined && update.percent !== lastDownloadPercent) {
 							lastDownloadPercent = update.percent
+							const dlLabel = this.saveVideo ? 'Завантаження відео' : 'Завантаження аудіо'
 							yield progress(
-								`Завантаження аудіо...${update.speed ? ` (${update.speed})` : ''}${update.eta ? ` ETA: ${update.eta}` : ''}`,
+								`${dlLabel}...${update.speed ? ` (${update.speed})` : ''}${update.eta ? ` ETA: ${update.eta}` : ''}`,
 								update.percent,
 								{ id: 'downloading', total: 100 }
 							)
@@ -151,19 +201,29 @@ export class DownloadWhisperCommand extends ModelAsApp {
 					case 'transcribing':
 						if (update.chunk !== lastTranscribeChunk) {
 							lastTranscribeChunk = update.chunk
+							const sizeLabel = WhisperModelCatalog.getModelSizeLabel(update.model || 'medium')
+							const modelLabel = sizeLabel ? `${update.model} · ${sizeLabel}` : update.model
 							yield progress(
-								`Транскрибування чанку ${update.chunk}/${update.total}... (${update.model})`,
+								`Транскрибування чанку ${update.chunk}/${update.total}... (${modelLabel})`,
 								update.chunk,
 								{ id: 'transcribing', total: update.total }
 							)
 						}
 						break
 					case 'partial_progress':
-						if (update.percent !== undefined) {
-							// For fine-grained progress, we update the same chunk id but pass the percentage as the value
+						if (update.language && update.language !== lastLanguage) {
+							lastLanguage = update.language
+							yield show(`🌐 Detected language: ${lastLanguage}`, 'info')
+						}
+						if (update.texts || update.text) {
+							TranscribeCommand.pushTailLine(tailLines, update.texts || update.text, tailLimit)
+						}
+						if (update.percent !== undefined || update.text) {
+							const base = `Транскрибування чанку ${update.chunk}/${update.total}... (${update.model}) [${update.percent ?? 0}%]`
+							const displayMsg = TranscribeCommand.formatTailProgress(base, tailLines, termCols, tailLimit)
 							yield progress(
-								`Транскрибування чанку ${update.chunk}/${update.total}... (${update.model}) [${update.percent}%]`,
-								update.chunk - 1 + (update.percent / 100),
+								displayMsg,
+								update.chunk - 1 + ((update.percent ?? 0) / 100),
 								{ id: 'transcribing', total: update.total }
 							)
 						}
@@ -190,7 +250,8 @@ export class DownloadWhisperCommand extends ModelAsApp {
 					case 'done':
 						yield show(`✓ Готово!`, 'success')
 						yield show(`Назва: ${update.title}`, 'info')
-						yield show(`Модель: ${update.model} (мова: авто-визначення)`, 'info')
+						const langLabel = this.language && this.language !== 'auto' ? this.language : 'авто-визначення'
+						yield show(`Модель: ${update.model} (мова: ${langLabel})`, 'info')
 
 						const db = this._.db
 						const transcript = update.transcript || ''
@@ -224,12 +285,17 @@ export class DownloadWhisperCommand extends ModelAsApp {
 							yield show('──────────────────', 'info')
 						}
 
+						if (update.videoPath) {
+							yield show(`Відео збережено: ${update.videoPath}`, 'info')
+						}
+
 						return result({
 							success: true,
 							title: update.title,
 							transcript: this.format === 'md' ? update.markdown : transcript,
 							originalJson: this.format === 'md' ? transcript : null,
 							outputPath: this.output || null,
+							videoPath: update.videoPath || null,
 						})
 					case 'error':
 						yield show(`✘ Помилка: ${update.error}`, 'error')

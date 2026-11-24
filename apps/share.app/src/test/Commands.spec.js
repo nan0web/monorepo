@@ -211,6 +211,28 @@ describe('ShortsGenerateCommand', () => {
 		assert.ok(errLog, 'should yield error log')
 		assert.ok(errLog.message.includes('--shortsYaml') || errLog.message.includes('--auto'))
 	})
+
+	it('_buildSplitCommand — correctly escapes ass path and resolves absolute output directory', async () => {
+		const mod = await import('../domain/commands/ShortsGenerateCommand.js')
+		const cmd = new mod.ShortsGenerateCommand({
+			videoPath: '/path/with spaces/video.mp4',
+			outputDir: '/abs/output/dir',
+		})
+		const assPath = '/abs/output/dir/video_short_1.ass'
+		const outVideo = '/abs/output/dir/video_short_1.mp4'
+		const splitCmd = cmd._buildSplitCommand({
+			absVideo: '/path/with spaces/video.mp4',
+			start: 0,
+			dur: 10,
+			hasSubs: true,
+			outSub: assPath,
+			videoCodec: 'libx264',
+			encOpts: '-preset medium -crf 23',
+			outVideo,
+		})
+		assert.ok(splitCmd.includes('-vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,ass=\''), 'should contain vertical crop and escaped ass filter')
+		assert.ok(splitCmd.includes('video_short_1.ass'), 'should include ass filename')
+	})
 })
 
 describe('SubtitleGenerateCommand', () => {

@@ -47,11 +47,31 @@ export class YouTubeDownloader extends ModelAsApp {
 	 * @returns {Promise<{ filePath: string, title: string }>}
 	 */
 	static async downloadAudio(url, outputDir = '/tmp', onProgress, options = {}) {
-		let port = options.downloader || options._?.downloader
-		if (!port) {
-			const { YouTubeDownloaderPort } = await import('../ports/YouTubeDownloaderPort.js')
-			port = YouTubeDownloaderPort
-		}
+		const port = await YouTubeDownloader._resolvePort(options)
 		return port.downloadAudio(url, outputDir, onProgress, options)
+	}
+
+	/**
+	 * Resolves port and downloads video.
+	 * @param {string} url - Video URL.
+	 * @param {string} [outputDir='/tmp'] - Target directory.
+	 * @param {function} [onProgress] - Progress callback.
+	 * @param {Object} [options] - Options context containing injected port and optional filename.
+	 * @returns {Promise<{ filePath: string, title: string }>}
+	 */
+	static async downloadVideo(url, outputDir = '/tmp', onProgress, options = {}) {
+		const port = await YouTubeDownloader._resolvePort(options)
+		return port.downloadVideo(url, outputDir, onProgress, options)
+	}
+
+	/**
+	 * @param {Object} [options]
+	 * @returns {Promise<any>}
+	 */
+	static async _resolvePort(options = {}) {
+		const port = options.downloader || options._?.downloader
+		if (port) return port
+		const { YouTubeDownloaderPort } = await import('../ports/YouTubeDownloaderPort.js')
+		return YouTubeDownloaderPort
 	}
 }

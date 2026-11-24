@@ -25,6 +25,7 @@ export class VideoPipelineCommand extends ModelAsApp {
         transcriptionSaved: string;
         stepSegmentation: string;
         pausesFound: string;
+        directorScenesFound: string;
         episodesGenerated: string;
         stepSlicing: string;
         slicingComplete: string;
@@ -38,6 +39,9 @@ export class VideoPipelineCommand extends ModelAsApp {
         socialPackagesDone: string;
         llmMetrics: string;
         shortsProgress: string;
+        stitchProgress: string;
+        stitchComplete: string;
+        previewFrameDone: string;
         stepPublishing: string;
         auditEmptyWarning: string;
         auditSuccess: string;
@@ -74,6 +78,77 @@ export class VideoPipelineCommand extends ModelAsApp {
         type: string;
         required: boolean;
         default: number;
+        help: string;
+    };
+    static directorCut: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        help: string;
+    };
+    static cutSilence: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        help: string;
+    };
+    static minSilenceDuration: {
+        type: string;
+        required: boolean;
+        default: number;
+        help: string;
+    };
+    static paddingBefore: {
+        type: string;
+        required: boolean;
+        default: number;
+        help: string;
+    };
+    static paddingAfter: {
+        type: string;
+        required: boolean;
+        default: number;
+        help: string;
+    };
+    static scenes: {
+        type: string;
+        required: boolean;
+        default: string;
+        help: string;
+    };
+    static stitch: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        help: string;
+    };
+    static transition: {
+        type: string;
+        required: boolean;
+        default: string;
+        help: string;
+    };
+    static transitionDuration: {
+        type: string;
+        required: boolean;
+        default: number;
+        help: string;
+    };
+    static acrossfade: {
+        type: string;
+        required: boolean;
+        default: boolean;
+        help: string;
+    };
+    static audioTransitionDuration: {
+        type: string;
+        required: boolean;
+        default: number;
+        help: string;
+    };
+    static previewFrame: {
+        type: string;
+        required: boolean;
         help: string;
     };
     static shorts: {
@@ -135,7 +210,7 @@ export class VideoPipelineCommand extends ModelAsApp {
      * @param {object} [options]
      */
     constructor(data?: VideoPipelineOptions, options?: object);
-    run(): AsyncGenerator<string | import("@nan0web/ui/src/core/Intent.js").ShowIntent | import("@nan0web/ui/src/core/Intent.js").ProgressIntent, import("@nan0web/ui/src/core/Intent.js").ResultIntent, unknown>;
+    run(): AsyncGenerator<any, import("@nan0web/ui/src/core/Intent.js").ResultIntent, any>;
 }
 export type VideoPipelineOptions = {
     /**

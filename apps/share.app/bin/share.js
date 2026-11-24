@@ -12,6 +12,7 @@ import { ShareAppCLI } from '../src/index.js'
 import { ToolCheckerPort } from '../src/ports/ToolCheckerPort.js'
 
 bootstrapApp(ShareAppCLI, {
+	root: '.',
 	toolChecker: ToolCheckerPort,
 }).catch((err) => {
 	console.error(err)

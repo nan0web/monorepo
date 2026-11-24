@@ -45,6 +45,28 @@ export class MediaDownloadModel extends Model {
         help: string;
         default: string;
     };
+    static saveVideo: {
+        help: string;
+        default: boolean;
+    };
+    static output: {
+        help: string;
+        default: any;
+    };
+    static initialPrompt: {
+        type: string;
+        help: string;
+    };
+    static conditionOnPreviousText: {
+        type: string;
+        default: boolean;
+        help: string;
+    };
+    static chunkDuration: {
+        type: string;
+        default: number;
+        help: string;
+    };
     constructor(raw?: {}, options?: {});
     /** @type {string|undefined} */ url: string | undefined;
     /** @type {string} */ status: string;
@@ -54,8 +76,13 @@ export class MediaDownloadModel extends Model {
     /** @type {string} */ quality: string;
     /** @type {string} */ format: string;
     /** @type {string} */ language: string;
+    /** @type {boolean} */ saveVideo: boolean;
+    /** @type {string|undefined} */ output: string | undefined;
     /** @type {string} */ llmModel: string;
     /** @type {string} */ cookies: string;
+    initialPrompt: any;
+    conditionOnPreviousText: boolean;
+    chunkDuration: number;
     /**
      * Runs the download and transcription process.
      * Yields partial results after each 5-minute chunk.

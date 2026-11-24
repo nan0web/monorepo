@@ -41,3 +41,11 @@ The following architectural issues were detected in @[@app/packages/ui-cli].
 - `nan0inspect hygiene --fix`
 - `nan0inspect exports --fix`
 - `nan0inspect domain --fix`
+
+---
+
+### Next Release Task: `TMP` Lifecycle in `bootstrapApp`
+- [ ] Create unique `TMP` directory on CLI bootstrap and mount it into `DB` as `TMP`.
+- [ ] Guarantee `TMP` cleanup in `try / catch / finally` on exit or error, unless `--save-tmp` (or debug flag) is passed.
+- [ ] Add unit/integration tests for `TMP` creation, mount, and cleanup on success/failure.
+- [ ] Document patch release notes.

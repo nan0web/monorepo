@@ -30,15 +30,36 @@ export class MediaDownloadModel extends Model {
 	static quality = { help: 'Whisper model size', default: 'medium' }
 	static format = { help: 'Output format (txt, srt, vtt, json)', default: 'txt' }
 	static language = { help: 'Language code (auto, uk, en)', default: 'auto' }
+	static saveVideo = { help: 'Save downloaded video file alongside transcript', default: false }
+	static output = { help: 'Optional output path for transcript', default: undefined }
 
 	/** @type {string|undefined} */ url
 	/** @type {string} */ status
 	/** @type {string} */ transcript
 	/** @type {string} */ title
+	static initialPrompt = {
+		type: 'string',
+		help: 'Initial prompt / vocabulary terms for Whisper',
+	}
+
+	static conditionOnPreviousText = {
+		type: 'boolean',
+		default: true,
+		help: 'Condition Whisper decoder on previous text within a chunk',
+	}
+
+	static chunkDuration = {
+		type: 'number',
+		default: 300,
+		help: 'Audio chunk duration in seconds',
+	}
+
 	/** @type {string[]} */ chunks
 	/** @type {string} */ quality
 	/** @type {string} */ format
 	/** @type {string} */ language
+	/** @type {boolean} */ saveVideo
+	/** @type {string|undefined} */ output
 	/** @type {string} */ llmModel
 	/** @type {string} */ cookies
 
@@ -52,8 +73,13 @@ export class MediaDownloadModel extends Model {
 		this.quality = raw.quality ?? MediaDownloadModel.quality.default
 		this.format = raw.format ?? MediaDownloadModel.format.default
 		this.language = raw.language ?? MediaDownloadModel.language.default
+		this.saveVideo = Boolean(raw.saveVideo ?? MediaDownloadModel.saveVideo.default)
+		this.output = raw.output ?? MediaDownloadModel.output.default
 		this.llmModel = raw.llmModel
 		this.cookies = raw.cookies
+		this.initialPrompt = raw.initialPrompt
+		this.conditionOnPreviousText = Boolean(raw.conditionOnPreviousText ?? MediaDownloadModel.conditionOnPreviousText.default)
+		this.chunkDuration = Number(raw.chunkDuration ?? MediaDownloadModel.chunkDuration.default) || 300
 	}
 
 	/**
@@ -77,12 +103,26 @@ export class MediaDownloadModel extends Model {
 			yield { status: this.status, url: this.url }
 
 			let lastProgress = { percent: 0, speed: '', eta: '' }
-			const dlPromise = YouTubeDownloader.downloadAudio(
-				this.url,
-				workDir,
-				(p) => { lastProgress = p },
-				{ cookies: this.cookies, _: this._ }
-			)
+			const onDlProgress = (p) => { lastProgress = p }
+			let dlPromise
+			if (this.saveVideo) {
+				const targetDir = this.output ? path.dirname(path.resolve(this.output)) : '.'
+				if (this.output) fs.mkdirSync(targetDir, { recursive: true })
+				const filename = this.output ? path.basename(this.output, path.extname(this.output)) : undefined
+				dlPromise = YouTubeDownloader.downloadVideo(
+					this.url,
+					targetDir,
+					onDlProgress,
+					{ cookies: this.cookies, filename, _: this._ }
+				)
+			} else {
+				dlPromise = YouTubeDownloader.downloadAudio(
+					this.url,
+					workDir,
+					onDlProgress,
+					{ cookies: this.cookies, _: this._ }
+				)
+			}
 
 			while (true) {
 				const race = await Promise.race([
@@ -108,7 +148,7 @@ export class MediaDownloadModel extends Model {
 			/** @type {string[]} */
 			let segmentFiles = []
 			const splitPromise = AudioSplitter.split(filePath, {
-				segmentDuration: 300,
+				segmentDuration: this.chunkDuration || 300,
 				outputDir: workDir,
 				onProgress: (p) => { splitProgress = p },
 				_: this._,
@@ -136,19 +176,31 @@ export class MediaDownloadModel extends Model {
 			const ai = new AI({}, this._)
 			const whisperModel = this.quality || 'medium'
 			const outputFormat = this.format === 'md' ? 'json' : (this.format || 'txt')
+			let detectedLanguage = this.language !== 'auto' ? this.language : undefined
+			let prevChunkTail = ''
 
 			for (let i = 0; i < segmentFiles.length; i++) {
 				const segmentPath = segmentFiles[i]
 				this.status = 'transcribing'
 				yield { status: this.status, chunk: i + 1, total: segmentFiles.length, model: this.quality }
 
-				let chunkProgress = { percent: 0 }
+				const chunkPrompt = [this.initialPrompt, prevChunkTail].filter(Boolean).join(' ').trim() || undefined
+				let chunkProgress = { percent: 0, language: null, texts: [] }
 				const tPromise = ai.transcribe(segmentPath, {
 					model: whisperModel,
 					format: outputFormat,
 					outputDir: workDir,
-					language: this.language !== 'auto' ? this.language : undefined,
-					onProgress: (p) => { chunkProgress = p }
+					language: detectedLanguage,
+					initialPrompt: chunkPrompt,
+					conditionOnPreviousText: Boolean(this.conditionOnPreviousText),
+					onProgress: (p) => {
+						if (p.language) {
+							chunkProgress.language = p.language
+							if (!detectedLanguage) detectedLanguage = p.language
+						}
+						if (p.text) chunkProgress.texts.push(p.text)
+						if (p.percent !== undefined) chunkProgress.percent = p.percent
+					}
 				})
 
 				let result
@@ -161,8 +213,19 @@ export class MediaDownloadModel extends Model {
 						result = race.result
 						break
 					}
-					if (chunkProgress.percent > 0) {
-						yield { status: 'partial_progress', chunk: i + 1, total: segmentFiles.length, percent: chunkProgress.percent, model: whisperModel }
+					if (chunkProgress.percent > 0 || chunkProgress.language || chunkProgress.texts.length > 0) {
+						const lang = chunkProgress.language
+						chunkProgress.language = null
+						const texts = chunkProgress.texts.splice(0)
+						yield {
+							status: 'partial_progress',
+							chunk: i + 1,
+							total: segmentFiles.length,
+							percent: chunkProgress.percent,
+							model: whisperModel,
+							...(lang ? { language: lang } : {}),
+							...(texts.length ? { text: texts[texts.length - 1], texts } : {}),
+						}
 					}
 				}
 
@@ -174,6 +237,10 @@ export class MediaDownloadModel extends Model {
 				fs.unlinkSync(outputPath)
 
 				this.chunks.push(text)
+				try {
+					const rawText = outputFormat === 'json' ? (JSON.parse(text).text || '') : text
+					prevChunkTail = rawText.replace(/\s+/g, ' ').trim().slice(-150)
+				} catch {}
 
 				yield {
 					status: 'partial',
@@ -301,9 +368,10 @@ ${formattedInput}`
 			}
 
 			this.status = 'done'
-			yield { status: this.status, transcript: this.transcript, markdown: this.markdown, title: this.title, model: whisperModel }
+			const videoPath = isRemote && this.saveVideo ? filePath : null
+			yield { status: this.status, transcript: this.transcript, markdown: this.markdown, title: this.title, model: whisperModel, videoPath }
 
-			if (isRemote && fs.existsSync(filePath)) {
+			if (isRemote && !this.saveVideo && fs.existsSync(filePath)) {
 				fs.unlinkSync(filePath)
 			}
 		} catch (err) {

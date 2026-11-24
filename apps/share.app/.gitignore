@@ -9,3 +9,7 @@ result.*
 *.m4a
 *.aiff
 cookies.txt
+/Users/
+out-shorts/
+coverage/
+@app/

@@ -1,4 +1,5 @@
 import { PipelineNode } from '../pipeline/PipelineNode.js'
+import { NaN0 } from '@nan0web/types'
 
 /**
  * @typedef {object} CutMapSegment
@@ -135,6 +136,15 @@ export class CutMapGenerator extends PipelineNode {
 			if (seg.aspectRatio) {
 				yaml += `    aspectRatio: "${seg.aspectRatio}"\n`
 			}
+			if (seg.align) {
+				yaml += `    align: "${seg.align}"\n`
+			}
+			if (seg.offsetX !== undefined) {
+				yaml += `    offsetX: ${seg.offsetX}\n`
+			}
+			if (seg.crop) {
+				yaml += `    crop: "${seg.crop}"\n`
+			}
 			if (seg.title) {
 				yaml += `    title: "${seg.title.replace(/"/g, '\\"')}"\n`
 			}
@@ -150,6 +160,15 @@ export class CutMapGenerator extends PipelineNode {
 		}
 
 		return yaml
+	}
+
+	/**
+	 * Serialize cut-map to .nan0 format using canonical NaN0.stringify.
+	 * @param {CutMap} cutMap
+	 * @returns {string}
+	 */
+	static toNaN0(cutMap) {
+		return NaN0.stringify(cutMap)
 	}
 
 	/**

@@ -15,6 +15,10 @@ import { Model, getMetadata } from '@nan0web/types'
 export function modelFromArgv(ModelClass, argv = [], appOptions = {}) {
 	/** @type {import('node:util').ParseArgsConfig['options']} */
 	const options = {}
+	/** @type {Record<string, string>} */
+	const aliasToKey = {}
+
+	const toKebab = (str) => str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 
 	const extract = (TargetClass) => {
 		const metadata = getMetadata(TargetClass)
@@ -43,6 +47,21 @@ export function modelFromArgv(ModelClass, argv = [], appOptions = {}) {
 				opt.short = descriptor.alias
 			}
 			options[key] = opt
+
+			const kebab = toKebab(key)
+			if (kebab !== key && !options[kebab]) {
+				options[kebab] = { type: parseType }
+				aliasToKey[kebab] = key
+			}
+			if (
+				descriptor.alias &&
+				typeof descriptor.alias === 'string' &&
+				descriptor.alias.length > 1 &&
+				!options[descriptor.alias]
+			) {
+				options[descriptor.alias] = { type: parseType }
+				aliasToKey[descriptor.alias] = key
+			}
 		}
 	}
 
@@ -54,6 +73,12 @@ export function modelFromArgv(ModelClass, argv = [], appOptions = {}) {
 		allowPositionals: true,
 		strict: false,
 	})
+
+	for (const [alias, key] of Object.entries(aliasToKey)) {
+		if (values[alias] !== undefined && values[key] === undefined) {
+			values[key] = values[alias]
+		}
+	}
 
 	const data = resolvePositionalArgs(/** @type {any} */ (ModelClass), positionals, values)
 	data._argv = argv

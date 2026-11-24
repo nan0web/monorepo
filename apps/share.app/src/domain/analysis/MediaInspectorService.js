@@ -13,7 +13,7 @@ export class MediaInspectorService {
 	probe(filePath) {
 		if (!fs.existsSync(filePath)) return null
 		try {
-			const cmd = `ffprobe -v error -show_entries stream=index,codec_type,codec_name:stream_tags=language,title -of json "${filePath}"`
+			const cmd = `ffprobe -v error -show_entries format=duration:stream=index,codec_type,codec_name:stream_tags=language,title -of json "${filePath}"`
 			const stdout = execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] })
 			return JSON.parse(stdout)
 		} catch {
