@@ -55,7 +55,7 @@ export default class StatusCommand extends ModelAsApp {
 		/** @type {string} */ this.registryFile
 		/** @type {string} */ this.target
 		/** @type {string} */ this.sort
-		/** @type {boolean} */ this.write = Boolean(data.write || (options && 'write' in options ? options.write : false))
+		/** @type {boolean} */ this.write
 	}
 
 	/**

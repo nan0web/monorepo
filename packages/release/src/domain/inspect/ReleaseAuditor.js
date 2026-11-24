@@ -154,9 +154,9 @@ export class ReleaseAuditor extends AuditorModel {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {boolean} */ this.changed = Boolean(data.changed || (options && 'changed' in options ? /** @type {any} */ (options).changed : false))
-		/** @type {boolean} */ this.all = Boolean(data.all || (options && 'all' in options ? /** @type {any} */ (options).all : false))
-		/** @type {string} */ this.registryFile = String(data.registryFile || 'releases.txt')
+		/** @type {boolean} */ this.changed
+		/** @type {boolean} */ this.all
+		/** @type {string} */ this.registryFile
 	}
 
 	/**

@@ -2,13 +2,6 @@ import { ModelAsApp, result, show } from '@nan0web/ui'
 import { runSpawn } from '@nan0web/test'
 
 export default class PublishCommand extends ModelAsApp {
-	/** @type {boolean} Bump major version */
-	major = false
-	/** @type {boolean} Bump minor version */
-	minor = false
-	/** @type {boolean} Bump patch version */
-	patch = false
-
 	static major = {
 		help: 'Bump major version',
 		default: false,
@@ -32,6 +25,12 @@ export default class PublishCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
+		/** @type {boolean} Bump major version */
+		this.major
+		/** @type {boolean} Bump minor version */
+		this.minor
+		/** @type {boolean} Bump patch version */
+		this.patch
 	}
 
 	/**
@@ -46,7 +45,7 @@ export default class PublishCommand extends ModelAsApp {
 		}
 
 		const db = /** @type {any} */ (this._).db
-		const pkg = await db.loadDocument('package.json', {})
+		const pkg = await db.loadDocument('package', {})
 		const tag = `v${pkg.version}`
 
 		yield show(`🛜 nan0release: publishing @${pkg.name}@${pkg.version}`)

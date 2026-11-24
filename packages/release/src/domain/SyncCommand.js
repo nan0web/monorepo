@@ -30,10 +30,10 @@ export class SyncCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.target = data.target ?? 'ics'
-		/** @type {string} */ this.format = data.format ?? 'txt'
-		/** @type {string} */ this.file = data.file ?? 'todo.md'
-		/** @type {string} */ this.out = data.out ?? ''
+		/** @type {string} */ this.target
+		/** @type {string} */ this.format
+		/** @type {string} */ this.file
+		/** @type {string} */ this.out
 		/** @type {SystemAdapter} */ this.$system = options.system || new SystemAdapter()
 	}
 

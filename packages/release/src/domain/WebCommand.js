@@ -48,10 +48,10 @@ export default class WebCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.registryFile = String(data.registryFile || 'releases.txt')
-		/** @type {string} */ this.out = String(data.out || 'apps/release.app/play/index.html')
-		/** @type {number} */ this.port = Number(data.port ?? options.port ?? 0)
-		/** @type {boolean} */ this.open = Boolean(data.open ?? options.open ?? false)
+		/** @type {string} */ this.registryFile
+		/** @type {string} */ this.out
+		/** @type {number} */ this.port
+		/** @type {boolean} */ this.open
 	}
 
 	async *run() {

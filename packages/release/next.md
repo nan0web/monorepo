@@ -12,6 +12,15 @@ The following architectural issues were detected in @[.].
 
 
 
+
+
+
+
+
+
+
+
+
 **Boundary**: [@[.editorconfig]](./.editorconfig)
 **Context**: [@[project.md]](./project.md), [@[seed.md]](./seed.md)
 
@@ -22,9 +31,27 @@ The following architectural issues were detected in @[.].
 
 
 
+
+
+
+
+
+
+
+
+
   - **Suggested Fix**: `npm install -D typescript`
 
 - [ ] [hygiene] scripts.play: `Missing required script: play`
+
+
+
+
+
+
+
+
+
 
 
 
@@ -34,9 +61,27 @@ The following architectural issues were detected in @[.].
 
 
 
+
+
+
+
+
+
+
+
+
   - **Suggested Fix**: `npm install -D c8`
 
 - [ ] [hygiene] scripts.prebuild: `Missing prebuild cleanup (rm -rf dist types)`
+
+
+
+
+
+
+
+
+
 
 
 
@@ -93,6 +138,15 @@ The following architectural issues were detected in @[.].
 
 
 
+
+
+
+
+
+
+
+
+
 ---
 
 ### Domain Auditor
@@ -139,11 +193,29 @@ The following architectural issues were detected in @[.].
 
 
 
+
+
+
+
+
+
+
+
+
 ---
 
 ### Verification Auditor
 - [ ] [verification] play/: `No play/ directory found — playground is mandatory for every package`
 - [ ] [verification] test_style: `Test file src/tests/releases/1/0/v1.0.2/task.test.js:4 uses flat test() instead of describe()/it() hierarchy`
+
+
+
+
+
+
+
+
+
 
 
 
@@ -184,6 +256,15 @@ The following architectural issues were detected in @[.].
 
 
 
+
+
+
+
+
+
+
+
+
 ## Recommended Subagents
 - `nan0inspect phase --fix`
 - `nan0inspect hygiene --fix`
@@ -191,4 +272,4 @@ The following architectural issues were detected in @[.].
 - `nan0inspect domain --fix`
 - `nan0inspect verification --fix`
 - `nan0inspect snapshots --fix`
-- `nan0inspect theming --fix`- [ ] [theming] src/adapters/SwiftBarAdapter.js: `Hardcoded color "#e5e5e5" found without theme variable`
+- `nan0inspect theming --fix`- [ ] [theming] src/adapters/SwiftBarAdapter.js: `Hardcoded color "#e5e5e5" found without theme variable`- [ ] [theming] src/adapters/SwiftBarAdapter.js: `Hardcoded color "#e5e5e5" found without theme variable`- [ ] [theming] src/adapters/SwiftBarAdapter.js: `Hardcoded color "#e5e5e5" found without theme variable`- [ ] [theming] src/adapters/SwiftBarAdapter.js: `Hardcoded color "#e5e5e5" found without theme variable`- [ ] [theming] src/adapters/SwiftBarAdapter.js: `Hardcoded color "#e5e5e5" found without theme variable`- [ ] [theming] src/adapters/SwiftBarAdapter.js: `Hardcoded color "#e5e5e5" found without theme variable`- [ ] [domain] src/domain/App.js: `Missing constructor declaration or JSDoc @type for static schema field 'command' in src/domain/App.js (ReleaseApp)`

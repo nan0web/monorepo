@@ -60,10 +60,29 @@ export class DashboardModel extends ModelAsApp {
         aggregating: string;
         done: string;
     };
-    static parseUserMetrics: typeof parseUserMetrics;
-    static normalizePriority: typeof normalizePriority;
-    static sortTasks: typeof sortTasks;
-    static versionToPath: typeof versionToPath;
+    /**
+     * @param {string} content
+     * @returns {{ hours: number, iterations: number }}
+     */
+    static parseUserMetrics(content: string): {
+        hours: number;
+        iterations: number;
+    };
+    /**
+     * @param {string} p
+     * @returns {string}
+     */
+    static normalizePriority(p: string): string;
+    /**
+     * @param {TaskItem[]} tasks
+     * @returns {TaskItem[]}
+     */
+    static sortTasks(tasks: TaskItem[]): TaskItem[];
+    /**
+     * @param {string} ver
+     * @returns {string}
+     */
+    static versionToPath(ver: string): string;
     /**
      * @param {Partial<DashboardModel>} [data={}]
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions & { gitTelemetry?: any }>} [options={}]
@@ -298,7 +317,3 @@ export type DashboardSummary = {
     totalReleases?: number | undefined;
 };
 import { ModelAsApp } from '@nan0web/ui';
-import { parseUserMetrics } from './ReleaseParser.js';
-import { normalizePriority } from './ReleaseParser.js';
-import { sortTasks } from './ReleaseParser.js';
-import { versionToPath } from './ReleaseDiscovery.js';

@@ -61,7 +61,8 @@ export class TaskModel extends Model {
 	constructor(data = {}, options = {}) {
 		super(data, options)
 		/** @type {string} Task title */ this.title
-		/** @type {string} Full untruncated task text */ this.fullText = data.fullText ?? this.title
+		/** @type {string} Full untruncated task text */ this.fullText
+		if (!this.fullText) this.fullText = this.title
 		/** @type {'todo' | 'done' | 'work' | 'pause' | 'fail'} Task status */ this.status
 		/** @type {'checkbox' | 'table'} Source format */ this.kind
 		/** @type {string} Task domain */ this.domain

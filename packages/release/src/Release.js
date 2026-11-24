@@ -17,23 +17,6 @@ import Logger from '@nan0web/log'
  * Release management class that coordinates task validation and release execution
  */
 export default class Release {
-	/** @type {string} */
-	version = '0.0.0'
-	/** @type {Date} */
-	createdAt = new Date()
-	/** @type {Date?} */
-	startAt = null
-	/** @type {Date?} */
-	planAt = null
-	/** @type {Date?} */
-	completeAt = null
-	/** @type {Map<string, Function>} */
-	tasks = new Map()
-	/** @type {ReleaseDocument} */
-	document
-	/** @type {Logger} */
-	logger = new Logger()
-
 	/**
 	 * Creates a Release instance
 	 * @param {ReleaseConfig} config - Release configuration
@@ -49,13 +32,21 @@ export default class Release {
 			tasks = new Map(),
 		} = config
 
+		/** @type {string} */
 		this.version = String(version)
+		/** @type {Date} */
 		this.createdAt = new Date(createdAt)
+		/** @type {Date?} */
 		this.startAt = startAt ? new Date(startAt) : null
+		/** @type {Date?} */
 		this.planAt = planAt ? new Date(planAt) : null
+		/** @type {Date?} */
 		this.completeAt = completeAt ? new Date(completeAt) : null
+		/** @type {ReleaseDocument} */
 		this.document = ReleaseDocument.from(document)
+		/** @type {Map<string, Function>} */
 		this.tasks = tasks
+		/** @type {Logger} */
 		this.logger = new Logger()
 
 		// Store additional config properties

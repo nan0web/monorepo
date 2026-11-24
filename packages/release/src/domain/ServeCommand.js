@@ -48,11 +48,11 @@ export default class ServeCommand extends ModelAsApp {
 	constructor(data = {}, options = {}) {
 		super(data, options)
 		/** @type {string} */
-		this.dir = String(data.dir || (options && 'dir' in options ? /** @type {any} */ (options).dir : 'releases'))
+		this.dir
 		/** @type {number} */
-		this.port = Number(data.port ?? (options && 'port' in options ? /** @type {any} */ (options).port : 3131))
+		this.port
 		/** @type {boolean} */
-		this.open = Boolean(data.open ?? (options && 'open' in options ? /** @type {any} */ (options).open : true))
+		this.open
 	}
 
 	/**

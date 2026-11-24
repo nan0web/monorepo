@@ -2,11 +2,6 @@ import { ModelAsApp, result, show } from '@nan0web/ui'
 import { runSpawn } from '@nan0web/test'
 
 export default class DepsCommand extends ModelAsApp {
-	/** @type {boolean} Apply fixes automatically */
-	fix = false
-	/** @type {boolean} Update packages to the latest available versions */
-	latest = false
-
 	static fix = {
 		help: 'Apply fixes automatically',
 		default: false,
@@ -26,6 +21,10 @@ export default class DepsCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
+		/** @type {boolean} Apply fixes automatically */
+		this.fix
+		/** @type {boolean} Update packages to the latest available versions */
+		this.latest
 	}
 
 	/**
@@ -33,7 +32,7 @@ export default class DepsCommand extends ModelAsApp {
 	 */
 	async *run() {
 		const { t, db } = /** @type {any} */ (this._)
-		const pkg = await db.loadDocument('package.json', {})
+		const pkg = await db.loadDocument('package', {})
 		yield show(t('Loaded package.json, {bytes} bytes', { bytes: JSON.stringify(pkg).length }))
 
 		const deps = {
@@ -95,7 +94,7 @@ export default class DepsCommand extends ModelAsApp {
 				changes.set(dep, `${dep}: ${ver}`)
 				yield show(t('Fixed {dep} → {ver}', { dep, ver }), 'success')
 			}
-			await db.saveDocument('package.json', pkg)
+			await db.saveDocument('package', pkg)
 			yield show(t('Fixes saved ({count} changes)', { count: changes.size }), 'success')
 			yield show(t('Dependencies fixed'))
 		} else {

@@ -48,11 +48,11 @@ export class TodoCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.format = data.format ?? 'cli'
-		/** @type {string} */ this.file = data.file ?? ''
-		/** @type {string} */ this.done = data.done ?? ''
-		/** @type {string} */ this.undo = data.undo ?? ''
-		/** @type {string} */ this.status = data.status ?? ''
+		/** @type {string} */ this.format
+		/** @type {string} */ this.file
+		/** @type {string} */ this.done
+		/** @type {string} */ this.undo
+		/** @type {string} */ this.status
 	}
 
 	/**

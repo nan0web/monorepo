@@ -65,11 +65,11 @@ export class ValidateCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.target = String(data.target || '')
-		/** @type {'text' | 'json' | 'nan0' | 'csv'} */ this.format = data.format || 'text'
-		/** @type {string} */ this.output = String(data.output || '')
-		/** @type {string} */ this.registryFile = String(data.registryFile || 'releases.txt')
-		/** @type {boolean} */ this.all = Boolean(data.all)
+		/** @type {string} */ this.target
+		/** @type {'text' | 'json' | 'nan0' | 'csv'} */ this.format
+		/** @type {string} */ this.output
+		/** @type {string} */ this.registryFile
+		/** @type {boolean} */ this.all
 	}
 
 	/**

@@ -9,6 +9,12 @@ export class ReleaseApp extends ModelAsApp {
         positional: boolean;
         default: typeof ViewCommand;
     };
+    /**
+     * @param {Partial<ReleaseApp>} [data]
+     * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
+     */
+    constructor(data?: Partial<ReleaseApp>, options?: Partial<import("@nan0web/types").ModelOptions>);
+    /** @type {any} */ command: any;
 }
 export default ReleaseApp;
 import { ModelAsApp } from "@nan0web/ui";

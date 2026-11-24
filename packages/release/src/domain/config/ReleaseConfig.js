@@ -37,12 +37,12 @@ export class ReleaseConfig extends Model {
 		super(data, options)
 
 		/** @type {string} Target directory for releases */
-		this.releasesDir = String(data.releasesDir || (options && 'releasesDir' in options ? options.releasesDir : '') || ReleaseConfig.releasesDir.default).replace(/^\/+|\/+$/g, '') || 'releases'
+		this.releasesDir = String(this.releasesDir || ReleaseConfig.releasesDir.default).replace(/^\/+|\/+$/g, '') || 'releases'
 
 		/** @type {Record<string, string>} Rule enforcement levels */
 		this.rules =
-			data.rules && typeof data.rules === 'object' && !Array.isArray(data.rules)
-				? { ...ReleaseConfig.rules.default, ...data.rules }
+			this.rules && typeof this.rules === 'object' && !Array.isArray(this.rules)
+				? { ...ReleaseConfig.rules.default, ...this.rules }
 				: { ...ReleaseConfig.rules.default }
 	}
 

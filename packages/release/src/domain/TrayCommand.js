@@ -30,13 +30,13 @@ export class TrayCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.action = data.action ?? 'render'
-		/** @type {string} */ this.file = data.file ?? 'todo.md'
-		/** @type {string} */ this.status = data.status ?? ''
-		/** @type {string} */ this.target = data.target ?? ''
-		/** @type {string} */ this.project = data.project ?? ''
-		/** @type {string} */ this.binPath = data.binPath ?? ''
-		/** @type {string} */ this.binMode = data.binMode ?? 'bin'
+		/** @type {string} */ this.action
+		/** @type {string} */ this.file
+		/** @type {string} */ this.status
+		/** @type {string} */ this.target
+		/** @type {string} */ this.project
+		/** @type {string} */ this.binPath
+		/** @type {string} */ this.binMode
 		/** @type {SystemAdapter} */ this.$system = options.system || new SystemAdapter()
 	}
 

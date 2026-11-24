@@ -22,6 +22,15 @@ import SyncCommand from './SyncCommand.js'
 export class ReleaseApp extends ModelAsApp {
 	static alias = 'release'
 
+	/**
+	 * @param {Partial<ReleaseApp>} [data]
+	 * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
+	 */
+	constructor(data = {}, options = {}) {
+		super(data, options)
+		/** @type {any} */ this.command
+	}
+
 	static UI = {
 		title: 'PM-as-Code Release Protocol (nan0release)',
 	}

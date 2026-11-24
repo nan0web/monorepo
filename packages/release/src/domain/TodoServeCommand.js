@@ -41,8 +41,8 @@ export class TodoServeCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {number} */ this.port = Number(data.port ?? 4010)
-		/** @type {string} */ this.file = data.file ?? 'todo.md'
+		/** @type {number} */ this.port
+		/** @type {string} */ this.file
 		/** @type {SystemAdapter} */ this.$system = options.system || new SystemAdapter()
 	}
 

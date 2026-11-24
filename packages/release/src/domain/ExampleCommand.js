@@ -27,8 +27,8 @@ export default class ExampleCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.version = String(data.version || 'v0.1.0')
-		/** @type {'all' | 'task' | 'user' | 'spec'} */ this.file = data.file || 'all'
+		/** @type {string} */ this.version
+		/** @type {'all' | 'task' | 'user' | 'spec'} */ this.file
 	}
 
 	/**

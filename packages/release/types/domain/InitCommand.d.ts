@@ -13,7 +13,7 @@ export default class InitCommand extends ModelAsApp {
      * @param {Partial<import('@nan0web/ui').ModelAsAppOptions>} [options]
      */
     constructor(data?: Partial<InitCommand>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions>);
-    /** @type {string} Release version */
+    /** @type {string} */
     version: string;
 }
 import { ModelAsApp } from '@nan0web/ui';

@@ -28,10 +28,10 @@ export default class Release {
     planAt: Date | null;
     /** @type {Date?} */
     completeAt: Date | null;
-    /** @type {Map<string, Function>} */
-    tasks: Map<string, Function>;
     /** @type {ReleaseDocument} */
     document: ReleaseDocument;
+    /** @type {Map<string, Function>} */
+    tasks: Map<string, Function>;
     /** @type {Logger} */
     logger: Logger;
     get path(): string;

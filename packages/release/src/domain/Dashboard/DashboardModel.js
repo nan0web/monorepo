@@ -83,10 +83,37 @@ export class DashboardModel extends ModelAsApp {
 		this._gitTelemetry = options.gitTelemetry ?? null
 	}
 
-	static parseUserMetrics = parseUserMetrics
-	static normalizePriority = normalizePriority
-	static sortTasks = sortTasks
-	static versionToPath = versionToPath
+	/**
+	 * @param {string} content
+	 * @returns {{ hours: number, iterations: number }}
+	 */
+	static parseUserMetrics(content) {
+		return parseUserMetrics(content)
+	}
+
+	/**
+	 * @param {string} p
+	 * @returns {string}
+	 */
+	static normalizePriority(p) {
+		return normalizePriority(p)
+	}
+
+	/**
+	 * @param {TaskItem[]} tasks
+	 * @returns {TaskItem[]}
+	 */
+	static sortTasks(tasks) {
+		return sortTasks(tasks)
+	}
+
+	/**
+	 * @param {string} ver
+	 * @returns {string}
+	 */
+	static versionToPath(ver) {
+		return versionToPath(ver)
+	}
 
 	/**
 	 * Canonical OLMUI Generator: Yields progress, show, and returns result.

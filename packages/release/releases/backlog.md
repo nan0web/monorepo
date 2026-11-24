@@ -24,3 +24,7 @@ locale: uk
   - Гарантія 100% збереження вихідного форматування Markdown при перемиканні статусів задач.
 - [ ] **[OLMUI-SWIFTBAR] Експорт чистих адаптерів для UI-оточень**:
   - Надання API/CLI контролера для легких View-адаптерів (SwiftBar, Raycast, BitBar, Web).
+- [ ] **[INSPECT-FALSE-POSITIVES] Покращення `nan0inspect` (ігнорування `.md.js`, `.story.js` та чисел `#101`)**:
+  - Налаштувати інспектори, щоб файли `*.md.js` (ProvenDocs) та `*.story.js` не перевірялися на `console.info` як UI-компоненти, а номери `#101` у рядках не сприймалися як hex-кольори.
+- [ ] **[EXPORTS-NAMED-ONLY] Міграція `export default` на named exports (`ExportAuditor`)**:
+  - Замінити `export default` на іменовані експорти у ~40 файлах (`src/Release.js`, `src/domain/*`, `src/adapters/*`) зі збереженням зворотної сумісності та оновленням тестів/бінарників, після чого прибрати `exports` зі `skip` у `inspect.config.nan0`.

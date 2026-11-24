@@ -1,8 +1,6 @@
 import { ModelAsApp, show, result, ask } from '@nan0web/ui'
 import { select } from '@nan0web/ui-cli'
 import Scanner from '../Release/Scanner.js'
-import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
 
 /**
  * ViewCommand - ModelAsApp Subcommand to inspect and view release details across multimodal interfaces.
@@ -31,7 +29,7 @@ export default class ViewCommand extends ModelAsApp {
 	constructor(data = {}, options = {}) {
 		super(data, options)
 		/** @type {string} */
-		this.version = String(data.version || (options && 'version' in options ? /** @type {any} */ (options).version : ''))
+		this.version
 	}
 
 	async *run() {
@@ -65,9 +63,11 @@ export default class ViewCommand extends ModelAsApp {
 		let progressStr = '100%'
 		let taskCount = '8/8'
 
-		if (releaseDir) {
+		if (releaseDir && this.$db) {
 			try {
-				const taskRaw = await readFile(join(releaseDir, 'task.md'), 'utf8')
+				const taskPath = this.$db.resolveSync(releaseDir, 'task')
+				const taskDoc = await this.$db.loadDocument(taskPath, '')
+				const taskRaw = typeof taskDoc === 'string' ? taskDoc : taskDoc?.content || ''
 				const completed = (taskRaw.match(/- \[[xX]\]/g) || []).length
 				const pending = (taskRaw.match(/- \[ \]/g) || []).length
 				const total = completed + pending

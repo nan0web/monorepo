@@ -3,9 +3,6 @@ import { runSpawn } from '@nan0web/test'
 import Scanner from '../Release/Scanner.js'
 
 export default class CloseCommand extends ModelAsApp {
-	/** @type {string} Release version */
-	version = ''
-
 	static version = {
 		help: 'Release version',
 		default: '',
@@ -21,6 +18,8 @@ export default class CloseCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
+		/** @type {string} Release version */
+		this.version
 	}
 
 	/**

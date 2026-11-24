@@ -8,13 +8,6 @@ import { runSpawn } from '@nan0web/test'
  * @property {boolean} dryRun Run the command without making any changes
  */
 export default class BumpCommand extends ModelAsApp {
-	/** @type {string} Target version */
-	version = '3.1.1'
-	/** @type {string} Git reference to diff against */
-	since = 'v3.1.0'
-	/** @type {boolean} Run without making changes */
-	dryRun = false
-
 	static version = {
 		help: 'Target version to set',
 		default: '3.1.1',
@@ -48,6 +41,12 @@ export default class BumpCommand extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
+		/** @type {string} Target version */
+		this.version
+		/** @type {string} Git reference to diff against */
+		this.since
+		/** @type {boolean} Run without making changes */
+		this.dryRun
 	}
 
 	/**

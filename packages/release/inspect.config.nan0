@@ -1,0 +1,4 @@
+skip:
+  - exports
+  - snapshots
+  - theming
