@@ -24,7 +24,7 @@ function findMonorepoRoot(startDir) {
 const startCwd = process.env.INIT_CWD || process.cwd()
 process.env.RELEASE_CWD = startCwd
 const root = findMonorepoRoot(startCwd)
-if (process.cwd() !== root && existsSync(resolve(root, 'releases.txt'))) {
+if (process.cwd() !== root && existsSync(resolve(root, 'releases.txt')) && startCwd.startsWith(root)) {
 	process.chdir(root)
 }
 

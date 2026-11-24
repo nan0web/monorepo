@@ -15,6 +15,9 @@ import ServeCommand from './ServeCommand.js'
 import ValidateCommand from './ValidateCommand.js'
 import ExampleCommand from './ExampleCommand.js'
 import TodoCommand from './TodoCommand.js'
+import TrayCommand from './TrayCommand.js'
+import TodoServeCommand from './TodoServeCommand.js'
+import SyncCommand from './SyncCommand.js'
 
 export class ReleaseApp extends ModelAsApp {
 	static alias = 'release'
@@ -30,6 +33,9 @@ export class ReleaseApp extends ModelAsApp {
 			CheckCommand,
 			ValidateCommand,
 			TodoCommand,
+			TrayCommand,
+			TodoServeCommand,
+			SyncCommand,
 			CloseCommand,
 			DepsCommand,
 			PublishCommand,
