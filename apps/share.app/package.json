@@ -1,6 +1,6 @@
 {
   "name": "@nan0web/share.app",
-  "version": "3.2.0",
+  "version": "3.7.3",
   "description": "Sovereign Social Distribution Layer (Rules Engine)",
   "type": "module",
   "main": "src/index.js",
