@@ -15,7 +15,7 @@ import { ModelAsApp } from '@nan0web/ui'
 export class PayloadApp extends ModelAsApp {
 	/**
 	 * @param {Partial<ModelAsApp> | Record<string, any>} [data={}]
-	 * @param {Partial<PayloadAppOptions>} [options={}]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions> & AppOptions} [options={}]
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)

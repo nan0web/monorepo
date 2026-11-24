@@ -4,6 +4,8 @@
     "src/index.js",
     "src/access.js",
     "src/templates/PayloadCollectionTemplate.js",
+    "src/domain/index.js",
+    "src/domain/CollectionBuilder.js",
     "src/domain/PayloadApp.js",
     "src/domain/SeedModel.js",
     "src/components/*.jsx",
@@ -16,7 +18,11 @@
     "play/**/*.jsx"
   ],
   "ignoreDependencies": [
+    "@nan0web/types",
     "@payloadcms/ui",
     "payload"
-  ]
+  ],
+  "rules": {
+    "duplicates": "off"
+  }
 }

@@ -16,9 +16,9 @@ export class PayloadApp extends ModelAsApp {
     };
     /**
      * @param {Partial<ModelAsApp> | Record<string, any>} [data={}]
-     * @param {Partial<PayloadAppOptions>} [options={}]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions> & AppOptions} [options={}]
      */
-    constructor(data?: Partial<ModelAsApp> | Record<string, any>, options?: Partial<PayloadAppOptions>);
+    constructor(data?: Partial<ModelAsApp> | Record<string, any>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions> & AppOptions);
     _: {
         payload: import("payload").BasePayload;
         config: any;

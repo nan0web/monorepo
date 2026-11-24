@@ -25,9 +25,9 @@ export class SeedModel extends PayloadApp {
     };
     /**
      * @param {Partial<SeedModel>} [data={}]
-     * @param {Partial<import('./PayloadApp.js').PayloadAppOptions>} [options={}]
+     * @param {Partial<import('@nan0web/ui').ModelAsAppOptions> & import('./PayloadApp.js').AppOptions} [options={}]
      */
-    constructor(data?: Partial<SeedModel>, options?: Partial<import("./PayloadApp.js").PayloadAppOptions>);
+    constructor(data?: Partial<SeedModel>, options?: Partial<import("@nan0web/ui").ModelAsAppOptions> & import("./PayloadApp.js").AppOptions);
     /** @type {string} Target directory containing SSOT data files */ dataDir: string;
     /** @type {string} Output path */ output: string;
     /**

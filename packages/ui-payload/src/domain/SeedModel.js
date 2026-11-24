@@ -32,7 +32,7 @@ export class SeedModel extends PayloadApp {
 
 	/**
 	 * @param {Partial<SeedModel>} [data={}]
-	 * @param {Partial<import('./PayloadApp.js').PayloadAppOptions>} [options={}]
+	 * @param {Partial<import('@nan0web/ui').ModelAsAppOptions> & import('./PayloadApp.js').AppOptions} [options={}]
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
