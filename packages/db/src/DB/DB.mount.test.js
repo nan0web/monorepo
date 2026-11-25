@@ -309,4 +309,14 @@ describe('DB._findMount() — Error Contract for ~ and @ prefixes', () => {
 		assert.ok(result)
 		assert.strictEqual(result.db, home)
 	})
+
+	it('location() routes @app/... to mounted db cwd instead of parent cwd', () => {
+		const root = new DB({ cwd: '/Users/i' })
+		const app = new DB({ cwd: '/Users/i/src/nan.web/packages/inspect', root: '' })
+		root.mount('@app', app)
+		assert.strictEqual(
+			root.location('@app/src/ui/mcp.js'),
+			'/Users/i/src/nan.web/packages/inspect/src/ui/mcp.js'
+		)
+	})
 })

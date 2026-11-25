@@ -1,4 +1,5 @@
 import { ModelAsApp, result, show, progress, render } from '@nan0web/ui'
+import { fileURLToPath } from 'node:url'
 
 /**
  * Editor Definition
@@ -100,12 +101,19 @@ export class InstallApp extends ModelAsApp {
 			claudeConfigUri = isLinux ? linuxClaude : macClaude
 		}
 
+		const agyUri = this.$db.resolveSync(homedir, '.gemini/antigravity/mcp_config.json')
+		const agyLegacyUri = this.$db.resolveSync(homedir, '.gemini/config/mcp_config.json')
+		const hasAgyDir = await this.$db
+			.stat(this.$db.resolveSync(homedir, '.gemini/antigravity'))
+			.catch(() => null)
+
 		/** @type {EditorDef[]} */
 		const definitions = [
 			{
 				id: 'antigravity',
 				name: 'Google Antigravity',
-				configUri: this.$db.resolveSync(homedir, '.gemini/config/mcp_config.json'),
+				configUri: hasAgyDir?.isDirectory || hasAgyDir?.isFile ? agyUri : agyLegacyUri,
+				detectionUris: [agyUri, agyLegacyUri],
 				detected: false,
 				type: 'antigravity',
 			},
@@ -188,10 +196,18 @@ export class InstallApp extends ModelAsApp {
 
 	/**
 	 * Generates canonical nan0web-inspect MCP server declaration.
-	 * @returns {object}
+	 * @returns {Promise<object>}
 	 */
-	getMcpServerConfig() {
-		const mcpPath = this.$db.location('@app/src/ui/mcp.js')
+	async getMcpServerConfig() {
+		let mcpPath = this.$db?.mounts?.has('@app') ? this.$db.location('@app/src/ui/mcp.js') : ''
+		if (!mcpPath) {
+			const monoPath = this.$db.resolveSync(this.dir || '.', 'packages/inspect/src/ui/mcp.js')
+			const hasMono = await this.$db.statDocument(monoPath).catch(() => null)
+			mcpPath =
+				hasMono?.exists || hasMono?.isFile
+					? this.$db.location(monoPath)
+					: fileURLToPath(new URL('../../ui/mcp.js', import.meta.url))
+		}
 		return {
 			command: 'node',
 			args: [mcpPath],
@@ -205,7 +221,7 @@ export class InstallApp extends ModelAsApp {
 	 */
 	async configureEditor(editor) {
 		const existing = (await this.$db.loadDocument(editor.configUri).catch(() => ({}))) || {}
-		const serverConfig = this.getMcpServerConfig()
+		const serverConfig = await this.getMcpServerConfig()
 
 		if (editor.type === 'settings') {
 			// VS Code format
@@ -229,6 +245,7 @@ export class InstallApp extends ModelAsApp {
 	 */
 	async *run() {
 		const { t } = this._
+		if (this.dir === 'mcp') this.dir = '.'
 		yield progress(t(InstallApp.UI.discovering))
 
 		const editors = await this.discoverEditors()

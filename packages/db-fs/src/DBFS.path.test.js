@@ -107,4 +107,14 @@ describe('DBFS path tests', () => {
 		const expected = pathRelative(db.root, fullPath)
 		assert.strictEqual(rel, expected)
 	})
+
+	it('should route location("@app/...") to mounted DBFS cwd instead of parent cwd', () => {
+		const root = new DBFS({ cwd: '/Users/i', root: '' })
+		const app = new DBFS({ cwd: '/Users/i/src/nan.web/packages/inspect', root: '' })
+		root.mount('@app', app)
+		assert.strictEqual(
+			root.location('@app/src/ui/mcp.js'),
+			'/Users/i/src/nan.web/packages/inspect/src/ui/mcp.js'
+		)
+	})
 })

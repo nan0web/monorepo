@@ -135,6 +135,12 @@ export default class DBFSPath extends DBFSBase {
 	 * @returns {string} Absolute location on the drive.
 	 */
 	location(...args) {
+		if (typeof args[0] === 'string' && typeof this._findMount === 'function') {
+			const mount = this._findMount(args[0])
+			if (mount && typeof mount.db.location === 'function') {
+				return mount.db.location(mount.subUri, ...args.slice(1))
+			}
+		}
 		let rawUri = this.resolveAlias(args[0])
 		const isWindows = this.FS.sep === '\\'
 
