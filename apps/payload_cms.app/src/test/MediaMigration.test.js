@@ -1,8 +1,10 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert'
+import { createT } from '@nan0web/i18n'
 import {
 	getMimeType,
 	sanitizeFilename,
+	isThumbnail,
 	resolveFolderPath,
 	MediaMigrateModel,
 	NewsMigrateModel,
@@ -33,6 +35,15 @@ describe('PayloadCmsApp Media & Content Models', () => {
 			assert.strictEqual(resolveFolderPath(1, folderMap), 'public')
 			assert.strictEqual(resolveFolderPath(2, folderMap), 'public/news')
 			assert.strictEqual(resolveFolderPath(3, folderMap), 'public/news/2026')
+		})
+
+		it('should only skip real thumbnails and preserve _small/_medium/_large/_WxH originals', () => {
+			assert.strictEqual(isThumbnail('Zachekaj-ne-znimaj_Visa_Site_small.webp'), false)
+			assert.strictEqual(isThumbnail('_BILSHE_Priceless_WineTasting_Site_600x600.webp'), false)
+			assert.strictEqual(isThumbnail('Game_banner_1920x1080.gif'), false)
+			assert.strictEqual(isThumbnail('thumbs/photo.jpg'), true)
+			assert.strictEqual(isThumbnail('photo@2x.jpg'), true)
+			assert.strictEqual(isThumbnail('photo_thumb.jpg'), true)
 		})
 	})
 
@@ -69,6 +80,31 @@ describe('PayloadCmsApp Media & Content Models', () => {
 			assert.strictEqual(audit.dbMediaCount, 2)
 			assert.strictEqual(audit.nonImageFilesCorrupted.length, 1)
 			assert.strictEqual(audit.nonImageFilesCorrupted[0].filename, 'corrupted.pdf')
+		})
+
+		it('should generate Ukrainian markdown report via i18n t() when provided', () => {
+			const t = createT({
+				'1. Executive Summary': '1. Зведена статистика',
+				'Total Media in Database': 'Усього медіа в базі даних',
+			}, 'uk')
+			const model = new MediaVerifyModel({}, { t })
+			const md = model.generateMarkdownReport(
+				{
+					dbMediaCount: 5,
+					dbFolderCount: 2,
+					diskFilesCount: 5,
+					missingInDb: [],
+					missingOnDisk: [],
+					nonImageFilesCorrupted: [],
+					mimeAnomalies: [],
+					folderMisalignments: [],
+					unassignedFolders: [],
+					extCount: { '.webp': 5 },
+				},
+				{ locale: 'uk', t }
+			)
+			assert.ok(md.includes('1. Зведена статистика'))
+			assert.ok(md.includes('**Усього медіа в базі даних**'))
 		})
 	})
 })

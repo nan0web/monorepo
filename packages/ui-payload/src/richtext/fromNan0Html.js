@@ -200,7 +200,7 @@ function convertElement(tag, value, attrs, format) {
       if (attrs.rel) linkAttrs.rel = attrs.rel
       const node = { type: 'link', version: 1, fields: linkAttrs, children }
       // Preserve extra attributes losslessly.
-      return [wrapElementIfNeeded(tag, attrs, node)]
+      return wrapElementIfNeeded(tag, attrs, node)
     }
     case 'img': {
       const src = attrs.src || ''
@@ -210,7 +210,7 @@ function convertElement(tag, value, attrs, format) {
         fields: { relationTo: 'media', value: src },
         children: [],
       }
-      return [wrapElementIfNeeded(tag, attrs, node)]
+      return wrapElementIfNeeded(tag, attrs, node)
     }
     case 'table': case 'thead': case 'tbody':
       if (hasAttrs) return [elementNode(tag, attrs, children)]
@@ -220,7 +220,7 @@ function convertElement(tag, value, attrs, format) {
       return [{ type: 'tablerow', version: 1, children }]
     case 'td': case 'th': {
       const cell = { type: 'tablecell', version: 1, header: tag === 'th', children }
-      return [wrapElementIfNeeded(tag, attrs, cell)]
+      return wrapElementIfNeeded(tag, attrs, cell)
     }
     case 'span': case 'div': case 'section': case 'header': case 'nav':
     case 'figure': case 'caption': case 'small': case 'sup': case 'wbr':

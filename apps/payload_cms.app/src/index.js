@@ -8,6 +8,7 @@ export { MediaVerifyModel } from './domain/models/MediaVerifyModel.js'
 export {
 	getMimeType,
 	sanitizeFilename,
+	isThumbnail,
 	scanDirectory,
 	ensureFolder,
 	resolveFolderPath,

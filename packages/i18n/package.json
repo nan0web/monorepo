@@ -17,7 +17,8 @@
   },
   "types": "types/index.d.ts",
   "bin": {
-    "i18n": "bin/i18n.js"
+    "i18n": "bin/i18n.js",
+    "nan0i18n": "bin/i18n.js"
   },
   "files": [
     "src/**/*.js",

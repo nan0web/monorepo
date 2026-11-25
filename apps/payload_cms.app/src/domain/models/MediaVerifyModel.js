@@ -1,17 +1,41 @@
-import { ModelAsApp } from '@nan0web/ui-cli'
+import { PayloadApp } from '@nan0web/ui-payload/domain'
 import { show, progress, result } from '@nan0web/ui/core'
-import fs from 'node:fs/promises'
-import path from 'node:path'
+import { createT } from '@nan0web/i18n'
 import {
 	getMimeType,
 	scanDirectory,
 	resolveFolderPath,
 } from '../utils/mediaUtils.js'
 
+const getExt = (p = '') => {
+	const base = p.split('/').pop() || ''
+	const idx = base.lastIndexOf('.')
+	return idx > 0 ? base.slice(idx).toLowerCase() : ''
+}
+
+const getDir = (p = '') => {
+	const idx = p.lastIndexOf('/')
+	return idx > 0 ? p.slice(0, idx) : '.'
+}
+
+const getBase = (p = '') => p.split('/').filter(Boolean).pop() || ''
+
+/**
+ * Resolves translator function for report generation.
+ * @param {object} options
+ * @param {Function} [fallbackT]
+ * @returns {Function}
+ */
+function resolveReportT(options = {}, fallbackT) {
+	if (typeof options.t === 'function') return options.t
+	if (typeof fallbackT === 'function') return fallbackT
+	return createT({}, options.locale || 'en')
+}
+
 /**
  * MediaVerifyModel - Subcommand to audit & verify media integrity in Payload CMS
  */
-export class MediaVerifyModel extends ModelAsApp {
+export class MediaVerifyModel extends PayloadApp {
 	static alias = 'media:verify'
 
 	static UI = {
@@ -62,12 +86,12 @@ export class MediaVerifyModel extends ModelAsApp {
 	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.dir
-		/** @type {string} */ this.category
-		/** @type {string} */ this.collection
-		/** @type {string} */ this.foldersCollection
-		/** @type {string} */ this.output
-		/** @type {boolean} */ this.skipThumbnails
+		/** @type {string} Public assets directory on disk */ this.dir
+		/** @type {string} Folder category prefix in Payload CMS */ this.category
+		/** @type {string} Payload CMS media collection slug */ this.collection
+		/** @type {string} Payload CMS folders collection slug */ this.foldersCollection
+		/** @type {string} Output path for generated markdown audit report */ this.output
+		/** @type {boolean} Skip generated thumbnails and cached miniature files */ this.skipThumbnails
 	}
 
 	/**
@@ -97,20 +121,13 @@ export class MediaVerifyModel extends ModelAsApp {
 		const diskFiles = []
 		for (const item of searchDirs) {
 			const root = typeof item === 'string' ? item : item.root
-
-			try {
-				await fs.access(root)
-			} catch {
-				continue
-			}
-
 			const files = await scanDirectory(root, root, {
 				skipThumbnails: this.skipThumbnails !== false,
 			})
 			for (const f of files) {
 				const cleanRelative = f.relativePath.startsWith('/') ? f.relativePath.slice(1) : f.relativePath
 				const sourcePath = cleanRelative
-				const dirName = path.dirname(cleanRelative)
+				const dirName = getDir(cleanRelative)
 				const expectedFolderPath = dirName === '.' ? '' : dirName
 				const expectedMimeType = getMimeType(f.fullPath)
 				diskFiles.push({
@@ -145,7 +162,7 @@ export class MediaVerifyModel extends ModelAsApp {
 		const nonImageFilesCorrupted = []
 		for (const doc of dbMediaDocs) {
 			const filename = doc.filename || doc.sourcePath || ''
-			const ext = path.extname(filename).toLowerCase()
+			const ext = getExt(filename)
 			const expectedMime = getMimeType(filename)
 			const actualMime = doc.mimeType || doc.mimetype
 
@@ -223,7 +240,7 @@ export class MediaVerifyModel extends ModelAsApp {
 		// Extension Distribution
 		const extCount = {}
 		for (const doc of dbMediaDocs) {
-			const ext = path.extname(doc.filename || doc.sourcePath || '').toLowerCase() || 'no-ext'
+			const ext = getExt(doc.filename || doc.sourcePath || '') || 'no-ext'
 			extCount[ext] = (extCount[ext] || 0) + 1
 		}
 
@@ -245,95 +262,114 @@ export class MediaVerifyModel extends ModelAsApp {
 	 * Generates a Markdown audit report.
 	 * @param {object} auditResult
 	 * @param {object} [options]
+	 * @param {string} [options.title]
+	 * @param {string} [options.locale]
+	 * @param {Function} [options.t]
 	 * @returns {string}
 	 */
 	generateMarkdownReport(auditResult, options = {}) {
-		const { title = 'Payload CMS Media & Asset Integrity Audit Report' } = options
+		const t = resolveReportT(options, this._?.t)
+		const title = options.title || t('Payload CMS Media & Asset Integrity Audit Report')
 		const reportDate = new Date().toISOString()
+		const col = this.collection || 'media'
+		const fCol = this.foldersCollection || 'payload-folders'
 
-		return `# 🛡️ ${title}
+		return [
+			`# 🛡️ ${title}\n`,
+			`> **${t('Generated')}:** ${reportDate}  `,
+			`> **${t('Scope')}:** ${t('Public media & asset directories vs Payload CMS collections')} (\`${col}\`, \`${fCol}\`).\n`,
+			'---\n',
+			this.formatSummarySection(auditResult, t),
+			'---\n',
+			this.formatExtensionsSection(auditResult, t),
+			'---\n',
+			this.formatDetailsSection(auditResult, t),
+		].join('\n')
+	}
 
-> **Generated:** ${reportDate}  
-> **Scope:** Public media & asset directories vs Payload CMS collections (\`${this.collection || 'media'}\`, \`${this.foldersCollection || 'payload-folders'}\`).
+	/**
+	 * Formats executive summary table section.
+	 * @param {object} audit
+	 * @param {Function} t
+	 * @returns {string}
+	 */
+	formatSummarySection(audit, t) {
+		const rows = [
+			[t('Total Media in Database'), `**${audit.dbMediaCount.toLocaleString()}**`, `✅ ${t('Indexed')}`],
+			[t('Total Media Folders in Database'), `**${audit.dbFolderCount.toLocaleString()}**`, `✅ ${t('Hierarchy Ready')}`],
+			[t('Total Asset Files on Disk'), `**${audit.diskFilesCount.toLocaleString()}**`, `📁 ${t('Scanned')}`],
+			[t('Missing in DB (Unimported Disk Files)'), `**${audit.missingInDb.length}**`, audit.missingInDb.length === 0 ? `🟢 ${t('100% Coverage')}` : `⚠️ ${t('Attention Required')}`],
+			[t('Missing on Disk (Orphan DB Records)'), `**${audit.missingOnDisk.length}**`, audit.missingOnDisk.length === 0 ? `🟢 ${t('Clean')}` : `⚠️ ${t('Orphan Records')}`],
+			[t('Corrupted Non-Image Mimetypes'), `**${audit.nonImageFilesCorrupted.length}**`, audit.nonImageFilesCorrupted.length === 0 ? `🟢 ${t('100% Valid')}` : `❌ ${t('Critical')}`],
+			[t('Folder Hierarchy Misalignments'), `**${audit.folderMisalignments.length}**`, audit.folderMisalignments.length === 0 ? `🟢 ${t('100% Aligned')}` : `⚠️ ${t('Misaligned')}`],
+			[t('Unassigned Folder Records'), `**${audit.unassignedFolders.length}**`, audit.unassignedFolders.length === 0 ? `🟢 ${t('Clean')}` : `⚠️ ${t('Root/Unassigned')}`],
+		]
+		const body = rows.map(([m, c, s]) => `| **${m}** | ${c} | ${s} |`).join('\n')
+		return `## 📊 ${t('1. Executive Summary')}\n\n| ${t('Metric')} | ${t('Count')} | ${t('Status')} |\n| :--- | :--- | :--- |\n${body}\n`
+	}
 
----
+	/**
+	 * Formats file extension distribution table.
+	 * @param {object} audit
+	 * @param {Function} t
+	 * @returns {string}
+	 */
+	formatExtensionsSection(audit, t) {
+		const rows = Object.entries(audit.extCount)
+			.sort((a, b) => b[1] - a[1])
+			.map(([ext, count]) => `| \`${ext}\` | ${count.toLocaleString()} |`)
+			.join('\n')
+		return `## 📑 ${t('2. File Extension Distribution in Database')}\n\n| ${t('Extension')} | ${t('Count')} |\n| :--- | :--- |\n${rows}\n`
+	}
 
-## 📊 1. Executive Summary
+	/**
+	 * Formats deep verification details section.
+	 * @param {object} audit
+	 * @param {Function} t
+	 * @returns {string}
+	 */
+	formatDetailsSection(audit, t) {
+		const mimeList = audit.nonImageFilesCorrupted.length === 0
+			? `✅ *${t('All non-image documents (.pdf, .xlsx, .zip, .html, .docx, etc.) have valid native mimetypes.')}*`
+			: audit.nonImageFilesCorrupted.slice(0, 20).map((c) => `- \`${c.filename}\` (${t('Expected')}: \`${c.expectedMime}\`, ${t('Actual')}: \`${c.actualMime}\`)`).join('\n')
+		const missingDbList = audit.missingInDb.length === 0
+			? `✅ *${t('100% of all public assets on disk are registered and indexed in Payload CMS.')}*`
+			: audit.missingInDb.slice(0, 20).map((f) => `- \`${f.sourcePath}\``).join('\n')
+		const missingDiskList = audit.missingOnDisk.length === 0
+			? `✅ *${t('No orphan records found.')}*`
+			: audit.missingOnDisk.slice(0, 20).map((d) => `- ID: \`${d.id}\`, ${t('Path')}: \`${d.sourcePath || d.uri}\``).join('\n')
+		const alignList = audit.folderMisalignments.length === 0 && audit.unassignedFolders.length === 0
+			? `✅ *${t('100% of media records accurately mirror their relative directory path in folders.')}*`
+			: audit.folderMisalignments.slice(0, 20).map((m) => `- \`${m.filename}\`: ${t('Expected')} \`${m.expectedFolderPath}\`, ${t('Got')} \`${m.actualFolderPath}\``).join('\n')
 
-| Metric | Count | Status |
-| :--- | :--- | :--- |
-| **Total Media in Database** | **${auditResult.dbMediaCount.toLocaleString()}** | ✅ Indexed |
-| **Total Media Folders in Database** | **${auditResult.dbFolderCount.toLocaleString()}** | ✅ Hierarchy Ready |
-| **Total Asset Files on Disk** | **${auditResult.diskFilesCount.toLocaleString()}** | 📁 Scanned |
-| **Missing in DB (Unimported Disk Files)** | **${auditResult.missingInDb.length}** | ${auditResult.missingInDb.length === 0 ? '🟢 100% Coverage' : '⚠️ Attention Required'} |
-| **Missing on Disk (Orphan DB Records)** | **${auditResult.missingOnDisk.length}** | ${auditResult.missingOnDisk.length === 0 ? '🟢 Clean' : '⚠️ Orphan Records'} |
-| **Corrupted Non-Image Mimetypes** | **${auditResult.nonImageFilesCorrupted.length}** | ${auditResult.nonImageFilesCorrupted.length === 0 ? '🟢 100% Valid' : '❌ Critical'} |
-| **Folder Hierarchy Misalignments** | **${auditResult.folderMisalignments.length}** | ${auditResult.folderMisalignments.length === 0 ? '🟢 100% Aligned' : '⚠️ Misaligned'} |
-| **Unassigned Folder Records** | **${auditResult.unassignedFolders.length}** | ${auditResult.unassignedFolders.length === 0 ? '🟢 Clean' : '⚠️ Root/Unassigned'} |
-
----
-
-## 📑 2. File Extension Distribution in Database
-
-| Extension | Count |
-| :--- | :--- |
-${Object.entries(auditResult.extCount)
-	.sort((a, b) => b[1] - a[1])
-	.map(([ext, count]) => `| \`${ext}\` | ${count.toLocaleString()} |`)
-	.join('\n')}
-
----
-
-## 🔬 3. Deep Verification Details
-
-### 3.1 Mimetype Integrity Check
-- **Detected Corruptions:** ${auditResult.nonImageFilesCorrupted.length}
-${
-	auditResult.nonImageFilesCorrupted.length === 0
-		? '✅ *All non-image documents (.pdf, .xlsx, .zip, .html, .docx, etc.) have valid native mimetypes.*'
-		: auditResult.nonImageFilesCorrupted.slice(0, 20).map((c) => `- \`${c.filename}\` (Expected: \`${c.expectedMime}\`, Actual: \`${c.actualMime}\`)`).join('\n')
-}
-
-### 3.2 Missing Files Audit
-- **Disk files not in DB:** ${auditResult.missingInDb.length}
-${
-	auditResult.missingInDb.length === 0
-		? '✅ *100% of all public assets on disk are registered and indexed in Payload CMS.*'
-		: auditResult.missingInDb.slice(0, 20).map((f) => `- \`${f.sourcePath}\``).join('\n')
-}
-
-- **DB records not found on Disk:** ${auditResult.missingOnDisk.length}
-${
-	auditResult.missingOnDisk.length === 0
-		? '✅ *No orphan records found.*'
-		: auditResult.missingOnDisk.slice(0, 20).map((d) => `- ID: \`${d.id}\`, Path: \`${d.sourcePath || d.uri}\``).join('\n')
-}
-
-### 3.3 Folder Hierarchy Alignment Check
-- **Misaligned folders:** ${auditResult.folderMisalignments.length}
-- **Unassigned media:** ${auditResult.unassignedFolders.length}
-${
-	auditResult.folderMisalignments.length === 0 && auditResult.unassignedFolders.length === 0
-		? '✅ *100% of media records accurately mirror their relative directory path in folders.*'
-		: auditResult.folderMisalignments.slice(0, 20).map((m) => `- \`${m.filename}\`: Expected \`${m.expectedFolderPath}\`, Got \`${m.actualFolderPath}\``).join('\n')
-}
-`
+		return [
+			`## 🔬 ${t('3. Deep Verification Details')}\n`,
+			`### ${t('3.1 Mimetype Integrity Check')}`,
+			`- **${t('Detected Corruptions')}:** ${audit.nonImageFilesCorrupted.length}`,
+			`${mimeList}\n`,
+			`### ${t('3.2 Missing Files Audit')}`,
+			`- **${t('Disk files not in DB')}:** ${audit.missingInDb.length}`,
+			`${missingDbList}\n`,
+			`- **${t('DB records not found on Disk')}:** ${audit.missingOnDisk.length}`,
+			`${missingDiskList}\n`,
+			`### ${t('3.3 Folder Hierarchy Alignment Check')}`,
+			`- **${t('Misaligned folders')}:** ${audit.folderMisalignments.length}`,
+			`- **${t('Unassigned media')}:** ${audit.unassignedFolders.length}`,
+			alignList,
+		].join('\n')
 	}
 
 	/**
 	 * @returns {AsyncGenerator<import('@nan0web/ui').Intent, import('@nan0web/ui').ResultIntent, any>}
 	 */
 	async *run() {
-		const { t, payload } = this._
-		const targetDir = path.resolve(process.cwd(), this.dir || 'public')
-		const category = this.category || path.basename(targetDir)
+		const { t } = this._
+		const targetDir = this.dir || 'public'
+		const category = this.category || getBase(targetDir)
 
 		yield progress(t(MediaVerifyModel.UI.start))
 
-		if (!payload) {
-			yield show('No Payload instance injected. Skipping database check.', 'warning')
-			return result({ status: 'skipped' })
-		}
+		const payload = this.$payload
 
 		yield progress(t(MediaVerifyModel.UI.loadingDb))
 		yield progress(t(MediaVerifyModel.UI.scanningDisk, { target: targetDir }))
@@ -342,9 +378,8 @@ ${
 		const audit = await this.runAudit(payload, [{ root: targetDir, category }])
 
 		if (this.output) {
-			const reportPath = path.resolve(process.cwd(), this.output)
 			const reportMd = this.generateMarkdownReport(audit)
-			await fs.writeFile(reportPath, reportMd, 'utf8')
+			await this.$db.set(this.output, reportMd)
 		}
 
 		yield show(

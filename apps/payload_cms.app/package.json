@@ -1,6 +1,6 @@
 {
 	"name": "@nan0web/payload-cms.app",
-	"version": "3.4.0",
+	"version": "3.4.1",
 	"description": "Universal Model-as-App Model-as-Schema to Payload CMS Bridge & Generator Application",
 	"type": "module",
 	"main": "./src/index.js",
@@ -30,10 +30,13 @@
 		"build": "next build",
 		"start": "next start",
 		"cli": "node bin/app.js",
+		"inspect": "nan0inspect audit .",
+		"i18n": "nan0i18n audit && nan0i18n sync",
 		"test": "node --test src/test/*.spec.js src/test/*.story.js src/test/*.test.js"
 	},
 	"dependencies": {
 		"@nan0web/db": "workspace:*",
+		"@nan0web/i18n": "workspace:*",
 		"@nan0web/types": "workspace:*",
 		"@nan0web/ui": "workspace:*",
 		"@nan0web/ui-cli": "workspace:*",

@@ -113,7 +113,7 @@ export function isThumbnail(filePath) {
 	const nameWithoutExt = path.basename(filePath, path.extname(filePath))
 	if (/@\d+([x-]\d+)?/i.test(nameWithoutExt)) return true
 	if (/@\w+/i.test(nameWithoutExt)) return true
-	if (/[-_](thumb|thumbnail|mini|preview|small|medium|large|\d+x\d+)$/i.test(nameWithoutExt)) return true
+	if (/[-_](thumb|thumbnail|mini|preview)$/i.test(nameWithoutExt)) return true
 	return false
 }
 

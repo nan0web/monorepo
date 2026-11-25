@@ -61,4 +61,19 @@ describe('NaN0HTML ↔ Lexical Converter Round-trip', () => {
 		const backToAst = toNan0Html(lexical)
 		assert.deepEqual(backToAst, { 'custom-widget': 'Widget content', $mode: 'test' })
 	})
+
+	it('does not double-wrap a, img, td, th children in nested arrays', () => {
+		const linkLexical = fromNan0Html({ p: [{ a: 'Link', $href: '/about', $class: 'btn' }] })
+		assert.equal(Array.isArray(linkLexical.root.children[0].children[0]), false)
+
+		const imgLexical = fromNan0Html({ p: [{ img: true, $src: '/img.png', $alt: 'Pic' }] })
+		assert.equal(Array.isArray(imgLexical.root.children[0].children[0]), false)
+
+		const tableLexical = fromNan0Html({
+			table: [{ tr: [{ th: 'H', $scope: 'col' }, { td: 'C', $colspan: '2' }] }],
+		})
+		const trChildren = tableLexical.root.children[0].children[0].children
+		assert.equal(Array.isArray(trChildren[0]), false)
+		assert.equal(Array.isArray(trChildren[1]), false)
+	})
 })
