@@ -1,0 +1,37 @@
+{
+  "name": "@nan0web/communication.app",
+  "version": "0.1.0",
+  "description": "Sovereign Git-based messenger and co-creation space (7iOS.CoCreation)",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "nan0com": "./bin/nan0com.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test \"src/**/*.{test,story}.js\"",
+    "test:stories": "node --test \"src/**/*.story.js\"",
+    "release:spec": "node --test \"releases/0/1/v0.1.0/task.spec.js\"",
+    "release:validate": "nan0inspect release --non-interactive",
+    "inspect": "nan0inspect domain --non-interactive",
+    "knip": "knip --production",
+    "test:all": "npm run build && npm run test && npm run release:spec && npm run inspect && npm run knip && npm run release:validate"
+  },
+  "devDependencies": {
+    "@nan0web/inspect": "workspace:*",
+    "@nan0web/test": "workspace:*",
+    "@types/node": "^25.6.0",
+    "knip": "^5.88.1",
+    "typescript": "^5.7.3"
+  },
+  "files": [
+    "src/**/*.js",
+    "types/**/*.d.ts",
+    "!src/**/*.{test,story}.js",
+    "!src/test/**",
+    "README.md"
+  ]
+}
