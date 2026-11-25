@@ -23,11 +23,15 @@ export class CdnSyncSchema extends Model {
 		default: false,
 	}
 
+	/**
+	 * @param {Partial<CdnSyncSchema>} [data]
+	 * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
+	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.cdn_provider
-		/** @type {string} */ this.api_token
-		/** @type {boolean} */ this.proxied
+		/** @type {string} CDN provider name */ this.cdn_provider
+		/** @type {string} CDN API token */ this.api_token
+		/** @type {boolean} Whether traffic is proxied */ this.proxied
 	}
 
 	validate() {

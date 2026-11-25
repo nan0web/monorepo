@@ -34,13 +34,17 @@ export class WebDomainSchema extends Model {
 		validate: (v) => v === undefined || (Number.isInteger(v) && v >= 80 && v <= 65535) || WebDomainSchema.UI.errorInvalidPort,
 	}
 
+	/**
+	 * @param {Partial<WebDomainSchema>} [data]
+	 * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
+	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.domain
-		/** @type {string} */ this.root
-		/** @type {boolean} */ this.active
-		/** @type {string} */ this.ssl_provider
-		/** @type {number} */ this.proxy_port
+		/** @type {string} Domain FQDN */ this.domain
+		/** @type {string} Document root path */ this.root
+		/** @type {boolean} Whether domain is active */ this.active
+		/** @type {string} SSL provider */ this.ssl_provider
+		/** @type {number} Optional proxy port */ this.proxy_port
 	}
 }
 

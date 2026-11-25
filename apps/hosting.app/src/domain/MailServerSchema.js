@@ -29,12 +29,16 @@ export class MailServerSchema extends Model {
 		default: true,
 	}
 
+	/**
+	 * @param {Partial<MailServerSchema>} [data]
+	 * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
+	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.mail_domain
-		/** @type {string} */ this.dkim_selector
-		/** @type {string} */ this.dkim_key_size
-		/** @type {boolean} */ this.spam_filter_active
+		/** @type {string} Mail domain FQDN */ this.mail_domain
+		/** @type {string} DKIM selector */ this.dkim_selector
+		/** @type {string} DKIM key size (1024 or 2048) */ this.dkim_key_size
+		/** @type {boolean} Whether spam filter is active */ this.spam_filter_active
 	}
 }
 

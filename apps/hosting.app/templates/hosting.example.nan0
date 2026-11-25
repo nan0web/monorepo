@@ -1,0 +1,12 @@
+server:
+  adapter: caddy
+  caddyfile: caddy/Caddyfile
+  sitesDir: caddy/sites
+  localSnippet: local_dev
+dns:
+  provider: dnsmasq
+paths:
+  sitesAvailable: sites-available
+  sitesEnabled: sites-enabled
+  logs: data/logs
+  locks: data/locks

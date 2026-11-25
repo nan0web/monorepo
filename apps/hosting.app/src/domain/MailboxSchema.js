@@ -35,13 +35,17 @@ export class MailboxSchema extends Model {
 		validate: (v) => v === undefined || v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || MailboxSchema.UI.errorInvalidForward,
 	}
 
+	/**
+	 * @param {Partial<MailboxSchema>} [data]
+	 * @param {Partial<import('@nan0web/types').ModelOptions>} [options]
+	 */
 	constructor(data = {}, options = {}) {
 		super(data, options)
-		/** @type {string} */ this.domain
-		/** @type {string} */ this.mailbox_username
-		/** @type {string} */ this.mailbox_password
-		/** @type {bigint} */ this.quota_bytes
-		/** @type {string} */ this.forward_to
+		/** @type {string} Domain FQDN */ this.domain
+		/** @type {string} Mailbox username */ this.mailbox_username
+		/** @type {string} Mailbox password */ this.mailbox_password
+		/** @type {bigint} Storage quota in bytes */ this.quota_bytes
+		/** @type {string} Optional forwarding email */ this.forward_to
 	}
 }
 

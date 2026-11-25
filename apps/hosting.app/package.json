@@ -1,17 +1,30 @@
 {
   "name": "@nan0web/hosting.app",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Sovereign server management panel (Web, Mail, CDN) for nan0web",
   "main": "./src/index.js",
   "type": "module",
+  "bin": {
+    "nan0host": "./bin/hosting.js"
+  },
   "scripts": {
     "test": "node --test \"src/**/*.test.js\"",
-    "test:all": "npm test && npm run test:release && npm run knip",
-    "test:release": "node --test \"releases/**/*.test.js\"",
-    "release:spec": "node --test \"releases/1/0/v1.0.0/task.spec.js\"",
+    "test:all": "npm test && npm run test:release && npm run test:inspect && npm run knip",
+    "test:release": "node --test \"releases/**/*.spec.js\"",
+    "test:inspect": "nan0inspect domain --non-interactive",
+    "inspect": "nan0inspect audit --non-interactive",
+    "release:spec": "node --test \"releases/1/1/v1.1.0/task.spec.js\"",
     "knip": "knip --production"
   },
+  "dependencies": {
+    "@nan0web/db-fs": "workspace:*",
+    "@nan0web/types": "workspace:*",
+    "@nan0web/ui": "workspace:*",
+    "@nan0web/ui-cli": "workspace:*"
+  },
   "devDependencies": {
+    "@nan0web/db": "workspace:*",
+    "@nan0web/inspect": "workspace:*",
     "@nan0web/types": "workspace:*",
     "knip": "^5.88.1"
   },

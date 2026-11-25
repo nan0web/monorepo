@@ -1,0 +1,11 @@
+{
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"entry": ["src/index.js", "bin/hosting.js"],
+	"project": ["src/**/*.js", "bin/**/*.js"],
+	"ignore": ["releases/**"],
+	"ignoreDependencies": ["@nan0web/db-fs", "@nan0web/types", "@nan0web/ui", "@nan0web/ui-cli"],
+	"ignoreExportsUsedInFile": true,
+	"rules": {
+		"duplicates": "off"
+	}
+}
