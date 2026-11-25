@@ -19,6 +19,27 @@ export class SystemAdapter {
         stderr: string;
     }>;
     /**
+     * Open a log or document file in default viewer/IDE.
+     * @param {string} filePath
+     * @returns {Promise<{ ok: boolean, stdout: string, stderr: string }>}
+     */
+    openLog(filePath: string): Promise<{
+        ok: boolean;
+        stdout: string;
+        stderr: string;
+    }>;
+    /**
+     * Execute a git command in a given working directory.
+     * @param {string[]} args
+     * @param {string} [cwd]
+     * @returns {Promise<{ ok: boolean, stdout: string, stderr: string }>}
+     */
+    execGit(args: string[], cwd?: string): Promise<{
+        ok: boolean;
+        stdout: string;
+        stderr: string;
+    }>;
+    /**
      * Execute JXA script via osascript on macOS.
      * @param {string} script
      * @returns {Promise<{ ok: boolean, stdout: string, stderr: string }>}

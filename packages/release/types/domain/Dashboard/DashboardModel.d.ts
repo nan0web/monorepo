@@ -46,6 +46,10 @@ export class DashboardModel extends ModelAsApp {
             totalProjects: number;
             totalHours: number;
             totalIterations: number;
+            totalTokensIn: number;
+            totalTokensOut: number;
+            totalTokens: number;
+            totalCostUsd: number;
             wipCount: number;
             closedCount: number;
         };
@@ -168,12 +172,24 @@ export class DashboardModel extends ModelAsApp {
             deadline: any;
             daysRemaining: number | null;
             priority: "0" | "1" | "2" | "3";
+            tokensIn?: undefined;
+            tokensOut?: undefined;
+            totalTokens?: undefined;
+            costUsd?: undefined;
+            agent?: undefined;
+            model?: undefined;
         } | {
             path: string;
             name: string;
             version: string;
             hours: number;
             iterations: number;
+            tokensIn: number;
+            tokensOut: number;
+            totalTokens: number;
+            costUsd: number;
+            agent: string;
+            model: string;
             totalHours: number;
             totalIterations: number;
             releasesCount: number;

@@ -21,6 +21,7 @@ The following architectural issues were detected in @[.].
 
 
 
+
 **Boundary**: [@[.editorconfig]](./.editorconfig)
 **Context**: [@[project.md]](./project.md), [@[seed.md]](./seed.md)
 
@@ -28,6 +29,7 @@ The following architectural issues were detected in @[.].
 
 ### Hygiene Auditor
 - [ ] [hygiene] devDependencies.typescript: `Missing devDependency: typescript (required for npm run build)`
+
 
 
 
@@ -55,6 +57,7 @@ The following architectural issues were detected in @[.].
 
 
 
+
   - **Suggested Fix**: `"play": "nan0cli --data play"`
 
 - [ ] [hygiene] devDependencies.c8: `Missing devDependency: c8 (required for npm run test:coverage)`
@@ -70,9 +73,11 @@ The following architectural issues were detected in @[.].
 
 
 
+
   - **Suggested Fix**: `npm install -D c8`
 
 - [ ] [hygiene] scripts.prebuild: `Missing prebuild cleanup (rm -rf dist types)`
+
 
 
 
@@ -147,6 +152,7 @@ The following architectural issues were detected in @[.].
 
 
 
+
 ---
 
 ### Domain Auditor
@@ -202,11 +208,13 @@ The following architectural issues were detected in @[.].
 
 
 
+
 ---
 
 ### Verification Auditor
 - [ ] [verification] play/: `No play/ directory found — playground is mandatory for every package`
 - [ ] [verification] test_style: `Test file src/tests/releases/1/0/v1.0.2/task.test.js:4 uses flat test() instead of describe()/it() hierarchy`
+
 
 
 
@@ -251,6 +259,7 @@ The following architectural issues were detected in @[.].
 - [ ] [theming] src/domain/PMaCParser.story.js: `Hardcoded color "#142" found without theme variable`
 - [ ] [theming] src/domain/ValidateCommand.story.js: `Hardcoded color "#101" found without theme variable`
 - [ ] [theming] src/domain/ValidateCommand.story.js: `Hardcoded color "#102" found without theme variable`
+
 
 
 

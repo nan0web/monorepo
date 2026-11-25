@@ -16,13 +16,14 @@ export class TrayCommand extends ModelAsApp {
 		title: 'SwiftBar Task Tray Controller',
 	}
 
-	static action = { type: 'string', positional: true, default: 'render', help: 'Action: render, set-status, open-antigravity' }
+	static action = { type: 'string', positional: true, default: 'render', help: 'Action: render, set-status, open-antigravity, open-log' }
 	static file = { type: 'string', default: 'todo.md', help: 'Target markdown file' }
 	static status = { type: 'string', default: '', help: 'New status: todo, work, done, pause, fail' }
 	static target = { type: 'string', default: '', help: 'Task target title or index' }
 	static project = { type: 'string', default: '', help: 'Project key for open-antigravity' }
 	static binPath = { type: 'string', default: '', help: 'Explicit binary path' }
 	static binMode = { type: 'string', default: 'bin', help: 'Invocation mode: bin | node' }
+	static slotsDir = { type: 'string', default: '.nan0release/slots', help: 'Directory with isolated parallel slot state files' }
 
 	/**
 	 * @param {Partial<TrayCommand>} [data={}]
@@ -37,7 +38,55 @@ export class TrayCommand extends ModelAsApp {
 		/** @type {string} */ this.project
 		/** @type {string} */ this.binPath
 		/** @type {string} */ this.binMode
+		/** @type {string} */ this.slotsDir
 		/** @type {SystemAdapter} */ this.$system = options.system || new SystemAdapter()
+	}
+
+	/**
+	 * Load isolated parallel slot telemetry records from slotsDir.
+	 * @returns {Promise<Record<string, any>[]>}
+	 */
+	async loadSlots() {
+		if (!this.$db || typeof this.$db.listDir !== 'function') return []
+		const entries = await this.$db.listDir(this.slotsDir).catch(() => [])
+		if (!Array.isArray(entries)) return []
+		const slots = []
+		for (const entry of entries) {
+			const name = entry.name || (entry.path || '').split('/').pop() || ''
+			if (!name.endsWith('.json')) continue
+			const path = entry.path ? entry.path.replace(/^\.\//, '') : `${this.slotsDir}/${name}`
+			const raw = await this.$db.loadDocument(path, null).catch(() => null)
+			if (!raw) continue
+			try {
+				const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw
+				if (parsed && typeof parsed === 'object') slots.push(parsed)
+			} catch {}
+		}
+		return slots
+	}
+
+	/**
+	 * Merge parallel slot telemetry into loaded tasks without mutating markdown files.
+	 * @param {import('./Task/TaskModel.js').TaskModel[]} tasks
+	 * @param {Record<string, any>[]} slots
+	 * @param {ProjectsMap} projectsMap
+	 */
+	applySlots(tasks, slots, projectsMap) {
+		for (const task of tasks) {
+			if (!task.project && projectsMap) {
+				task.project = projectsMap.resolveProject(task, task.domain)
+			}
+			const match = slots.find((s) => s.target && task.title.toLowerCase().includes(String(s.target).toLowerCase()))
+			if (!match) continue
+			task.agent = String(match.agent ?? task.agent ?? '')
+			task.model = String(match.model ?? task.model ?? '')
+			task.tokensIn = Math.max(0, Number(match.tokensIn ?? task.tokensIn) || 0)
+			task.tokensOut = Math.max(0, Number(match.tokensOut ?? task.tokensOut) || 0)
+			task.costUsd = Math.max(0, Number(match.costUsd ?? task.costUsd) || 0)
+			task.step = String(match.step ?? task.step ?? '')
+			task.gate = String(match.gate ?? task.gate ?? '')
+			task.logPath = String(match.logPath ?? task.logPath ?? '')
+		}
 	}
 
 	/**
@@ -79,15 +128,26 @@ export class TrayCommand extends ModelAsApp {
 			return result(res)
 		}
 
+		if (this.action === 'open-log') {
+			const res = await this.$system.openLog(this.file)
+			yield show(`Opened log: ${this.file}`, 'success')
+			return result(res)
+		}
+
 		if (this.action === 'set-status') {
 			const res = await this.handleSetStatus()
 			yield show(res.ok ? `Updated: ${res.updatedFiles.join(', ')}` : `Task not found: ${this.target}`, res.ok ? 'success' : 'warn')
 			return result(res)
 		}
 
+		const slots = await this.loadSlots()
 		const today = await this.loadTasksFrom(this.file)
 		const pool = await this.loadTasksFrom('pool.md')
 		const future = await this.loadTasksFrom('future.md')
+		this.applySlots(today, slots, projectsMap)
+		this.applySlots(pool, slots, projectsMap)
+		this.applySlots(future, slots, projectsMap)
+
 		const output = SwiftBarAdapter.render({
 			today,
 			pool,

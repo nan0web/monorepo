@@ -61,7 +61,17 @@ export class DashboardModel extends ModelAsApp {
 	}
 	static summary = {
 		help: 'Aggregated metrics summary',
-		default: { totalProjects: 0, totalHours: 0, totalIterations: 0, wipCount: 0, closedCount: 0 },
+		default: {
+			totalProjects: 0,
+			totalHours: 0,
+			totalIterations: 0,
+			totalTokensIn: 0,
+			totalTokensOut: 0,
+			totalTokens: 0,
+			totalCostUsd: 0,
+			wipCount: 0,
+			closedCount: 0,
+		},
 		type: 'object',
 	}
 	static projects = { help: 'List of projects with metrics', default: () => [], type: 'array' }
@@ -154,6 +164,9 @@ export class DashboardModel extends ModelAsApp {
 		const projectEntries = []
 		let totalHours = 0,
 			totalIterations = 0,
+			totalTokensIn = 0,
+			totalTokensOut = 0,
+			totalCostUsd = 0,
 			wipCount = 0,
 			closedCount = 0
 		const totalProjects = registeredProjects.length
@@ -270,10 +283,13 @@ export class DashboardModel extends ModelAsApp {
 			if (status === 'wip') wipCount++
 			else if (status === 'closed') closedCount++
 
-			const { allReleases, projectTotalHours, projectTotalIterations } =
+			const { allReleases, projectTotalHours, projectTotalIterations, projectTokensIn, projectTokensOut, projectCostUsd } =
 				await this.#scanAllReleases(db, discovered, metrics)
 			totalHours += projectTotalHours
 			totalIterations += projectTotalIterations
+			totalTokensIn += projectTokensIn
+			totalTokensOut += projectTokensOut
+			totalCostUsd += projectCostUsd
 
 			const gitInfo = gitTelem?.getGitInfo ? gitTelem.getGitInfo(proj.path) : { branch: 'main', gitStatus: 'clean' }
 			projectEntries.push({
@@ -282,6 +298,12 @@ export class DashboardModel extends ModelAsApp {
 				version: effectiveVersion,
 				hours: metrics.hours,
 				iterations: metrics.iterations,
+				tokensIn: metrics.tokensIn,
+				tokensOut: metrics.tokensOut,
+				totalTokens: metrics.tokensIn + metrics.tokensOut,
+				costUsd: metrics.costUsd,
+				agent: metrics.agent,
+				model: metrics.model,
 				totalHours: Math.round(projectTotalHours * 10) / 10,
 				totalIterations: projectTotalIterations,
 				releasesCount: Math.max(discovered.length, 1),
@@ -308,6 +330,10 @@ export class DashboardModel extends ModelAsApp {
 			totalReleases: projectEntries.reduce((sum, p) => sum + (p.releasesCount || 1), 0),
 			totalHours: Math.round(totalHours * 10) / 10,
 			totalIterations,
+			totalTokensIn,
+			totalTokensOut,
+			totalTokens: totalTokensIn + totalTokensOut,
+			totalCostUsd: Math.round(totalCostUsd * 100) / 100,
 			wipCount,
 			closedCount,
 		}
@@ -367,7 +393,10 @@ export class DashboardModel extends ModelAsApp {
 
 	async #scanAllReleases(db, discovered, primaryMetrics) {
 		let projectTotalHours = 0,
-			projectTotalIterations = 0
+			projectTotalIterations = 0,
+			projectTokensIn = 0,
+			projectTokensOut = 0,
+			projectCostUsd = 0
 		const allReleases = []
 
 		for (const rel of discovered) {
@@ -378,6 +407,9 @@ export class DashboardModel extends ModelAsApp {
 			const rm = parseUserMetrics(String(relUser || ''))
 			projectTotalHours += rm.hours
 			projectTotalIterations += rm.iterations
+			projectTokensIn += rm.tokensIn
+			projectTokensOut += rm.tokensOut
+			projectCostUsd += rm.costUsd
 
 			const {
 				releaseContent: relDocContent,
@@ -413,6 +445,6 @@ export class DashboardModel extends ModelAsApp {
 			projectTotalHours = primaryMetrics.hours
 		if (projectTotalIterations === 0 && primaryMetrics.iterations > 0)
 			projectTotalIterations = primaryMetrics.iterations
-		return { allReleases, projectTotalHours, projectTotalIterations }
+		return { allReleases, projectTotalHours, projectTotalIterations, projectTokensIn, projectTokensOut, projectCostUsd }
 	}
 }

@@ -43,6 +43,11 @@ export class TrayCommand extends ModelAsApp {
         default: string;
         help: string;
     };
+    static slotsDir: {
+        type: string;
+        default: string;
+        help: string;
+    };
     /**
      * @param {Partial<TrayCommand>} [data={}]
      * @param {Partial<import('@nan0web/types').ModelOptions> & { system?: SystemAdapter }} [options={}]
@@ -57,7 +62,20 @@ export class TrayCommand extends ModelAsApp {
     /** @type {string} */ project: string;
     /** @type {string} */ binPath: string;
     /** @type {string} */ binMode: string;
+    /** @type {string} */ slotsDir: string;
     /** @type {SystemAdapter} */ $system: SystemAdapter;
+    /**
+     * Load isolated parallel slot telemetry records from slotsDir.
+     * @returns {Promise<Record<string, any>[]>}
+     */
+    loadSlots(): Promise<Record<string, any>[]>;
+    /**
+     * Merge parallel slot telemetry into loaded tasks without mutating markdown files.
+     * @param {import('./Task/TaskModel.js').TaskModel[]} tasks
+     * @param {Record<string, any>[]} slots
+     * @param {ProjectsMap} projectsMap
+     */
+    applySlots(tasks: import("./Task/TaskModel.js").TaskModel[], slots: Record<string, any>[], projectsMap: ProjectsMap): void;
     /**
      * @param {string} filePath
      * @returns {Promise<import('./Task/TaskModel.js').TaskModel[]>}
@@ -76,3 +94,4 @@ export class TrayCommand extends ModelAsApp {
 export default TrayCommand;
 import { ModelAsApp } from '@nan0web/ui';
 import { SystemAdapter } from '../adapters/SystemAdapter.js';
+import { ProjectsMap } from './Task/ProjectsMap.js';

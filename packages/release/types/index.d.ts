@@ -19,6 +19,7 @@ export { PriorityEvaluator } from "./domain/Task/PriorityEvaluator.js";
 export { ProjectsMap } from "./domain/Task/ProjectsMap.js";
 export { MarkdownRoundTripAuditor } from "./domain/Task/MarkdownRoundTripAuditor.js";
 export { TrayCommand } from "./domain/TrayCommand.js";
+export { BatchCommand } from "./domain/BatchCommand.js";
 export { TodoServeCommand } from "./domain/TodoServeCommand.js";
 export { SyncCommand } from "./domain/SyncCommand.js";
 export { SystemAdapter } from "./adapters/SystemAdapter.js";

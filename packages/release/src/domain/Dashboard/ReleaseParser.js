@@ -133,37 +133,56 @@ export function calculateDaysRemaining(deadlineStr = '') {
 }
 
 /**
- * Parse user.md content for telemetry metrics (hours, iterations, RRS) across languages
+ * Parse user.md content for telemetry metrics across languages.
  * @param {*} [input]
- * @returns {{ hours: number, iterations: number, rrs: number }}
+ * @returns {{ hours: number, iterations: number, rrs: number, agent: string, model: string, tokensIn: number, tokensOut: number, costUsd: number, step: string, gate: string }}
  */
 export function parseUserMetrics(input = '') {
 	const content = String(input || '')
-	if (!content.trim()) return { hours: 0, iterations: 0, rrs: 0 }
+	const base = { hours: 0, iterations: 0, rrs: 0, agent: '', model: '', tokensIn: 0, tokensOut: 0, costUsd: 0, step: '', gate: '' }
+	if (!content.trim()) return base
 
-	let hours = 0, iterations = 0, rrs = 0
 	const fm = parseFrontmatter(content)
-	if (fm.hours || fm.spentHours || fm.time) hours = parseFloat(fm.hours || fm.spentHours || fm.time || '0') || 0
-	if (fm.iterations || fm.iters || fm.runs) iterations = parseInt(fm.iterations || fm.iters || fm.runs || '0', 10) || 0
-	if (fm.rrs || fm.score) rrs = parseInt(fm.rrs || fm.score || '0', 10) || 0
+	base.hours = parseFloat(fm.hours || fm.spentHours || fm.time || '0') || 0
+	base.iterations = parseInt(fm.iterations || fm.iters || fm.runs || '0', 10) || 0
+	base.rrs = parseInt(fm.rrs || fm.score || '0', 10) || 0
+	base.agent = String(fm.agent || '')
+	base.model = String(fm.model || '')
+	base.tokensIn = parseInt(fm.tokensIn || fm.tokens_in || '0', 10) || 0
+	base.tokensOut = parseInt(fm.tokensOut || fm.tokens_out || '0', 10) || 0
+	base.costUsd = parseFloat(fm.costUsd || fm.cost_usd || fm.cost || '0') || 0
+	base.step = String(fm.step || '')
+	base.gate = String(fm.gate || '')
 
 	for (const rawLine of content.split('\n')) {
-		const line = rawLine.trim()
-		if (!line || !line.includes(':')) continue
-		const beforeColon = line.slice(0, line.indexOf(':')).toLowerCase()
-		const numMatch = line.slice(line.indexOf(':') + 1).match(/([0-9]+(?:\.[0-9]+)?)/)
-		if (!numMatch) continue
-		const val = parseFloat(numMatch[1])
-
-		if (hours === 0 && /(витрачений час|час розробки|час роботи|time spent|development time|spent time|dev hours|hours|годин)/.test(beforeColon)) {
-			hours = val
-		} else if (iterations === 0 && /(кількість ітерацій|ітерацій|контрактні тести|тести релізу|тести|iteration count|test runs|refactor runs|iterations|runs)/.test(beforeColon)) {
-			iterations = Math.round(val)
-		} else if (rrs === 0 && /(rrs|статус готовності|готовності|готовність|release readiness score|фінальний бал|бал rrs|readiness score)/.test(beforeColon)) {
-			rrs = Math.round(val)
-		}
+		parseTelemetryLine(rawLine, base)
 	}
-	return { hours, iterations, rrs }
+	return base
+}
+
+function parseTelemetryLine(rawLine, base) {
+	const line = rawLine.trim()
+	if (!line || !line.includes(':')) return
+	const idx = line.indexOf(':')
+	const beforeColon = line.slice(0, idx).toLowerCase()
+	const afterColon = line.slice(idx + 1).trim()
+	const numMatch = afterColon.match(/([0-9]+(?:\.[0-9]+)?)/)
+	if (!numMatch) return
+	const val = parseFloat(numMatch[1])
+
+	if (base.hours === 0 && /(витрачений час|час розробки|час роботи|time spent|development time|spent time|dev hours|hours|годин)/.test(beforeColon)) {
+		base.hours = val
+	} else if (base.iterations === 0 && /(кількість ітерацій|ітерацій|контрактні тести|тести релізу|тести|iteration count|test runs|refactor runs|iterations|runs)/.test(beforeColon)) {
+		base.iterations = Math.round(val)
+	} else if (base.rrs === 0 && /(rrs|статус готовності|готовності|готовність|release readiness score|фінальний бал|бал rrs|readiness score)/.test(beforeColon)) {
+		base.rrs = Math.round(val)
+	} else if (base.tokensIn === 0 && /(tokensin|tokens_in|вхідні токени)/.test(beforeColon)) {
+		base.tokensIn = Math.round(val)
+	} else if (base.tokensOut === 0 && /(tokensout|tokens_out|вихідні токени)/.test(beforeColon)) {
+		base.tokensOut = Math.round(val)
+	} else if (base.costUsd === 0 && /(costusd|cost_usd|вартість)/.test(beforeColon)) {
+		base.costUsd = val
+	}
 }
 
 /**

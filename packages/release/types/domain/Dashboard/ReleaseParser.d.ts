@@ -30,14 +30,21 @@ export function extractTasks(input: any): TaskItem[];
  */
 export function calculateDaysRemaining(deadlineStr?: string): number | null;
 /**
- * Parse user.md content for telemetry metrics (hours, iterations, RRS) across languages
+ * Parse user.md content for telemetry metrics across languages.
  * @param {*} [input]
- * @returns {{ hours: number, iterations: number, rrs: number }}
+ * @returns {{ hours: number, iterations: number, rrs: number, agent: string, model: string, tokensIn: number, tokensOut: number, costUsd: number, step: string, gate: string }}
  */
 export function parseUserMetrics(input?: any): {
     hours: number;
     iterations: number;
     rrs: number;
+    agent: string;
+    model: string;
+    tokensIn: number;
+    tokensOut: number;
+    costUsd: number;
+    step: string;
+    gate: string;
 };
 /**
  * Resolve priority from frontmatter or days remaining

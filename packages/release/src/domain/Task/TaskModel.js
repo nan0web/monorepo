@@ -53,6 +53,15 @@ export class TaskModel extends Model {
 	static priorityScore = { type: 'number', default: 0, help: 'Calculated priority P(x)' }
 	static filePath = { type: 'string', default: '', help: 'Source file path' }
 	static lineIndex = { type: 'number', default: 0, help: 'Line index in file' }
+	static agent = { type: 'string', default: '', help: 'Assigned agent identifier' }
+	static model = { type: 'string', default: '', help: 'Active LLM model name' }
+	static tokensIn = { type: 'number', default: 0, help: 'Input tokens consumed' }
+	static tokensOut = { type: 'number', default: 0, help: 'Output tokens generated' }
+	static costUsd = { type: 'number', default: 0, help: 'Estimated cost in USD' }
+	static step = { type: 'string', default: '', help: 'Current progress step (e.g. 4/7)' }
+	static gate = { type: 'string', default: '', help: 'Gate status: pass, fail, pending' }
+	static targetFiles = { type: 'array', default: [], help: 'Target files touched by task' }
+	static logPath = { type: 'string', default: '', help: 'Path to task execution log' }
 
 	/**
 	 * @param {Partial<TaskModel>} [data={}]
@@ -76,6 +85,47 @@ export class TaskModel extends Model {
 		this.priorityScore = Number(data.priorityScore ?? 0)
 		/** @type {string} Source file path */ this.filePath
 		/** @type {number} Line index in file */ this.lineIndex
+		/** @type {string} Assigned agent identifier */ this.agent = String(data.agent ?? '')
+		/** @type {string} Active LLM model name */ this.model = String(data.model ?? '')
+		/** @type {number} Input tokens consumed */ this.tokensIn = Math.max(0, Number(data.tokensIn ?? 0) || 0)
+		/** @type {number} Output tokens generated */ this.tokensOut = Math.max(0, Number(data.tokensOut ?? 0) || 0)
+		/** @type {number} Estimated cost in USD */ this.costUsd = Math.max(0, Number(data.costUsd ?? 0) || 0)
+		/** @type {string} Current progress step */ this.step = String(data.step ?? '')
+		/** @type {string} Gate status */ this.gate = String(data.gate ?? '')
+		/** @type {string[]} Target files */
+		this.targetFiles = Array.isArray(data.targetFiles) ? [...data.targetFiles] : []
+		/** @type {string} Path to execution log */ this.logPath = String(data.logPath ?? '')
+	}
+
+	/**
+	 * Compute total tokens (input + output) for a task.
+	 * @param {Partial<TaskModel>} task
+	 * @returns {number}
+	 */
+	static totalTokens(task) {
+		return Math.max(0, Number(task?.tokensIn ?? 0) || 0) + Math.max(0, Number(task?.tokensOut ?? 0) || 0)
+	}
+
+	/**
+	 * Format token count into compact human-readable string (e.g. 640k tok).
+	 * @param {number} count
+	 * @returns {string}
+	 */
+	static formatTokens(count) {
+		const n = Math.max(0, Number(count) || 0)
+		if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M tok`
+		if (n >= 1_000) return `${Math.round(n / 1_000)}k tok`
+		return `${Math.round(n)} tok`
+	}
+
+	/**
+	 * Format USD cost with 2 decimal places (e.g. $2.15).
+	 * @param {number} usd
+	 * @returns {string}
+	 */
+	static formatCost(usd) {
+		const n = Math.max(0, Number(usd) || 0)
+		return `$${n.toFixed(2)}`
 	}
 
 	/**

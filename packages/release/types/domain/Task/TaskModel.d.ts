@@ -68,6 +68,69 @@ export class TaskModel extends Model {
         default: number;
         help: string;
     };
+    static agent: {
+        type: string;
+        default: string;
+        help: string;
+    };
+    static model: {
+        type: string;
+        default: string;
+        help: string;
+    };
+    static tokensIn: {
+        type: string;
+        default: number;
+        help: string;
+    };
+    static tokensOut: {
+        type: string;
+        default: number;
+        help: string;
+    };
+    static costUsd: {
+        type: string;
+        default: number;
+        help: string;
+    };
+    static step: {
+        type: string;
+        default: string;
+        help: string;
+    };
+    static gate: {
+        type: string;
+        default: string;
+        help: string;
+    };
+    static targetFiles: {
+        type: string;
+        default: never[];
+        help: string;
+    };
+    static logPath: {
+        type: string;
+        default: string;
+        help: string;
+    };
+    /**
+     * Compute total tokens (input + output) for a task.
+     * @param {Partial<TaskModel>} task
+     * @returns {number}
+     */
+    static totalTokens(task: Partial<TaskModel>): number;
+    /**
+     * Format token count into compact human-readable string (e.g. 640k tok).
+     * @param {number} count
+     * @returns {string}
+     */
+    static formatTokens(count: number): string;
+    /**
+     * Format USD cost with 2 decimal places (e.g. $2.15).
+     * @param {number} usd
+     * @returns {string}
+     */
+    static formatCost(usd: number): string;
     /**
      * Convert table or checkbox symbol to normalized status.
      * @param {string} symbol
@@ -130,6 +193,16 @@ export class TaskModel extends Model {
     priorityScore: number;
     /** @type {string} Source file path */ filePath: string;
     /** @type {number} Line index in file */ lineIndex: number;
+    /** @type {string} Assigned agent identifier */ agent: string;
+    /** @type {string} Active LLM model name */ model: string;
+    /** @type {number} Input tokens consumed */ tokensIn: number;
+    /** @type {number} Output tokens generated */ tokensOut: number;
+    /** @type {number} Estimated cost in USD */ costUsd: number;
+    /** @type {string} Current progress step */ step: string;
+    /** @type {string} Gate status */ gate: string;
+    /** @type {string[]} Target files */
+    targetFiles: string[];
+    /** @type {string} Path to execution log */ logPath: string;
 }
 export default TaskModel;
 import { Model } from '@nan0web/types';

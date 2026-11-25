@@ -122,7 +122,7 @@ export class SwiftBarAdapter {
 	}
 
 	/**
-	 * Render top menu bar header line with completion/progress summary.
+	 * Render top menu bar header line with completion/progress summary and telemetry.
 	 * @param {TaskModel[]} tasks
 	 * @returns {string}
 	 */
@@ -133,13 +133,50 @@ export class SwiftBarAdapter {
 		const work = tasks.filter((t) => t.status === 'work').length
 		const todo = tasks.filter((t) => t.status === 'todo').length
 		const pct = (n) => Math.round((n / total) * 100)
-		if (done === total) return SwiftBarAdapter.formatLine('✓ 100%', 'color=#34c759')
-		if (work > 0) return SwiftBarAdapter.formatLine(`▶ ${work} (${pct(work)}%)`, 'color=#0a84ff')
-		return SwiftBarAdapter.formatLine(`○ ${todo} (${pct(todo)}%)`)
+		const totalTok = tasks.reduce((sum, t) => sum + TaskModel.totalTokens(t), 0)
+		const totalCost = tasks.reduce((sum, t) => sum + (Number(t.costUsd) || 0), 0)
+		const telem = totalTok > 0 || totalCost > 0
+			? ` • ${TaskModel.formatCost(totalCost)} • ${TaskModel.formatTokens(totalTok)}`
+			: ''
+		if (done === total) return SwiftBarAdapter.formatLine(`✓ 100%${telem}`, 'color=#34c759')
+		if (work > 0) return SwiftBarAdapter.formatLine(`▶ ${work}/${total} (${pct(work)}%)${telem}`, 'color=#0a84ff')
+		return SwiftBarAdapter.formatLine(`○ ${todo}/${total} (${pct(todo)}%)${telem}`)
 	}
 
 	/**
-	 * Render a single task item with wrapped fullText and status action sub-items.
+	 * Render telemetry and quick-open sub-items for a task.
+	 * @param {TaskModel} task
+	 * @param {SwiftBarState} state
+	 * @returns {string[]}
+	 */
+	static renderTaskTelemetry(task, state) {
+		const lines = []
+		const totalTok = TaskModel.totalTokens(task)
+		const hasTelemetry = Boolean(task.agent || task.model || task.step || task.gate || totalTok > 0 || task.costUsd > 0)
+		if (hasTelemetry) {
+			const parts = [
+				task.agent ? `🤖 ${task.agent}` : '',
+				task.model || '',
+				task.step ? `step ${task.step}` : '',
+				task.gate ? `gate:${task.gate}` : '',
+				task.costUsd > 0 ? TaskModel.formatCost(task.costUsd) : '',
+				totalTok > 0 ? TaskModel.formatTokens(totalTok) : '',
+			].filter(Boolean)
+			lines.push(SwiftBarAdapter.formatLine(`--${parts.join(' • ')}`, 'size=11 color=#8e8e93'))
+		}
+		if (task.logPath) {
+			const cmd = SwiftBarAdapter.buildCmd(state, ['tray', 'open-log', `--file=${task.logPath}`])
+			lines.push(SwiftBarAdapter.formatLine('--📄 Open Log', cmd))
+		}
+		if (task.project) {
+			const cmd = SwiftBarAdapter.buildCmd(state, ['tray', 'open-antigravity', `--project=${task.project}`])
+			lines.push(SwiftBarAdapter.formatLine(`--🚀 Open IDE (${task.project})`, cmd))
+		}
+		return lines
+	}
+
+	/**
+	 * Render a single task item with wrapped fullText, telemetry, and status actions.
 	 * @param {TaskModel} task
 	 * @param {SwiftBarState} state
 	 * @returns {string[]}
@@ -151,10 +188,10 @@ export class SwiftBarAdapter {
 		const title = TaskModel.cleanTitle(task.title, 48)
 		const lines = [SwiftBarAdapter.formatLine(`${sym} ${title}${p}`)]
 		const cleanFull = TaskModel.cleanTitle(task.fullText || task.title)
-		const wrapped = SwiftBarAdapter.wrapText(cleanFull, 65)
-		for (const w of wrapped) {
+		for (const w of SwiftBarAdapter.wrapText(cleanFull, 65)) {
 			lines.push(SwiftBarAdapter.formatLine(`--${w}`, 'size=12 color=#e5e5e5'))
 		}
+		lines.push(...SwiftBarAdapter.renderTaskTelemetry(task, state))
 		const target = task.title.slice(0, 40)
 		const transitions = SwiftBarAdapter.STATUS_TRANSITIONS[task.status] || ['work', 'done', 'pause', 'todo']
 		for (const st of transitions) {

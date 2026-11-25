@@ -18,6 +18,7 @@ import TodoCommand from './TodoCommand.js'
 import TrayCommand from './TrayCommand.js'
 import TodoServeCommand from './TodoServeCommand.js'
 import SyncCommand from './SyncCommand.js'
+import BatchCommand from './BatchCommand.js'
 
 export class ReleaseApp extends ModelAsApp {
 	static alias = 'release'
@@ -45,6 +46,7 @@ export class ReleaseApp extends ModelAsApp {
 			TrayCommand,
 			TodoServeCommand,
 			SyncCommand,
+			BatchCommand,
 			CloseCommand,
 			DepsCommand,
 			PublishCommand,

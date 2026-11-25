@@ -58,13 +58,20 @@ export class SwiftBarAdapter {
      */
     static buildCmd(state: SwiftBarState, args: string[]): string;
     /**
-     * Render top menu bar header line with completion/progress summary.
+     * Render top menu bar header line with completion/progress summary and telemetry.
      * @param {TaskModel[]} tasks
      * @returns {string}
      */
     static renderHeader(tasks: TaskModel[]): string;
     /**
-     * Render a single task item with wrapped fullText and status action sub-items.
+     * Render telemetry and quick-open sub-items for a task.
+     * @param {TaskModel} task
+     * @param {SwiftBarState} state
+     * @returns {string[]}
+     */
+    static renderTaskTelemetry(task: TaskModel, state: SwiftBarState): string[];
+    /**
+     * Render a single task item with wrapped fullText, telemetry, and status actions.
      * @param {TaskModel} task
      * @param {SwiftBarState} state
      * @returns {string[]}
