@@ -130,6 +130,13 @@ export default class DBFSDoc extends DBFSPath {
 		this.console.debug('Loading document as', { uri, ext, defaultValue })
 		await this.ensureAccess(uri, 'r')
 		const file = this.resolveSync(this.resolveAlias(uri))
+		const normalizedExt = (ext || this.extname(uri) || '').toLowerCase()
+		if (!DBFSDoc.BINARY_EXTNAMES.includes(normalizedExt)) {
+			const cached = this.data.get(file)
+			if (cached !== undefined && cached !== false) {
+				return cached
+			}
+		}
 		const path = this.location(uri)
 		if (!(await this.FS.exists(path))) {
 			let baseUri = uri
@@ -155,7 +162,6 @@ export default class DBFSDoc extends DBFSPath {
 			return this.data.has(file) ? this.data.get(file) : defaultValue
 		}
 
-		const normalizedExt = (ext || this.extname(uri) || '').toLowerCase()
 		if (DBFSDoc.BINARY_EXTNAMES.includes(normalizedExt)) {
 			try {
 				return this.FS.readFileSync(path)
@@ -167,7 +173,9 @@ export default class DBFSDoc extends DBFSPath {
 		const loader = this.registry.resolveLoader(ext)
 		try {
 			const raw = this.FS.loadTXT(path, '', true)
-			return loader(/** @type {string} */ (raw), /** @type {string} */ (ext))
+			const parsed = loader(/** @type {string} */ (raw), /** @type {string} */ (ext))
+			this.data.set(file, parsed)
+			return parsed
 		} catch (error) {
 			return defaultValue
 		}
@@ -233,6 +241,7 @@ export default class DBFSDoc extends DBFSPath {
 			await this.FS.saveAsync(path, raw, '.txt')
 			const stat = await this.statDocument(uri)
 			this.meta.set(uri, stat)
+			this._invalidateDataCache(uri)
 			this.data.set(uri, false)
 			this.emit('change', { uri, type: 'save', data: document })
 			return true
@@ -275,6 +284,7 @@ export default class DBFSDoc extends DBFSPath {
 			}
 			const stat = await this.statDocument(uri)
 			this.meta.set(uri, stat)
+			this._invalidateDataCache(uri)
 			this.data.set(uri, false)
 			this.emit('change', { uri, type: 'save', data: content })
 			return true
@@ -361,8 +371,10 @@ export default class DBFSDoc extends DBFSPath {
 			if (targetUri !== uri) {
 				this.meta.set(uri, stat)
 			}
+			this._invalidateDataCache(targetUri)
 			this.data.set(targetUri, false)
 			if (targetUri !== uri) {
+				this._invalidateDataCache(uri)
 				this.data.set(uri, false)
 			}
 			this.emit('change', { uri: targetUri, type: 'save', data: document })
@@ -449,6 +461,7 @@ export default class DBFSDoc extends DBFSPath {
 		await this.FS.unlink(path)
 		stat = await this.statDocument(uri)
 		if (!stat.exists) {
+			this._invalidateDataCache(uri)
 			this.data.delete(file)
 			this.meta.delete(file)
 			this.emit('change', { uri, type: 'drop' })

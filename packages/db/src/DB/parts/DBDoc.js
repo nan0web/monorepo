@@ -329,6 +329,8 @@ export default class DBDoc extends DBAccess {
 		}
 
 		// Invalidate directory cache for affected paths
+		this._invalidateDataCache(uri)
+		this._invalidateDataCache(abs)
 		this._invalidateDirCache(uri)
 		this._invalidateDirCache(abs)
 
@@ -446,6 +448,8 @@ export default class DBDoc extends DBAccess {
 			}
 		}
 		const abs = this.normalize(await this.resolve(uri))
+		this._invalidateDataCache(uri)
+		this._invalidateDataCache(abs)
 		this._invalidateDataCache(uri)
 		this._invalidateDataCache(abs)
 		this._invalidateDirCache(uri)

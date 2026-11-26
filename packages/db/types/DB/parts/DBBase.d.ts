@@ -114,6 +114,8 @@ export default class DBBase {
     _inheritanceCache: Map<string, any>;
     /** @type {Map<string, DocumentEntry[]>} Directory entry cache for listDir/getGlobals */
     _dirCache: Map<string, DocumentEntry[]>;
+    /** @type {Map<string, any>} Merged document cache for fetchMerged */
+    _fetchCache: Map<string, any>;
     /**
      * Resolves a URI alias. If the URI matches a registered alias,
      * returns the real target URI. Otherwise returns the original URI unchanged.

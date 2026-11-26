@@ -150,6 +150,8 @@ export default class DBBase {
 	_inheritanceCache = new Map()
 	/** @type {Map<string, DocumentEntry[]>} Directory entry cache for listDir/getGlobals */
 	_dirCache = new Map()
+	/** @type {Map<string, any>} Merged document cache for fetchMerged */
+	_fetchCache = new Map()
 
 	/**
 	 * Creates a new DB instance from input object
@@ -1068,6 +1070,8 @@ export default class DBBase {
 		const normalized = this.normalize(uri)
 		this.data.delete(normalized)
 		this.data.delete(this.absolute(normalized))
+		this._fetchCache.clear()
+		this._inheritanceCache.clear()
 	}
 
 	/**
@@ -1078,6 +1082,9 @@ export default class DBBase {
 		const normalized = this.normalize(uri)
 		this._dirCache.delete(normalized)
 		this._dirCache.delete(this.absolute(normalized))
+		this._dirCache.delete(`globals:${normalized}`)
+		this._dirCache.delete('globals:/')
+		this._dirCache.delete('globals:.')
 		// Also invalidate parent directory caches
 		let current = normalized
 		while (current && current !== '.' && current !== '/') {
@@ -1085,6 +1092,7 @@ export default class DBBase {
 			if (parent === current) break
 			this._dirCache.delete(parent)
 			this._dirCache.delete(this.absolute(parent))
+			this._dirCache.delete(`globals:${parent}`)
 			current = parent
 		}
 	}

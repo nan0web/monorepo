@@ -534,7 +534,9 @@ export default class DBDir extends DBDoc {
 
 		// Check global cache first
 		const normalizedPath = this.normalize(path)
-		const cachedGlobals = this._dirCache.get(`globals:${normalizedPath}`)
+		const dir = this.dirname(normalizedPath) || '/'
+		const cacheKey = `globals:${dir}`
+		const cachedGlobals = this._dirCache.get(cacheKey)
 		if (cachedGlobals !== undefined) {
 			return cachedGlobals
 		}
@@ -563,7 +565,7 @@ export default class DBDir extends DBDoc {
 		}
 
 		// Cache result for subsequent calls
-		this._dirCache.set(`globals:${normalizedPath}`, globals)
+		this._dirCache.set(cacheKey, globals)
 
 		this.console.debug('getGlobals().done', path, { globals })
 		return globals

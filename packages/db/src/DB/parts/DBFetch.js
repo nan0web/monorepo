@@ -198,7 +198,8 @@ export default class DBFetch extends DBDir {
 	 */
 	async getInheritance(path) {
 		this.console.debug('getInheritance()', path)
-		const cacheKey = `path:${this.normalize(path)}`
+		const dir = this.dirname(this.normalize(path)) || '/'
+		const cacheKey = `path:${dir}`
 		const cached = this._inheritanceCache.get(cacheKey)
 		if (cached !== undefined) {
 			return cached
@@ -275,6 +276,13 @@ export default class DBFetch extends DBDir {
 			this.console.warn('Circular inheritance chain detected', { uri })
 			return opts.defaultValue
 		}
+
+		const normUri = this.normalize(uri)
+		const cacheKey = `${normUri}:${opts.inherit ? 1 : 0}:${opts.globals ? 1 : 0}:${opts.refs ? 1 : 0}:${opts.allowDirs ? 1 : 0}`
+		if (this._fetchCache.has(cacheKey)) {
+			return structuredClone(this._fetchCache.get(cacheKey))
+		}
+
 		const nextVisited = new Set(visitedSet).add(uri)
 
 		// Load the document first
@@ -306,7 +314,11 @@ export default class DBFetch extends DBDir {
 			data = await this.resolveReferences(data, uri, opts, nextVisited)
 		}
 
-		return data || opts.defaultValue
+		const result = data || opts.defaultValue
+		if (data !== undefined && !this._hasReference(data)) {
+			this._fetchCache.set(cacheKey, structuredClone(result))
+		}
+		return result
 	}
 
 	_hasReference(data) {
