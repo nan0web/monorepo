@@ -17,7 +17,7 @@ export class StatusCommand extends ModelAsApp {
 		header: '📊 Global PM-as-Code Release Dashboard ({$file})',
 		summaryHeader: '📈 Summary:',
 		summaryRow1: '  Total Projects: {$total} | Active (WIP): {$wip} | Closed: {$closed}',
-		summaryRow2: '  Total Hours: {$hours}h | Total Iterations: {$iterations}',
+		summaryRow2: '  Total Hours: {$hours}h | Total Iterations: {$iterations} | Tokens: {$tokens} | Cost: ${$cost}',
 		noProjects: 'No projects registered in {$file}',
 	}
 
@@ -155,7 +155,9 @@ export class StatusCommand extends ModelAsApp {
 			yield show(
 				StatusCommand.UI.summaryRow2
 					.replace('{$hours}', String(summary.totalHours))
-					.replace('{$iterations}', String(summary.totalIterations)),
+					.replace('{$iterations}', String(summary.totalIterations))
+					.replace('{$tokens}', String(summary.totalTokens || 0))
+					.replace('{$cost}', Number(summary.totalCostUsd || 0).toFixed(2)),
 				'info',
 			)
 		}
