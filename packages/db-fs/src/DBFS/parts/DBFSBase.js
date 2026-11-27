@@ -194,6 +194,26 @@ export default class DBFSBase extends DB {
 	}
 
 	/**
+	 * Safely invalidates in-memory data and inheritance caches across DB versions.
+	 * @param {string} uri
+	 */
+	_invalidateDataCache(uri) {
+		if (typeof super._invalidateDataCache === 'function') {
+			try {
+				super._invalidateDataCache(uri)
+				return
+			} catch {
+				// Fallback when parent caches (_fetchCache / _inheritanceCache) are absent
+			}
+		}
+		const normalized = this.normalize(uri)
+		this.data?.delete?.(normalized)
+		this.data?.delete?.(this.absolute(normalized))
+		this._fetchCache?.clear?.()
+		this._inheritanceCache?.clear?.()
+	}
+
+	/**
 	 * Creates a new DB instance with a subset of the data and meta.
 	 * @param {string} uri The URI to extract from the current DB.
 	 * @returns {any}

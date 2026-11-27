@@ -70,6 +70,12 @@ export default class DBFSDoc extends DBFSPath {
      */
     saveFile(uri: string, content: string | Buffer, context?: any): Promise<boolean>;
     /**
+     * Updates metadata, invalidates caches, and emits change event after a successful write.
+     * @param {string} uri
+     * @param {any} data
+     */
+    _afterSave(uri: string, data: any): Promise<void>;
+    /**
      * Determines the target file extension when no extension is specified in URI.
      * Can be overridden or customized to change format priority.
      * Default priority:

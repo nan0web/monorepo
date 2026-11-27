@@ -282,14 +282,28 @@ export default class DBFSDoc extends DBFSPath {
 			} else {
 				await this.FS.saveAsync(path, content, '.txt')
 			}
+		} catch (e) {
+			this.console.error('Failed to save file', { uri, path, error: e })
+			return false
+		}
+		await this._afterSave(uri, content)
+		return true
+	}
+
+	/**
+	 * Updates metadata, invalidates caches, and emits change event after a successful write.
+	 * @param {string} uri
+	 * @param {any} data
+	 */
+	async _afterSave(uri, data) {
+		try {
 			const stat = await this.statDocument(uri)
 			this.meta.set(uri, stat)
 			this._invalidateDataCache(uri)
 			this.data.set(uri, false)
-			this.emit('change', { uri, type: 'save', data: content })
-			return true
+			this.emit('change', { uri, type: 'save', data })
 		} catch (e) {
-			return false
+			this.console.warn('Post-save cache update failed', { uri, error: e })
 		}
 	}
 

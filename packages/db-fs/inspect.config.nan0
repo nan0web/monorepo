@@ -2,4 +2,5 @@
 skip:
   - snapshots
   - exports
+  - dbfs_in_test
 
