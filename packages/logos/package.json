@@ -2,31 +2,40 @@
   "name": "@nan0web/logos",
   "version": "3.4.0",
   "description": "Sovereign Logic Hub: Intent, Observer, and Identity models.",
-  "private": true,
   "type": "module",
   "main": "./src/index.js",
+  "types": "./types/index.d.ts",
   "exports": {
-    ".": "./src/index.js",
-    "./intent": "./src/domain/intent/index.js",
-    "./observer": "./src/domain/observer/index.js",
-    "./identity": "./src/domain/identity/index.js"
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./intent": {
+      "import": "./src/domain/intent/index.js",
+      "types": "./types/domain/intent/index.d.ts"
+    },
+    "./observer": {
+      "import": "./src/domain/observer/index.js",
+      "types": "./types/domain/observer/index.d.ts"
+    },
+    "./identity": {
+      "import": "./src/domain/identity/index.js",
+      "types": "./types/domain/identity/index.d.ts"
+    }
   },
   "scripts": {
     "test": "node --test \"src/**/*.test.js\"",
     "prebuild": "rm -rf types",
     "build": "tsc",
-    "knip": "knip"
+    "knip": "knip --production",
+    "inspect": "nan0inspect --non-interactive",
+    "test:all": "npm run test && npm run build && npm run knip"
   },
-  "author": "NaN0Web",
-  "license": "UNLICENSED",
+  "author": "ЯRаСлав (YaRaSLove) <support@yaro.page>",
+  "license": "ISC",
   "dependencies": {
-    "@nan0web/ai": "workspace:*",
     "@nan0web/co": "workspace:*",
-    "@nan0web/db-browser": "workspace:*",
-    "@nan0web/db-fs": "workspace:*",
-    "@nan0web/log": "workspace:*",
-    "@nan0web/types": "workspace:*",
-    "@nan0web/ui-cli": "workspace:*"
+    "@nan0web/types": "workspace:*"
   },
   "devDependencies": {
     "@nan0web/test": "workspace:*",
@@ -34,10 +43,9 @@
     "typescript": "^5.9.3"
   },
   "files": [
-    "bin",
-    "src",
-    "types",
-    "data",
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "types/**/*.d.ts",
     "LICENSE",
     "README.md"
   ]
